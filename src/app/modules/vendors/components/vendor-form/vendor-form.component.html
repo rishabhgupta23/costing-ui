@@ -1,0 +1,31 @@
+<div class="app-page">
+    <div class="page-header">
+        <span class="page-title">Create Vendors</span>
+    </div>
+    <div class="page-content">
+        <div class="card">
+            <form [formGroup]="vendorForm" class="vendor-form">
+                <div>Vendor Name</div>
+                <mat-form-field appearance="outline">
+                    <input matInput placeholder="Enter Name" formControlName="name">
+                </mat-form-field>
+                <div>Email Id</div>
+                <mat-form-field appearance="outline">
+                    <input matInput placeholder="Enter Email ID" formControlName="emailId">
+                </mat-form-field>
+                <div>Contact Number</div>
+                <mat-form-field appearance="outline">
+                    <input matInput placeholder="Enter Contact Number" formControlName="contactNumber">
+                </mat-form-field>
+                <div>Address</div>
+                <mat-form-field appearance="outline">
+                    <input matInput placeholder="Enter Address" formControlName="address">
+                </mat-form-field>
+            </form>
+            <div class="dialog-action">
+                <button class="primary-btn" (click)="onCancel()">Cancel</button>
+                <button class="primary-btn" (click)="onCreate()">Create</button>
+            </div>
+        </div>
+    </div>
+</div>

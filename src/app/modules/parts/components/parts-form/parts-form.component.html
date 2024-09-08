@@ -1,0 +1,118 @@
+<div class="app-page">
+    <div class="page-header">
+        <span class="page-title">Create Parts</span>
+    </div>
+    <div class="page-content">
+        <div class="card">
+            <div>
+                <!-- Part Details Section-->
+                <div class="sub-heading">Part Details</div>
+                <div class="part-form">
+                    <div>Part Number</div>
+                    <div>
+                        <mat-form-field appearance="outline">
+                            <input matInput placeholder="Enter Name">
+                        </mat-form-field>
+                    </div>
+                    <div>Part Name</div>
+                    <div>
+                        <mat-form-field appearance="outline">
+                            <input matInput placeholder="Enter Name">
+                        </mat-form-field>
+                    </div>
+                    <div>Type</div>
+                    <div>
+                        <mat-form-field appearance="outline">
+                            <mat-select placeholder="Select Part Type">
+                                <ng-container *ngFor="let item of partTypes">
+                                    <mat-option [value]="item">{{item}}</mat-option>
+                                </ng-container>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div>Category</div>
+                    <div>
+                        <mat-form-field appearance="outline">
+                            <mat-select placeholder="Select Part Category">
+                                <ng-container *ngFor="let item of partCategories">
+                                    <mat-option [value]="item">{{item}}</mat-option>
+                                </ng-container>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div>Unit</div>
+                    <div>
+                        <mat-form-field appearance="outline">
+                            <mat-select placeholder="Select Part Unit">
+                                <ng-container *ngFor="let item of partUnits">
+                                    <mat-option [value]="item">{{item}}</mat-option>
+                                </ng-container>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>  
+            </div>
+            <hr>
+            <div [formGroup]="costDetailsForm">
+                <!-- Cost Section-->
+                 <div formArrayName="costFactors">
+                    <div class="sub-heading"> Cost Details </div>
+                    <div class="cost-form">
+                        <div>Vendor</div>
+                        <mat-form-field appearance="outline">
+                            <mat-select placeholder="Select vendor" [(value)]="selectedVendor">
+                                <ng-container *ngFor="let item of vendorList">
+                                    <mat-option [value]="item">{{item.name}}</mat-option>
+                                </ng-container>
+                            </mat-select>
+                        </mat-form-field>
+                        <button class="primary-btn" (click)="addVendor()">Add</button>
+                    </div>
+                    <mat-accordion class="example-headers-align" multi>
+                        <mat-expansion-panel *ngFor="let vendor of vendorCostMap.keys(); let i=index">
+                          <mat-expansion-panel-header>
+                            <mat-panel-title> Vendor {{i+1}} </mat-panel-title>
+                          </mat-expansion-panel-header>
+                          <div class="vendor-panel-content">
+                            <div class="cost-form">
+                                <div>Cost Factor</div>
+                                <mat-form-field appearance="outline">
+                                    <mat-select placeholder="Select Cost Factor" [formControlName]="i">
+                                        <ng-container *ngFor="let item of partUnits">
+                                            <mat-option [value]="item">{{item}}</mat-option>
+                                        </ng-container>
+                                    </mat-select>
+                                </mat-form-field>
+                                <button class="primary-btn" (click)="addCostFactor(i,vendor)">Add</button>
+                              </div>
+                              <div>
+                                <app-table [data]="vendorCostMap.get(vendor) || []" [config]="COST_FACTOR_TABLE_COLUMNS"></app-table>
+                              </div>
+                          </div>
+                        </mat-expansion-panel>
+                    </mat-accordion> 
+                    <!-- <hr>
+                    <div *ngFor="let vendor of vendorCostMap.keys(); let i=index">
+                        <div class="cost-form">
+                            <div>Cost Factor</div>
+                            <mat-form-field appearance="outline">
+                                <mat-select placeholder="Select Cost Factor" [formControlName]="i">
+                                    <ng-container *ngFor="let item of partUnits">
+                                        <mat-option [value]="item">{{item}}</mat-option>
+                                    </ng-container>
+                                </mat-select>
+                            </mat-form-field>
+                            <button class="primary-btn" (click)="addCostFactor(i,vendor)">Add</button>
+                        </div>
+                        <div>
+                            <app-table [data]="vendorCostMap.get(vendor) || []" [config]="COST_FACTOR_TABLE_COLUMNS"></app-table>
+                        </div>
+                    </div> -->
+                 </div>
+            </div>
+            <div>
+                <!-- BOM Section -->
+            </div>
+        </div>
+    </div>
+</div>

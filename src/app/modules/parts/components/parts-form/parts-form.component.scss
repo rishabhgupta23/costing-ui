@@ -1,0 +1,28 @@
+.part-form {
+    display: grid;
+    grid-template-columns: auto auto;
+    width: 50%;
+}
+
+.sub-heading {
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.vendor-panel-content {
+    padding-top: 1rem;
+}
+
+
+.cost-form {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    width: 50%;
+    align-items: baseline;
+    column-gap: 1rem;
+
+    button {
+        height: fit-content;
+        width: fit-content;
+    }
+}

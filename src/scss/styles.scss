@@ -1,0 +1,100 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define the theme object.
+$costing-ui-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+    tertiary: mat.$blue-palette,
+  ),
+  density: (
+    scale: 0,
+  )
+));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+:root {
+  @include mat.all-component-themes($costing-ui-theme);
+}
+
+// Comment out the line below if you want to use the pre-defined typography utility classes.
+// For more information: https://material.angular.io/guide/typography#using-typography-styles-in-your-application.
+// @include mat.typography-hierarchy($costing-ui-theme);
+
+// Comment out the line below if you want to use the deprecated `color` inputs.
+// @include mat.color-variants-backwards-compatibility($costing-ui-theme);
+/* You can add global styles to this file, and also import other style files */
+@import "_font.scss";
+@import "_base.scss";
+
+.app-body {
+    height: 100vh;
+    font-size: $base-font-size;
+    font-family: Poppins, Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f8f8f8;
+}
+
+.app-page {
+    height: calc(100% - 2rem);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    .page-title {
+        font-weight: bold;
+    }
+}
+
+.page-content {
+    flex-grow: 1;
+}
+
+.card,.card-nc {
+    border-radius: 12px;
+    background-color: white;
+    border: 1px solid #f8f8f8; 
+    box-shadow: 0px 6px 18px #6a749a1a;
+    height: 100%;
+}
+
+.card {
+    padding: 1rem;
+    height: calc(100% - 2rem);
+}
+
+.primary-btn {
+    padding: 0.6rem 1.6rem;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 24px;
+    min-width: 5rem;
+    background-color: #95D2B3;
+    border: none;
+    font-size: $base-font-size;
+}
+
+.app-dialog {
+    .mat-mdc-dialog-surface {
+        padding: 1rem;
+        border-radius: 12px;
+    }
+}

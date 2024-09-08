@@ -1,0 +1,24 @@
+<table class="app-table">
+  <tr class="header-row"> 
+    <ng-container *ngFor="let col of config">
+      <th>{{ col?.label }}</th>
+    </ng-container>
+  </tr>
+  <ng-container *ngFor="let row of data; let i = index">
+    <tr class="data-row">
+      <ng-container *ngFor="let col of config">
+        <td *ngIf="col?.columnType === ColumnType.SERIAL_NUMBER">
+          {{ i + 1 }}
+        </td>
+        <td *ngIf="col?.columnType === ColumnType.GENERAL">
+          {{ row[col?.key] }}
+        </td>
+        <td *ngIf="col?.columnType === ColumnType.INPUT_NUMBER">
+          <mat-form-field>
+            <input matInput [(ngModel)]="row[col?.key]">
+          </mat-form-field>
+        </td>
+      </ng-container>
+    </tr>
+  </ng-container>
+</table>

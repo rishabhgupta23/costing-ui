@@ -1,0 +1,31 @@
+.sidebar{
+    height: calc(100% - 2rem);
+    padding: 1rem 0 1rem 1rem;
+    width: 8rem;
+    background: #55ad9b;
+    color: white;
+
+    .menu-container {
+        display: flex;
+        flex-direction: column;
+
+        .menu-item {
+            display: block;
+            padding: 1rem;
+            border-radius: 16px 0 0 16px;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+
+            &:hover {
+                background: rgb(241 248 237 / 15%);
+            }
+        }
+
+        .menu-item--active {
+            background: #f1f8ed4a;
+            font-weight: bold;
+        }
+
+
+    }
+}

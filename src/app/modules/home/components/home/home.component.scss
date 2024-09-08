@@ -1,0 +1,8 @@
+.app-content{
+    height: calc(100% - 4rem);
+    display: flex;
+
+    .app-page-container {
+        flex-grow: 1;
+    }
+}
