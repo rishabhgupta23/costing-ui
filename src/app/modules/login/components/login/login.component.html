@@ -1,0 +1,16 @@
+<div class="login-container">
+    <div>
+        <div class="card login-form">
+            <h2>Login</h2>
+            <mat-form-field appearance="outline">
+                <mat-label>Username</mat-label>
+                <input matInput placeholder="Enter Username" [(ngModel)]="userName">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Password</mat-label>
+                <input matInput placeholder="Enter Password" type="password" [(ngModel)]="password">
+            </mat-form-field>
+            <button class="primary-btn" (click)="login()">Login</button>
+        </div>
+    </div>
+</div>

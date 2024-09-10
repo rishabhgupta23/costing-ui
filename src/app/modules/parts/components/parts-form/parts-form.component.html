@@ -1,29 +1,30 @@
 <div class="app-page">
     <div class="page-header">
         <span class="page-title">Create Parts</span>
+        <button class="primary-btn" (click)="createPart()">Create</button>
     </div>
     <div class="page-content">
-        <div class="card">
-            <div>
+        <div class="card part-form-container">
+            <div [formGroup]="partForm">
                 <!-- Part Details Section-->
                 <div class="sub-heading">Part Details</div>
                 <div class="part-form">
                     <div>Part Number</div>
                     <div>
                         <mat-form-field appearance="outline">
-                            <input matInput placeholder="Enter Name">
+                            <input matInput placeholder="Enter Part Number" formControlName="partNumber">
                         </mat-form-field>
                     </div>
                     <div>Part Name</div>
                     <div>
                         <mat-form-field appearance="outline">
-                            <input matInput placeholder="Enter Name">
+                            <input matInput placeholder="Enter Name" formControlName="partName">
                         </mat-form-field>
                     </div>
                     <div>Type</div>
                     <div>
                         <mat-form-field appearance="outline">
-                            <mat-select placeholder="Select Part Type">
+                            <mat-select placeholder="Select Part Type" formControlName="partType">
                                 <ng-container *ngFor="let item of partTypes">
                                     <mat-option [value]="item">{{item}}</mat-option>
                                 </ng-container>
@@ -33,7 +34,7 @@
                     <div>Category</div>
                     <div>
                         <mat-form-field appearance="outline">
-                            <mat-select placeholder="Select Part Category">
+                            <mat-select placeholder="Select Part Category" formControlName="categoryId">
                                 <ng-container *ngFor="let item of partCategories">
                                     <mat-option [value]="item">{{item}}</mat-option>
                                 </ng-container>
@@ -43,7 +44,7 @@
                     <div>Unit</div>
                     <div>
                         <mat-form-field appearance="outline">
-                            <mat-select placeholder="Select Part Unit">
+                            <mat-select placeholder="Select Part Unit" formControlName="partUnit">
                                 <ng-container *ngFor="let item of partUnits">
                                     <mat-option [value]="item">{{item}}</mat-option>
                                 </ng-container>
@@ -78,15 +79,15 @@
                                 <div>Cost Factor</div>
                                 <mat-form-field appearance="outline">
                                     <mat-select placeholder="Select Cost Factor" [formControlName]="i">
-                                        <ng-container *ngFor="let item of partUnits">
-                                            <mat-option [value]="item">{{item}}</mat-option>
+                                        <ng-container *ngFor="let item of costFactorList">
+                                            <mat-option [value]="item">{{item.name}}</mat-option>
                                         </ng-container>
                                     </mat-select>
                                 </mat-form-field>
                                 <button class="primary-btn" (click)="addCostFactor(i,vendor)">Add</button>
                               </div>
                               <div>
-                                <app-table [data]="vendorCostMap.get(vendor) || []" [config]="COST_FACTOR_TABLE_COLUMNS"></app-table>
+                                <app-table *ngIf="(vendorCostMap.get(vendor) || []).length > 0" [data]="vendorCostMap.get(vendor) || []" [config]="COST_FACTOR_TABLE_COLUMNS"></app-table>
                               </div>
                           </div>
                         </mat-expansion-panel>

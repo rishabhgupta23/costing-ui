@@ -5,12 +5,7 @@ import { COST_FACTOR_TABLE_COLUMNS } from '../../../../data/constants/part.const
 import { VendorService } from '../../../../data/services/vendor/vendor.service';
 import { Vendor } from '../../../../data/models/vendor';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
-
-export interface CostFactor {
-  id: number;
-  name: string;
-  value: number;
-}
+import { CostFactor, CostFactorData, PartCreateRequest, VendorCostFactorData } from '../../../../data/models/part';
 
 @Component({
   selector: 'app-parts-form',
@@ -22,9 +17,10 @@ export class PartsFormComponent implements OnDestroy {
   partUnits: string[] = [];
   partCategories: string[] = [];
   vendorList: Vendor[] = [];
+  costFactorList: CostFactor[] = [];
   subscriptions: Subscription[] = [];
   COST_FACTOR_TABLE_COLUMNS = COST_FACTOR_TABLE_COLUMNS;
-  vendorCostMap: Map<number, CostFactor[]> = new Map();
+  vendorCostMap: Map<number, CostFactorData[]> = new Map();
 
   partForm = new FormGroup({
     partNumber: new FormControl(''),
@@ -46,6 +42,7 @@ export class PartsFormComponent implements OnDestroy {
     this.getPartUnits();
     this.getPartCategories();
     this.getVendorList();
+    this.getCostFactors();
   }
 
   getPartTypes() {
@@ -80,6 +77,14 @@ export class PartsFormComponent implements OnDestroy {
     );
   }
 
+  getCostFactors() {
+    this.subscriptions.push(
+      this.partService.getCostFactors().subscribe((res) => {
+        this.costFactorList = res;
+      })
+    );
+  }
+
   get costFactors() {
     return this.costDetailsForm.get('costFactors') as FormArray;
   }
@@ -99,15 +104,48 @@ export class PartsFormComponent implements OnDestroy {
     }
   }
 
-  addCostFactor(index: any, vendorId: number) {
-    this.vendorCostMap.get(vendorId)?.push({
-      id: index,
-      name: 'ABC',
-      value: 0
-    } as CostFactor);
-    this.vendorCostMap.set(vendorId, this.vendorCostMap.get(vendorId) || []);
-    console.log(this.vendorCostMap.get(vendorId));
-    
+  addCostFactor(index: number, vendorId: number) {
+    const selectedValue = this.costFactors.at(index)?.value;
+    if(selectedValue) {
+      const currentList = this.vendorCostMap.get(vendorId) || [];
+      const isPresent = currentList?.some((cf: CostFactorData) => cf?.name === selectedValue?.name);
+      if(!isPresent) {
+        currentList.push({
+          id: this.costFactors.at(index)?.value['id'],
+          name: this.costFactors.at(index)?.value['name'],
+          value: 0
+        } as CostFactorData);
+        this.vendorCostMap.set(vendorId, currentList);
+      }
+    }
+  }
+
+  createPart() {
+    const body : PartCreateRequest = {
+      partName: this.partForm.get('partName')?.value || '',
+      partNumber: this.partForm.get('partNumber')?.value || '',
+      partType: this.partForm.get('partType')?.value || '',
+      partUnit: this.partForm.get('partUnit')?.value || '',
+      vendorCostMap: this.generateVendorCostMapBody()
+    } as PartCreateRequest;
+    console.log('body-', body);
+    this.partService.createPart(body).subscribe();
+  }
+
+  generateVendorCostMapBody() {
+    const map: any = {};
+    this.vendorCostMap.forEach((value: CostFactorData[], key: number) => {
+      const costFactorValues: any = {};
+      value.forEach((cf: CostFactorData) => {
+        costFactorValues[cf.id] = cf.value;
+      });
+      const vendorCostFactorData = {
+        vendorId: key,
+        costFactorValues
+      } as VendorCostFactorData;
+      map[key] = vendorCostFactorData;
+    });
+    return map;
   }
 
   ngOnDestroy(): void {
