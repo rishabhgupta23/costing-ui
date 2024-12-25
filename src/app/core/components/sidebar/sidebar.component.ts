@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs';
+import { ChangeDetectorRef, Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { SidebarService } from '../../services/sidebar.service';
+import { AppConfig } from '../../../config/app.config';
 
 @Component({
   selector: 'app-sidebar',
@@ -8,38 +9,17 @@ import { filter } from 'rxjs';
   styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent {
+  menuItems = AppConfig.MENU_ITEMS;
+  selectedMenu = undefined;
 
-  menuItems = [
-    {
-      label: 'Parts',
-      route: '/app/parts'
-    },
-    {
-      label: 'Vendors',
-      route: '/app/vendors'
-    }
-  ];
-
-  selectedMenu = this.menuItems[0];
-
-  constructor(private router: Router) {
-    this.handleRouteChange();
+  constructor(private router: Router, private sidebarService: SidebarService, private changeDetector: ChangeDetectorRef) {
+    this.listenToMenuChanges();
   }
 
-  handleRouteChange() {
-    this.router.events
-    .subscribe((val) => {
-      if(val instanceof NavigationEnd) {
-        this.menuItems.some(item => {
-          if(item.route === val?.url) {
-            this.selectedMenu = item;
-            return true;
-          }
-          return false;
-        })
-      }
-      
-  });
+  listenToMenuChanges() {
+    this.sidebarService.selectedMenu.subscribe(menuItem => {
+      this.selectedMenu = menuItem;
+   });
   }
 
   menuClicked(item: any) {

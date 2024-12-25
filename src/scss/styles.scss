@@ -66,6 +66,7 @@ $costing-ui-theme: mat.define-theme((
 
 .page-content {
     flex-grow: 1;
+    overflow: auto;
 }
 
 .card,.card-nc {

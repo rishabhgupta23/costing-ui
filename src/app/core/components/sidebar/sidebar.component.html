@@ -1,7 +1,7 @@
 <div class="sidebar">
     <div class="menu-container">
         <ng-container *ngFor="let item of menuItems">
-            <span class="menu-item" [ngClass]="item == selectedMenu ? 'menu-item--active': ''" (click)="menuClicked(item)">
+            <span class="menu-item" [ngClass]="item === selectedMenu ? 'menu-item--active': ''" (click)="menuClicked(item)">
                 {{item.label}}
             </span>
         </ng-container>
