@@ -1,0 +1,24 @@
+<div class="app-page">
+    <div class="page-header">
+      <span class="page-title">Vendors</span>
+      <span>
+        <button class="primary-btn" (click)="createVendor()">Create</button>
+      </span>
+    </div>
+    <div class="page-content">
+      <div class="card-nc">
+        <app-table 
+          [data]="vendorList" 
+          [config]="columns"
+          (actionTriggered)="handleAction($event)"
+          [showActions]="true" > 
+        </app-table>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  

@@ -1,0 +1,13 @@
+<div class="app-page">
+    <div class="page-header">
+        <span class="page-title">Parts</span>
+        <span>
+            <button class="primary-btn" (click)="createPart()">Create</button>
+        </span>
+    </div>
+    <div class="page-content">
+        <div class="card-nc">
+            <app-table [data]="partList" [config]="columns"></app-table>
+        </div>
+    </div>
+</div>
