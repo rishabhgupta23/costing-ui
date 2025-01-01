@@ -3,6 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 import { PART_TABLE_COLUMNS } from '../../../../data/constants/part-table-config.constants';
 import { Router } from '@angular/router';
+import { PartService } from '../../../../data/services/part/part.service';
+import { PartCreateRequest } from '../../../../data/models/part';
 
 @Component({
   selector: 'app-part-landing',
@@ -10,40 +12,18 @@ import { Router } from '@angular/router';
   styleUrl: './part-landing.component.scss'
 })
 export class PartLandingComponent {
-  partList: any[] = [
-    {
-      partName : "Part 1",
-      partNumber: "10001",
-      unit: "PCS",
-      type: "Master",
-      category: "Finished"
-    },
-    {
-      partName : "Part 2",
-      partNumber: "10002",
-      unit: "KG",
-      type: "Unit",
-      category: "Semi Finished"
-    },
-    {
-      partName : "Part 3",
-      partNumber: "10003",
-      unit: "PCS",
-      type: "Unit",
-      category: "Raw Material"
-    }
-  ];
+  partList: PartCreateRequest[] = [];
   columns: any[] = PART_TABLE_COLUMNS;
   readonly dialog = inject(MatDialog);
 
-  constructor(private router: Router) {
+  constructor(private partService: PartService, private router: Router) {
     this.getPartList();
   }
 
   getPartList() {
-    // this.vendorService.getVendorList().subscribe(res => {
-    //   this.vendorList = res;
-    // });
+     this.partService.getPartList().subscribe(res => {
+      this.partList = res.data;
+     });
   }
 
   createPart() {

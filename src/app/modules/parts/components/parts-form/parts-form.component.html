@@ -109,10 +109,28 @@
                             <app-table [data]="vendorCostMap.get(vendor) || []" [config]="COST_FACTOR_TABLE_COLUMNS"></app-table>
                         </div>
                     </div> -->
-                 </div>
+                    </div>
             </div>
-            <div>
-                <!-- BOM Section -->
+            <hr>
+            <div [formGroup]="bomDetailsForm">
+              <div class="sub-heading">BOM Details</div>
+              <div class="bom-form">
+                <div>Unit Part</div>
+                <mat-form-field appearance="outline">
+                  <mat-select placeholder="Select Unit Part" [(value)]="selectedPart">
+                    <ng-container *ngFor="let part of filteredPartList">
+                      <mat-option [value]="part">{{ part.partName }}</mat-option>
+                    </ng-container>
+                  </mat-select>
+                </mat-form-field>
+                <button class="primary-btn" (click)="addUnitPart()">Add</button>
+              </div>
+            
+              <!-- Render Added Unit Parts -->
+              <div *ngIf="unitPartList.length > 0">
+                <div class="sub-heading">Added Unit Parts</div>
+                <app-table [data]="unitPartList" [config]="COST_FACTOR_TABLE_COLUMNS"></app-table>
+              </div>
             </div>
         </div>
     </div>

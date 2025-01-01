@@ -4,8 +4,8 @@ import { BehaviorSubject, of, Subject, Subscription } from 'rxjs';
 import { COST_FACTOR_TABLE_COLUMNS } from '../../../../data/constants/part.constants';
 import { VendorService } from '../../../../data/services/vendor/vendor.service';
 import { Vendor } from '../../../../data/models/vendor';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { CostFactor, CostFactorData, PartCreateRequest, VendorCostFactorData } from '../../../../data/models/part';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { BomDetailsData, CostFactor, CostFactorData, PartCreateRequest, PartShow, VendorCostFactorData } from '../../../../data/models/part';
 
 @Component({
   selector: 'app-parts-form',
@@ -13,6 +13,7 @@ import { CostFactor, CostFactorData, PartCreateRequest, VendorCostFactorData } f
   styleUrl: './parts-form.component.scss'
 })
 export class PartsFormComponent implements OnDestroy {
+  partNames: string[] =[];
   partTypes: string[] = [];
   partUnits: string[] = [];
   partCategories: string[] = [];
@@ -21,6 +22,9 @@ export class PartsFormComponent implements OnDestroy {
   subscriptions: Subscription[] = [];
   COST_FACTOR_TABLE_COLUMNS = COST_FACTOR_TABLE_COLUMNS;
   vendorCostMap: Map<number, CostFactorData[]> = new Map();
+  unitPartList: BomDetailsData[] =[]; 
+  mPartList: PartShow[] =[];
+  
 
   partForm = new FormGroup({
     partNumber: new FormControl(''),
@@ -37,12 +41,19 @@ export class PartsFormComponent implements OnDestroy {
 
   selectedVendor: Vendor = undefined as any;
 
+  selectedPart: PartShow | null = null;
+
+  PartCreateRequest: any;
+
+
   constructor(private partService: PartService, private vendorService: VendorService) {
     this.getPartTypes();
     this.getPartUnits();
     this.getPartCategories();
     this.getVendorList();
     this.getCostFactors();
+    this.getPartList();
+
   }
 
   getPartTypes() {
@@ -85,6 +96,14 @@ export class PartsFormComponent implements OnDestroy {
     );
   }
 
+    getPartList() {
+    this.subscriptions.push(
+      this.partService.getPartList().subscribe((res) => {
+        this.mPartList = res.data;
+      })
+    );
+  }
+
   get costFactors() {
     return this.costDetailsForm.get('costFactors') as FormArray;
   }
@@ -103,6 +122,50 @@ export class PartsFormComponent implements OnDestroy {
       console.log(this.vendorCostMap);
     }
   }
+
+
+  
+  bomDetailsForm = new FormGroup({
+    masterParts: new FormArray([]),
+  });
+  
+  get filteredPartList() {
+      return this.mPartList.filter(part => part.type === 'UNIT');
+    }
+
+  
+  get masterParts() {
+    return this.bomDetailsForm.get('masterParts') as FormArray;
+  }
+
+  // Add a new Unit Part
+
+  addUnitPart() {
+    console.log(this.selectedPart);
+    
+    if (!this.selectedPart) {
+      console.error('No part selected');
+      return;
+    }
+    
+    const selectedValue = this.selectedPart;
+    console.log(selectedValue.partId);
+    
+    if (selectedValue.partId && selectedValue.partName) {
+      const isPresent = this.unitPartList.some(
+        (item: BomDetailsData) => item?.name === selectedValue.partName
+      );
+      if (!isPresent) {
+        this.unitPartList.push({
+          id: selectedValue.partId,
+          name: selectedValue.partName,
+          value: 0,
+        } as BomDetailsData);
+        console.log(this.unitPartList)
+      }
+    }
+  }
+  
 
   addCostFactor(index: number, vendorId: number) {
     const selectedValue = this.costFactors.at(index)?.value;

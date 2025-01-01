@@ -7,6 +7,10 @@ import { CostFactor, PartCreateRequest } from '../../models/part';
   providedIn: 'root'
 })
 export class PartService {
+  getPartList(): Observable<any>  {
+    return this.http.get<any>('http://localhost:8080/parts');
+  }
+
 
   constructor(private http: HttpClient) { }
 
