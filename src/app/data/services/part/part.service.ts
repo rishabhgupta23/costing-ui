@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { CostFactor, PartCreateRequest, PartRow } from '../../models/part';
@@ -9,6 +9,9 @@ import { API_END_POINTS } from '../../../config/api.config';
   providedIn: 'root'
 })
 export class PartService {
+
+  constructor(private readonly http: HttpClient) { }
+
   updatePart(partId: string, PartCreateRequest: PartCreateRequest): Observable<PartCreateRequest> {
     const params = new Map<string, string>();
     params.set('partId', partId);
@@ -30,9 +33,19 @@ export class PartService {
       })));
   }
 
-  getPartList(page: number = 0, size: number = 100): Observable<any> {
-    const url = `${ApiUtil.getApiUrl(API_END_POINTS.PARTS)}?page=${page}&size=${size}`;
-    return this.http.get<any>(url);
+  getPartList(page: number = 0, size: number = 100, filters?: { [key: string]: string }): Observable<any> {
+    let params = new HttpParams()
+    .set('pageNo', page.toString())
+    .set('pageSize', size.toString());
+    if (filters) {
+      Object.keys(filters).forEach(key => {
+        if (filters[key]) {
+          params = params.set(key, filters[key]);
+        }
+      });
+    }
+    const url = ApiUtil.getApiUrl(API_END_POINTS.PARTS);
+    return this.http.get<any>(url, { params });
   }
 
   deletePart(partId: string): Observable<void> {
@@ -40,9 +53,6 @@ export class PartService {
     params.set('partId', partId);
     return this.http.delete<void>(ApiUtil.getPreparedUrl(API_END_POINTS.PART_DETAILS, params));
   }
-
-
-  constructor(private http: HttpClient) { }
 
   getPartTypes(): Observable<string[]> {
     return this.http.get<string[]>(ApiUtil.getApiUrl(API_END_POINTS.PART_TYPES));
@@ -53,11 +63,15 @@ export class PartService {
   }
 
   getPartCategories(): Observable<string[]> {
-    return this.http.get<string[]>(ApiUtil.getApiUrl(API_END_POINTS.CATEGORIES));
+    return this.http.get<string[]>(ApiUtil.getApiUrl(API_END_POINTS.CATEGORIES)).pipe(
+      map((res:any) => res.data)
+    );
   }
 
   getCostFactors(): Observable<CostFactor[]> {
-    return this.http.get<CostFactor[]>(ApiUtil.getApiUrl(API_END_POINTS.COST_FACTORS));
+    return this.http.get<CostFactor[]>(ApiUtil.getApiUrl(API_END_POINTS.COST_FACTORS)).pipe(
+      map((res:any) => res.data)
+    );
   }
 
   createPart(body: PartCreateRequest) {

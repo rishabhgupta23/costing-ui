@@ -45,3 +45,16 @@
         width: fit-content;
     }
 }
+
+.delete-btn {
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .delete-btn:hover {
+    color: #f44336;
+  }
+
+mat-panel-description{
+    justify-content: right;
+}

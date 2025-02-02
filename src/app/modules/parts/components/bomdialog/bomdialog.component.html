@@ -1,7 +1,7 @@
-
+<div class="dialog-box">
 <h2 mat-dialog-title>Select Parts</h2>
 <mat-dialog-content>
-  <table mat-table  [dataSource]="partList" class="unit-parts-table">
+  <table mat-table  [dataSource]="partList" class="bom-table">
     <!-- Select Checkbox Column -->
     <ng-container matColumnDef="select">
       <th mat-header-cell *matHeaderCellDef>
@@ -17,13 +17,19 @@
 
     <!-- Part Name Column -->
     <ng-container matColumnDef="partName">
-      <th mat-header-cell *matHeaderCellDef>Part Name</th>
+      <th mat-header-cell *matHeaderCellDef>Part Name
+        <input matInput [(ngModel)]="searchTermName" (input)="filterParts()" placeholder="Search Name">
+
+      </th>
       <td mat-cell *matCellDef="let part">{{ part.partName }}</td>
     </ng-container>
 
     <!-- Part Number Column -->
     <ng-container matColumnDef="partNumber">
-      <th mat-header-cell *matHeaderCellDef>Part Number</th>
+      <th mat-header-cell *matHeaderCellDef>Part Number
+        <input matInput [(ngModel)]="searchTermNumber" (input)="filterParts()" placeholder="Search Name">
+
+      </th>
       <td mat-cell *matCellDef="let part">{{ part.partNumber }}</td>
     </ng-container>
 
@@ -31,7 +37,13 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 </mat-dialog-content>
+  <mat-paginator 
+  [length]="totalRecords" 
+  [pageSize]="pageSize" 
+  (page)="onPageChange($event)">
+</mat-paginator>
 <mat-dialog-actions>
   <button class="primary-btn" (click)="closeDialog()">Cancel</button>
   <button class="primary-btn" (click)="confirmSelection()">Select Parts</button>
 </mat-dialog-actions>
+</div>

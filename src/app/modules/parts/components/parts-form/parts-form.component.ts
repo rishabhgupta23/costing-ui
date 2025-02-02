@@ -1,22 +1,23 @@
 import { Component, OnDestroy} from '@angular/core';
 import { PartService } from '../../../../data/services/part/part.service';
-import { Subscription } from 'rxjs';
+import { map, Subscription } from 'rxjs';
 import { COST_FACTOR_TABLE_COLUMNS } from '../../../../data/constants/part.constants';
 import { VendorService } from '../../../../data/services/vendor/vendor.service';
 import { Vendor } from '../../../../data/models/vendor';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { PartBomData, CostFactor, CostFactorData, PartCreateRequest, PartRow, VendorCostFactorData } from '../../../../data/models/part';
+import { PartBomData, CostFactor, CostFactorData, PartCreateRequest, PartRow, VendorCost } from '../../../../data/models/part';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BomdialogComponent } from '../bomdialog/bomdialog.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BOM_TABLE_COLUMNS } from '../../../../data/constants/bom-table.constants';
 import { PartType } from '../../../../shared/constants/part.constants';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
+import { TableActions } from '../../../../shared/constants/table.constants';
 
 @Component({
   selector: 'app-parts-form',
   templateUrl: './parts-form.component.html',
-  styleUrl: './parts-form.component.scss'
+  styleUrls : ['./parts-form.component.scss']
 })
 export class PartsFormComponent implements OnDestroy {
   partNames: string[] =[];
@@ -43,10 +44,10 @@ export class PartsFormComponent implements OnDestroy {
     partUnit: new FormControl(),
   });
 
+  
   costDetailsForm = new FormGroup({
-    vendors: new FormArray([]),
     costFactors: new FormArray([])
-  });
+   });
 
   selectedVendor: Vendor = undefined as any;
 
@@ -72,30 +73,50 @@ export class PartsFormComponent implements OnDestroy {
       if (this.partId){
         this.getPartData(this.partId);
       }
+      this.partForm.get('partType')?.valueChanges.subscribe((value) => {
+        if (value === this.partTypeEnum.MASTER) {
+          this.clearVendorCostData();
+        }
+      });
       }
 
       getPartData(id: string): void {
         this.partService.getPartById(id).subscribe((part) => {
           console.log('Part Data:', part); // Debug: Check the part structure
           this.partForm.patchValue({
-            partNumber: part.partNumber,
-            partName: part.partName,
-            categoryId: part.categoryName,
-            partType: part.type,
-            partUnit: part.unit,
+            partNumber: part.partNumber ?? '',
+            partName: part.partName ?? '',
+            // categoryId: part.categoryName ?? '',
+            partType: part.type ?? '',
+            partUnit: part.unit ?? ''
           });
-      
-          // // Populate vendorCostMap and cost details
-          // part.vendorCostMap?.forEach((vendorCost: { vendorId: number; costFactorValues: CostFactorData[] }) => {
-          //   this.vendorCostMap.set(vendorCost.vendorId, vendorCost.costFactorValues);
-          //   this.costFactors.push(new FormControl(''));
-          //   this.vendors.push(new FormControl(vendorCost.vendorId));
-          // });
-      
-        //   this.unitPartList = part.bomDetails || [];
+          this.vendorCostListToMap(part.vendorCostList);
+          
+          this.bomPartList = part.bom?.map(bomPart => ({
+            id: bomPart.childPartId, // Ensure correct mapping
+            partName: bomPart.childPartName, // Assuming API returns partName
+            partNumber: bomPart.childPartNumber, // Assuming API returns partNumber
+            value: bomPart.quantity || 0
+          })) || [];
         });
       }
-      
+
+  vendorCostListToMap(vendorCostList: VendorCost[]) {
+    vendorCostList.forEach((vc,i) => {
+      this.addVendor(vc);
+      vc.costFactorValues.forEach(cf=> {
+        this.addCostFactor(cf, vc.id);
+      })
+    });
+  }
+
+  clearVendorCostData(): void {
+    this.vendorCostMap.clear();
+    this.costDetailsForm.reset();
+  }
+  
+
+          
   getPartTypes() {
     this.subscriptions.push(
       this.partService.getPartTypes().subscribe((res) => {
@@ -121,7 +142,6 @@ export class PartsFormComponent implements OnDestroy {
   
   handleDialogClose(selectedParts: Set<PartRow>): void 
   {
-    console.log(selectedParts);
     if (!selectedParts || selectedParts.size === 0){
       this.bomPartList = [];
     }
@@ -153,10 +173,17 @@ export class PartsFormComponent implements OnDestroy {
   
 
 
+  getVendorName(vendorId: number): string {
+    const vendor = this.vendorList.find(v => v.id === vendorId);
+    return vendor?.name || 'Unknown Vendor';
+  }
+  
   getPartUnits() {
     this.subscriptions.push(
-      this.partService.getPartUnits().subscribe((res) => {
-        this.partUnits = res;
+      this.partService.getPartUnits().pipe(
+        map((res: any[]) => res.map(unit => unit.unitName))
+      ).subscribe((unitNames) => {
+        this.partUnits = unitNames;
       })
     );
   }
@@ -169,10 +196,15 @@ export class PartsFormComponent implements OnDestroy {
     );
   }
 
+  deleteVendorFromMap(vendorId: number): void {
+    this.vendorCostMap.delete(vendorId); // Directly remove vendor
+  }
+  
+
   getVendorList() {
     this.subscriptions.push(
       this.vendorService.getVendorList().subscribe((res) => {
-        this.vendorList = res;
+        this.vendorList = res.data;
       })
     );
   }
@@ -189,22 +221,30 @@ export class PartsFormComponent implements OnDestroy {
     return this.costDetailsForm.get('costFactors') as FormArray;
   }
 
-  get vendors() {
-    return this.costDetailsForm.get('vendors') as FormArray;
-  }
-
-  addVendor() {
-    if(this.selectedVendor == undefined || this.vendorCostMap.has(this.selectedVendor.id)) {
+  addVendor(vendor: Vendor) {
+    if(vendor == undefined || this.vendorCostMap.has(vendor.id)) {
       // show message
     } else {
-      this.vendorCostMap.set(this.selectedVendor.id, []);
+      this.vendorCostMap.set(vendor.id, []);
       this.costFactors.push(new FormControl(''));
-      this.vendors.push(new FormControl(this.selectedVendor));
-      console.log(this.vendorCostMap);
     }
   }
 
+  handleAction(event: { action: TableActions; row: any }, vendorId: number) {
+    const { action, row } = event;
+    if (action === TableActions.DELETE) {
+      this.removeCostFactor(row, vendorId);
+    }
+  }
 
+  removeCostFactor(costFactorToRemove: CostFactorData, vendorId: number) {
+    const costFactors = this.vendorCostMap.get(vendorId);
+  
+    if (costFactors) {
+      const updatedCostFactors = costFactors.filter(cf => cf.id !== costFactorToRemove.id);
+      this.vendorCostMap.set(vendorId, updatedCostFactors);
+    }
+  }
   
   bomDetailsForm = new FormGroup({
     masterParts: new FormArray([]),
@@ -214,50 +254,29 @@ export class PartsFormComponent implements OnDestroy {
   get masterParts() {
     return this.bomDetailsForm.get('masterParts') as FormArray;
   }
-
   
-  // addUnitPart() {
-  //   console.log(this.selectedPart);
-    
-  //   if (!this.selectedPart) {
-  //     console.error('No part selected');
-  //     return;
-  //   }
-    
-  //   const selectedValue = this.selectedPart;
-  //   console.log(selectedValue.partId);
-    
-  //   if (selectedValue.partId && selectedValue.partName) {
-  //     const isPresent = this.unitPartList.some(
-  //       (item: BomDetailsData) => item?.name === selectedValue.partName
-  //     );
-  //     if (!isPresent) {
-  //       this.unitPartList.push({
-  //         id: selectedValue.partId,
-  //         name: selectedValue.partName,
-  //         value: 0,
-  //       } as BomDetailsData);
-  //       console.log(this.unitPartList)
-  //     }
-  //   }
-  // }
-  
+  addCostFactorFromFieldValue(index: number, vendorId: number) {
+    const selectedValue = this.costFactors.at(index)?.value
+    this.addCostFactor(selectedValue, vendorId);
+  }
 
-  addCostFactor(index: number, vendorId: number) {
-    const selectedValue = this.costFactors.at(index)?.value;
-    if(selectedValue) {
+  addCostFactor(costFactor:CostFactorData, vendorId: number) {
+    if (costFactor) {
       const currentList = this.vendorCostMap.get(vendorId) || [];
-      const isPresent = currentList?.some((cf: CostFactorData) => cf?.name === selectedValue?.name);
-      if(!isPresent) {
+      const isPresent = currentList?.some((cf: CostFactorData) => cf?.name === costFactor?.name);
+
+      if (!isPresent) { 
         currentList.push({
-          id: this.costFactors.at(index)?.value['id'],
-          name: this.costFactors.at(index)?.value['name'],
-          value: 0
+          id: costFactor.id,
+          name: costFactor.name,
+          value: costFactor.value || 0
         } as CostFactorData);
+  
         this.vendorCostMap.set(vendorId, currentList);
       }
     }
   }
+  
 
   onSubmit(): void {
     const categoryIdValue = this.partForm.get('categoryId')?.value || null;
@@ -266,7 +285,7 @@ export class PartsFormComponent implements OnDestroy {
       partNumber: this.partForm.get('partNumber')?.value || '',
       type: this.partForm.get('partType')?.value || '',
       unit: this.partForm.get('partUnit')?.value || '',
-      vendorCostMap: this.generateVendorCostMapBody(),
+      vendorCostList: this.generateVendorCostMapBody(),
       categoryId: categoryIdValue ,
       bom: this.generateBomDetailsBody()
     };
@@ -290,20 +309,26 @@ export class PartsFormComponent implements OnDestroy {
     }));
   }
 
-  generateVendorCostMapBody() {
-    const map: any = {};
-    this.vendorCostMap.forEach((value: CostFactorData[], key: number) => {
-      const costFactorValues: any = {};
-      value.forEach((cf: CostFactorData) => {
-        costFactorValues[cf.id] = cf.value;
-      });
+    generateVendorCostMapBody() {
+    const vendorCostList: VendorCost[] = [];
+  
+    this.vendorCostMap.forEach((costFactors: CostFactorData[], vendorId: number) => {
+      if (costFactors.length > 0) {
+      const costFactorValues = costFactors.map(cf => ({
+        id: cf.id,
+        value: cf.value
+      }));
+  
       const vendorCostFactorData = {
-        vendorId: key,
+        id: vendorId,
         costFactorValues
-      } as VendorCostFactorData;
-      map[key] = vendorCostFactorData;
+      };
+  
+      vendorCostList.push(vendorCostFactorData);
+    }
     });
-    return map;
+  
+    return vendorCostList;
   }
 
   ngOnDestroy(): void {

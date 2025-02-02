@@ -1,64 +1,119 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, EventEmitter, Output} from '@angular/core';
 import { Vendor } from '../../../../data/models/vendor';
 import { VENDOR_TABLE_COLUMNS } from '../../../../data/constants/vendor-table-config.constants';
 import { VendorService } from '../../../../data/services/vendor/vendor.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 import { Router } from '@angular/router';
+import { PageEvent } from '@angular/material/paginator';
+import { DiscardDialogComponent } from '../../../../shared/components/discard-dialog/discard-dialog.component';
+import { TableActions } from '../../../../shared/constants/table.constants';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-vendor-landing',
   templateUrl: './vendor-landing.component.html',
-  styleUrl: './vendor-landing.component.scss'
+  styleUrls: ['./vendor-landing.component.scss']
 })
-export class VendorLandingComponent {
-  vendorList: Vendor[] = [];
-  columns: any[] = VENDOR_TABLE_COLUMNS;
-  readonly dialog = inject(MatDialog);
 
+export class VendorLandingComponent  {
+  vendorList: Vendor[] = [];
+ 
+  columns: any[] = VENDOR_TABLE_COLUMNS;
+  paginatedData: any[] = []; // Data to display on the current page
+  pageSize: number = 100; // Default items per page
+  currentPage: number = 0; // Current page index
+  totalRecords: number=0;
+  pageInfo: any;
+  readonly dialog = inject(MatDialog);
+  filterCriteria: { [key: string]: string } = {};
+  
+  private searchSubject = new Subject<{ key: string; value: string }>(); 
+  
+  
   constructor(private vendorService: VendorService, private router: Router) {
     this.getVendorList();
+    this.listenToFilterChanges(); 
   }
 
-  getVendorList() {
-    this.vendorService.getVendorList().subscribe(res => {
-      this.vendorList = res;
-    });
+  getVendorList(): void {
+    this.vendorService.getVendorList(this.currentPage, this.pageSize, this.filterCriteria).subscribe(
+      (res) => {
+        this.vendorList = res.data;
+        this.totalRecords = res.pageInfo?.totalRecords || 0;
+      }
+    );
   }
 
-  openCreateVendorDialog() {
-    // const dialogRef = this.dialog.open(VendorDialogComponent, {
-    //   panelClass: ['app-dialog'],
-    //   disableClose: true
-    // });
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result == DialogCloseResponse.CREATE) {
-    //     this.getVendorList();
-    //   }
-    // });
-  }
+listenToFilterChanges(): void {
+  this.searchSubject
+    .pipe(
+      debounceTime(300), 
+      distinctUntilChanged((prev, curr) => prev.value === curr.value), // Ignore duplicate searches
+      switchMap(() =>{
+        this.currentPage=0;
+        return this.vendorService.getVendorList(this.currentPage, this.pageSize,this.filterCriteria);
+      })
+    )
+    .subscribe(
+      (res) => {
+        this.vendorList = res.data;
+        this.totalRecords = res.pageInfo?.totalRecords || 0;
+      }
+    );
+}
+
 
   createVendor() {
     this.router.navigateByUrl("/app/vendors/create");
   }
+  
+ applyFilter(filter: { key: string; value: string }): void {
+  this.filterCriteria = {
+    ...this.filterCriteria,
+    [filter.key]: filter.value
+  };
+    this.searchSubject.next(filter);
+  }
+  
+  openDiscardDialog(row: any): void {
+    const dialogRef = this.dialog.open(DiscardDialogComponent, {
+      width: '600px',
+      data: {
+        row
+      }
+    });
 
-  handleAction(event: { action: string; row: any }) {
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === DialogCloseResponse.DELETE) {
+        this.vendorService.deleteVendor(row.id.toString()).subscribe({
+          next: () => {
+            this.getVendorList();  },
+        });
+      }
+    });
+  }
+
+  handleAction(event: { action: TableActions; row: any }): void {
     const { action, row } = event;
-    if (action === 'edit') {
+
+    if (action === TableActions.DELETE) {
+      this.openDiscardDialog(row);
+    } else if (action === TableActions.EDIT) {
       this.router.navigateByUrl(`/app/vendors/edit/${row.id}`);
-    }else if (action === 'delete') {
-      this.deleteVendor(row.id);
     }
   }
-  deleteVendor(vendorId: string) {
-    if (confirm('Are you sure you want to delete this vendor?')) {
-      this.vendorService.deleteVendor(vendorId).subscribe(() => {
-        alert('Vendor deleted successfully.');
-        this.getVendorList();
-      }, (error: any) => {
-        console.error('Error deleting vendor:', error);
-        alert('Failed to delete vendor.');
-      });
-    }
+
+  onPageChange(event: PageEvent) {
+    this.pageSize = event.pageSize;
+    this.currentPage = event.pageIndex;
+    this.getVendorList();
+  }
+
+  updatePaginatedData() {
+    const startIndex = this.currentPage * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedData = this.vendorList.slice(startIndex, endIndex);
   }
 }
