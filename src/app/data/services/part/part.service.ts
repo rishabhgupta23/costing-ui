@@ -2,17 +2,23 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { CostFactor, PartCreateRequest, PartRow } from '../../models/part';
+import { ApiUtil } from '../../../shared/utils/api.util';
+import { API_END_POINTS } from '../../../config/api.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PartService {
   updatePart(partId: string, PartCreateRequest: PartCreateRequest): Observable<PartCreateRequest> {
-    return this.http.post<PartCreateRequest>(`${'http://localhost:8080/parts'}/${partId}`, PartCreateRequest);
+    const params = new Map<string, string>();
+    params.set('partId', partId);
+    return this.http.post<PartCreateRequest>(ApiUtil.getPreparedUrl(API_END_POINTS.PART_DETAILS, params), PartCreateRequest);
   }
 
   getPartById(partId: string): Observable<PartRow> {
-    return this.http.get<PartRow>(`${'http://localhost:8080/parts'}/${partId}`).pipe(
+    const params = new Map<string, string>();
+    params.set('partId', partId);
+    return this.http.get<PartRow>(ApiUtil.getPreparedUrl(API_END_POINTS.PART_DETAILS, params)).pipe(
        map((res: any)=>({
         partId: res?.partId,
         partName: res?.partName,
@@ -23,36 +29,39 @@ export class PartService {
         
       })));
   }
+
   getPartList(page: number = 0, size: number = 100): Observable<any> {
-    const url = `http://localhost:8080/parts?page=${page}&size=${size}`;
+    const url = `${ApiUtil.getApiUrl(API_END_POINTS.PARTS)}?page=${page}&size=${size}`;
     return this.http.get<any>(url);
   }
 
   deletePart(partId: string): Observable<void> {
-    return this.http.delete<void>(`/api/parts/${partId}`);
+    const params = new Map<string, string>();
+    params.set('partId', partId);
+    return this.http.delete<void>(ApiUtil.getPreparedUrl(API_END_POINTS.PART_DETAILS, params));
   }
 
 
   constructor(private http: HttpClient) { }
 
   getPartTypes(): Observable<string[]> {
-    return this.http.get<string[]>("http://localhost:8080/parts/types");
+    return this.http.get<string[]>(ApiUtil.getApiUrl(API_END_POINTS.PART_TYPES));
   }
 
   getPartUnits(): Observable<string[]> {
-    return this.http.get<string[]>("http://localhost:8080/parts/units");
+    return this.http.get<string[]>(ApiUtil.getApiUrl(API_END_POINTS.PART_UNITS));
   }
 
   getPartCategories(): Observable<string[]> {
-    return this.http.get<string[]>("http://localhost:8080/categories");
+    return this.http.get<string[]>(ApiUtil.getApiUrl(API_END_POINTS.CATEGORIES));
   }
 
   getCostFactors(): Observable<CostFactor[]> {
-    return this.http.get<CostFactor[]>("http://localhost:8080/parts/cost-factors");
+    return this.http.get<CostFactor[]>(ApiUtil.getApiUrl(API_END_POINTS.COST_FACTORS));
   }
 
   createPart(body: PartCreateRequest) {
     console.log(body);
-    return this.http.post<PartCreateRequest>("http://localhost:8080/parts", body);
+    return this.http.post<PartCreateRequest>(ApiUtil.getApiUrl(API_END_POINTS.PARTS), body);
   }
 }
