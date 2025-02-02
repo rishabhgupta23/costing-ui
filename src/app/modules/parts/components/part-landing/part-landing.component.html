@@ -5,9 +5,20 @@
             <button class="primary-btn" (click)="createPart()">Create</button>
         </span>
     </div>
-    <div class="page-content">
+    <div class="page-content" style="overflow: hidden;">
         <div class="card-nc">
-            <app-table [data]="partList" [config]="columns"></app-table>
+            <app-table 
+            [data]="paginatedData" 
+            [config]="columns"
+            (actionTriggered)="handleAction($event)"
+            [showActions]="true">
+        </app-table>
+        <mat-paginator 
+        [length]="totalRecords" 
+        [pageSize]="pageSize" 
+        [pageSizeOptions]="[100,200]" 
+        (page)="onPageChange($event)">
+      </mat-paginator>
         </div>
     </div>
 </div>

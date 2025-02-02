@@ -15,6 +15,7 @@ export interface VendorCostFactorData {
 }
 
 export interface PartCreateRequest {
+    bomDetails: BomDetailsData[];
     partId: number;
     partName: string;
     partNumber: string;
@@ -38,3 +39,8 @@ export interface PartShow{
     type: string;
     unit: string;
 }
+
+export interface TableActionEvent {
+    action: string;
+    row: any;
+  }

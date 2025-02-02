@@ -5,3 +5,8 @@ export interface Vendor {
     contactNumber: string;
     address: string;
 }
+
+export interface TableActionEvent {
+    action: string;
+    row: any;
+  }

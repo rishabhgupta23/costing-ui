@@ -42,4 +42,23 @@ export class VendorLandingComponent {
     this.router.navigateByUrl("/app/vendors/create");
   }
 
+  handleAction(event: { action: string; row: any }) {
+    const { action, row } = event;
+    if (action === 'edit') {
+      this.router.navigateByUrl(`/app/vendors/edit/${row.id}`);
+    }else if (action === 'delete') {
+      this.deleteVendor(row.id);
+    }
+  }
+  deleteVendor(vendorId: string) {
+    if (confirm('Are you sure you want to delete this vendor?')) {
+      this.vendorService.deleteVendor(vendorId).subscribe(() => {
+        alert('Vendor deleted successfully.');
+        this.getVendorList();
+      }, (error: any) => {
+        console.error('Error deleting vendor:', error);
+        alert('Failed to delete vendor.');
+      });
+    }
+  }
 }

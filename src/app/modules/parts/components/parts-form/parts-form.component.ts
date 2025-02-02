@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy} from '@angular/core';
 import { PartService } from '../../../../data/services/part/part.service';
 import { BehaviorSubject, of, Subject, Subscription } from 'rxjs';
 import { COST_FACTOR_TABLE_COLUMNS } from '../../../../data/constants/part.constants';
@@ -6,6 +6,9 @@ import { VendorService } from '../../../../data/services/vendor/vendor.service';
 import { Vendor } from '../../../../data/models/vendor';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BomDetailsData, CostFactor, CostFactorData, PartCreateRequest, PartShow, VendorCostFactorData } from '../../../../data/models/part';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BomdialogComponent } from '../bomdialog/bomdialog.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-parts-form',
@@ -24,6 +27,9 @@ export class PartsFormComponent implements OnDestroy {
   vendorCostMap: Map<number, CostFactorData[]> = new Map();
   unitPartList: BomDetailsData[] =[]; 
   mPartList: PartShow[] =[];
+  pageSize: number = 100 // Default items per page
+  selectedParts: Set<number> = new Set<number>();
+  
   
 
   partForm = new FormGroup({
@@ -44,9 +50,16 @@ export class PartsFormComponent implements OnDestroy {
   selectedPart: PartShow | null = null;
 
   PartCreateRequest: any;
+  partId: string | null = null;
 
 
-  constructor(private partService: PartService, private vendorService: VendorService) {
+  constructor(private partService: PartService, private vendorService: VendorService,     private route: ActivatedRoute,
+    private router: Router, private dialog: MatDialog) {
+      
+    }
+
+    ngOnInit(): void{
+      this.partId = this.route.snapshot.paramMap.get('id');
     this.getPartTypes();
     this.getPartUnits();
     this.getPartCategories();
@@ -54,8 +67,33 @@ export class PartsFormComponent implements OnDestroy {
     this.getCostFactors();
     this.getPartList();
 
-  }
+      if (this.partId){
+        this.getPartData(this.partId);
+      }
+      }
 
+      getPartData(id: string): void {
+        this.partService.getPartById(id).subscribe((part) => {
+          console.log('Part Data:', part); // Debug: Check the part structure
+          this.partForm.patchValue({
+            partNumber: part.partNumber,
+            partName: part.partName,
+            categoryId: part.categoryName,
+            partType: part.type,
+            partUnit: part.unit,
+          });
+      
+          // // Populate vendorCostMap and cost details
+          // part.vendorCostMap?.forEach((vendorCost: { vendorId: number; costFactorValues: CostFactorData[] }) => {
+          //   this.vendorCostMap.set(vendorCost.vendorId, vendorCost.costFactorValues);
+          //   this.costFactors.push(new FormControl(''));
+          //   this.vendors.push(new FormControl(vendorCost.vendorId));
+          // });
+      
+        //   this.unitPartList = part.bomDetails || [];
+        });
+      }
+      
   getPartTypes() {
     this.subscriptions.push(
       this.partService.getPartTypes().subscribe((res) => {
@@ -63,6 +101,26 @@ export class PartsFormComponent implements OnDestroy {
       })
     );
   }
+
+  openBomDialog(): void {
+    console.log('Filtered Part List:', this.filteredPartList);
+    const dialogRef = this.dialog.open(BomdialogComponent, {
+      width: '600px',
+      data: { filteredPartList: this.filteredPartList }
+    });
+  
+    dialogRef.afterClosed().subscribe((selectedPartsArray) => {
+      if (selectedPartsArray) {
+        // Assuming selectedPartsArray is an array of PartShow objects
+        this.unitPartList = selectedPartsArray.map((part: { partId: any; partName: any; }) => ({
+          id: part.partId,
+          name: part.partName,
+          value: 0, // default value, you may want to set it based on your form logic
+        }));
+      }
+    });
+  }
+
 
   getPartUnits() {
     this.subscriptions.push(
@@ -96,9 +154,9 @@ export class PartsFormComponent implements OnDestroy {
     );
   }
 
-    getPartList() {
+    getPartList(page: number = 0, size: number = this.pageSize) {
     this.subscriptions.push(
-      this.partService.getPartList().subscribe((res) => {
+      this.partService.getPartList(page,size).subscribe((res) => {
         this.mPartList = res.data;
       })
     );
@@ -139,32 +197,54 @@ export class PartsFormComponent implements OnDestroy {
   }
 
   // Add a new Unit Part
-
   addUnitPart() {
-    console.log(this.selectedPart);
-    
-    if (!this.selectedPart) {
+    if (this.selectedParts.size === 0) {
       console.error('No part selected');
       return;
     }
-    
-    const selectedValue = this.selectedPart;
-    console.log(selectedValue.partId);
-    
-    if (selectedValue.partId && selectedValue.partName) {
-      const isPresent = this.unitPartList.some(
-        (item: BomDetailsData) => item?.name === selectedValue.partName
-      );
-      if (!isPresent) {
-        this.unitPartList.push({
-          id: selectedValue.partId,
-          name: selectedValue.partName,
-          value: 0,
-        } as BomDetailsData);
-        console.log(this.unitPartList)
+
+    // Add selected parts to the unitPartList
+    this.filteredPartList.forEach(part => {
+      if (this.selectedParts.has(part.partId)) {
+        const isPresent = this.unitPartList.some(item => item?.name === part.partName);
+        if (!isPresent) {
+          this.unitPartList.push({
+            id: part.partId,
+            name: part.partName,
+            value: 0,
+          } as BomDetailsData);
+        }
       }
-    }
+    });
+    console.log(this.unitPartList);
   }
+
+  
+  // addUnitPart() {
+  //   console.log(this.selectedPart);
+    
+  //   if (!this.selectedPart) {
+  //     console.error('No part selected');
+  //     return;
+  //   }
+    
+  //   const selectedValue = this.selectedPart;
+  //   console.log(selectedValue.partId);
+    
+  //   if (selectedValue.partId && selectedValue.partName) {
+  //     const isPresent = this.unitPartList.some(
+  //       (item: BomDetailsData) => item?.name === selectedValue.partName
+  //     );
+  //     if (!isPresent) {
+  //       this.unitPartList.push({
+  //         id: selectedValue.partId,
+  //         name: selectedValue.partName,
+  //         value: 0,
+  //       } as BomDetailsData);
+  //       console.log(this.unitPartList)
+  //     }
+  //   }
+  // }
   
 
   addCostFactor(index: number, vendorId: number) {
@@ -183,16 +263,29 @@ export class PartsFormComponent implements OnDestroy {
     }
   }
 
-  createPart() {
-    const body : PartCreateRequest = {
+  onSubmit(): void {
+    const body: PartCreateRequest = {
       partName: this.partForm.get('partName')?.value || '',
       partNumber: this.partForm.get('partNumber')?.value || '',
       partType: this.partForm.get('partType')?.value || '',
       partUnit: this.partForm.get('partUnit')?.value || '',
-      vendorCostMap: this.generateVendorCostMapBody()
-    } as PartCreateRequest;
-    console.log('body-', body);
-    this.partService.createPart(body).subscribe();
+      vendorCostMap: this.generateVendorCostMapBody(),
+      bomDetails: [],
+      partId: 0,
+      categoryId: 0
+    };
+
+    if (this.partId) {
+      // Update part if ID exists
+      this.partService.updatePart(this.partId, body).subscribe(() => {
+        this.router.navigateByUrl('/app/parts'); // Redirect to parts list
+      });
+    } else {
+      // Create new part
+      this.partService.createPart(body).subscribe(() => {
+        this.router.navigateByUrl('/app/parts'); // Redirect to parts list
+      });
+    }
   }
 
   generateVendorCostMapBody() {

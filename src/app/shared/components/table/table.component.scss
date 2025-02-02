@@ -1,10 +1,22 @@
+.table-container {
+    max-height: 480px; /* Set a maximum height for the table container */
+    overflow-y: auto; /* Enable vertical scrolling */
+  }
 .app-table {
     width: 100%;
     border-radius: 12px;
     border-collapse: collapse;
+    table-layout: fixed;
     border-spacing: 0;
     border:none;    
     background: white;
+
+    thead {
+        position: sticky;
+        top: 0; 
+        background-color: #f9f9f9; 
+        z-index: 1;
+      }
     
     .header-row {
         background-color: grey;
@@ -24,4 +36,5 @@
     td {
         border-bottom: 1px solid grey;
     }
+
 }

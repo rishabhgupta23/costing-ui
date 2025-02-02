@@ -1,7 +1,11 @@
 <div class="app-page">
     <div class="page-header">
-        <span class="page-title">Create Parts</span>
-        <button class="primary-btn" (click)="createPart()">Create</button>
+        <span class="page-title">{{ partId ? 'Edit Part' : 'Create Part' }}</span>
+        <div class="dialog-action">
+            <button class="primary-btn" [disabled]="partForm.invalid" (click)="onSubmit()">
+              {{ partId ? 'Update' : 'Create' }}
+            </button>
+          </div>
     </div>
     <div class="page-content">
         <div class="card part-form-container">
@@ -112,7 +116,7 @@
                     </div>
             </div>
             <hr>
-            <div [formGroup]="bomDetailsForm">
+            <!-- <div [formGroup]="bomDetailsForm">
               <div class="sub-heading">BOM Details</div>
               <div class="bom-form">
                 <div>Unit Part</div>
@@ -126,12 +130,22 @@
                 <button class="primary-btn" (click)="addUnitPart()">Add</button>
               </div>
             
-              <!-- Render Added Unit Parts -->
               <div *ngIf="unitPartList.length > 0">
                 <div class="sub-heading">Added Unit Parts</div>
                 <app-table [data]="unitPartList" [config]="COST_FACTOR_TABLE_COLUMNS"></app-table>
               </div>
-            </div>
+            </div> -->
+
+            <div [formGroup]="bomDetailsForm">
+                <div class="sub-heading">BOM Details</div>
+                <button mat-button (click)="openBomDialog()">Select Parts</button>
+                
+                
+              <div *ngIf="unitPartList.length > 0">
+                <div class="sub-heading">Added Unit Parts</div>
+                <app-table [data]="unitPartList" [config]="COST_FACTOR_TABLE_COLUMNS"></app-table>
+              </div>
+              
         </div>
     </div>
 </div>

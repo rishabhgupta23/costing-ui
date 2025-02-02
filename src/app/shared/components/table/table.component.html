@@ -1,24 +1,47 @@
+<div class="table-container">
 <table class="app-table">
-  <tr class="header-row"> 
-    <ng-container *ngFor="let col of config">
-      <th>{{ col?.label }}</th>
-    </ng-container>
-  </tr>
-  <ng-container *ngFor="let row of data; let i = index">
-    <tr class="data-row">
+  <!-- Table Header -->
+   <thead>
+  <tr class="header-row">
       <ng-container *ngFor="let col of config">
-        <td *ngIf="col?.columnType === ColumnType.SERIAL_NUMBER">
-          {{ i + 1 }}
-        </td>
-        <td *ngIf="col?.columnType === ColumnType.GENERAL">
-          {{ row[col?.key] }}
-        </td>
-        <td *ngIf="col?.columnType === ColumnType.INPUT_NUMBER">
-          <mat-form-field>
-            <input matInput [(ngModel)]="row[col?.key]">
-          </mat-form-field>
-        </td>
+          <th>{{ col?.label }}</th>
       </ng-container>
-    </tr>
+      <th *ngIf="showActions">Actions</th> <!-- Conditionally show Actions column -->
+  </tr>
+</thead>
+
+  <!-- Table Rows -->
+   <tbody>
+  <ng-container *ngFor="let row of data; let i = index">
+      <tr class="data-row">
+          <!-- Dynamic Columns -->
+          <ng-container *ngFor="let col of config">
+              <td *ngIf="col?.columnType === ColumnType.SERIAL_NUMBER">
+                  {{ i + 1 }}
+              </td>
+              <td *ngIf="col?.columnType === ColumnType.GENERAL">
+                  {{ row[col?.key] }}
+              </td>
+              <td *ngIf="col?.columnType === ColumnType.INPUT_NUMBER">
+                  <mat-form-field>
+                      <input matInput [(ngModel)]="row[col?.key]">
+                  </mat-form-field>
+              </td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <td *ngIf="showActions">
+            <button mat-icon-button color="primary" (click)="handleAction({ action: 'edit', row: row })">
+              <i class="fa-regular fa-pen-to-square"></i>
+          </button>
+
+          <!-- Delete Button -->
+          <button mat-icon-button color="warn" (click)="handleAction({ action: 'delete', row: row })">
+              <i class="fa-regular fa-trash-can"></i>
+          </button>
+          </td>
+      </tr>
   </ng-container>
+</tbody>
 </table>
+</div>

@@ -1,14 +1,35 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { CostFactor, PartCreateRequest } from '../../models/part';
+import { map, Observable } from 'rxjs';
+import { CostFactor, PartCreateRequest, PartShow } from '../../models/part';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PartService {
-  getPartList(): Observable<any>  {
-    return this.http.get<any>('http://localhost:8080/parts');
+  updatePart(partId: string, PartCreateRequest: PartCreateRequest): Observable<PartCreateRequest> {
+    return this.http.post<PartCreateRequest>(`${'http://localhost:8080/parts'}/${partId}`, PartCreateRequest);
+  }
+
+  getPartById(partId: string): Observable<PartShow> {
+    return this.http.get<PartShow>(`${'http://localhost:8080/parts'}/${partId}`).pipe(
+       map((res: any)=>({
+        partId: res?.partId,
+        partName: res?.partName,
+        partNumber: res?.partNumber,
+        categoryName: res?.categoryName,
+        type: res?.type,
+        unit: res?.unit
+        
+      })));
+  }
+  getPartList(page: number = 0, size: number = 100): Observable<any> {
+    const url = `http://localhost:8080/parts?page=${page}&size=${size}`;
+    return this.http.get<any>(url);
+  }
+
+  deletePart(partId: string): Observable<void> {
+    return this.http.delete<void>(`/api/parts/${partId}`);
   }
 
 
