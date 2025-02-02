@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
-import { PartShow } from '../../../../data/models/part';
+import { PartRow } from '../../../../data/models/part';
 
 @Component({
   selector: 'app-bomdialog',
@@ -10,8 +10,8 @@ import { PartShow } from '../../../../data/models/part';
 export class BomdialogComponent {
   displayedColumns: string[] = ['select', 'partName', 'partNumber'];
   selectedParts = new Set<any>();
-   mPartList: PartShow[] =[];
-   filteredPartList: PartShow[] = [];
+   mPartList: PartRow[] =[];
+   filteredPartList: PartRow[] = [];
 
 constructor(
   public dialogRef: MatDialogRef<BomdialogComponent>,

@@ -141,9 +141,9 @@
                 <button mat-button (click)="openBomDialog()">Select Parts</button>
                 
                 
-              <div *ngIf="unitPartList.length > 0">
+              <div *ngIf="bomPartList.length > 0">
                 <div class="sub-heading">Added Unit Parts</div>
-                <app-table [data]="unitPartList" [config]="COST_FACTOR_TABLE_COLUMNS"></app-table>
+                <app-table [data]="bomPartList" [config]="COST_FACTOR_TABLE_COLUMNS"></app-table>
               </div>
               
         </div>

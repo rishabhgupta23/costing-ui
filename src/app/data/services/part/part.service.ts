@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { CostFactor, PartCreateRequest, PartShow } from '../../models/part';
+import { CostFactor, PartCreateRequest, PartRow } from '../../models/part';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +11,8 @@ export class PartService {
     return this.http.post<PartCreateRequest>(`${'http://localhost:8080/parts'}/${partId}`, PartCreateRequest);
   }
 
-  getPartById(partId: string): Observable<PartShow> {
-    return this.http.get<PartShow>(`${'http://localhost:8080/parts'}/${partId}`).pipe(
+  getPartById(partId: string): Observable<PartRow> {
+    return this.http.get<PartRow>(`${'http://localhost:8080/parts'}/${partId}`).pipe(
        map((res: any)=>({
         partId: res?.partId,
         partName: res?.partName,

@@ -15,8 +15,6 @@ export interface VendorCostFactorData {
 }
 
 export interface PartCreateRequest {
-    bomDetails: BomDetailsData[];
-    partId: number;
     partName: string;
     partNumber: string;
     categoryId: number;
@@ -25,13 +23,14 @@ export interface PartCreateRequest {
     vendorCostMap: any;
 }
 
-export interface BomDetailsData{
+export interface PartBomData{
     id: number;
-    name: string;
-    value:number
+    partNumber: string;
+    partName: string;
+    quantity: number
 }
 
-export interface PartShow{
+export interface PartRow{
     partId: number;
     partName: string;
     partNumber: string;
