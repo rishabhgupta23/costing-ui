@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { VendorService } from '../../../../data/services/vendor/vendor.service';
 import { Vendor } from '../../../../data/models/vendor';
-import { Router, ActivatedRoute } from '@angular/router';
+import { VendorService } from '../../../../data/services/vendor/vendor.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-vendor-form',
@@ -23,13 +23,11 @@ export class VendorFormComponent implements OnInit {
     ]),
     address: new FormControl('') 
   });
-
   constructor(
     private vendorService: VendorService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
-
 
   ngOnInit(): void {
     // Capture the vendorId from the URL
