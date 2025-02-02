@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Vendor } from '../../../../data/models/vendor';
 import { VendorService } from '../../../../data/services/vendor/vendor.service';
+import { Vendor } from '../../../../data/models/vendor';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
