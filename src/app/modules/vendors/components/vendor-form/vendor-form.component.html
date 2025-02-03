@@ -5,7 +5,7 @@
     <div class="page-content">
         <div class="card">
             <form [formGroup]="vendorForm" class="vendor-form">
-                <div>Vendor Name</div>
+                <div>Vendor Name <sup>*</sup></div>
                 <mat-form-field appearance="outline">
                     <input matInput placeholder="Enter Name" formControlName="name">
                 </mat-form-field>
@@ -13,7 +13,7 @@
                 <mat-form-field appearance="outline">
                     <input matInput placeholder="Enter Email ID" formControlName="emailId">
                 </mat-form-field>
-                <div>Contact Number</div>
+                <div>Contact Number <sup>*</sup></div>
                 <mat-form-field appearance="outline">
                     <input matInput placeholder="Enter Contact Number" formControlName="contactNumber">
                 </mat-form-field>

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { VendorService } from '../../../../data/services/vendor/vendor.service';
 import { Vendor } from '../../../../data/models/vendor';
 import { Router } from '@angular/router';
@@ -12,9 +12,15 @@ import { Router } from '@angular/router';
 export class VendorFormComponent {
 
   vendorForm = new FormGroup({
-    name: new FormControl(''),
-    emailId: new FormControl(''),
-    contactNumber: new FormControl(''),
+    name: new FormControl('',[
+      Validators.required,
+      Validators.minLength(4),
+    ]),
+    emailId: new FormControl('', [Validators.email]),
+    contactNumber: new FormControl('',[
+      Validators.required,
+      Validators.pattern('^[0-9]{10}$'),
+    ]),
     address: new FormControl('') 
   });
 
