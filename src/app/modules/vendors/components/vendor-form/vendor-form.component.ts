@@ -10,14 +10,26 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./vendor-form.component.scss'],
 })
 export class VendorFormComponent implements OnInit {
-  vendorForm!: FormGroup;
   vendorId: string | null = null;
+  vendorForm = new FormGroup({
+    name: new FormControl('',[
+      Validators.required,
+      Validators.minLength(4),
+    ]),
+    emailId: new FormControl('', [Validators.email]),
+    contactNumber: new FormControl('',[
+      Validators.required,
+      Validators.pattern('^[0-9]{10}$'),
+    ]),
+    address: new FormControl('') 
+  });
 
   constructor(
     private vendorService: VendorService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
+
 
   ngOnInit(): void {
     // Capture the vendorId from the URL
