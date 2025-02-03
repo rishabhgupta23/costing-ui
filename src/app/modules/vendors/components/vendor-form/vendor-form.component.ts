@@ -23,11 +23,13 @@ export class VendorFormComponent implements OnInit {
     ]),
     address: new FormControl('') 
   });
+  
   constructor(
     private vendorService: VendorService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
+
 
   ngOnInit(): void {
     // Capture the vendorId from the URL
