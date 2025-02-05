@@ -111,7 +111,7 @@ export class PartsFormComponent implements OnDestroy {
     dialogRef.afterClosed().subscribe((selectedPartsArray) => {
       if (selectedPartsArray) {
         // Assuming selectedPartsArray is an array of PartShow objects
-        this.partList = selectedPartsArray.map((part: { partId: any; partName: any; }) => ({
+        this.bomPartList = selectedPartsArray.map((part: { partId: any; partName: any; }) => ({
           id: part.partId,
           name: part.partName,
           value: 0, // default value, you may want to set it based on your form logic
@@ -263,8 +263,8 @@ export class PartsFormComponent implements OnDestroy {
     const body: PartCreateRequest = {
       partName: this.partForm.get('partName')?.value || '',
       partNumber: this.partForm.get('partNumber')?.value || '',
-      partType: this.partForm.get('partType')?.value || '',
-      partUnit: this.partForm.get('partUnit')?.value || '',
+      type: this.partForm.get('partType')?.value || '',
+      unit: this.partForm.get('partUnit')?.value || '',
       vendorCostMap: this.generateVendorCostMapBody(),
       categoryId: 0
     };
