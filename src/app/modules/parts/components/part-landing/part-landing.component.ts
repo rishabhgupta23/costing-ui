@@ -32,7 +32,7 @@ export class PartLandingComponent {
         console.log(res)
         this.partList = res.data;
         this.paginatedData = this.partList; // Set the current page's data
-        this.totalRecords = res.pageInfo.totalElements;
+        this.totalRecords = res.pageInfo.totalRecords;
         console.log(this.totalRecords)
       },
       (error) => {

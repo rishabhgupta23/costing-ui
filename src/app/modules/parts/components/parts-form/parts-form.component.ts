@@ -9,6 +9,7 @@ import { PartBomData, CostFactor, CostFactorData, PartCreateRequest, PartRow, Ve
 import { ActivatedRoute, Router } from '@angular/router';
 import { BomdialogComponent } from '../bomdialog/bomdialog.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { BOM_TABLE_COLUMNS } from '../../../../data/constants/bom-table.constants';
 
 @Component({
   selector: 'app-parts-form',
@@ -24,6 +25,7 @@ export class PartsFormComponent implements OnDestroy {
   costFactorList: CostFactor[] = [];
   subscriptions: Subscription[] = [];
   COST_FACTOR_TABLE_COLUMNS = COST_FACTOR_TABLE_COLUMNS;
+  BOM_TABLE_COLUMNS = BOM_TABLE_COLUMNS;
   vendorCostMap: Map<number, CostFactorData[]> = new Map();
   bomPartList: PartBomData[] =[]; 
   partList: PartRow[] =[];
@@ -111,8 +113,9 @@ export class PartsFormComponent implements OnDestroy {
     dialogRef.afterClosed().subscribe((selectedPartsArray) => {
       if (selectedPartsArray) {
         // Assuming selectedPartsArray is an array of PartShow objects
-        this.partList = selectedPartsArray.map((part: { partId: any; partName: any; }) => ({
+        this.bomPartList = selectedPartsArray.map((part: { partId: any; partNumber: any; partName: any; }) => ({
           id: part.partId,
+          number: part.partNumber,
           name: part.partName,
           value: 0, // default value, you may want to set it based on your form logic
         }));
@@ -260,13 +263,15 @@ export class PartsFormComponent implements OnDestroy {
   }
 
   onSubmit(): void {
+    const categoryIdValue = this.partForm.get('categoryId')?.value || null;
     const body: PartCreateRequest = {
       partName: this.partForm.get('partName')?.value || '',
       partNumber: this.partForm.get('partNumber')?.value || '',
       partType: this.partForm.get('partType')?.value || '',
       partUnit: this.partForm.get('partUnit')?.value || '',
       vendorCostMap: this.generateVendorCostMapBody(),
-      categoryId: 0
+      categoryId: categoryIdValue ,
+      bomDetails: this.generateBomDetailsBody()
     };
 
     if (this.partId) {
@@ -280,6 +285,12 @@ export class PartsFormComponent implements OnDestroy {
         this.router.navigateByUrl('/app/parts'); // Redirect to parts list
       });
     }
+  }
+  generateBomDetailsBody() {
+    return this.bomPartList.map(part => ({
+      partId: part.id,
+      quantity: part.quantity || 1,  // Ensure quantity is not undefined
+    }));
   }
 
   generateVendorCostMapBody() {
