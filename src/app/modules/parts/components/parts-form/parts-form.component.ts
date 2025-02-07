@@ -117,7 +117,7 @@ export class PartsFormComponent implements OnDestroy {
           id: part.partId,
           number: part.partNumber,
           name: part.partName,
-          value: 0, // default value, you may want to set it based on your form logic
+          quantity: 0, // default value, you may want to set it based on your form logic
         }));
       }
     });
@@ -210,7 +210,7 @@ export class PartsFormComponent implements OnDestroy {
             id: part.partId,
             partName: part.partName,
             partNumber: part.partNumber,
-            quantity: 0,
+            value: 0,
           } as PartBomData);
         }
       }
@@ -271,7 +271,7 @@ export class PartsFormComponent implements OnDestroy {
       partUnit: this.partForm.get('partUnit')?.value || '',
       vendorCostMap: this.generateVendorCostMapBody(),
       categoryId: categoryIdValue ,
-      bomDetails: this.generateBomDetailsBody()
+      bom: this.generateBomDetailsBody()
     };
 
     if (this.partId) {
@@ -288,8 +288,8 @@ export class PartsFormComponent implements OnDestroy {
   }
   generateBomDetailsBody() {
     return this.bomPartList.map(part => ({
-      partId: part.id,
-      quantity: part.quantity || 1,  // Ensure quantity is not undefined
+      childPartId: part.id,
+      quantity: parseFloat(part.value) || 1,  // Ensure quantity is not undefined
     }));
   }
 

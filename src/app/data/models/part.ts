@@ -22,14 +22,14 @@ export interface PartCreateRequest {
     partType: string;
     partUnit: string;
     vendorCostMap: any;
-    bomDetails:any[];
+    bom:any[];
 }
 
 export interface PartBomData{
-    id: number;
+    id: any;
     partNumber: string;
     partName: string;
-    quantity: number
+    value: any;
 }
 
 export interface PartRow{
