@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BomdialogComponent } from '../bomdialog/bomdialog.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BOM_TABLE_COLUMNS } from '../../../../data/constants/bom-table.constants';
+import { PartType } from '../../../../shared/constants/part.constants';
 
 @Component({
   selector: 'app-parts-form',
@@ -31,6 +32,7 @@ export class PartsFormComponent implements OnDestroy {
   partList: PartRow[] =[];
   pageSize: number = 100 // Default items per page
   selectedParts: Set<number> = new Set<number>();
+  partTypeEnum= PartType;
   
   
 
@@ -278,8 +280,8 @@ export class PartsFormComponent implements OnDestroy {
     const body: PartCreateRequest = {
       partName: this.partForm.get('partName')?.value || '',
       partNumber: this.partForm.get('partNumber')?.value || '',
-      partType: this.partForm.get('partType')?.value || '',
-      partUnit: this.partForm.get('partUnit')?.value || '',
+      type: this.partForm.get('partType')?.value || '',
+      unit: this.partForm.get('partUnit')?.value || '',
       vendorCostMap: this.generateVendorCostMapBody(),
       categoryId: categoryIdValue ,
       bom: this.generateBomDetailsBody()

@@ -57,8 +57,8 @@
                     </div>
                 </div>  
             </div>
-            <hr>
-            <div [formGroup]="costDetailsForm">
+            <div *ngIf="partForm.get('partType')?.value === partTypeEnum.UNIT" [formGroup]="costDetailsForm">
+                <hr>
                 <!-- Cost Section-->
                  <div formArrayName="costFactors">
                     <div class="sub-heading"> Cost Details </div>
@@ -115,7 +115,6 @@
                     </div> -->
                     </div>
             </div>
-            <hr>
             <!-- <div [formGroup]="bomDetailsForm">
               <div class="sub-heading">BOM Details</div>
               <div class="bom-form">
@@ -136,7 +135,8 @@
               </div>
             </div> -->
 
-            <div [formGroup]="bomDetailsForm">
+            <div *ngIf="partForm.get('partType')?.value === partTypeEnum.MASTER" [formGroup]="bomDetailsForm">
+                <hr>
                 <div class="sub-heading">BOM Details</div>
                 <button class="primary-btn" (click)="openBomDialog()">Select Parts</button>
                 

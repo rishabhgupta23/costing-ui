@@ -19,8 +19,8 @@ export interface PartCreateRequest {
     partName: string;
     partNumber: string;
     categoryId: number;
-    partType: string;
-    partUnit: string;
+    type: string;
+    unit: string;
     vendorCostMap: any;
     bom:any[];
 }
