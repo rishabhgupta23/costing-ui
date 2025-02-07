@@ -9,6 +9,7 @@ import { PartBomData, CostFactor, CostFactorData, PartCreateRequest, PartRow, Ve
 import { ActivatedRoute, Router } from '@angular/router';
 import { BomdialogComponent } from '../bomdialog/bomdialog.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { PartType } from '../../../../shared/constants/part.constants';
 
 @Component({
   selector: 'app-parts-form',
@@ -29,6 +30,7 @@ export class PartsFormComponent implements OnDestroy {
   partList: PartRow[] =[];
   pageSize: number = 100 // Default items per page
   selectedParts: Set<number> = new Set<number>();
+  partTypeEnum= PartType;
   
   
 
