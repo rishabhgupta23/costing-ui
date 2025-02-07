@@ -138,10 +138,11 @@
 
             <div [formGroup]="bomDetailsForm">
                 <div class="sub-heading">BOM Details</div>
-                <button mat-button (click)="openBomDialog()">Select Parts</button>
+                <button class="primary-btn" (click)="openBomDialog()">Select Parts</button>
                 
                 
               <div *ngIf="bomPartList.length > 0">
+                <br>
                 <div class="sub-heading">Added Unit Parts</div>
                 <app-table [data]="bomPartList" [config]="BOM_TABLE_COLUMNS"></app-table>
               </div>

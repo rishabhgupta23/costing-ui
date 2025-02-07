@@ -107,20 +107,31 @@ export class PartsFormComponent implements OnDestroy {
   openBomDialog(): void {
     const dialogRef = this.dialog.open(BomdialogComponent, {
       width: '600px',
-      data: { filteredPartList: this.partList }
+      data: { 
+        filteredPartList: this.partList,
+      selectedParts: this.bomPartList.map(part => part.id)
+       }
     });
   
     dialogRef.afterClosed().subscribe((selectedPartsArray) => {
       if (selectedPartsArray) {
-        // Assuming selectedPartsArray is an array of PartShow objects
-        this.bomPartList = selectedPartsArray.map((part: { partId: any; partNumber: any; partName: any; }) => ({
-          id: part.partId,
-          number: part.partNumber,
-          name: part.partName,
-          quantity: 0, // default value, you may want to set it based on your form logic
-        }));
+        this.bomPartList = this.bomPartList.filter(part =>
+          selectedPartsArray.some((selected: { partId: any; }) => selected.partId === part.id)
+        );
+    
+        selectedPartsArray.forEach((selectedPart: { partId: any; partNumber: any; partName: any; }) => {
+          const exists = this.bomPartList.some(part => part.id === selectedPart.partId);
+          if (!exists) {
+            this.bomPartList.push({
+              id: selectedPart.partId,
+              partNumber: selectedPart.partNumber,
+              partName: selectedPart.partName,
+              value: 0 // default value, you may want to set it based on your form logic
+        });
       }
     });
+  }
+});
   }
 
 

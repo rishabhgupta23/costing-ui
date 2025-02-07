@@ -7,12 +7,12 @@ export const BOM_TABLE_COLUMNS = [
     },
     {
         label: 'Part Number',
-        key: 'number',
+        key: 'partNumber',
         columnType:ColumnType.GENERAL
     },
     {
         label: 'Part Name',
-        key: 'name',
+        key: 'partName',
         columnType: ColumnType.GENERAL,
     },
     {

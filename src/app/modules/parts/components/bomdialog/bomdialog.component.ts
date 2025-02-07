@@ -15,19 +15,20 @@ export class BomdialogComponent {
 
 constructor(
   public dialogRef: MatDialogRef<BomdialogComponent>,
-  @Inject(MAT_DIALOG_DATA) public data:  { filteredPartList: any[] }
+  @Inject(MAT_DIALOG_DATA) public data:  { filteredPartList: any[], selectedParts: [] }
 ) {}
 
 
 togglePartSelection(part: any, event: any): void {
   if (event.checked) {
-    this.selectedParts.add(part);
+    this.selectedParts.add(part.partId);
   } else {
-    this.selectedParts.delete(part);
+    this.selectedParts.delete(part.partId);
   }
 }
 ngOnInit():void{
   this.filteredPartList= this.data.filteredPartList;
+  this.selectedParts = new Set(this.data.selectedParts || []);
 }
 isAllSelected(): boolean {
   return this.selectedParts.size === this.data.filteredPartList.length;
@@ -39,17 +40,19 @@ isIndeterminate(): boolean {
 
 selectAll(event: any): void {
   if (event.checked) {
-    this.selectedParts = new Set(this.filteredPartList);
+    this.filteredPartList.forEach(part => this.selectedParts.add(part.partId));
   } else {
     this.selectedParts.clear();
   }
 }
 
 confirmSelection(): void {
-  const selectedPartsArray=Array.from(this.selectedParts);
-  console.log(selectedPartsArray);
+  const selectedPartsArray = this.filteredPartList.filter(part =>
+    this.selectedParts.has(part.partId)
+  );
   this.dialogRef.close(selectedPartsArray);
 }
+
 
 applyFilter(event: Event): void {
   const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
