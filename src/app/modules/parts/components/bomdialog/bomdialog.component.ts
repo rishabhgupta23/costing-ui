@@ -1,6 +1,8 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
 import { PartRow } from '../../../../data/models/part';
+import { HttpClient } from '@angular/common/http';
+import { PartService } from '../../../../data/services/part/part.service';
 
 @Component({
   selector: 'app-bomdialog',
@@ -9,17 +11,25 @@ import { PartRow } from '../../../../data/models/part';
 })
 export class BomdialogComponent {
   displayedColumns: string[] = ['select', 'partName', 'partNumber'];
-  selectedParts = new Set<any>();
-   mPartList: PartRow[] =[];
+  selectedParts:Set<number>= new Set();
    filteredPartList: PartRow[] = [];
+   allParts: PartRow[] =[];
+   currentPage=0;
+   pageSize=100;
 
 constructor(
   public dialogRef: MatDialogRef<BomdialogComponent>,
-  @Inject(MAT_DIALOG_DATA) public data:  { filteredPartList: any[], selectedParts: [] }
+  private http: HttpClient,
+  @Inject(MAT_DIALOG_DATA) public data:  { selectedParts: number[] },
+  private partService: PartService 
 ) {}
 
 
-togglePartSelection(part: any, event: any): void {
+closeDialog(result: boolean) {
+  this.dialogRef.close(result);
+  }
+
+togglePartSelection(part: PartRow, event: any): void {
   if (event.checked) {
     this.selectedParts.add(part.partId);
   } else {
@@ -27,15 +37,22 @@ togglePartSelection(part: any, event: any): void {
   }
 }
 ngOnInit():void{
-  this.filteredPartList= this.data.filteredPartList;
-  this.selectedParts = new Set(this.data.selectedParts || []);
+  this.partService.getPartList(this.currentPage, this.pageSize).subscribe(
+    (response) => {
+      this.filteredPartList = response.data || [];
+      this.allParts = response.data || [];
+      this.selectedParts = new Set(this.data.selectedParts || []);
+});
+
+  
 }
+
 isAllSelected(): boolean {
-  return this.selectedParts.size === this.data.filteredPartList.length;
+  return this.filteredPartList.length > 0 && this.selectedParts.size === this.filteredPartList.length;
 }
 
 isIndeterminate(): boolean {
-  return this.selectedParts.size > 0 && this.selectedParts.size < this.data.filteredPartList.length;
+  return this.selectedParts.size > 0 && this.selectedParts.size < this.filteredPartList.length;
 }
 
 selectAll(event: any): void {
@@ -47,16 +64,13 @@ selectAll(event: any): void {
 }
 
 confirmSelection(): void {
-  const selectedPartsArray = this.filteredPartList.filter(part =>
-    this.selectedParts.has(part.partId)
-  );
-  this.dialogRef.close(selectedPartsArray);
+  this.dialogRef.close(new Set(this.selectedParts));
 }
 
 
 applyFilter(event: Event): void {
   const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
-  this.filteredPartList = this.data.filteredPartList.filter(part =>
+  this.filteredPartList = this.allParts.filter(part =>
     (part.partName?.toLowerCase() || '').includes(filterValue) ||
     (part.partNumber?.toLowerCase() || '').includes(filterValue)
   );

@@ -1,7 +1,7 @@
 
 <h2 mat-dialog-title>Select Parts</h2>
 <mat-dialog-content>
-  <table mat-table [dataSource]="filteredPartList" class="unit-parts-table">
+  <table mat-table  [dataSource]="filteredPartList" class="unit-parts-table">
     <!-- Select Checkbox Column -->
     <ng-container matColumnDef="select">
       <th mat-header-cell *matHeaderCellDef>
@@ -32,6 +32,6 @@
   </table>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button class="primary-btn" onclick="self.close()">Cancel</button>
+  <button class="primary-btn" (click)="closeDialog(false)">Cancel</button>
   <button class="primary-btn" (click)="confirmSelection()">Select Parts</button>
 </mat-dialog-actions>

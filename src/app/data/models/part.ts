@@ -26,10 +26,10 @@ export interface PartCreateRequest {
 }
 
 export interface PartBomData{
-    id: any;
+    id: number;
     partNumber: string;
     partName: string;
-    value: any;
+    value: number;
 }
 
 export interface PartRow{

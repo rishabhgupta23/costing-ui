@@ -110,31 +110,25 @@ export class PartsFormComponent implements OnDestroy {
     const dialogRef = this.dialog.open(BomdialogComponent, {
       width: '600px',
       data: { 
-        filteredPartList: this.partList,
-      selectedParts: this.bomPartList.map(part => part.id)
-       }
+        selectedParts: new Set(this.bomPartList.map(part => part.id))
+      }
     });
   
-    dialogRef.afterClosed().subscribe((selectedPartsArray) => {
-      if (selectedPartsArray) {
-        this.bomPartList = this.bomPartList.filter(part =>
-          selectedPartsArray.some((selected: { partId: any; }) => selected.partId === part.id)
-        );
-    
-        selectedPartsArray.forEach((selectedPart: { partId: any; partNumber: any; partName: any; }) => {
-          const exists = this.bomPartList.some(part => part.id === selectedPart.partId);
-          if (!exists) {
-            this.bomPartList.push({
-              id: selectedPart.partId,
-              partNumber: selectedPart.partNumber,
-              partName: selectedPart.partName,
-              value: 0 // default value, you may want to set it based on your form logic
-        });
+    dialogRef.afterClosed().subscribe((selectedPartIds: Set<number> | undefined) => {
+      if (selectedPartIds && selectedPartIds.size > 0) {
+        const existingPartsMap = new Map(this.bomPartList.map(part => [part.id, part.value]));
+        this.bomPartList = this.partList
+          .filter(part => selectedPartIds.has(part.partId))
+          .map(part => ({
+            id: part.partId,
+            partNumber: part.partNumber,
+            partName: part.partName,
+            value: existingPartsMap.get(part.partId) ?? 0  // Default value
+          }));
       }
     });
   }
-});
-  }
+  
 
 
   getPartUnits() {
@@ -302,7 +296,7 @@ export class PartsFormComponent implements OnDestroy {
   generateBomDetailsBody() {
     return this.bomPartList.map(part => ({
       childPartId: part.id,
-      quantity: parseFloat(part.value) || 1,  // Ensure quantity is not undefined
+      quantity: Number(part.value) || 1,  // Ensure quantity is not undefined
     }));
   }
 

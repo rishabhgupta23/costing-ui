@@ -24,7 +24,7 @@
               </td>
               <td *ngIf="col?.columnType === ColumnType.INPUT_NUMBER">
                   <mat-form-field>
-                      <input matInput [(ngModel)]="row[col?.key]">
+                      <input matInput type="number" [(ngModel)]="row[col?.key]">
                   </mat-form-field>
               </td>
           </ng-container>
