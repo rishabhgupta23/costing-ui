@@ -115,18 +115,22 @@ export class PartsFormComponent implements OnDestroy {
     });
   
     dialogRef.afterClosed().subscribe((selectedPartIds: Set<number> | undefined) => {
-      if (selectedPartIds && selectedPartIds.size > 0) {
-        const existingPartsMap = new Map(this.bomPartList.map(part => [part.id, part.value]));
-        this.bomPartList = this.partList
-          .filter(part => selectedPartIds.has(part.partId))
-          .map(part => ({
-            id: part.partId,
-            partNumber: part.partNumber,
-            partName: part.partName,
-            value: existingPartsMap.get(part.partId) ?? 0  // Default value
-          }));
-      }
+      this.handleDialogClose(selectedPartIds);
     });
+  }
+  
+  handleDialogClose(selectedPartIds: Set<number> | undefined): void {
+    if (selectedPartIds && selectedPartIds.size > 0) {
+      const existingPartsMap = new Map(this.bomPartList.map(part => [part.id, part.value]));
+      this.bomPartList = this.partList
+        .filter(part => selectedPartIds.has(part.partId))
+        .map(part => ({
+          id: part.partId,
+          partNumber: part.partNumber,
+          partName: part.partName,
+          value: existingPartsMap.get(part.partId) ?? 0  // Default value
+        }));
+    }
   }
   
 
