@@ -38,3 +38,27 @@
     }
 
 }
+
+.edit-btn {            
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .edit-btn:hover {
+    color: #95D2B3
+  }
+  
+  .delete-btn {
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .delete-btn:hover {
+    color: #f44336;
+  }
+
+  .icon-wrapper {
+    margin-right: 0.5rem; /* Space between icons */
+  }
+  
+  
