@@ -22,7 +22,7 @@ export interface PartCreateRequest {
     type: string;
     unit: string;
     vendorCostMap: any;
-    bom:any[];
+    bom:{ childPartId: number; quantity: number }[];
 }
 
 export interface PartBomData{
