@@ -33,7 +33,7 @@
         </form>
   
         <div class="dialog-action">
-          <button class="primary-btn" (click)="onCancel()">Cancel</button>
+          <button class="secondary-btn" (click)="onCancel()">Cancel</button>
           <button class="primary-btn" [disabled]="vendorForm.invalid" (click)="onSubmit()">
             {{ vendorId ? 'Update' : 'Create' }}
           </button>

@@ -27,10 +27,7 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+              "src/assets"
             ],
             "styles": [
               "src/scss/styles.scss"
@@ -86,19 +83,20 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+              "src/assets"
             ],
             "styles": [
               "src/scss/styles.scss",
-              "node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
+              "node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "src/app/components/discard-dialog/discard-dialog.component.scss"
             ],
             "scripts": []
           }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }
