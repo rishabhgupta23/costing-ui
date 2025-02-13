@@ -19,8 +19,9 @@ export class PartService {
         partNumber: res?.partNumber,
         categoryName: res?.categoryName,
         type: res?.type,
-        unit: res?.unit
-        
+        unit: res?.unit,
+        bom: res?.bom,
+        vendorCostMap: res?.vendorCostMap
       })));
   }
   getPartList(page: number = 0, size: number = 100): Observable<any> {

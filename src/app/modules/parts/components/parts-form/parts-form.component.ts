@@ -91,8 +91,14 @@ export class PartsFormComponent implements OnDestroy {
           //   this.costFactors.push(new FormControl(''));
           //   this.vendors.push(new FormControl(vendorCost.vendorId));
           // });
+          
       
-        //   this.unitPartList = part.bomDetails || [];
+          this.bomPartList = part.bom?.map(bomPart => ({
+            id: bomPart.childPartId, // Ensure correct mapping
+            partName: bomPart.childPartName, // Assuming API returns partName
+            partNumber: bomPart.childPartNumber, // Assuming API returns partNumber
+            value: bomPart.quantity || 0
+          })) || [];
         });
       }
       

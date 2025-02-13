@@ -39,6 +39,8 @@ export interface PartRow{
     categoryName: string;
     type: string;
     unit: string;
+    bom: any[];
+    vendorCostMap: any;
 }
 
 export interface TableActionEvent {
