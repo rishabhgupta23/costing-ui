@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { PartService } from '../../../../data/services/part/part.service';
 import { PartCreateRequest } from '../../../../data/models/part';
 import { PageEvent } from '@angular/material/paginator';
+import { TableActions } from '../../../../shared/constants/table.constants';
 
 
 @Component({
@@ -45,13 +46,13 @@ export class PartLandingComponent {
     this.router.navigateByUrl("/app/parts/create");
   }
 
-  handleAction(event: { action: string; row: any }) {
+  handleAction(event: { action: TableActions; row: any }) {
     console.log(event.row);
     const { action, row } = event;
-    if (action === 'edit') {
+    if (action === TableActions.EDIT) {
       this.router.navigateByUrl(`/app/parts/edit/${row.partId}`);
-    } else if (action === 'delete') {
-      this.deletePart(row.id);
+    } else if (action === TableActions.DELETE) {
+      this.deletePart(row.partId);
     }
   }
   deletePart(partId: string) {
@@ -61,7 +62,7 @@ export class PartLandingComponent {
           alert('Part deleted successfully.');
           this.getPartList(); // Refresh the part list after deletion
         },
-        (        error: any) => {
+        (error: any) => {
           console.error('Error deleting part:', error);
           alert('Failed to delete part.');
         }

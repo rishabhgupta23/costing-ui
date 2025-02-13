@@ -1,4 +1,4 @@
-import { ColumnType } from "../../shared/constants/table.constants";
+import { ColumnType, TableActions } from "../../shared/constants/table.constants";
 
 export const PART_TABLE_COLUMNS = [
     {
@@ -29,5 +29,12 @@ export const PART_TABLE_COLUMNS = [
         label: 'Category',
         columnType: ColumnType.GENERAL,
         key: 'category'
+    },
+    {
+        label: 'Actions',
+        columnType: ColumnType.ACTION,
+        actions: [
+            TableActions.EDIT,TableActions.DELETE
+        ]
     }
 ]

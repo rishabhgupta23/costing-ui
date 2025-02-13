@@ -9,7 +9,8 @@
         <div class="card-nc">
             <app-table 
             [data]="paginatedData" 
-            [config]="columns">
+            [config]="columns"
+            (actionTriggered)="handleAction($event)">
         </app-table>
         <mat-paginator 
         [length]="totalRecords" 
