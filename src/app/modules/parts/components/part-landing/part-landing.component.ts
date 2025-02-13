@@ -7,6 +7,7 @@ import { PartService } from '../../../../data/services/part/part.service';
 import { PartCreateRequest } from '../../../../data/models/part';
 import { PageEvent } from '@angular/material/paginator';
 import { TableActions } from '../../../../shared/constants/table.constants';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 
 @Component({
@@ -52,22 +53,33 @@ export class PartLandingComponent {
     if (action === TableActions.EDIT) {
       this.router.navigateByUrl(`/app/parts/edit/${row.partId}`);
     } else if (action === TableActions.DELETE) {
-      this.deletePart(row.partId);
+      const dialogData: ConfirmDialogData = {
+        title: 'Delete Part',
+        message: 'Are you sure you want to delete this part?'
+      };
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, { data: dialogData });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === true) {
+          // Call delete only if confirmed
+          this.deletePart(row.partId);
+        }
+      });
     }
   }
   deletePart(partId: string) {
-    if (confirm('Are you sure you want to delete this part?')) {
+ 
       this.partService.deletePart(partId).subscribe(
         () => {
-          alert('Part deleted successfully.');
-          this.getPartList(); // Refresh the part list after deletion
+          console.log('Part deleted successfully.');
+          this.getPartList();
         },
         (error: any) => {
           console.error('Error deleting part:', error);
           alert('Failed to delete part.');
         }
       );
-    }
+    
   }
   onPageChange(event: PageEvent) {
     this.pageSize = event.pageSize;
