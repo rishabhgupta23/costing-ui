@@ -1,17 +1,17 @@
-<mat-form-field>
-    <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
-  </mat-form-field>
+
 <h2 mat-dialog-title>Select Parts</h2>
 <mat-dialog-content>
-  <table mat-table [dataSource]="filteredPartList" class="unit-parts-table">
+  <table mat-table  [dataSource]="partList" class="unit-parts-table">
     <!-- Select Checkbox Column -->
     <ng-container matColumnDef="select">
       <th mat-header-cell *matHeaderCellDef>
         <mat-checkbox (change)="selectAll($event)" [checked]="isAllSelected()" [indeterminate]="isIndeterminate()"></mat-checkbox>
       </th>
       <td mat-cell *matCellDef="let part">
-        <mat-checkbox [checked]="selectedParts.has(part)" (change)="togglePartSelection(part, $event)"></mat-checkbox>
+        <mat-checkbox 
+          [checked]="checkIfSelected(part)" 
+          (change)="togglePartSelection(part, $event)">
+        </mat-checkbox>
       </td>
     </ng-container>
 
@@ -32,6 +32,6 @@
   </table>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-button (click)="confirmSelection()">Confirm</button>
+  <button class="primary-btn" (click)="closeDialog()">Cancel</button>
+  <button class="primary-btn" (click)="confirmSelection()">Select Parts</button>
 </mat-dialog-actions>

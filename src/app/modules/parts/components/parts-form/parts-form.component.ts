@@ -9,6 +9,9 @@ import { PartBomData, CostFactor, CostFactorData, PartCreateRequest, PartRow, Ve
 import { ActivatedRoute, Router } from '@angular/router';
 import { BomdialogComponent } from '../bomdialog/bomdialog.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { BOM_TABLE_COLUMNS } from '../../../../data/constants/bom-table.constants';
+import { PartType } from '../../../../shared/constants/part.constants';
+import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 
 @Component({
   selector: 'app-parts-form',
@@ -24,11 +27,11 @@ export class PartsFormComponent implements OnDestroy {
   costFactorList: CostFactor[] = [];
   subscriptions: Subscription[] = [];
   COST_FACTOR_TABLE_COLUMNS = COST_FACTOR_TABLE_COLUMNS;
+  BOM_TABLE_COLUMNS = BOM_TABLE_COLUMNS;
   vendorCostMap: Map<number, CostFactorData[]> = new Map();
   bomPartList: PartBomData[] =[]; 
-  partList: PartRow[] =[];
   pageSize: number = 100 // Default items per page
-  selectedParts: Set<number> = new Set<number>();
+  partTypeEnum= PartType;
   
   
 
@@ -65,7 +68,6 @@ export class PartsFormComponent implements OnDestroy {
     this.getPartCategories();
     this.getVendorList();
     this.getCostFactors();
-    this.getPartList();
 
       if (this.partId){
         this.getPartData(this.partId);
@@ -105,20 +107,50 @@ export class PartsFormComponent implements OnDestroy {
   openBomDialog(): void {
     const dialogRef = this.dialog.open(BomdialogComponent, {
       width: '600px',
-      data: { filteredPartList: this.partList }
+      data: { 
+        existingParts: new Set(this.bomPartList.map(part => part.id) || [])
+      }
     });
   
-    dialogRef.afterClosed().subscribe((selectedPartsArray) => {
-      if (selectedPartsArray) {
-        // Assuming selectedPartsArray is an array of PartShow objects
-        this.partList = selectedPartsArray.map((part: { partId: any; partName: any; }) => ({
-          id: part.partId,
-          name: part.partName,
-          value: 0, // default value, you may want to set it based on your form logic
-        }));
+    dialogRef.afterClosed().subscribe((res: {data: any, action: DialogCloseResponse}) => {
+      if(res.action == DialogCloseResponse.UPDATE) {
+        this.handleDialogClose(res?.data);
       }
     });
   }
+  
+  handleDialogClose(selectedParts: Set<PartRow>): void 
+  {
+    console.log(selectedParts);
+    if (!selectedParts || selectedParts.size === 0){
+      this.bomPartList = [];
+    }
+
+    selectedParts.forEach(part => {
+      const exists = this.bomPartList.find(existingPart => part.partId == existingPart.id);
+      if(!exists) {
+        this.bomPartList.push({
+          id:part.partId,
+          partName:part.partName,
+          partNumber:part.partNumber,
+          value:0,
+        })
+      }
+    });
+
+    // check if sme pat exist in bomPartList but not in selectedPart then delete that part from list
+  
+    this.bomPartList = this.bomPartList.filter(existingPart =>{
+      let filter = false;
+      selectedParts.forEach(p => {
+        if(p.partId === existingPart.id) {
+          filter = true;
+        }
+      });
+      return filter;
+    });
+  }
+  
 
 
   getPartUnits() {
@@ -153,14 +185,6 @@ export class PartsFormComponent implements OnDestroy {
     );
   }
 
-    getPartList(page: number = 0, size: number = this.pageSize) {
-    this.subscriptions.push(
-      this.partService.getPartList(page,size).subscribe((res) => {
-        this.partList = res.data;
-      })
-    );
-  }
-
   get costFactors() {
     return this.costDetailsForm.get('costFactors') as FormArray;
   }
@@ -189,30 +213,6 @@ export class PartsFormComponent implements OnDestroy {
   
   get masterParts() {
     return this.bomDetailsForm.get('masterParts') as FormArray;
-  }
-
-  // Add a new Unit Part
-  addPartToBom() {
-    if (this.selectedParts.size === 0) {
-      console.error('No part selected');
-      return;
-    }
-
-    // Add selected parts to the unitPartList
-    this.partList.forEach(part => {
-      if (this.selectedParts.has(part.partId)) {
-        const isPresent = this.bomPartList.some(item => item?.partName === part.partName);
-        if (!isPresent) {
-          this.bomPartList.push({
-            id: part.partId,
-            partName: part.partName,
-            partNumber: part.partNumber,
-            quantity: 0,
-          } as PartBomData);
-        }
-      }
-    });
-    console.log(this.bomPartList);
   }
 
   
@@ -260,13 +260,15 @@ export class PartsFormComponent implements OnDestroy {
   }
 
   onSubmit(): void {
+    const categoryIdValue = this.partForm.get('categoryId')?.value || null;
     const body: PartCreateRequest = {
       partName: this.partForm.get('partName')?.value || '',
       partNumber: this.partForm.get('partNumber')?.value || '',
-      partType: this.partForm.get('partType')?.value || '',
-      partUnit: this.partForm.get('partUnit')?.value || '',
+      type: this.partForm.get('partType')?.value || '',
+      unit: this.partForm.get('partUnit')?.value || '',
       vendorCostMap: this.generateVendorCostMapBody(),
-      categoryId: 0
+      categoryId: categoryIdValue ,
+      bom: this.generateBomDetailsBody()
     };
 
     if (this.partId) {
@@ -280,6 +282,12 @@ export class PartsFormComponent implements OnDestroy {
         this.router.navigateByUrl('/app/parts'); // Redirect to parts list
       });
     }
+  }
+  generateBomDetailsBody() {
+    return this.bomPartList.map(part => ({
+      childPartId: part.id,
+      quantity: Number(part.value) || 1,  // Ensure quantity is not undefined
+    }));
   }
 
   generateVendorCostMapBody() {

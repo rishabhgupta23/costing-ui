@@ -1,6 +1,8 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialogActions } from '@angular/material/dialog';
-import { PartRow } from '../../../../data/models/part';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { PartBomData, PartRow } from '../../../../data/models/part';
+import { PartService } from '../../../../data/services/part/part.service';
+import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 
 @Component({
   selector: 'app-bomdialog',
@@ -9,54 +11,66 @@ import { PartRow } from '../../../../data/models/part';
 })
 export class BomdialogComponent {
   displayedColumns: string[] = ['select', 'partName', 'partNumber'];
-  selectedParts = new Set<any>();
-   mPartList: PartRow[] =[];
-   filteredPartList: PartRow[] = [];
+  existingParts: Set<number>= new Set();
+  partList: PartRow[] = [];
+   currentPage=0;
+   pageSize=100;
 
 constructor(
   public dialogRef: MatDialogRef<BomdialogComponent>,
-  @Inject(MAT_DIALOG_DATA) public data:  { filteredPartList: any[] }
-) {}
+  @Inject(MAT_DIALOG_DATA) public data:  { existingParts: Set<number> },
+  private partService: PartService 
+) {
+}
 
 
-togglePartSelection(part: any, event: any): void {
+closeDialog() {
+  this.dialogRef.close({action: DialogCloseResponse.NO_ACTION});
+  }
+
+togglePartSelection(part: PartRow, event: any): void {
   if (event.checked) {
-    this.selectedParts.add(part);
+    this.existingParts.add(part.partId);
   } else {
-    this.selectedParts.delete(part);
+    this.existingParts.delete(part.partId);
   }
 }
+
 ngOnInit():void{
-  this.filteredPartList= this.data.filteredPartList;
+this.getPartList();
 }
+
+getPartList():void{
+  this.partService.getPartList(this.currentPage, this.pageSize).subscribe(
+    (response) => {
+      this.partList = response.data || [];
+      this.existingParts = this.data.existingParts;
+});
+}
+
 isAllSelected(): boolean {
-  return this.selectedParts.size === this.data.filteredPartList.length;
+  return this.partList.length > 0 && this.existingParts.size === this.partList.length;
 }
 
 isIndeterminate(): boolean {
-  return this.selectedParts.size > 0 && this.selectedParts.size < this.data.filteredPartList.length;
+  return this.existingParts.size > 0 && this.existingParts.size < this.partList.length;
 }
 
 selectAll(event: any): void {
   if (event.checked) {
-    this.selectedParts = new Set(this.filteredPartList);
+    this.partList.forEach(part => this.existingParts.add(part.partId));
   } else {
-    this.selectedParts.clear();
+    this.existingParts.clear();
   }
 }
 
-confirmSelection(): void {
-  const selectedPartsArray=Array.from(this.selectedParts);
-  console.log(selectedPartsArray);
-  this.dialogRef.close(selectedPartsArray);
+checkIfSelected(part: PartRow) {
+  return this.existingParts.has(part.partId);
 }
 
-applyFilter(event: Event): void {
-  const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
-  this.filteredPartList = this.data.filteredPartList.filter(part =>
-    (part.partName?.toLowerCase() || '').includes(filterValue) ||
-    (part.partNumber?.toLowerCase() || '').includes(filterValue)
-  );
+confirmSelection(): void {
+  const result  = this.partList.filter(part => this.existingParts.has(part.partId));
+  this.dialogRef.close({data: result, action: DialogCloseResponse.UPDATE});
 }
 
 }
