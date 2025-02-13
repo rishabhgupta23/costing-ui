@@ -21,7 +21,6 @@ constructor(
   @Inject(MAT_DIALOG_DATA) public data:  { existingParts: Set<number> },
   private partService: PartService 
 ) {
-  console.log(data);
 }
 
 
@@ -30,7 +29,6 @@ closeDialog() {
   }
 
 togglePartSelection(part: PartRow, event: any): void {
-  console.log(event, part);
   if (event.checked) {
     this.existingParts.add(part.partId);
   } else {
