@@ -2,13 +2,12 @@
     max-height: 480px; /* Set a maximum height for the table container */
     overflow-y: auto; /* Enable vertical scrolling */
   }
-.app-table {
+  
+  .app-table {
     width: 100%;
     border-radius: 12px;
     border-collapse: collapse;
-    table-layout: fixed;
-    border-spacing: 0;
-    border:none;    
+    table-layout: fixed; /* Prevent columns from expanding */
     background: white;
 
     thead {
@@ -29,14 +28,30 @@
         }
     }
     th,td {
-        text-align: left;
-        padding: 1rem;
+      text-align: center;
+      padding: 1rem;
+      word-wrap: break-word; /* Prevent long text from overflowing */
+      overflow: hidden; 
+      white-space: nowrap; /* Prevent text from wrapping */
     }
 
     td {
         border-bottom: 1px solid grey;
     }
+    
+}
+.mat-form-field {
+  width: 100%; /* Ensure input fields span the full width of the cell */
+  box-sizing: border-box;
+}
 
+input[matInput] {
+  width: 100%; /* Ensure inputs fit within the table cell */
+  font-size: 1rem; /* Match font size for consistency */
+}
+
+button {
+  margin: 0 0.2rem; /* Add spacing between action buttons */
 }
 
 .edit-btn {            

@@ -13,7 +13,7 @@ export class VendorService {
   }
 
   updateVendor(vendorId: string, vendor: Vendor): Observable<Vendor> {
-    return this.http.post<Vendor>(`${'http://localhost:8080/vendors'}/${vendorId}`, vendor);
+    return this.http.put<Vendor>(`${'http://localhost:8080/vendors'}/${vendorId}`, vendor);
   }
 
   constructor(private http: HttpClient) { }

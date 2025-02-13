@@ -76,7 +76,7 @@ $costing-ui-theme: mat.define-theme((
 
 .page-content {
     flex-grow: 1;
-    overflow: auto;
+    overflow: hidden;
 }
 
 .card,.card-nc {
@@ -90,6 +90,8 @@ $costing-ui-theme: mat.define-theme((
 .card {
     padding: 1rem;
     height: calc(100% - 2rem);
+    overflow:scroll;
+    overflow-x:hidden;
 }
 
 .primary-btn {
