@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core';
+
+import { Component, inject, ChangeDetectorRef} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 import { PART_TABLE_COLUMNS } from '../../../../data/constants/part-table-config.constants';
@@ -6,6 +7,7 @@ import { Router } from '@angular/router';
 import { PartService } from '../../../../data/services/part/part.service';
 import { PartCreateRequest } from '../../../../data/models/part';
 import { PageEvent } from '@angular/material/paginator';
+import { ColumnType } from '../../../../shared/constants/table.constants'; //new
 
 
 @Component({
@@ -22,30 +24,62 @@ export class PartLandingComponent {
   readonly dialog = inject(MatDialog);
   totalRecords: number=0;
   pageInfo: any;
+  vendorCostArray: [string, any][] = [];
+  
 
-  constructor(private partService: PartService, private router: Router) {
+  constructor(private partService: PartService, private router: Router, private cdr: ChangeDetectorRef) {
     this.getPartList();
   }
+  
   getPartList() {
     this.partService.getPartList(this.currentPage, this.pageSize).subscribe(
       (res) => {
-        console.log(res)
-        this.partList = res.data;
-        this.paginatedData = this.partList; // Set the current page's data
-        this.totalRecords = res.pageInfo.totalRecords;
-        console.log(this.totalRecords)
+        console.log("Full API Response:", res);
+
+        const responseData = res.data;
+        const maxVendorCount = responseData.maxVendorCount || 0;
+
+        this.partList = responseData.partsList.map((part: any) => ({
+          ...part,
+          vendors: part.vendorNames || [] 
+        }));
+
+       this.columns = [...PART_TABLE_COLUMNS];
+
+        
+        for (let i = 1; i <= maxVendorCount; i++) {
+          this.columns.push({
+            label: `Vendor ${i}`,
+            columnType: ColumnType.GENERAL,
+            key: `vendor${i}`
+          });
+        }
+
+        this.partList = this.partList.map((part: any) => {
+          let vendorData: any = { ...part };
+
+          (part.vendorNames || []).forEach((vendor: any, index: number) => {
+            vendorData[`vendor${index + 1}`] = vendor; // No .name here
+          });
+
+          console.log("Processed part:", vendorData);
+          return vendorData;
+        });
+
+        this.paginatedData = this.partList;
+        this.totalRecords = responseData.pageInfo?.totalRecords || 0;
       },
       (error) => {
-        console.error('Error fetching parts:', error);
+        console.error("Error fetching part list:", error);
       }
     );
-  }
-
+}
+  
   createPart() {
     this.router.navigateByUrl("/app/parts/create");
   }
 
-  handleAction(event: { action: string; row: any }) {
+  handleAction(event: { action: string; row:any}) {
     console.log(event.row);
     const { action, row } = event;
     if (action === 'edit') {
@@ -80,3 +114,5 @@ export class PartLandingComponent {
     this.paginatedData = this.partList.slice(startIndex, endIndex);
   }
 }
+
+ 

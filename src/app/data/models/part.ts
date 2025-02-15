@@ -22,6 +22,7 @@ export interface PartCreateRequest {
     type: string;
     unit: string;
     vendorCostMap: any;
+    vendorNames?: { id: number; name: string }[] | null; //new
     bom:any[];
 }
 
