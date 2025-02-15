@@ -28,8 +28,8 @@ export class PartService {
     return this.http.get<any>(url);
   }
 
-  deletePart(partId: string): Observable<void> {
-    return this.http.delete<void>(`/api/parts/${partId}`);
+  deletePart(partId: string): Observable<string> {
+    return this.http.delete<string>(`http://localhost:8080/parts/${partId}` , { responseType: 'text' as 'json' });
   }
 
 

@@ -23,7 +23,7 @@ export class VendorService {
   }
 
   deleteVendor(vendorId: string): Observable<void> {
-    return this.http.delete<void>(`/api/vendors/${vendorId}`);
+    return this.http.delete<void>(`http://localhost:8080/vendors/${vendorId}`);
   }
   
 

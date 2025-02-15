@@ -1,5 +1,6 @@
 export enum DialogCloseResponse {
     CREATE,
-    NO_ACTION,
-    UPDATE
+    UPDATE,
+    NO_ACTION = 'NO_ACTION',
+    DELETE = 'DELETE'
 }

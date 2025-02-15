@@ -1,0 +1,27 @@
+<h2 mat-dialog-title>Delete Vendor</h2>
+
+<mat-dialog-content>
+  <p>This Vendor provides these items:</p>
+</mat-dialog-content>
+
+<!-- Table Container with Custom Styling -->
+<div class="appTable">
+  <app-table 
+  [data]="dataSource.data" 
+  [config]="columns">
+</app-table>
+</div>
+
+
+<!-- Paginator -->
+<mat-paginator [pageSize]="10" [pageSizeOptions]="[10,20,30]"></mat-paginator>
+
+
+
+<mat-dialog-content>
+  <p class="imp-action">Are you sure you want to delete this Vendor?</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button class="secondary-btn" (click)="closeDialog(DialogCloseResponse.NO_ACTION)">No</button>
+  <button color="warn" (click)="closeDialog(DialogCloseResponse.DELETE)" class="primary-btn">Yes</button>
+</mat-dialog-actions>

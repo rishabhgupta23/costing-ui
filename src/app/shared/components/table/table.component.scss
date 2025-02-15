@@ -9,51 +9,71 @@
     border-collapse: collapse;
     table-layout: fixed; /* Prevent columns from expanding */
     background: white;
+
+    thead {
+        position: sticky;
+        top: 0; 
+        background-color: #f9f9f9; 
+        z-index: 1;
+      }
+    
+    .header-row {
+        background-color: grey;
+        border-radius: 12px 12px 0 0;
+        th:first-child {
+            border-radius: 12px 0 0 0;
+        }
+        th:last-child {
+            border-radius: 0 12px 0 0;
+        }
+    }
+    th,td {
+      text-align: center;
+      padding: 1rem;
+      word-wrap: break-word; /* Prevent long text from overflowing */
+      overflow: hidden; 
+      white-space: nowrap; /* Prevent text from wrapping */
+    }
+
+    td {
+        border-bottom: 1px solid grey;
+    }
+    
+}
+.mat-form-field {
+  width: 100%; /* Ensure input fields span the full width of the cell */
+  box-sizing: border-box;
+}
+
+input[matInput] {
+  width: 100%; /* Ensure inputs fit within the table cell */
+  font-size: 1rem; /* Match font size for consistency */
+}
+
+button {
+  margin: 0 0.2rem; /* Add spacing between action buttons */
+}
+
+.edit-btn {            
+    cursor: pointer;
+    transition: color 0.3s ease;
   }
   
-  thead {
-    position: sticky;
-    top: 0;
-    background-color: #f9f9f9; 
-    z-index: 1;
+  .edit-btn:hover {
+    color: #95D2B3
   }
   
-  .header-row {
-    background-color: grey;
-    border-radius: 12px 12px 0 0;
+  .delete-btn {
+    cursor: pointer;
+    transition: color 0.3s ease;
   }
   
-  .header-row th:first-child {
-    border-radius: 12px 0 0 0;
+  .delete-btn:hover {
+    color: #f44336;
+  }
+
+  .icon-wrapper {
+    margin-right: 0.5rem; /* Space between icons */
   }
   
-  .header-row th:last-child {
-    border-radius: 0 12px 0 0;
-  }
-  
-  th, td {
-    text-align: center;
-    padding: 1rem;
-    word-wrap: break-word; /* Prevent long text from overflowing */
-    overflow: hidden; 
-    white-space: nowrap; /* Prevent text from wrapping */
-  }
-  
-  td {
-    border-bottom: 1px solid grey;
-  }
-  
-  .mat-form-field {
-    width: 100%; /* Ensure input fields span the full width of the cell */
-    box-sizing: border-box;
-  }
-  
-  input[matInput] {
-    width: 100%; /* Ensure inputs fit within the table cell */
-    font-size: 1rem; /* Match font size for consistency */
-  }
-  
-  button {
-    margin: 0 0.2rem; /* Add spacing between action buttons */
-  }
   

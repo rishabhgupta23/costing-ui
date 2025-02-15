@@ -6,6 +6,9 @@ import { Router } from '@angular/router';
 import { PartService } from '../../../../data/services/part/part.service';
 import { PartCreateRequest } from '../../../../data/models/part';
 import { PageEvent } from '@angular/material/paginator';
+import { TableActions } from '../../../../shared/constants/table.constants';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { InfoDialogComponent } from '../../../../shared/components/infodialog/infodialog.component';
 
 
 @Component({
@@ -36,7 +39,13 @@ export class PartLandingComponent {
         console.log(this.totalRecords)
       },
       (error) => {
-        console.error('Error fetching parts:', error);
+        this.dialog.open(InfoDialogComponent, {
+          width: '400px',
+          data: { 
+            title: `Fetch Error (Status: ${error.status})`,
+            message: 'Failed to fetch parts. ' + (error?.error?.message || 'An unexpected error occurred.')
+          }
+        });
       }
     );
   }
@@ -45,28 +54,49 @@ export class PartLandingComponent {
     this.router.navigateByUrl("/app/parts/create");
   }
 
-  handleAction(event: { action: string; row: any }) {
-    console.log(event.row);
+  handleAction(event: { action: TableActions; row: any }) {
     const { action, row } = event;
-    if (action === 'edit') {
+    if (action === TableActions.EDIT) {
       this.router.navigateByUrl(`/app/parts/edit/${row.partId}`);
-    } else if (action === 'delete') {
-      this.deletePart(row.id);
+    } else if (action === TableActions.DELETE) {
+      const dialogData: ConfirmDialogData = {
+        title: 'Delete Part',
+        message: 'Are you sure you want to delete this part?'
+      };
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, { data: dialogData });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === DialogCloseResponse.DELETE) {
+          this.deletePart(row.partId);
+          // this.dialog.open(InfoDialogComponent, {
+          //   width: '400px',
+          //   data: { 
+          //     title: 'Deletion Successful', 
+          //     message: 'Part deleted successfully' 
+          //   }
+          // });
+        }
+      });
     }
   }
   deletePart(partId: string) {
-    if (confirm('Are you sure you want to delete this part?')) {
-      this.partService.deletePart(partId).subscribe(
-        () => {
-          alert('Part deleted successfully.');
-          this.getPartList(); // Refresh the part list after deletion
-        },
-        (        error: any) => {
-          console.error('Error deleting part:', error);
-          alert('Failed to delete part.');
-        }
-      );
-    }
+ 
+    this.partService.deletePart(partId).subscribe({
+      next: () => {
+        this.getPartList();
+      },
+      error: (error: any) => {
+        // Open the InfoDialogComponent with an error message
+        this.dialog.open(InfoDialogComponent, {
+          width: '400px',
+          data: { 
+            title: `Deletion Error (Status: ${error.status})`, 
+            message: 'Failed to delete part. ' + (error?.error?.message || 'An error occurred.') 
+          }
+        });
+      }
+    });
+    
   }
   onPageChange(event: PageEvent) {
     this.pageSize = event.pageSize;

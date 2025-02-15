@@ -1,0 +1,14 @@
+:host ::ng-deep .appTable .table-container{
+  height: 350px;
+  padding-left: 0.6rem;
+  margin-top: 0.7rem;
+  // position: relative;
+  // z-index: 1;
+}
+mat-dialog-actions{
+  gap: 10px;
+}
+p{
+  font-family: 'Poppins', sans-serif;
+}
+

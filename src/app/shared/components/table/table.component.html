@@ -6,7 +6,6 @@
       <ng-container *ngFor="let col of config">
           <th>{{ col?.label }}</th>
       </ng-container>
-      <th *ngIf="showActions">Actions</th> <!-- Conditionally show Actions column -->
   </tr>
 </thead>
 
@@ -15,31 +14,57 @@
   <ng-container *ngFor="let row of data; let i = index">
       <tr class="data-row">
           <!-- Dynamic Columns -->
-          <ng-container *ngFor="let col of config">
-              <td *ngIf="col?.columnType === ColumnType.SERIAL_NUMBER">
-                  {{ i + 1 }}
-              </td>
-              <td *ngIf="col?.columnType === ColumnType.GENERAL">
-                  {{ row[col?.key] }}
-              </td>
-              <td *ngIf="col?.columnType === ColumnType.INPUT_NUMBER">
-                  <mat-form-field>
-                      <input matInput type="number" [(ngModel)]="row[col?.key]">
-                  </mat-form-field>
-              </td>
-          </ng-container>
+<ng-container *ngFor="let col of config">
+    <td *ngIf="col?.columnType === ColumnType.SERIAL_NUMBER">
+        {{ i + 1 }}
+    </td>
+
+    <td *ngIf="col?.columnType === ColumnType.GENERAL">
+        {{ row[col?.key] }}
+    </td>
+
+    <td *ngIf="col?.columnType === ColumnType.INPUT_NUMBER">
+        <mat-form-field>
+            <input matInput type="number" [(ngModel)]="row[col?.key]">
+        </mat-form-field>
+    </td>
+
+    <!-- Dynamic Action Buttons -->
+<td *ngIf="col?.columnType === ColumnType.ACTION">
+    <ng-container *ngFor="let action of col.actions">
+      <span class="icon-wrapper" *ngIf="action === TableActions.EDIT">
+        <mat-icon 
+          class="edit-btn" 
+          svgIcon="edit" 
+          (click)="handleAction({ action: action, row: row })">
+        </mat-icon>
+      </span>
+      
+      <span class="icon-wrapper" *ngIf="action === TableActions.DELETE">
+        <mat-icon 
+          class="delete-btn" 
+          svgIcon="delete" 
+          (click)="handleAction({ action: action, row: row })">
+        </mat-icon>
+      </span>
+    </ng-container>
+  </td>
+  
+</ng-container>
+
+          
 
           <!-- Actions Column -->
-          <td *ngIf="showActions">
+          <!-- <td *ngIf="showActions">
             <button mat-icon-button color="primary" (click)="handleAction({ action: 'edit', row: row })">
               <i class="fa-regular fa-pen-to-square"></i>
-          </button>
+            </button> -->
 
           <!-- Delete Button -->
-          <button mat-icon-button color="warn" (click)="handleAction({ action: 'delete', row: row })">
-              <i class="fa-regular fa-trash-can"></i>
+          <!-- <button mat-icon-button color="warn" (click)="handleAction({ action: 'delete', row: row })">
+            <mat-icon svgIcon="delete"></mat-icon>
           </button>
-          </td>
+          </td> -->
       </tr>
   </ng-container>
 </tbody>

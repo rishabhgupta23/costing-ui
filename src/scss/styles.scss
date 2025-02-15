@@ -46,6 +46,16 @@ $costing-ui-theme: mat.define-theme((
     padding: 0;
     background: #f8f8f8;
 }
+.mat-mdc-dialog-container .mat-mdc-dialog-title {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
+    color: #333 !important;
+}
+
+.mat-mdc-dialog-actions {
+    justify-content: flex-end !important;
+}
 
 .app-page {
     height: calc(100% - 2rem);
@@ -93,7 +103,25 @@ $costing-ui-theme: mat.define-theme((
     background-color: #95D2B3;
     border: none;
     font-size: $base-font-size;
+    &:hover {
+        background-color: darken(#55ad9b , 10%);
+    }
 }
+
+.secondary-btn {
+    padding: 0.6rem 1.6rem;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 24px;
+    border: 1px;
+    background-color: #c3c2c266;  
+    min-width: 5rem;
+    border: none;
+    font-size: $base-font-size;
+    &:hover {
+      background-color: darken(#979797a1, 10%);
+    }
+  }
 
 .app-dialog {
     .mat-mdc-dialog-surface {

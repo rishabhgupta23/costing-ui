@@ -10,8 +10,7 @@
             <app-table 
             [data]="paginatedData" 
             [config]="columns"
-            (actionTriggered)="handleAction($event)"
-            [showActions]="true">
+            (actionTriggered)="handleAction($event)">
         </app-table>
         <mat-paginator 
         [length]="totalRecords" 
