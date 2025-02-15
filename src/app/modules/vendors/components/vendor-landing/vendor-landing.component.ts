@@ -7,6 +7,7 @@ import { DialogCloseResponse } from '../../../../shared/constants/dialog.constan
 import { Router } from '@angular/router';
 import { DiscardDialogComponent } from '../../../../shared/components/discard-dialog/discard-dialog.component';
 import { TableActions } from '../../../../shared/constants/table.constants';
+import { InfoDialogComponent } from '../../../../shared/components/infodialog/infodialog.component';
 @Component({
   selector: 'app-vendor-landing',
   templateUrl: './vendor-landing.component.html',
@@ -25,14 +26,24 @@ export class VendorLandingComponent {
   }
 
   getVendorList(): void {
-    this.vendorService.getVendorList().subscribe(res => {
-      this.vendorList = res;
-    
-    (err: any) => {
-      console.error('Failed to fetch vendors:', err);
-    }
+    this.vendorService.getVendorList().subscribe({
+      next: (res) => {
+        this.vendorList = res;
+      },
+      error: (err: any) => {
+        console.error('Failed to fetch vendors:', err);
+        this.dialog.open(InfoDialogComponent, {
+          width: '400px',
+          data: {
+            title: `Fetch Error `,
+            message: 'Failed to fetch vendors. ' + (err?.error?.message || 'An unexpected error occurred.'),
+            status: err.status
+          }
+        });
+      }
     });
   }
+  
 
   openCreateVendorDialog(): void {
     // Implementation for opening the create vendor dialog
@@ -73,15 +84,26 @@ export class VendorLandingComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
+      if (result === DialogCloseResponse.DELETE) {
         this.vendorService.deleteVendor(row.id.toString()).subscribe({
           next: () => {
-            console.log('Vendor deleted successfully:', row);
             this.getVendorList();
+            // this.dialog.open(InfoDialogComponent, {
+            //   width: '400px',
+            //   data: { 
+            //     title: 'Deletion Successful', 
+            //     message: 'Vendor deleted successfully' 
+            //   }
+            // });
           },
           error: (error: any) => {
-            console.error('Error deleting vendor:', error);
-            alert('Failed to delete vendor.');
+            this.dialog.open(InfoDialogComponent, {
+              width: '400px',
+              data: { 
+                title: `Fetch Error (Status: ${error.status})`,
+                message: 'Failed to delete vendor. ' + (error?.error?.message || 'An unexpected error occurred.')
+              }
+            });
           }
         });
       }
@@ -89,7 +111,6 @@ export class VendorLandingComponent {
   }
 
   editRow(row: any): void {
-    console.log('Editing row:', row);
     this.router.navigateByUrl(`/app/vendors/edit/${row.partId}`);
   }
 

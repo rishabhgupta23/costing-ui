@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { DialogCloseResponse } from '../../constants/dialog.constants';
 
 export interface ConfirmDialogData {
   title?: string;
@@ -21,10 +22,10 @@ export class ConfirmDialogComponent {
   ) {}
 
   onConfirm(): void {
-    this.dialogRef.close(true);
+    this.dialogRef.close(DialogCloseResponse.DELETE);
   }
 
   onCancel(): void {
-    this.dialogRef.close(false);
+    this.dialogRef.close(DialogCloseResponse.NO_ACTION);
   }
 }

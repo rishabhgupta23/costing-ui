@@ -5,30 +5,13 @@
 </mat-dialog-content>
 
 <!-- Table Container with Custom Styling -->
-<div class="table-container">
-  <table class="app-table">
-    <!-- Table Header -->
-    <thead>
-      <tr class="header-row">
-        <th>Sl. No.</th>
-        <th>Part Number</th>
-        <th>Part Name</th>
-      </tr>
-    </thead>
-
-    <!-- Table Body -->
-    <tbody class="table-body">
-      <!-- We assume dataSource is a MatTableDataSource so we use its data property -->
-      <ng-container *ngFor="let row of dataSource.data; let i = index">
-        <tr class="data-row">
-          <td>{{ i + 1 }}</td>
-          <td>{{ row.partNumber }}</td>
-          <td>{{ row.partName }}</td>
-        </tr>
-      </ng-container>
-    </tbody>
-  </table>
+<div class="appTable">
+  <app-table 
+  [data]="dataSource.data" 
+  [config]="columns">
+</app-table>
 </div>
+
 
 <!-- Paginator -->
 <mat-paginator [pageSize]="10" [pageSizeOptions]="[10,20,30]"></mat-paginator>
@@ -39,6 +22,6 @@
   <p class="imp-action">Are you sure you want to delete this Vendor?</p>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button class="secondary-btn" (click)="closeDialog(false)">No</button>
-  <button color="warn" (click)="closeDialog(true)" class="primary-btn">Yes</button>
+  <button class="secondary-btn" (click)="closeDialog(DialogCloseResponse.NO_ACTION)">No</button>
+  <button color="warn" (click)="closeDialog(DialogCloseResponse.DELETE)" class="primary-btn">Yes</button>
 </mat-dialog-actions>

@@ -1,0 +1,10 @@
+<h2 mat-dialog-title>
+    {{ data.title }}
+    <span *ngIf="data.status" class="error-code">(Status: {{ data.status }})</span>
+  </h2>
+  <div mat-dialog-content>
+    <p>{{ data.message }}</p>
+  </div>
+  <div mat-dialog-actions align="end">
+    <button mat-button (click)="dialogRef.close()">OK</button>
+  </div>

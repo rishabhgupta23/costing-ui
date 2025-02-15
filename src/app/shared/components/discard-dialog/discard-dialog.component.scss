@@ -1,69 +1,14 @@
-p {
-    font-family: 'Poppins', 'Roboto', sans-serif;
-  }
-  
-  mat-dialog-actions {
-    gap: 10px;
-  }
-  
-  /* Dialog Title Styling */
-  mat-dialog-title {
-    font-family: 'Poppins', 'Roboto', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-  }
-  
-  /* Table Container for Scrollable Table */
-  .table-container {
-    max-height: 300px;
-    overflow-y: auto !important;
-    margin: 1rem 1rem;
-  }
-  
-  .imp-action{
-    font-weight: 600;
-  }
-  
-  /* Custom Table Styling */
-  .app-table {
-    width: 100%;
-    border-radius: 12px;
-    border-collapse: collapse;
-    table-layout: fixed;
-    border-spacing: 0;
-    border: none;
-    background: white;
-  
-    thead {
-      position: sticky;
-      top: 0;
-      background-color: #f9f9f9;
-      z-index: 1;
-    }
-  
-    .header-row {
-      background-color: grey;
-      border-radius: 12px 12px 0 0;
-      
-      /* First and last header cell border radius */
-      th:first-child {
-        border-radius: 12px 0 0 0;
-      }
-      th:last-child {
-        border-radius: 0 12px 0 0;
-      }
-    }
-  
-    /* Header and cell styling */
-    th,
-    td {
-      text-align: left;
-      padding: 1rem;
-    }
-  
-    /* Table row border for cells */
-    td {
-      border-bottom: 1px solid grey;
-    }
-  }
+:host ::ng-deep .appTable .table-container{
+  height: 350px;
+  padding-left: 0.6rem;
+  margin-top: 0.7rem;
+  // position: relative;
+  // z-index: 1;
+}
+mat-dialog-actions{
+  gap: 10px;
+}
+p{
+  font-family: 'Poppins', sans-serif;
+}
+

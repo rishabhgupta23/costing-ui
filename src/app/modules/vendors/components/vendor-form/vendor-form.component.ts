@@ -32,7 +32,6 @@ export class VendorFormComponent implements OnInit {
   ngOnInit(): void {
     // Capture the vendorId from the URL
     this.vendorId = this.route.snapshot.paramMap.get('id'); 
-    console.log(this.vendorId);
     // Initialize the form with empty values
     this.vendorForm = new FormGroup({
       name: new FormControl('', [

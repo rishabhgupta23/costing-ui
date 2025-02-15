@@ -7,17 +7,21 @@ import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { HttpClient } from '@angular/common/http';
 import { Vendor } from '../../../data/models/vendor';
+import { DialogCloseResponse } from '../../constants/dialog.constants';
+import { DISCARD_TABLE_COLUMNS } from '../../constants/discard.constant';
+import { TableComponent } from '../table/table.component';
 
 @Component({
   selector: 'app-discard-dialog',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, MatTableModule, MatPaginator],
+  imports: [CommonModule, MatDialogModule, MatButtonModule, MatTableModule, MatPaginator, TableComponent],
   templateUrl: './discard-dialog.component.html',
   styleUrls: ['./discard-dialog.component.scss'],
 })
 export class DiscardDialogComponent implements OnInit {
-  displayedColumns: string[] = ['partNumber', 'partName'];
+  columns = DISCARD_TABLE_COLUMNS;
   dataSource = new MatTableDataSource<any>([]);
+  public DialogCloseResponse = DialogCloseResponse;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -50,7 +54,7 @@ export class DiscardDialogComponent implements OnInit {
       });
   }
 
-  closeDialog(result: boolean): void {
+  closeDialog(result: DialogCloseResponse): void {
     this.dialogRef.close(result);
   }
 }
