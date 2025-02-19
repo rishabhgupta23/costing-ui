@@ -22,7 +22,7 @@ export interface PartCreateRequest {
     type: string;
     unit: string;
     vendorCostMap: any;
-    vendorNames?: { id: number; name: string }[] | null; //new
+   
     bom:any[];
 }
 
@@ -40,6 +40,7 @@ export interface PartRow{
     categoryName: string;
     type: string;
     unit: string;
+    vendorNames?: string[]; //new
 }
 
 export interface TableActionEvent {
