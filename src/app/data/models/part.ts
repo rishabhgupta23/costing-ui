@@ -39,6 +39,7 @@ export interface PartRow{
     categoryName: string;
     type: string;
     unit: string;
+    vendorNames?: string[];
 }
 
 export interface TableActionEvent {
