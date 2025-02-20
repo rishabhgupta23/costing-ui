@@ -4,7 +4,7 @@
    <thead>
   <tr class="header-row">
       <ng-container *ngFor="let col of config">
-          <th>{{ col?.label }}</th>
+          <th [title]="col?.label">{{ col?.label }}</th>
       </ng-container>
       <th *ngIf="showActions">Actions</th> <!-- Conditionally show Actions column -->
   </tr>

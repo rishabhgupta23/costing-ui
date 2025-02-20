@@ -40,7 +40,7 @@ export interface PartRow{
     type: string;
     unit: string;
     bom: any[];
-    vendorCostMap: any;
+    vendorNames?: string[];
 }
 
 export interface TableActionEvent {

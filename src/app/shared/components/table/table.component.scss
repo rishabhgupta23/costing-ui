@@ -1,6 +1,8 @@
 .table-container {
     max-height: 480px; /* Set a maximum height for the table container */
     overflow-y: auto; /* Enable vertical scrolling */
+    
+    
   }
   
   .app-table {
@@ -9,6 +11,8 @@
     border-collapse: collapse;
     table-layout: fixed; /* Prevent columns from expanding */
     background: white;
+    
+    
   }
   
   thead {
@@ -19,12 +23,14 @@
   }
   
   .header-row {
+
     background-color: grey;
     border-radius: 12px 12px 0 0;
   }
   
   .header-row th:first-child {
     border-radius: 12px 0 0 0;
+    
   }
   
   .header-row th:last-child {
@@ -37,6 +43,9 @@
     word-wrap: break-word; /* Prevent long text from overflowing */
     overflow: hidden; 
     white-space: nowrap; /* Prevent text from wrapping */
+    text-overflow: ellipsis;
+    min-width: 5rem;
+   
   }
   
   td {
