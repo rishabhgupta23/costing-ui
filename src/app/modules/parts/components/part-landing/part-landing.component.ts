@@ -24,47 +24,33 @@ export class PartLandingComponent {
   readonly dialog = inject(MatDialog);
   totalRecords: number=0;
   pageInfo: any;
-  vendorCostArray: [string, any][] = [];
+  
   
 
-  constructor(private partService: PartService, private router: Router, private cdr: ChangeDetectorRef) {
+  constructor(private partService: PartService, private router: Router) {
     this.getPartList();
   }
-  
+
   getPartList() {
     this.partService.getPartList(this.currentPage, this.pageSize).subscribe(
       (res) => {
-        console.log("Full API Response:", res);
+        
 
         const responseData = res.data;
         const maxVendorCount = responseData.maxVendorCount || 0;
-
-        this.partList = responseData.partsList.map((part: any) => ({
-          ...part,
-          vendors: part.vendorNames || [] 
-        }));
-
-       this.columns = [...PART_TABLE_COLUMNS];
+         this.addColumnsForVendor(maxVendorCount);
 
         
-        for (let i = 1; i <= maxVendorCount; i++) {
-          this.columns.push({
-            label: `Vendor ${i}`,
-            columnType: ColumnType.GENERAL,
-            key: `vendor${i}`
-          });
-        }
-
-        this.partList = this.partList.map((part: any) => {
+        this.partList = responseData.partsList.map((part: any) => {
           let vendorData: any = { ...part };
-
-          (part.vendorNames || []).forEach((vendor: any, index: number) => {
-            vendorData[`vendor${index + 1}`] = vendor; // No .name here
-          });
-
-          console.log("Processed part:", vendorData);
-          return vendorData;
+  
+        (part.vendorNames || []).forEach((vendor: any, index: number) => {
+          vendorData[`vendor${index + 1}`] = vendor;
         });
+
+        return vendorData;
+      });
+
 
         this.paginatedData = this.partList;
         this.totalRecords = responseData.pageInfo?.totalRecords || 0;
@@ -74,6 +60,18 @@ export class PartLandingComponent {
       }
     );
 }
+addColumnsForVendor(maxVendorCount: number) {
+  this.columns = [...PART_TABLE_COLUMNS];
+
+  for (let i = 1; i <= maxVendorCount; i++) {
+    this.columns.push({
+      label: `Vendor ${i}`,
+      columnType: ColumnType.GENERAL,
+      key: `vendor${i}`
+    });
+  }
+}
+  
   
   createPart() {
     this.router.navigateByUrl("/app/parts/create");
