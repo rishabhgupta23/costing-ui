@@ -42,15 +42,15 @@ export class PartLandingComponent {
 
         
         this.partList = responseData.partsList.map((part: any) => {
-          let vendorData: any = { ...part, vendors: part.vendorNames || [] };
+          let vendorData: any = { ...part };
   
-          
-          vendorData.vendors.forEach((vendor: any, index: number) => {
-            vendorData[`vendor${index + 1}`] = vendor;
-          });
-  
-          return vendorData;
+        (part.vendorNames || []).forEach((vendor: any, index: number) => {
+          vendorData[`vendor${index + 1}`] = vendor;
         });
+
+        return vendorData;
+      });
+
 
         this.paginatedData = this.partList;
         this.totalRecords = responseData.pageInfo?.totalRecords || 0;
