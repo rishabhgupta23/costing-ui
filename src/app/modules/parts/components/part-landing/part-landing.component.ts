@@ -34,7 +34,7 @@ export class PartLandingComponent {
   getPartList() {
     this.partService.getPartList(this.currentPage, this.pageSize).subscribe(
       (res) => {
-        console.log("Full API Response:", res);
+        
 
         const responseData = res.data;
         const maxVendorCount = responseData.maxVendorCount || 0;
