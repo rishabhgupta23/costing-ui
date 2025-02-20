@@ -1,0 +1,27 @@
+.cost-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    div {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+
+    mat-form-field {
+      width: 50%;
+    }
+  }
+
+  .sub-heading {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+
+.primary-btn{
+  margin:5px;
+}
+
