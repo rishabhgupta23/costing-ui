@@ -1,0 +1,35 @@
+<div class="app-page">
+    <div class="page-header">
+        <span class="page-title">Cost Calculation</span>
+    </div>
+    <div class="page-content">
+        <div class="card">
+            <form [formGroup]="calculateform" class="cost-form">
+                <div>Select Part</div>
+                    <div>
+                        <mat-form-field appearance="outline">
+                            <mat-select placeholder="Select Part Type" formControlName="partType">
+                                <ng-container *ngFor="let item of partTypes">
+                                    <mat-option [value]="item">{{item}}</mat-option>
+                                </ng-container>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div>Select Pricing</div>
+                    <div>
+                        <mat-form-field appearance="outline">
+                            <mat-select placeholder="Select Pricing" formControlName="pricing">
+                                <ng-container *ngFor="let item of partTypes">
+                                    <mat-option [value]="item">{{item}}</mat-option>
+                                </ng-container>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+            </form>
+            <div class="dialog-action">
+                <button class="primary-btn" (click)="onReset()">Reset</button>
+                <button class="primary-btn" (click)="onCreate()">Calculate</button>
+            </div>
+        </div>
+    </div>
+</div>

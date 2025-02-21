@@ -8,5 +8,9 @@ export class AppConfig {
       label: 'Vendors',
       route: '/app/vendors',
     },
+    {
+      label: 'Cost Calculator',
+      route: '/app/calculate',
+    }
   ];
 }

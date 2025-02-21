@@ -1,31 +1,43 @@
 <div class="app-page">
     <div class="page-header">
-        <span class="page-title">Create Vendors</span>
+      <span class="page-title">{{ vendorId ? 'Edit Vendor' : 'Create Vendor' }}</span>
     </div>
     <div class="page-content">
-        <div class="card">
-            <form [formGroup]="vendorForm" class="vendor-form">
-                <div>Vendor Name <sup>*</sup></div>
-                <mat-form-field appearance="outline">
-                    <input matInput placeholder="Enter Name" formControlName="name">
-                </mat-form-field>
-                <div>Email Id</div>
-                <mat-form-field appearance="outline">
-                    <input matInput placeholder="Enter Email ID" formControlName="emailId">
-                </mat-form-field>
-                <div>Contact Number <sup>*</sup></div>
-                <mat-form-field appearance="outline">
-                    <input matInput placeholder="Enter Contact Number" formControlName="contactNumber">
-                </mat-form-field>
-                <div>Address</div>
-                <mat-form-field appearance="outline">
-                    <input matInput placeholder="Enter Address" formControlName="address">
-                </mat-form-field>
-            </form>
-            <div class="dialog-action">
-                <button class="primary-btn" (click)="onCancel()">Cancel</button>
-                <button class="primary-btn" (click)="onCreate()">Create</button>
-            </div>
+      <div class="card">
+        <form [formGroup]="vendorForm" class="vendor-form">
+          <div>Vendor Name <sup>*</sup></div>
+          <mat-form-field appearance="outline">
+            <input id="vendor-name" matInput placeholder="Enter Name" formControlName="name">
+            <mat-error *ngIf="vendorForm.get('name')?.invalid && vendorForm.get('name')?.touched">
+              {{ getErrorMessage('name') }}
+            </mat-error>
+          </mat-form-field>
+  
+          <div>Email Id</div>
+          <mat-form-field appearance="outline">
+            <input matInput placeholder="Enter Email ID" formControlName="emailId">
+          </mat-form-field>
+  
+          <div>Contact Number <sup>*</sup></div>
+          <mat-form-field appearance="outline">
+            <input id="contact-number" matInput placeholder="Enter Contact Number" formControlName="contactNumber">
+            <mat-error *ngIf="vendorForm.get('contactNumber')?.invalid && vendorForm.get('contactNumber')?.touched">
+              {{ getErrorMessage('contactNumber') }}
+            </mat-error>
+          </mat-form-field>
+  
+          <div>Address</div>
+          <mat-form-field appearance="outline">
+            <input matInput placeholder="Enter Address" formControlName="address">
+          </mat-form-field>
+        </form>
+  
+        <div class="dialog-action">
+          <button class="primary-btn" (click)="onCancel()">Cancel</button>
+          <button class="primary-btn" [disabled]="vendorForm.invalid" (click)="onSubmit()">
+            {{ vendorId ? 'Update' : 'Create' }}
+          </button>
         </div>
+      </div>
     </div>
-</div>
+  </div>

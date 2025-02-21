@@ -1,7 +1,11 @@
 <div class="app-page">
     <div class="page-header">
-        <span class="page-title">Create Parts</span>
-        <button class="primary-btn" (click)="createPart()">Create</button>
+        <span class="page-title">{{ partId ? 'Edit Part' : 'Create Part' }}</span>
+        <div class="dialog-action">
+            <button class="primary-btn" [disabled]="partForm.invalid" (click)="onSubmit()">
+              {{ partId ? 'Update' : 'Create' }}
+            </button>
+          </div>
     </div>
     <div class="page-content">
         <div class="card part-form-container">
@@ -53,8 +57,8 @@
                     </div>
                 </div>  
             </div>
-            <hr>
-            <div [formGroup]="costDetailsForm">
+            <div *ngIf="partForm.get('partType')?.value === partTypeEnum.UNIT" [formGroup]="costDetailsForm">
+                <hr>
                 <!-- Cost Section-->
                  <div formArrayName="costFactors">
                     <div class="sub-heading"> Cost Details </div>
@@ -109,11 +113,40 @@
                             <app-table [data]="vendorCostMap.get(vendor) || []" [config]="COST_FACTOR_TABLE_COLUMNS"></app-table>
                         </div>
                     </div> -->
-                 </div>
+                    </div>
             </div>
-            <div>
-                <!-- BOM Section -->
-            </div>
+            <!-- <div [formGroup]="bomDetailsForm">
+              <div class="sub-heading">BOM Details</div>
+              <div class="bom-form">
+                <div>Unit Part</div>
+                <mat-form-field appearance="outline">
+                  <mat-select placeholder="Select Unit Part" [(value)]="selectedPart">
+                    <ng-container *ngFor="let part of filteredPartList">
+                      <mat-option [value]="part">{{ part.partName }}</mat-option>
+                    </ng-container>
+                  </mat-select>
+                </mat-form-field>
+                <button class="primary-btn" (click)="addUnitPart()">Add</button>
+              </div>
+            
+              <div *ngIf="unitPartList.length > 0">
+                <div class="sub-heading">Added Unit Parts</div>
+                <app-table [data]="unitPartList" [config]="COST_FACTOR_TABLE_COLUMNS"></app-table>
+              </div>
+            </div> -->
+
+            <div *ngIf="partForm.get('partType')?.value === partTypeEnum.MASTER" [formGroup]="bomDetailsForm">
+                <hr>
+                <div class="sub-heading">BOM Details</div>
+                <button class="primary-btn" (click)="openBomDialog()">Select Parts</button>
+                
+                
+              <div *ngIf="bomPartList.length > 0">
+                <br>
+                <div class="sub-heading">Added Unit Parts</div>
+                <app-table [data]="bomPartList" [config]="BOM_TABLE_COLUMNS"></app-table>
+              </div>
+              
         </div>
     </div>
 </div>

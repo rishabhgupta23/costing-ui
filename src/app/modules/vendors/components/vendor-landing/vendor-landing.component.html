@@ -7,7 +7,12 @@
     </div>
     <div class="page-content">
         <div class="card-nc">
-            <app-table [data]="vendorList" [config]="columns"></app-table>
+            <app-table 
+            [data]="vendorList" 
+            [config]="columns"
+            (actionTriggered)="handleAction($event)"
+            [showActions]="true" >
+        </app-table>
         </div>
     </div>
 </div>

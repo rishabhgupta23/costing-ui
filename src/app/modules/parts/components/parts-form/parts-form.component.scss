@@ -32,3 +32,16 @@
         position: absolute;
     }
 }
+
+.bom-form {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    width: 50%;
+    align-items: baseline;
+    column-gap: 1rem;
+
+    button {
+        height: fit-content;
+        width: fit-content;
+    }
+}

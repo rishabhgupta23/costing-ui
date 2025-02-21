@@ -9,9 +9,11 @@ const routes: Routes = [
     component: VendorLandingComponent
   },
   {
-    path: "create",
+    path: ":mode",
     component: VendorFormComponent
-  }
+  },
+   { 
+     path: ':mode/:id', component: VendorFormComponent },
 ];
 
 @NgModule({
