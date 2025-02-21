@@ -29,7 +29,7 @@ export class PartService {
   }
 
   deletePart(partId: string): Observable<string> {
-    return this.http.delete<string>(`http://localhost:8080/parts/${partId}` , { responseType: 'text' as 'json' });
+    return this.http.delete<string>(`http://localhost:8080/partss/${partId}`);
   }
 
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
-import { MatDialogRef,MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef,MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -10,6 +10,7 @@ import { Vendor } from '../../../data/models/vendor';
 import { DialogCloseResponse } from '../../constants/dialog.constants';
 import { DISCARD_TABLE_COLUMNS } from '../../constants/discard.constant';
 import { TableComponent } from '../table/table.component';
+import { InfoDialogComponent } from '../infodialog/infodialog.component';
 
 @Component({
   selector: 'app-discard-dialog',
@@ -28,14 +29,21 @@ export class DiscardDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<DiscardDialogComponent>,
     private http: HttpClient,
-    @Inject(MAT_DIALOG_DATA) public data: { row: Vendor }
+    @Inject(MAT_DIALOG_DATA) public data: { row: Vendor },
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     if (this.data && this.data.row.id) {
       this.fetchData(this.data.row.id);
     } else {
-      console.error('No vendorId provided to the dialog.');
+      this.dialog.open(InfoDialogComponent, {
+        width: '400px',
+        data: {
+          title: 'Error',
+          message: 'No vendorId provided to the dialog.'
+        }
+      });
     }
   }
   
@@ -45,11 +53,17 @@ export class DiscardDialogComponent implements OnInit {
       .subscribe({
         next: (response) => {
         this.dataSource = new MatTableDataSource(response);
+        this.paginator.pageSize = 10;
         this.dataSource.paginator = this.paginator;
         },
         error: (error) => {
-          console.error('Error fetching vendor parts:', error);
-      
+          this.dialog.open(InfoDialogComponent, {
+            width: '400px',
+            data: {
+              title: 'Error',
+              message: 'Error fetching vendor parts.'
+            }
+          });
         }
       });
   }
