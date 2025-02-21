@@ -29,7 +29,8 @@ export class PartLandingComponent {
     this.getPartList();
   }
   getPartList() {
-    this.partService.getPartList(this.currentPage, this.pageSize).subscribe((res) => {
+    this.partService.getPartList(this.currentPage, this.pageSize).subscribe(
+      (res) => {
       this.partList = res.data;
       this.paginatedData = this.partList;
       this.totalRecords = res.pageInfo.totalRecords;
@@ -59,11 +60,13 @@ export class PartLandingComponent {
     }
   }
   deletePart(partId: string) {
+
     this.partService.deletePart(partId).subscribe(() => {
       this.getPartList();
+      
     });
+    
   }
-  
   onPageChange(event: PageEvent) {
     this.pageSize = event.pageSize;
     this.currentPage = event.pageIndex;
