@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core';
+
+import { Component, inject, ChangeDetectorRef} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 import { PART_TABLE_COLUMNS } from '../../../../data/constants/part-table-config.constants';
@@ -8,6 +9,7 @@ import { PartCreateRequest } from '../../../../data/models/part';
 import { PageEvent } from '@angular/material/paginator';
 import { TableActions } from '../../../../shared/constants/table.constants';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { ColumnType } from '../../../../shared/constants/table.constants'; //new
 
 
 @Component({
@@ -24,24 +26,61 @@ export class PartLandingComponent {
   readonly dialog = inject(MatDialog);
   totalRecords: number=0;
   pageInfo: any;
+  
+  
 
   constructor(private partService: PartService, private router: Router) {
     this.getPartList();
   }
+
   getPartList() {
     this.partService.getPartList(this.currentPage, this.pageSize).subscribe(
       (res) => {
-      this.partList = res.data;
-      this.paginatedData = this.partList;
-      this.totalRecords = res.pageInfo.totalRecords;
+        
+
+        const responseData = res.data;
+        const maxVendorCount = responseData.maxVendorCount || 0;
+         this.addColumnsForVendor(maxVendorCount);
+
+        
+        this.partList = responseData.partsList.map((part: any) => {
+          let vendorData: any = { ...part };
+  
+        (part.vendorNames || []).forEach((vendor: any, index: number) => {
+          vendorData[`vendor${index + 1}`] = vendor;
+        });
+
+        return vendorData;
+      });
+
+
+        this.paginatedData = this.partList;
+        this.totalRecords = responseData.pageInfo?.totalRecords || 0;
+      },
+      (error) => {
+        console.error("Error fetching part list:", error);
+      }
+    );
+}
+addColumnsForVendor(maxVendorCount: number) {
+  this.columns = [...PART_TABLE_COLUMNS];
+
+  for (let i = 1; i <= maxVendorCount; i++) {
+    this.columns.push({
+      label: `Vendor ${i}`,
+      columnType: ColumnType.GENERAL,
+      key: `vendor${i}`
     });
   }
-
+}
+  
+  
   createPart() {
     this.router.navigateByUrl("/app/parts/create");
   }
 
-  handleAction(event: { action: TableActions; row: any }) {
+  handleAction(event: { action: TableActions; row:any}) {
+    console.log(event.row);
     const { action, row } = event;
     if (action === TableActions.EDIT) {
       this.router.navigateByUrl(`/app/parts/edit/${row.partId}`);
@@ -79,3 +118,5 @@ export class PartLandingComponent {
     this.paginatedData = this.partList.slice(startIndex, endIndex);
   }
 }
+
+ 
