@@ -1,5 +1,5 @@
 
-import { Component, inject, ChangeDetectorRef} from '@angular/core';
+import { Component, inject} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 import { PART_TABLE_COLUMNS } from '../../../../data/constants/part-table-config.constants';
@@ -80,7 +80,6 @@ addColumnsForVendor(maxVendorCount: number) {
   }
 
   handleAction(event: { action: TableActions; row:any}) {
-    console.log(event.row);
     const { action, row } = event;
     if (action === TableActions.EDIT) {
       this.router.navigateByUrl(`/app/parts/edit/${row.partId}`);
