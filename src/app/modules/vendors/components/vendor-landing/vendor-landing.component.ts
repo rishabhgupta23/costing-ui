@@ -27,7 +27,6 @@ export class VendorLandingComponent {
   getVendorList(): void {
     this.vendorService.getVendorList().subscribe({
       next: (res) => {
-        console.log('Vendor data',res)
         this.vendorList = res;
       }
     });
