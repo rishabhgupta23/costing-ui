@@ -43,7 +43,7 @@
       <span class="icon-wrapper" *ngIf="action === TableActions.DELETE">
         <mat-icon 
           class="delete-btn" 
-          svgIcon="delete" 
+          svgIcon="delete"
           (click)="handleAction({ action: action, row: row })">
         </mat-icon>
       </span>
@@ -51,20 +51,6 @@
   </td>
   
 </ng-container>
-
-          
-
-          <!-- Actions Column -->
-          <!-- <td *ngIf="showActions">
-            <button mat-icon-button color="primary" (click)="handleAction({ action: 'edit', row: row })">
-              <i class="fa-regular fa-pen-to-square"></i>
-            </button> -->
-
-          <!-- Delete Button -->
-          <!-- <button mat-icon-button color="warn" (click)="handleAction({ action: 'delete', row: row })">
-            <mat-icon svgIcon="delete"></mat-icon>
-          </button>
-          </td> -->
       </tr>
   </ng-container>
 </tbody>

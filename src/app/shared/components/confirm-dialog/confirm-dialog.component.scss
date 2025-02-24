@@ -1,15 +1,17 @@
-h2 {
+.title {
     font-family: 'Poppins', 'Roboto', sans-serif;
     font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: 1rem;
-    margin-left: 1rem;
+    padding: 0px 24px;
 }
-p {
+.para {
     font-family: 'Poppins', 'Roboto', sans-serif;
-    margin: 1rem;
+    padding: 0px 24px;
   }
-mat-dialog-actions{
-    gap:0.5rem;
-    margin-top: 10px;
+.btn-option{
+  display: flex;
+  justify-content: end;
+  padding: 20px;
+  gap: 10px;
 }

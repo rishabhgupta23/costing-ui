@@ -27,15 +27,12 @@ export class VendorLandingComponent {
   getVendorList(): void {
     this.vendorService.getVendorList().subscribe({
       next: (res) => {
+        console.log('Vendor data',res)
         this.vendorList = res;
       }
     });
   }
   
-
-  openCreateVendorDialog(): void {
-  }
-
   createVendor(): void {
     this.router.navigateByUrl('/app/vendors/create');
   }
@@ -71,21 +68,5 @@ export class VendorLandingComponent {
 
   editRow(row: any): void {
     this.router.navigateByUrl(`/app/vendors/edit/${row.partId}`);
-  }
-
-  
-  deleteVendor(vendorId: string): void {
-    if (confirm('Are you sure you want to delete this vendor?')) {
-      this.vendorService.deleteVendor(vendorId).subscribe(
-        () => {
-          alert('Vendor deleted successfully.');
-          this.getVendorList();
-        },
-        (error: any) => {
-          console.error('Error deleting vendor:', error);
-          alert('Failed to delete vendor.');
-        }
-      );
-    }
   }
 }

@@ -1,14 +1,24 @@
-:host ::ng-deep .appTable .table-container{
+.app-table{
   height: 350px;
-  padding-left: 0.6rem;
+  padding: 10px;
   margin-top: 0.7rem;
   // position: relative;
   // z-index: 1;
 }
-mat-dialog-actions{
-  gap: 10px;
+.title{
+  padding: 0px 24px;
+  margin-bottom: 0px;
 }
-p{
+.btn-choice{
+  display: flex;
+  justify-content: end;
+  padding: 10px;
+  gap: 10px;
+
+}
+.para{
   font-family: 'Poppins', sans-serif;
+  padding: 0px 24px;
+  margin-bottom: 0px;
 }
 

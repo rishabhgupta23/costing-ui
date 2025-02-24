@@ -11,6 +11,7 @@ import { DialogCloseResponse } from '../../constants/dialog.constants';
 import { DISCARD_TABLE_COLUMNS } from '../../constants/discard.constant';
 import { TableComponent } from '../table/table.component';
 import { InfoDialogComponent } from '../infodialog/infodialog.component';
+import { VendorService } from '../../../data/services/vendor/vendor.service';
 
 @Component({
   selector: 'app-discard-dialog',
@@ -26,7 +27,7 @@ export class DiscardDialogComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(
+  constructor(private vendorService: VendorService,
     public dialogRef: MatDialogRef<DiscardDialogComponent>,
     private http: HttpClient,
     @Inject(MAT_DIALOG_DATA) public data: { row: Vendor },
@@ -49,24 +50,14 @@ export class DiscardDialogComponent implements OnInit {
   
 
   fetchData(vendorId: number): void {
-    this.http.get<any[]>(`http://localhost:8080/vendors/${vendorId}/parts`)
-      .subscribe({
-        next: (response) => {
+    this.vendorService.getVendorParts(vendorId)
+      .subscribe(response => {
         this.dataSource = new MatTableDataSource(response);
         this.paginator.pageSize = 10;
         this.dataSource.paginator = this.paginator;
-        },
-        error: (error) => {
-          this.dialog.open(InfoDialogComponent, {
-            width: '400px',
-            data: {
-              title: 'Error',
-              message: 'Error fetching vendor parts.'
-            }
-          });
-        }
       });
   }
+
 
   closeDialog(result: DialogCloseResponse): void {
     this.dialogRef.close(result);

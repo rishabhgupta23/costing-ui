@@ -46,17 +46,6 @@ $costing-ui-theme: mat.define-theme((
     padding: 0;
     background: #f8f8f8;
 }
-.mat-mdc-dialog-container .mat-mdc-dialog-title {
-    font-family: 'Poppins', sans-serif !important;
-    font-size: 1.5rem !important;
-    font-weight: 600 !important;
-    color: #333 !important;
-}
-
-.mat-mdc-dialog-actions {
-    justify-content: flex-end !important;
-}
-
 .app-page {
     height: calc(100% - 2rem);
     padding: 1rem;

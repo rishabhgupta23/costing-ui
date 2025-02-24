@@ -1,8 +1,8 @@
-<h2>{{ data.title || 'Confirm' }}</h2>
-    <div>
+<h2 class="title">{{ data.title || 'Confirm' }}</h2>
+    <div class="para">
       <p>{{ data.message }}</p>
     </div>
-    <mat-dialog-actions align="end">
+    <div class="btn-option" align="end">
       <button  class="secondary-btn" (click)="onCancel()">Cancel</button>
       <button  class="primary-btn" color="warn" (click)="onConfirm()">Delete</button>
-    </mat-dialog-actions>
+    </div>
