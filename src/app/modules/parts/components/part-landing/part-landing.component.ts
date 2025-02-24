@@ -1,5 +1,5 @@
 
-import { Component, inject, ChangeDetectorRef} from '@angular/core';
+import { Component, inject} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 import { PART_TABLE_COLUMNS } from '../../../../data/constants/part-table-config.constants';
@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { PartService } from '../../../../data/services/part/part.service';
 import { PartCreateRequest } from '../../../../data/models/part';
 import { PageEvent } from '@angular/material/paginator';
+import { TableActions } from '../../../../shared/constants/table.constants';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ColumnType } from '../../../../shared/constants/table.constants'; //new
 
 
@@ -77,33 +79,36 @@ addColumnsForVendor(maxVendorCount: number) {
     this.router.navigateByUrl("/app/parts/create");
   }
 
-  handleAction(event: { action: string; row:any}) {
-    console.log(event.row);
+  handleAction(event: { action: TableActions; row:any}) {
     const { action, row } = event;
-    if (action === 'edit') {
+    if (action === TableActions.EDIT) {
       this.router.navigateByUrl(`/app/parts/edit/${row.partId}`);
-    } else if (action === 'delete') {
-      this.deletePart(row.id);
+    } else if (action === TableActions.DELETE) {
+      const dialogData: ConfirmDialogData = {
+        title: 'Delete Part',
+        message: 'Are you sure you want to delete this part?'
+      };
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, { data: dialogData });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === DialogCloseResponse.DELETE) {
+          this.deletePart(row.partId);
+        }
+      });
     }
   }
   deletePart(partId: string) {
-    if (confirm('Are you sure you want to delete this part?')) {
-      this.partService.deletePart(partId).subscribe(
-        () => {
-          alert('Part deleted successfully.');
-          this.getPartList(); // Refresh the part list after deletion
-        },
-        (        error: any) => {
-          console.error('Error deleting part:', error);
-          alert('Failed to delete part.');
-        }
-      );
-    }
+
+    this.partService.deletePart(partId).subscribe(() => {
+      this.getPartList();
+      
+    });
+    
   }
   onPageChange(event: PageEvent) {
     this.pageSize = event.pageSize;
     this.currentPage = event.pageIndex;
-    this.getPartList(); // Fetch data for the current page
+    this.getPartList();
   }
 
   updatePaginatedData() {

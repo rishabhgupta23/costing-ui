@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Vendor } from '../../models/vendor';
 
 @Injectable({
@@ -18,12 +18,18 @@ export class VendorService {
 
   constructor(private http: HttpClient) { }
 
+  getVendorParts(vendorId: number): Observable<any[]> {
+    return this.http.get<any[]>(`http://localhost:8080/vendors/${vendorId}/parts`).pipe(
+      map((res:any)=>res.data));
+  }
+
   getVendorList(): Observable<Vendor[]> {
-    return this.http.get<Vendor[]>('http://localhost:8080/vendors');
+    return this.http.get<Vendor[]>('http://localhost:8080/vendors').pipe(
+    map((res:any)=>res.data));
   }
 
   deleteVendor(vendorId: string): Observable<void> {
-    return this.http.delete<void>(`/api/vendors/${vendorId}`);
+    return this.http.delete<void>(`http://localhost:8080/vendors/${vendorId}`);
   }
   
 
