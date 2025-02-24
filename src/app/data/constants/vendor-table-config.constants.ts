@@ -1,10 +1,11 @@
-import { ColumnType } from "../../shared/constants/table.constants";
+import { ColumnType, TableActions } from "../../shared/constants/table.constants";
 
 export const VENDOR_TABLE_COLUMNS = [
     {
         label: 'Sl. No.',
         columnType: ColumnType.SERIAL_NUMBER,
     },
+
     {
         label: 'Name',
         columnType: ColumnType.GENERAL,
@@ -24,5 +25,12 @@ export const VENDOR_TABLE_COLUMNS = [
         label: 'Address',
         columnType: ColumnType.GENERAL,
         key: 'address'
+    },
+    {
+        label: 'Actions',
+        columnType: ColumnType.ACTION,
+        actions: [
+            TableActions.EDIT,TableActions.DELETE
+        ]
     }
 ]
