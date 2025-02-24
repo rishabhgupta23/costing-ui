@@ -77,6 +77,9 @@
                         <mat-expansion-panel *ngFor="let vendor of vendorCostMap.keys(); let i=index">
                           <mat-expansion-panel-header>
                             <mat-panel-title> Vendor {{i+1}}: {{ getVendorName(vendor) }}  </mat-panel-title>
+                            <mat-panel-description>
+                                <mat-icon class="delete-btn" svgIcon="delete" (click)="deleteVendorFromMap(vendor)"> </mat-icon>
+                              </mat-panel-description>
                           </mat-expansion-panel-header>
                           <div class="vendor-panel-content">
                             <div class="cost-form">

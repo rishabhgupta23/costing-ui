@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
 import { PartService } from '../../../../data/services/part/part.service';
-import { Subscription } from 'rxjs';
+import { map, Subscription } from 'rxjs';
 import { COST_FACTOR_TABLE_COLUMNS } from '../../../../data/constants/part.constants';
 import { VendorService } from '../../../../data/services/vendor/vendor.service';
 import { Vendor } from '../../../../data/models/vendor';
@@ -72,6 +72,11 @@ export class PartsFormComponent implements OnDestroy {
       if (this.partId){
         this.getPartData(this.partId);
       }
+      this.partForm.get('partType')?.valueChanges.subscribe((value) => {
+        if (value === this.partTypeEnum.MASTER) {
+          this.clearVendorCostData();
+        }
+      });
       }
 
       getPartData(id: string): void {
@@ -103,6 +108,12 @@ export class PartsFormComponent implements OnDestroy {
       })
     });
   }
+
+  clearVendorCostData(): void {
+    this.vendorCostMap.clear();
+    this.costDetailsForm.reset();
+  }
+  
 
           
   getPartTypes() {
@@ -168,8 +179,10 @@ export class PartsFormComponent implements OnDestroy {
   
   getPartUnits() {
     this.subscriptions.push(
-      this.partService.getPartUnits().subscribe((res) => {
-        this.partUnits = res;
+      this.partService.getPartUnits().pipe(
+        map((res: any[]) => res.map(unit => unit.unitName))
+      ).subscribe((unitNames) => {
+        this.partUnits = unitNames;
       })
     );
   }
@@ -181,6 +194,12 @@ export class PartsFormComponent implements OnDestroy {
       })
     );
   }
+
+  deleteVendorFromMap(vendorId: number): void {
+    this.vendorCostMap.delete(vendorId); // Directly remove vendor
+    this.cd.detectChanges();
+  }
+  
 
   getVendorList() {
     this.subscriptions.push(
@@ -280,7 +299,7 @@ export class PartsFormComponent implements OnDestroy {
     }));
   }
 
-  generateVendorCostMapBody() {
+    generateVendorCostMapBody() {
     const vendorCostList: VendorCost[] = [];
   
     this.vendorCostMap.forEach((costFactors: CostFactorData[], vendorId: number) => {
