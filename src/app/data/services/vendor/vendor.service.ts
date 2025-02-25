@@ -19,17 +19,17 @@ export class VendorService {
   constructor(private http: HttpClient) { }
 
   getVendorParts(vendorId: number): Observable<any[]> {
-    return this.http.get<any[]>(`http://localhost:8080/vendors/${vendorId}/parts`).pipe(
+    return this.http.get<any[]>(`http://localhost:8081/vendors/${vendorId}/parts`).pipe(
       map((res:any)=>res.data));
   }
 
   getVendorList(): Observable<Vendor[]> {
-    return this.http.get<Vendor[]>('http://localhost:8080/vendors').pipe(
+    return this.http.get<Vendor[]>('http://localhost:8081/vendors').pipe(
     map((res:any)=>res.data));
   }
 
   deleteVendor(vendorId: string): Observable<void> {
-    return this.http.delete<void>(`http://localhost:8080/vendors/${vendorId}`);
+    return this.http.delete<void>(`http://localhost:8081/vendors/${vendorId}`);
   }
   
 

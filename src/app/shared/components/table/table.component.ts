@@ -16,25 +16,18 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrls: ['./table.component.scss']
 })
 export class TableComponent {
-row: any;
-filteredData: any;
-applyFilter(arg0: { key: any; value: any; }) {
-throw new Error('Method not implemented.');
-}
+ row: any;
+ filteredData: any;
+ applyFilter(arg0: { key: any; value: any; }) {
+ throw new Error('Method not implemented.');
+ }
   @Input() data: any[] = [];
   @Input() config: any[] = []; 
-  @Input() showActions: boolean = false; // Determines whether to show the Actions column
-  @Output() actionTriggered = new EventEmitter<{ action: string; row: any }>();
+  @Output() actionTriggered = new EventEmitter<{ action: TableActions; row: any }>();
   @Output() filterChanged = new EventEmitter<{ key: string; value: string }>();
+  TableActions= TableActions;
 
-  
- 
 
-  
-
-  // constructor() {
-  //   this.searchQuery.pipe(debounceTime(300)).subscribe(query => this.filterData(query));
-  // }
 
   onFilterChange(event: Event, key: string): void {
     const value = (event.target as HTMLInputElement).value.toLowerCase();
@@ -47,8 +40,8 @@ throw new Error('Method not implemented.');
   }
 
   
-  handleAction(arg0: { action: string; row: any }): void {
-    const { action, row } = arg0;
+  handleAction(event: { action: TableActions; row: any }): void {
+    const { action, row } = event;
     this.actionTriggered.emit({ action, row });
   }
 

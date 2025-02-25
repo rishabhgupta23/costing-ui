@@ -74,6 +74,7 @@ getVendorList() {
         (item as any)[k]?.toString().toLowerCase().includes(this.filterCriteria[k])
       )
     );
+    console.log(this.filteredData)
   }
 
   
@@ -113,11 +114,11 @@ getVendorList() {
 
   
 
-  handleAction(event: { action: string; row: any }) {
+  handleAction(event: { action: TableActions; row: any }) {
     const { action, row } = event;
-    if (action === 'edit') {
+    if (action === TableActions.EDIT) {
       this.router.navigateByUrl(`/app/vendors/edit/${row.id}`);
-    }else if (action === 'delete') {
+    }else if (action === TableActions.DELETE) {
       this.deleteVendor(row.id);
     }
   }

@@ -27,7 +27,8 @@ export const VENDOR_TABLE_COLUMNS = [
     {
         label: 'Address',
         columnType: ColumnType.GENERAL,
-        key: 'address'
+        key: 'address',
+        filterable: true
     },
     {
         label: 'Actions',
