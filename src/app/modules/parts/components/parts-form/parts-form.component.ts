@@ -243,9 +243,6 @@ export class PartsFormComponent implements OnDestroy {
     if (costFactors) {
       const updatedCostFactors = costFactors.filter(cf => cf.id !== costFactorToRemove.id);
       this.vendorCostMap.set(vendorId, updatedCostFactors);
-  
-      // Trigger change detection or update UI binding
-      this.vendorCostMap = new Map(this.vendorCostMap);
     }
   }
   
