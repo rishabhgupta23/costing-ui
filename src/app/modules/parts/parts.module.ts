@@ -14,6 +14,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { MatDialog, MatDialogActions, MatDialogContent, MatDialogModule } from '@angular/material/dialog';
 import { BomdialogComponent } from './components/bomdialog/bomdialog.component';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { BomdialogComponent } from './components/bomdialog/bomdialog.component';
     MatCheckboxModule,
     MatDialogContent,
     MatDialogActions,
-    MatDialogModule
+    MatDialogModule,
+    MatIconModule,
   ]
 })
 export class PartsModule { }
