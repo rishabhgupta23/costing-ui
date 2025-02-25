@@ -11,10 +11,10 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
   whoAmI(): Observable<User> {
-    return this.http.get<User>("http://localhost:8080/whoami");
+    return this.http.get<User>("http://localhost:8081/whoami");
   }
 
   login(body: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>("http://localhost:8080/auth/login", body);
+    return this.http.post<LoginResponse>("http://localhost:8081/auth/login", body);
   }
 }

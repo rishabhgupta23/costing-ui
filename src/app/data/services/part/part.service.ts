@@ -8,11 +8,11 @@ import { CostFactor, PartCreateRequest, PartRow } from '../../models/part';
 })
 export class PartService {
   updatePart(partId: string, PartCreateRequest: PartCreateRequest): Observable<PartCreateRequest> {
-    return this.http.post<PartCreateRequest>(`${'http://localhost:8080/parts'}/${partId}`, PartCreateRequest);
+    return this.http.post<PartCreateRequest>(`${'http://localhost:8081/parts'}/${partId}`, PartCreateRequest);
   }
 
   getPartById(partId: string): Observable<PartRow> {
-    return this.http.get<PartRow>(`${'http://localhost:8080/parts'}/${partId}`).pipe(
+    return this.http.get<PartRow>(`${'http://localhost:8081/parts'}/${partId}`).pipe(
        map((res: any)=>({
         partId: res?.partId,
         partName: res?.partName,
@@ -24,7 +24,7 @@ export class PartService {
       })));
   }
   getPartList(page: number = 0, size: number = 100): Observable<any> {
-    const url = `http://localhost:8080/parts?page=${page}&size=${size}`;
+    const url = `http://localhost:8081/parts?page=${page}&size=${size}`;
     return this.http.get<any>(url);
   }
 
@@ -36,23 +36,23 @@ export class PartService {
   constructor(private http: HttpClient) { }
 
   getPartTypes(): Observable<string[]> {
-    return this.http.get<string[]>("http://localhost:8080/parts/types");
+    return this.http.get<string[]>("http://localhost:8081/parts/types");
   }
 
   getPartUnits(): Observable<string[]> {
-    return this.http.get<string[]>("http://localhost:8080/parts/units");
+    return this.http.get<string[]>("http://localhost:8081/parts/units");
   }
 
   getPartCategories(): Observable<string[]> {
-    return this.http.get<string[]>("http://localhost:8080/categories");
+    return this.http.get<string[]>("http://localhost:8081/categories");
   }
 
   getCostFactors(): Observable<CostFactor[]> {
-    return this.http.get<CostFactor[]>("http://localhost:8080/parts/cost-factors");
+    return this.http.get<CostFactor[]>("http://localhost:8081/parts/cost-factors");
   }
 
   createPart(body: PartCreateRequest) {
     console.log(body);
-    return this.http.post<PartCreateRequest>("http://localhost:8080/parts", body);
+    return this.http.post<PartCreateRequest>("http://localhost:8081/parts", body);
   }
 }

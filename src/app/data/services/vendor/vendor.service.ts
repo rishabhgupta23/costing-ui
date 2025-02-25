@@ -9,17 +9,17 @@ import { Vendor } from '../../models/vendor';
 export class VendorService {
 
   getVendorById(vendorId: string): Observable<Vendor> {
-    return this.http.get<Vendor>(`${'http://localhost:8080/vendors'}/${vendorId}`);
+    return this.http.get<Vendor>(`${'http://localhost:8081/vendors'}/${vendorId}`);
   }
 
   updateVendor(vendorId: string, vendor: Vendor): Observable<Vendor> {
-    return this.http.put<Vendor>(`${'http://localhost:8080/vendors'}/${vendorId}`, vendor);
+    return this.http.put<Vendor>(`${'http://localhost:8081/vendors'}/${vendorId}`, vendor);
   }
 
   constructor(private http: HttpClient) { }
 
   getVendorList(): Observable<Vendor[]> {
-    return this.http.get<Vendor[]>('http://localhost:8080/vendors');
+    return this.http.get<Vendor[]>('http://localhost:8081/vendors');
   }
 
   deleteVendor(vendorId: string): Observable<void> {
@@ -28,6 +28,6 @@ export class VendorService {
   
 
   createVendor(vendor: Vendor): Observable<any> {
-    return this.http.post<Vendor>('http://localhost:8080/vendors', vendor);
+    return this.http.post<Vendor>('http://localhost:8081/vendors', vendor);
   }
 }

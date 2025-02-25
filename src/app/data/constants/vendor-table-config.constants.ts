@@ -9,20 +9,24 @@ export const VENDOR_TABLE_COLUMNS = [
         label: 'Name',
         columnType: ColumnType.GENERAL,
         key: 'name',
+        filterable: true
     },
     {
         label: 'Email ID',
         columnType: ColumnType.GENERAL,
-        key: 'emailId'
+        key: 'emailId',
+        filterable: true
     },
     {
         label: 'Contact No.',
         columnType: ColumnType.GENERAL,
-        key: 'contactNumber'
+        key: 'contactNumber',
+        filterable: true
     },
     {
         label: 'Address',
         columnType: ColumnType.GENERAL,
-        key: 'address'
+        key: 'address',
+        filterable: true
     }
 ]

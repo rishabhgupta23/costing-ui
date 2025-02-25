@@ -4,6 +4,7 @@ export interface Vendor {
     emailId: string;
     contactNumber: string;
     address: string;
+    
 }
 
 export interface TableActionEvent {
