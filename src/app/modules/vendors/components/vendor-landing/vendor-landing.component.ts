@@ -1,16 +1,18 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, EventEmitter, Output } from '@angular/core';
 import { Vendor } from '../../../../data/models/vendor';
 import { VENDOR_TABLE_COLUMNS } from '../../../../data/constants/vendor-table-config.constants';
 import { VendorService } from '../../../../data/services/vendor/vendor.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 import { Router } from '@angular/router';
-
+import { DiscardDialogComponent } from '../../../../shared/components/discard-dialog/discard-dialog.component';
+import { TableActions } from '../../../../shared/constants/table.constants';
 @Component({
   selector: 'app-vendor-landing',
   templateUrl: './vendor-landing.component.html',
-  styleUrl: './vendor-landing.component.scss'
+  styleUrls: ['./vendor-landing.component.scss']
 })
+
 export class VendorLandingComponent {
   vendorList: Vendor[] = [];
  

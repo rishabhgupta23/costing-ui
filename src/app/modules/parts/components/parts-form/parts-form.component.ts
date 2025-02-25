@@ -11,6 +11,7 @@ import { BomdialogComponent } from '../bomdialog/bomdialog.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BOM_TABLE_COLUMNS } from '../../../../data/constants/bom-table.constants';
 import { PartType } from '../../../../shared/constants/part.constants';
+import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 
 @Component({
   selector: 'app-parts-form',
@@ -29,9 +30,7 @@ export class PartsFormComponent implements OnDestroy {
   BOM_TABLE_COLUMNS = BOM_TABLE_COLUMNS;
   vendorCostMap: Map<number, CostFactorData[]> = new Map();
   bomPartList: PartBomData[] =[]; 
-  partList: PartRow[] =[];
   pageSize: number = 100 // Default items per page
-  selectedParts: Set<number> = new Set<number>();
   partTypeEnum= PartType;
   
   
@@ -69,7 +68,6 @@ export class PartsFormComponent implements OnDestroy {
     this.getPartCategories();
     this.getVendorList();
     this.getCostFactors();
-    this.getPartList();
 
       if (this.partId){
         this.getPartData(this.partId);
@@ -110,27 +108,47 @@ export class PartsFormComponent implements OnDestroy {
     const dialogRef = this.dialog.open(BomdialogComponent, {
       width: '600px',
       data: { 
-        selectedParts: new Set(this.bomPartList.map(part => part.id))
+        existingParts: new Set(this.bomPartList.map(part => part.id) || [])
       }
     });
   
-    dialogRef.afterClosed().subscribe((selectedPartIds: Set<number> | undefined) => {
-      this.handleDialogClose(selectedPartIds);
+    dialogRef.afterClosed().subscribe((res: {data: any, action: DialogCloseResponse}) => {
+      if(res.action == DialogCloseResponse.UPDATE) {
+        this.handleDialogClose(res?.data);
+      }
     });
   }
   
-  handleDialogClose(selectedPartIds: Set<number> | undefined): void {
-    if (selectedPartIds && selectedPartIds.size > 0) {
-      const existingPartsMap = new Map(this.bomPartList.map(part => [part.id, part.value]));
-      this.bomPartList = this.partList
-        .filter(part => selectedPartIds.has(part.partId))
-        .map(part => ({
-          id: part.partId,
-          partNumber: part.partNumber,
-          partName: part.partName,
-          value: existingPartsMap.get(part.partId) ?? 0  // Default value
-        }));
+  handleDialogClose(selectedParts: Set<PartRow>): void 
+  {
+    console.log(selectedParts);
+    if (!selectedParts || selectedParts.size === 0){
+      this.bomPartList = [];
     }
+
+    selectedParts.forEach(part => {
+      const exists = this.bomPartList.find(existingPart => part.partId == existingPart.id);
+      if(!exists) {
+        this.bomPartList.push({
+          id:part.partId,
+          partName:part.partName,
+          partNumber:part.partNumber,
+          value:0,
+        })
+      }
+    });
+
+    // check if sme pat exist in bomPartList but not in selectedPart then delete that part from list
+  
+    this.bomPartList = this.bomPartList.filter(existingPart =>{
+      let filter = false;
+      selectedParts.forEach(p => {
+        if(p.partId === existingPart.id) {
+          filter = true;
+        }
+      });
+      return filter;
+    });
   }
   
 
@@ -167,14 +185,6 @@ export class PartsFormComponent implements OnDestroy {
     );
   }
 
-    getPartList(page: number = 0, size: number = this.pageSize) {
-    this.subscriptions.push(
-      this.partService.getPartList(page,size).subscribe((res) => {
-        this.partList = res.data;
-      })
-    );
-  }
-
   get costFactors() {
     return this.costDetailsForm.get('costFactors') as FormArray;
   }
@@ -203,30 +213,6 @@ export class PartsFormComponent implements OnDestroy {
   
   get masterParts() {
     return this.bomDetailsForm.get('masterParts') as FormArray;
-  }
-
-  // Add a new Unit Part
-  addPartToBom() {
-    if (this.selectedParts.size === 0) {
-      console.error('No part selected');
-      return;
-    }
-
-    // Add selected parts to the unitPartList
-    this.partList.forEach(part => {
-      if (this.selectedParts.has(part.partId)) {
-        const isPresent = this.bomPartList.some(item => item?.partName === part.partName);
-        if (!isPresent) {
-          this.bomPartList.push({
-            id: part.partId,
-            partName: part.partName,
-            partNumber: part.partNumber,
-            value: 0,
-          } as PartBomData);
-        }
-      }
-    });
-    console.log(this.bomPartList);
   }
 
   
