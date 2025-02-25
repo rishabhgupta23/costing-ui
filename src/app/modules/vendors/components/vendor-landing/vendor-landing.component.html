@@ -8,10 +8,16 @@
     <div class="page-content">
         <div class="card-nc">
             <app-table 
-            [data]="vendorList" 
+            [data]="paginatedData" 
             [config]="columns"
             (actionTriggered)="handleAction($event)">
         </app-table>
+        <mat-paginator 
+        [length]="totalRecords" 
+        [pageSize]="pageSize" 
+        [pageSizeOptions]="[100,200]" 
+        (page)="onPageChange($event)">
+      </mat-paginator>
         </div>
     </div>
 </div>

@@ -24,7 +24,7 @@ export class PartService {
       })));
   }
   getPartList(page: number = 0, size: number = 100): Observable<any> {
-    const url = `http://localhost:8080/parts?page=${page}&size=${size}`;
+    const url = `http://localhost:8080/parts?pageNumber=${page}&pageSize=${size}`;
     return this.http.get<any>(url);
   }
 

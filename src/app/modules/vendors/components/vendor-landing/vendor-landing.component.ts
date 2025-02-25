@@ -5,6 +5,7 @@ import { VendorService } from '../../../../data/services/vendor/vendor.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 import { Router } from '@angular/router';
+import { PageEvent } from '@angular/material/paginator';
 import { DiscardDialogComponent } from '../../../../shared/components/discard-dialog/discard-dialog.component';
 import { TableActions } from '../../../../shared/constants/table.constants';
 @Component({
@@ -16,6 +17,11 @@ import { TableActions } from '../../../../shared/constants/table.constants';
 export class VendorLandingComponent {
   vendorList: Vendor[] = [];
   columns: any[] = VENDOR_TABLE_COLUMNS;
+  paginatedData: any[] = []; // Data to display on the current page
+  pageSize: number = 5 // Default items per page
+  currentPage: number = 0; // Current page index
+  totalRecords: number=0;
+  pageInfo: any;
   readonly dialog = inject(MatDialog);
 
   
@@ -25,11 +31,14 @@ export class VendorLandingComponent {
   }
 
   getVendorList(): void {
-    this.vendorService.getVendorList().subscribe({
-      next: (res) => {
-        this.vendorList = res;
+    this.vendorService.getVendorList(this.currentPage, this.pageSize).subscribe(
+      (res) =>{
+        console.log(res);
+        this.vendorList = res.data;
+        this.paginatedData = this.vendorList;
+        this.totalRecords = res.pageInfo?.totalRecords || 0;
       }
-    });
+    );
   }
   
   createVendor(): void {
@@ -67,5 +76,17 @@ export class VendorLandingComponent {
 
   editRow(row: any): void {
     this.router.navigateByUrl(`/app/vendors/edit/${row.partId}`);
+  }
+
+  onPageChange(event: PageEvent) {
+    this.pageSize = event.pageSize;
+    this.currentPage = event.pageIndex;
+    this.getVendorList();
+  }
+
+  updatePaginatedData() {
+    const startIndex = this.currentPage * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedData = this.vendorList.slice(startIndex, endIndex);
   }
 }

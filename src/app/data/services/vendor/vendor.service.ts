@@ -23,9 +23,9 @@ export class VendorService {
       map((res:any)=>res.data));
   }
 
-  getVendorList(): Observable<Vendor[]> {
-    return this.http.get<Vendor[]>('http://localhost:8080/vendors').pipe(
-    map((res:any)=>res.data));
+  getVendorList(page: number = 0, size: number = 100): Observable<any> {
+    const url = `http://localhost:8080/vendors?pageNo=${page}&pageSize=${size}`;
+    return this.http.get<any>(url);
   }
 
   deleteVendor(vendorId: string): Observable<void> {
