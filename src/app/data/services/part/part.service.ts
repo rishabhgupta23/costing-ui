@@ -27,8 +27,7 @@ export class PartService {
   constructor(private http: HttpClient) { }
 
   getPartTypes(): Observable<string[]> {
-    return this.http.get<string[]>("http://localhost:8081/parts/types").pipe(
-      map((res:any)=>res.data));
+    return this.http.get<string[]>("http://localhost:8081/parts/types");
   }
 
   getPartUnits(): Observable<string[]> {
