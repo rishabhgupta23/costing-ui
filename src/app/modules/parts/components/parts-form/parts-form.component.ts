@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
+import { Component, OnDestroy} from '@angular/core';
 import { PartService } from '../../../../data/services/part/part.service';
 import { map, Subscription } from 'rxjs';
 import { COST_FACTOR_TABLE_COLUMNS } from '../../../../data/constants/part.constants';
@@ -12,6 +12,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BOM_TABLE_COLUMNS } from '../../../../data/constants/bom-table.constants';
 import { PartType } from '../../../../shared/constants/part.constants';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
+import { TableActions } from '../../../../shared/constants/table.constants';
 
 @Component({
   selector: 'app-parts-form',
@@ -57,7 +58,7 @@ export class PartsFormComponent implements OnDestroy {
 
 
   constructor(private partService: PartService, private vendorService: VendorService,     private route: ActivatedRoute,
-    private router: Router, private dialog: MatDialog, private cd: ChangeDetectorRef) {
+    private router: Router, private dialog: MatDialog) {
       
     }
 
@@ -197,7 +198,6 @@ export class PartsFormComponent implements OnDestroy {
 
   deleteVendorFromMap(vendorId: number): void {
     this.vendorCostMap.delete(vendorId); // Directly remove vendor
-    this.cd.detectChanges();
   }
   
 
@@ -221,10 +221,6 @@ export class PartsFormComponent implements OnDestroy {
     return this.costDetailsForm.get('costFactors') as FormArray;
   }
 
-  // get vendors() {
-  //   return this.costDetailsForm.get('vendors') as FormArray;
-  // }
-
   addVendor(vendor: Vendor) {
     if(vendor == undefined || this.vendorCostMap.has(vendor.id)) {
       // show message
@@ -234,7 +230,24 @@ export class PartsFormComponent implements OnDestroy {
     }
   }
 
+  handleAction(event: { action: TableActions; row: any }, vendorId: number) {
+    const { action, row } = event;
+    if (action === TableActions.DELETE) {
+      this.removeCostFactor(row, vendorId);
+    }
+  }
 
+  removeCostFactor(costFactorToRemove: CostFactorData, vendorId: number) {
+    const costFactors = this.vendorCostMap.get(vendorId);
+  
+    if (costFactors) {
+      const updatedCostFactors = costFactors.filter(cf => cf.id !== costFactorToRemove.id);
+      this.vendorCostMap.set(vendorId, updatedCostFactors);
+  
+      // Trigger change detection or update UI binding
+      this.vendorCostMap = new Map(this.vendorCostMap);
+    }
+  }
   
   bomDetailsForm = new FormGroup({
     masterParts: new FormArray([]),
@@ -303,6 +316,7 @@ export class PartsFormComponent implements OnDestroy {
     const vendorCostList: VendorCost[] = [];
   
     this.vendorCostMap.forEach((costFactors: CostFactorData[], vendorId: number) => {
+      if (costFactors.length > 0) {
       const costFactorValues = costFactors.map(cf => ({
         id: cf.id,
         value: cf.value
@@ -314,6 +328,7 @@ export class PartsFormComponent implements OnDestroy {
       };
   
       vendorCostList.push(vendorCostFactorData);
+    }
     });
   
     return vendorCostList;

@@ -94,7 +94,7 @@
                                 <button class="primary-btn" (click)="addCostFactorFromFieldValue(i,vendor)">Add</button>
                               </div>
                               <div>
-                                <app-table *ngIf="(vendorCostMap.get(vendor) || []).length > 0" [data]="vendorCostMap.get(vendor) || []" [config]="COST_FACTOR_TABLE_COLUMNS"></app-table>
+                                <app-table *ngIf="(vendorCostMap.get(vendor) || []).length > 0" [data]="vendorCostMap.get(vendor) || []" [config]="COST_FACTOR_TABLE_COLUMNS" (actionTriggered)="handleAction($event, vendor)"></app-table>
                               </div>
                           </div>
                         </mat-expansion-panel>

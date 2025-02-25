@@ -6,7 +6,7 @@ export interface CostFactor {
 }
 
 export interface CostFactorData {
-    id?: number;
+    id: number;
     name?: string;
     value: number;
 }
@@ -24,7 +24,7 @@ export interface Part {
 }
 
 export interface PartCreateRequest extends Part {
-    vendorCostList: any[];
+    vendorCostList: VendorCost[];
     bom:{ childPartId: number; quantity: number }[];
 }
 
