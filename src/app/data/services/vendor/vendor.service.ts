@@ -27,6 +27,7 @@ export class VendorService {
     return this.http.get<Vendor[]>('http://localhost:8081/vendors').pipe(
     map((res:any)=>res.data));
   }
+  
 
   deleteVendor(vendorId: string): Observable<void> {
     return this.http.delete<void>(`http://localhost:8081/vendors/${vendorId}`);

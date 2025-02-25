@@ -1,10 +1,9 @@
 export interface Vendor {
     id: number;
-    name: string;
-    emailId: string;
-    contactNumber: string;
-    address: string;
-    
+    name?: string;
+    emailId?: string;
+    contactNumber?: string;
+    address?: string;
 }
 
 export interface TableActionEvent {

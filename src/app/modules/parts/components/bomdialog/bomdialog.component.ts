@@ -43,9 +43,10 @@ this.getPartList();
 getPartList():void{
   this.partService.getPartList(this.currentPage, this.pageSize).subscribe(
     (response) => {
-      this.partList = response.data || [];
+      this.partList = response.data?.partsList || [];
       this.existingParts = this.data.existingParts;
 });
+
 }
 
 isAllSelected(): boolean {

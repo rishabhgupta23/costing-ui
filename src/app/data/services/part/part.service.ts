@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { CostFactor, PartCreateRequest, PartRow } from '../../models/part';
+import { CostFactor, PartCreateRequest, PartDetails, PartRow } from '../../models/part';
 
 @Injectable({
   providedIn: 'root'
@@ -11,17 +11,8 @@ export class PartService {
     return this.http.post<PartCreateRequest>(`${'http://localhost:8081/parts'}/${partId}`, PartCreateRequest);
   }
 
-  getPartById(partId: string): Observable<PartRow> {
-    return this.http.get<PartRow>(`${'http://localhost:8081/parts'}/${partId}`).pipe(
-       map((res: any)=>({
-        partId: res?.partId,
-        partName: res?.partName,
-        partNumber: res?.partNumber,
-        categoryName: res?.categoryName,
-        type: res?.type,
-        unit: res?.unit
-        
-      })));
+  getPartById(partId: string): Observable<PartDetails> {
+    return this.http.get<PartDetails>(`${'http://localhost:8081/parts'}/${partId}`);
   }
   getPartList(page: number = 0, size: number = 100): Observable<any> {
     const url = `http://localhost:8081/parts?page=${page}&size=${size}`;
