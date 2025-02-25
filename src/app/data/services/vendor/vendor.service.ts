@@ -27,6 +27,7 @@ export class VendorService {
     const url = `http://localhost:8080/vendors?pageNo=${page}&pageSize=${size}`;
     return this.http.get<any>(url);
   }
+  
 
   deleteVendor(vendorId: string): Observable<void> {
     return this.http.delete<void>(`http://localhost:8080/vendors/${vendorId}`);
