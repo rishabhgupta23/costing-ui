@@ -23,6 +23,7 @@ export class VendorLandingComponent {
   filterCriteria: { [key: string]: string } = {};
   
   
+  
   constructor(private vendorService: VendorService, private router: Router) {
     this.getVendorList();
   }

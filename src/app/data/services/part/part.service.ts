@@ -36,19 +36,23 @@ export class PartService {
   constructor(private http: HttpClient) { }
 
   getPartTypes(): Observable<string[]> {
-    return this.http.get<string[]>("http://localhost:8081/parts/types");
+    return this.http.get<string[]>("http://localhost:8081/parts/types").pipe(
+      map((res:any)=>res.data));
   }
 
   getPartUnits(): Observable<string[]> {
-    return this.http.get<string[]>("http://localhost:8081/parts/units");
+    return this.http.get<string[]>("http://localhost:8081/parts/units").pipe(
+      map((res:any)=>res.data));
   }
 
   getPartCategories(): Observable<string[]> {
-    return this.http.get<string[]>("http://localhost:8081/categories");
+    return this.http.get<string[]>("http://localhost:8081/categories").pipe(
+      map((res:any)=>res.data));
   }
 
   getCostFactors(): Observable<CostFactor[]> {
-    return this.http.get<CostFactor[]>("http://localhost:8081/parts/cost-factors");
+    return this.http.get<CostFactor[]>("http://localhost:8081/parts/cost-factors").pipe(
+      map((res:any)=>res.data));
   }
 
   createPart(body: PartCreateRequest) {

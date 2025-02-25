@@ -3,32 +3,37 @@ import { ColumnType, TableActions } from "../../shared/constants/table.constants
 export const VENDOR_TABLE_COLUMNS = [
     {
         label: 'Sl. No.',
-        columnType: ColumnType.SERIAL_NUMBER,
+        columnType: ColumnType.SERIAL_NUMBER
+        
     },
 
     {
         label: 'Name',
         columnType: ColumnType.GENERAL,
         key: 'name',
-        filterable: true
+        filterable: true,
+        
     },
     {
         label: 'Email ID',
         columnType: ColumnType.GENERAL,
         key: 'emailId',
-        filterable: true
+        filterable: true,
+        
     },
     {
         label: 'Contact No.',
         columnType: ColumnType.GENERAL,
         key: 'contactNumber',
-        filterable: true
+        filterable: true,
+        
     },
     {
         label: 'Address',
         columnType: ColumnType.GENERAL,
         key: 'address',
-        filterable: true
+        filterable: true,
+        
     },
     {
         label: 'Actions',

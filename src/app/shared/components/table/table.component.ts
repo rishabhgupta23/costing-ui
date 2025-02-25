@@ -16,6 +16,7 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrls: ['./table.component.scss']
 })
 export class TableComponent {
+
  row: any;
  filteredData: any;
  applyFilter(arg0: { key: any; value: any; }) {
@@ -25,11 +26,14 @@ export class TableComponent {
   @Input() config: any[] = []; 
   @Output() actionTriggered = new EventEmitter<{ action: TableActions; row: any }>();
   @Output() filterChanged = new EventEmitter<{ key: string; value: string }>();
+ 
   TableActions= TableActions;
+  ColumnType = ColumnType;
 
+  
+  
 
-
-  onFilterChange(event: Event, key: string): void {
+   onFilterChange(event: Event, key: string): void {
     const value = (event.target as HTMLInputElement).value.toLowerCase();
     this.filterChanged.emit({ key, value });
   }
@@ -38,16 +42,13 @@ export class TableComponent {
     input.value = '';
     this.filterChanged.emit({ key: columnKey, value: '' });
   }
-
-  
   handleAction(event: { action: TableActions; row: any }): void {
     const { action, row } = event;
     this.actionTriggered.emit({ action, row });
   }
 
-    ColumnType = ColumnType;
+   // ColumnType = ColumnType;
     router: Router = inject(Router);
-
 
   }
 
