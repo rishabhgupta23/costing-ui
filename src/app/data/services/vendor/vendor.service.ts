@@ -7,10 +7,7 @@ import { Vendor } from '../../models/vendor';
   providedIn: 'root'
 })
 export class VendorService {
-  
-  getFilteredVendorList(key: string, value: string) {
-    throw new Error('Method not implemented.');
-  }
+
 
   getVendorById(vendorId: string): Observable<Vendor> {
     return this.http.get<Vendor>(`${'http://localhost:8081/vendors'}/${vendorId}`);
@@ -42,8 +39,6 @@ export class VendorService {
       map((res: any) => res.data)
     );
   }
-  
-  
   
 
   deleteVendor(vendorId: string): Observable<void> {

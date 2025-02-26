@@ -7,7 +7,7 @@
           <th [title]="col?.label">{{ col?.label }}</th>
         </ng-container>
   </tr>
-  <tr class="filter-row">
+  <tr class="filter-row" *ngIf="showFilter">
     <ng-container *ngFor="let col of config">
       <th>
         <ng-container *ngIf="col.filterable">
@@ -17,16 +17,15 @@
               #filterInput 
               (input)="onFilterChange($event, col.key)" 
               placeholder="Filter {{ col.label }}" />
-            <button class="clear-filter-btn" *ngIf="filterInput.value" (click)="clearFilter(filterInput, col.key)">
-              <!--<mat-icon svgIcon="close"></mat-icon> -->
-              <mat-icon>close</mat-icon>
-
-            </button>
-          </div>
+              
+            <mat-icon *ngIf="filterInput.value" class="clear-filter-icon" (click)="clearFilter(filterInput, col.key)">
+               </mat-icon>
+             </div>
         </ng-container>
       </th>
     </ng-container>
   </tr>
+  
 
 </thead>
 

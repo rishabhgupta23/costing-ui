@@ -7,6 +7,9 @@ import { DialogCloseResponse } from '../../../../shared/constants/dialog.constan
 import { Router } from '@angular/router';
 import { DiscardDialogComponent } from '../../../../shared/components/discard-dialog/discard-dialog.component';
 import { TableActions } from '../../../../shared/constants/table.constants';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+
 @Component({
   selector: 'app-vendor-landing',
   templateUrl: './vendor-landing.component.html',
@@ -18,31 +21,47 @@ export class VendorLandingComponent {
  
   columns: any[] = VENDOR_TABLE_COLUMNS;
   readonly dialog = inject(MatDialog);
-  filteredVendorList: Vendor[] | undefined;
-  filteredData: any[] = []; 
   filterCriteria: { [key: string]: string } = {};
   
+  private searchSubject = new Subject<{ key: string; value: string }>(); // For debounced input
   
   
   constructor(private vendorService: VendorService, private router: Router) {
     this.getVendorList();
+    this.searchSubject
+      .pipe(
+        debounceTime(300), // Wait 300ms after typing stops
+        distinctUntilChanged((prev, curr) => prev.value === curr.value), // Ignore duplicate searches
+        switchMap((filter) => this.vendorService.getVendorList({ [filter.key]: filter.value }))
+      )
+      .subscribe(
+        (res: Vendor[]) => {
+          this.vendorList = res;
+          console.log('Filtered Data:', this.vendorList);
+        },
+        (error) => {
+          console.error('Error fetching filtered vendors:', error);
+        }
+      );
   }
 
-  isLoading: boolean = false;
+  
+
+  
 
 getVendorList() {
-  this.isLoading = true;
+  
   this.vendorService.getVendorList().subscribe(
     (res : Vendor[]) => {
       this.vendorList =  res;
-        this.filteredData = [...this.vendorList];
-        this.isLoading = false;
+  
+        
 
     },
     (error) => {
       console.error('Failed to fetch vendor list:', error);
       alert('Failed to load vendors. Please try again later.');
-      this.isLoading = false;
+      
     }
   );
 
@@ -50,93 +69,42 @@ getVendorList() {
 }
 
 
-  openCreateVendorDialog() {
-    // const dialogRef = this.dialog.open(VendorDialogComponent, {
-    //   panelClass: ['app-dialog'],
-    //   disableClose: true
-    // });
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result == DialogCloseResponse.CREATE) {
-    //     this.getVendorList();
-    //   }
-    // });
-  }
-
   createVendor() {
     this.router.navigateByUrl("/app/vendors/create");
   }
   
+ 
   applyFilter(filter: { key: string; value: string }): void {
-    this.filterCriteria[filter.key] = filter.value.trim().toLowerCase();
+    this.searchSubject.next(filter); // Push filter change to subject
+  }
   
-    
-   this.vendorService.getVendorList(this.filterCriteria).subscribe(
-      (res: Vendor[]) => {
-        this.filteredData = res;
-        console.log('Filtered Data:', this.filteredData);
-      },
-      (error) => {
-        console.error('Error fetching filtered vendors:', error);
+  openDiscardDialog(row: any): void {
+    const dialogRef = this.dialog.open(DiscardDialogComponent, {
+      width: '600px',
+      data: {
+        row
       }
-    );
-    
-  } 
+    });
 
-  
-  
-  
-  
-  clearFilter(filterInput: HTMLInputElement, key: string): void {
-    filterInput.value = ''; // Clear input field
-    delete this.filterCriteria[key]; // Remove filter from criteria
-  
-    // Reapply filtering
-    this.filteredData = this.vendorList.filter(item =>
-      Object.keys(this.filterCriteria).every(k =>
-        (item as any)[k]?.toString().toLowerCase().includes(this.filterCriteria[k])
-      )
-    );
-  }
-  
-  
-
-
-
-  /*applyFilter(filter: { key: string; value: string }): void {
-    console.log('Filter applied:', filter);
-    const { key, value } = filter;
-    this.filterCriteria[key] = value.trim().toLowerCase();
-
-    this.filteredData = this.vendorList.filter(item =>
-      Object.keys(this.filterCriteria).every(k =>
-        this.filterCriteria[k] === '' || 
-        (item as any)[k]?.toString().toLowerCase().includes(this.filterCriteria[k])
-      )
-    );
-    console.log('Filtered Data:', this.filteredData); 
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === DialogCloseResponse.DELETE) {
+        this.vendorService.deleteVendor(row.id.toString()).subscribe({
+          next: () => {
+            this.getVendorList();
+          },
+        });
+      }
+    });
   }
 
-  */
-
-  
-
-  handleAction(event: { action: TableActions; row: any }) {
+  handleAction(event: { action: TableActions; row: any }): void {
     const { action, row } = event;
-    if (action === TableActions.EDIT) {
+
+    if (action === TableActions.DELETE) {
+      this.openDiscardDialog(row);
+    } else if (action === TableActions.EDIT) {
       this.router.navigateByUrl(`/app/vendors/edit/${row.id}`);
-    }else if (action === TableActions.DELETE) {
-      this.deleteVendor(row.id);
     }
   }
-  deleteVendor(vendorId: string) {
-    if (confirm('Are you sure you want to delete this vendor?')) {
-      this.vendorService.deleteVendor(vendorId).subscribe(() => {
-        alert('Vendor deleted successfully.');
-        this.getVendorList();
-      }, (error: any) => {
-        console.error('Error deleting vendor:', error);
-        alert('Failed to delete vendor.');
-      });
-    }
-  }
+  
 }

@@ -17,8 +17,8 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class TableComponent {
 
- row: any;
- filteredData: any;
+  @Input() showFilter: boolean = true;
+
  applyFilter(arg0: { key: any; value: any; }) {
  throw new Error('Method not implemented.');
  }
@@ -45,10 +45,6 @@ export class TableComponent {
     const { action, row } = event;
     this.actionTriggered.emit({ action, row });
   }
-
-   // ColumnType = ColumnType;
-    router: Router = inject(Router);
-
   }
 
   

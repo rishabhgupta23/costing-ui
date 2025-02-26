@@ -8,7 +8,7 @@
     <div class="page-content">
         <div class="card-nc">
             <app-table 
-            [data]="filteredData"
+            [data]="vendorList"
             (filterChanged)="applyFilter($event)"
             [config]="columns"
             (actionTriggered)="handleAction($event)">
