@@ -7,11 +7,10 @@
     </div>
     <div class="page-content" style="overflow: hidden;">
         <div class="card-nc">
-            <app-table 
+            <app-table
             [data]="paginatedData" 
             [config]="columns"
-            (actionTriggered)="handleAction($event)"
-            [showActions]="true">
+            (actionTriggered)="handleAction($event)">
         </app-table>
         <mat-paginator 
         [length]="totalRecords" 
