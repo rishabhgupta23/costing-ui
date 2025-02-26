@@ -1,4 +1,4 @@
-
+<div class="dialog-box">
 <h2 mat-dialog-title>Select Parts</h2>
 <mat-dialog-content>
   <table mat-table  [dataSource]="partList" class="unit-parts-table">
@@ -31,7 +31,14 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 </mat-dialog-content>
+  <mat-paginator 
+  [length]="totalRecords" 
+  [pageSize]="pageSize" 
+  [pageSizeOptions]="[10, 20]" 
+  (page)="onPageChange($event)">
+</mat-paginator>
 <mat-dialog-actions>
   <button class="primary-btn" (click)="closeDialog()">Cancel</button>
   <button class="primary-btn" (click)="confirmSelection()">Select Parts</button>
 </mat-dialog-actions>
+</div>

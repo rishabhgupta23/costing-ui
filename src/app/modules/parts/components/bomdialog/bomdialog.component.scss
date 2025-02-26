@@ -1,3 +1,29 @@
 mat-dialog-actions{
     gap:10px;
+    position: sticky;
+    bottom:0;
+    justify-content: flex-end;
 }
+
+.unit-parts-table th{
+        position: sticky;
+        top: 0; 
+        background-color: #f9f9f9; 
+        z-index: 1;
+      }
+
+      
+      mat-paginator {
+        margin-top: 10px;
+        padding-top: 10px;
+        background: white;
+        position: sticky;
+      }
+
+
+      .dialog-box{
+        height:600px;
+        overflow: hidden;
+        display: flex;
+  flex-direction: column;
+      }
