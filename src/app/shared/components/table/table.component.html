@@ -14,7 +14,7 @@
           <div class="filter-input-wrapper">
             <input 
               type="text" 
-              #filterInput
+              #filterInput 
               (input)="onFilterChange($event, col.key)" 
               placeholder="Filter {{ col.label }}" />
             <button class="clear-filter-btn" *ngIf="filterInput.value" (click)="clearFilter(filterInput, col.key)">

@@ -45,6 +45,8 @@ getVendorList() {
       this.isLoading = false;
     }
   );
+
+  
 }
 
 
@@ -63,21 +65,24 @@ getVendorList() {
   createVendor() {
     this.router.navigateByUrl("/app/vendors/create");
   }
-
- 
   
-
   applyFilter(filter: { key: string; value: string }): void {
     this.filterCriteria[filter.key] = filter.value.trim().toLowerCase();
   
-    this.filteredData = this.vendorList.filter(item =>
-      Object.keys(this.filterCriteria).every(k =>
-        (item as any)[k]?.toString().toLowerCase().includes(this.filterCriteria[k])
-      )
+    
+   this.vendorService.getVendorList(this.filterCriteria).subscribe(
+      (res: Vendor[]) => {
+        this.filteredData = res;
+        console.log('Filtered Data:', this.filteredData);
+      },
+      (error) => {
+        console.error('Error fetching filtered vendors:', error);
+      }
     );
-    console.log(this.filteredData)
-  }
+    
+  } 
 
+  
   
   
   

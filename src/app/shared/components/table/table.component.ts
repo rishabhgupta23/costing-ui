@@ -32,12 +32,11 @@ export class TableComponent {
 
   
   
-
-   onFilterChange(event: Event, key: string): void {
-    const value = (event.target as HTMLInputElement).value.toLowerCase();
-    this.filterChanged.emit({ key, value });
+  onFilterChange(event: Event, key: string): void {
+    const value = (event.target as HTMLInputElement).value.trim().toLowerCase();
+       this.filterChanged.emit({ key, value });
   }
-
+  
   clearFilter(input: HTMLInputElement, columnKey: string): void {
     input.value = '';
     this.filterChanged.emit({ key: columnKey, value: '' });
@@ -52,3 +51,4 @@ export class TableComponent {
 
   }
 
+  

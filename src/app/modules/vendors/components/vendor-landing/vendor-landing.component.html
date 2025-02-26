@@ -9,7 +9,7 @@
         <div class="card-nc">
             <app-table 
             [data]="filteredData"
-           
+            (filterChanged)="applyFilter($event)"
             [config]="columns"
             (actionTriggered)="handleAction($event)">
         </app-table>

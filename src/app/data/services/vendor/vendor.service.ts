@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { Vendor } from '../../models/vendor';
@@ -7,6 +7,10 @@ import { Vendor } from '../../models/vendor';
   providedIn: 'root'
 })
 export class VendorService {
+  
+  getFilteredVendorList(key: string, value: string) {
+    throw new Error('Method not implemented.');
+  }
 
   getVendorById(vendorId: string): Observable<Vendor> {
     return this.http.get<Vendor>(`${'http://localhost:8081/vendors'}/${vendorId}`);
@@ -18,15 +22,28 @@ export class VendorService {
 
   constructor(private http: HttpClient) { }
 
-  getVendorParts(vendorId: number): Observable<any[]> {
+   getVendorParts(vendorId: number): Observable<any[]> {
     return this.http.get<any[]>(`http://localhost:8081/vendors/${vendorId}/parts`).pipe(
       map((res:any)=>res.data));
   }
-
-  getVendorList(): Observable<Vendor[]> {
-    return this.http.get<Vendor[]>('http://localhost:8081/vendors').pipe(
-    map((res:any)=>res.data));
+      
+   getVendorList(filters?: { [key: string]: string }): Observable<Vendor[]> {
+    let params = new HttpParams();
+  
+    if (filters) {
+      Object.keys(filters).forEach(key => {
+        if (filters[key]) {
+          params = params.set(key, filters[key]);
+        }
+      });
+    }
+  
+    return this.http.get<Vendor[]>('http://localhost:8081/vendors', { params }).pipe(
+      map((res: any) => res.data)
+    );
   }
+  
+  
   
 
   deleteVendor(vendorId: string): Observable<void> {
