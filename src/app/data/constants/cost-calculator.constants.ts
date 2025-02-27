@@ -16,18 +16,18 @@ export const COST_CALCULATOR_COLUMNS = [
         columnType: ColumnType.GENERAL,
     },
     {
+        label: 'Rate',
+        key: 'rate',
+        columnType: ColumnType.GENERAL,
+    },
+    {
         label: 'Quantity',
-        key: 'value',
+        key: 'quantity',
         columnType: ColumnType.GENERAL,
     },
     {
-        label: 'Price',
-        key:'cost',
-        columnType: ColumnType.GENERAL,
-    },
-    {
-        label: 'Quantity * Price',
-        key: 'qp',
+        label: 'Sub Total',
+        key:'subTotal',
         columnType: ColumnType.GENERAL,
     },
     {
