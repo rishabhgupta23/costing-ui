@@ -94,10 +94,8 @@
         }
       }
     }
-  },
-  "cli": {
-    "analytics": false
   }
+  
 }
   
 
