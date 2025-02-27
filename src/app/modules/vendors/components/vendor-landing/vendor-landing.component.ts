@@ -29,19 +29,6 @@ export class VendorLandingComponent  {
   constructor(private vendorService: VendorService, private router: Router) {
     this.getVendorList();
     this.listenToFilterChanges(); 
-   /* this.searchSubject
-      .pipe(
-        debounceTime(300), 
-        distinctUntilChanged((prev, curr) => prev.value === curr.value), // Ignore duplicate searches
-        switchMap((filter) => this.vendorService.getVendorList({ [filter.key]: filter.value }))
-      )
-      .subscribe(
-        (res: Vendor[]) => {
-          this.vendorList = res;
-          
-        }
-        
-      );*/
   }
 
 getVendorList() {
