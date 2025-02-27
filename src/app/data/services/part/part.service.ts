@@ -14,7 +14,8 @@ export class PartService {
   getPartById(partId: string): Observable<PartDetails> {
     return this.http.get<PartDetails>(`${'http://localhost:8081/parts'}/${partId}`);
   }
-  getPartList(page: number = 0, size: number = 100,searchTermName: string = '', searchTermNumber: string = ''): Observable<any> {
+
+  getPartList(page: number = 0, size: number = 100): Observable<any> {
     const url = `http://localhost:8081/parts?page=${page}&size=${size}`;
     return this.http.get<any>(url);
   }

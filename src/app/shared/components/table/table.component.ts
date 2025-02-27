@@ -17,7 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class TableComponent {
 
-  @Input() showFilter: boolean = true;
+  @Input() showFilter: boolean = false;
 
  applyFilter(arg0: { key: any; value: any; }) {
  throw new Error('Method not implemented.');
