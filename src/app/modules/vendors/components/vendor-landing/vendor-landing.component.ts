@@ -18,7 +18,7 @@ export class VendorLandingComponent {
   vendorList: Vendor[] = [];
   columns: any[] = VENDOR_TABLE_COLUMNS;
   paginatedData: any[] = []; // Data to display on the current page
-  pageSize: number = 5 // Default items per page
+  pageSize: number = 100; // Default items per page
   currentPage: number = 0; // Current page index
   totalRecords: number=0;
   pageInfo: any;

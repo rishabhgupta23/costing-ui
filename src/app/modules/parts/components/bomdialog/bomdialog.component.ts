@@ -15,7 +15,7 @@ export class BomdialogComponent {
   existingParts: Set<number>= new Set();
   partList: PartRow[] = [];
   paginatedData: any[] = []; // Data to display on the current page
-  pageSize: number = 5 // Default items per page
+  pageSize: number = 100 // Default items per page
   currentPage: number = 0;
   totalRecords: number=0;
   pageInfo: any;
@@ -48,6 +48,7 @@ this.getPartList();
 getPartList():void{
   this.partService.getPartList(this.currentPage, this.pageSize).subscribe(
     (response) => {
+      console.log(response);
       this.partList = response.data?.partsList || [];
       this.existingParts = this.data.existingParts;
       this.paginatedData = this.partList;

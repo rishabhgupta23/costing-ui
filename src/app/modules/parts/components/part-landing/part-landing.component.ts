@@ -21,7 +21,7 @@ export class PartLandingComponent {
   partList: PartCreateRequest[] = [];
   columns: any[] = PART_TABLE_COLUMNS;
   paginatedData: any[] = []; // Data to display on the current page
-  pageSize: number = 5 // Default items per page
+  pageSize: number = 100; // Default items per page
   currentPage: number = 0; // Current page index
   readonly dialog = inject(MatDialog);
   totalRecords: number=0;
@@ -57,12 +57,6 @@ export class PartLandingComponent {
 
         this.paginatedData = this.partList;
         this.totalRecords = res.pageInfo?.totalRecords || 0;
-        console.log("Current Page:", this.currentPage);
-        console.log("Page Size:", this.pageSize);
-        console.log("Response Data:", responseData);
-        console.log("Total Records:", this.totalRecords);
-        const totalPages = Math.ceil(this.totalRecords / this.pageSize);
-console.log("Total Pages:", totalPages);
 
       },
       (error) => {

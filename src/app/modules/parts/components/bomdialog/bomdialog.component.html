@@ -1,7 +1,7 @@
 <div class="dialog-box">
 <h2 mat-dialog-title>Select Parts</h2>
 <mat-dialog-content>
-  <table mat-table  [dataSource]="partList" class="unit-parts-table">
+  <table mat-table  [dataSource]="partList" class="bom-table">
     <!-- Select Checkbox Column -->
     <ng-container matColumnDef="select">
       <th mat-header-cell *matHeaderCellDef>
@@ -34,7 +34,6 @@
   <mat-paginator 
   [length]="totalRecords" 
   [pageSize]="pageSize" 
-  [pageSizeOptions]="[10, 20]" 
   (page)="onPageChange($event)">
 </mat-paginator>
 <mat-dialog-actions>
