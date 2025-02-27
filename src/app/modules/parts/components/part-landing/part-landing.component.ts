@@ -19,6 +19,7 @@ import { ColumnType } from '../../../../shared/constants/table.constants'; //new
 })
 export class PartLandingComponent {
   partList: PartCreateRequest[] = [];
+  filteredData: PartCreateRequest[] = []; 
   columns: any[] = PART_TABLE_COLUMNS;
   paginatedData: any[] = []; // Data to display on the current page
   pageSize: number = 100 // Default items per page
@@ -26,7 +27,7 @@ export class PartLandingComponent {
   readonly dialog = inject(MatDialog);
   totalRecords: number=0;
   pageInfo: any;
-  
+  filterCriteria: { [key: string]: string } = {};
   
 
   constructor(private partService: PartService, private router: Router) {
@@ -40,7 +41,7 @@ export class PartLandingComponent {
 
         const responseData = res.data;
         const maxVendorCount = responseData.maxVendorCount || 0;
-         this.addColumnsForVendor(maxVendorCount);
+        this.addColumnsForVendor(maxVendorCount);
 
         
         this.partList = responseData.partsList.map((part: any) => {
@@ -53,7 +54,8 @@ export class PartLandingComponent {
         return vendorData;
       });
 
-
+        this.filteredData = [...this.partList];
+        this.updatePaginatedData();
         this.paginatedData = this.partList;
         this.totalRecords = responseData.pageInfo?.totalRecords || 0;
       },
@@ -61,20 +63,34 @@ export class PartLandingComponent {
         console.error("Error fetching part list:", error);
       }
     );
-}
-addColumnsForVendor(maxVendorCount: number) {
+  }
+  addColumnsForVendor(maxVendorCount: number) {
   this.columns = [...PART_TABLE_COLUMNS];
 
-  for (let i = 1; i <= maxVendorCount; i++) {
-    this.columns.push({
-      label: `Vendor ${i}`,
-      columnType: ColumnType.GENERAL,
-      key: `vendor${i}`
-    });
+  const actionsIndex = this.columns.findIndex(col => col.columnType === ColumnType.ACTION);
+
+    for (let i = 1; i <= maxVendorCount; i++) {
+      this.columns.splice(actionsIndex, 0,{
+        label: `Vendor ${i}`,
+        columnType: ColumnType.GENERAL,
+        key: `vendor${i}`,
+        filterable: true
+      });
+    }
   }
-}
   
-  
+  applyFilter(filter: { key: string; value: string }): void {
+    console.log(`API call: Fetch filtered data for ${filter.key} with filter value: "${filter.value}"`);
+    // When backend API is ready:
+    // this.partService.getFilteredPartList(filter.key, filter.value).subscribe({
+    //   next: (res) => {
+    //     this.partList = res.data;
+    //     this.filteredData = [...this.partList];
+    //     this.updatePaginatedData();
+    //   },
+    //   error: (err) => console.error('Filtering API error:', err)
+    // });
+  }
   createPart() {
     this.router.navigateByUrl("/app/parts/create");
   }
@@ -114,7 +130,7 @@ addColumnsForVendor(maxVendorCount: number) {
   updatePaginatedData() {
     const startIndex = this.currentPage * this.pageSize;
     const endIndex = startIndex + this.pageSize;
-    this.paginatedData = this.partList.slice(startIndex, endIndex);
+    this.paginatedData = this.filteredData.slice(startIndex, endIndex);
   }
 }
 

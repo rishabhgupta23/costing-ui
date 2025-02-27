@@ -7,6 +7,25 @@
           <th [title]="col?.label">{{ col?.label }}</th>
       </ng-container>
   </tr>
+  <!-- Filter Row -->
+  <tr class="filter-row">
+    <ng-container *ngFor="let col of config">
+      <th>
+        <ng-container *ngIf="col.filterable">
+          <div class="filter-input-wrapper">
+            <input 
+              type="text" 
+              #filterInput
+              (input)="onFilterChange($event, col.key)" 
+              placeholder="Enter your text" />
+            <button class="clear-filter-btn" *ngIf="filterInput.value" (click)="clearFilter(filterInput, col.key)">
+              <mat-icon svgIcon="close"></mat-icon>
+            </button>
+          </div>
+        </ng-container>
+      </th>
+    </ng-container>
+  </tr>
 </thead>
 
   <!-- Table Rows -->

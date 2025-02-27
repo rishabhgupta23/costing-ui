@@ -7,5 +7,9 @@ export const SVG_ICONS = [
     {
         path: baseIconsPath + '/edit_icon.svg',
         name: 'edit'
+    },
+    {
+        path: baseIconsPath + '/close_icon.svg',
+        name: 'close'
     }
 ];

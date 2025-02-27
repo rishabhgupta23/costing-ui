@@ -18,8 +18,20 @@ export class TableComponent {
   @Input() data: any[] = [];
   @Input() config: any[] = [];
   @Output() actionTriggered = new EventEmitter<{ action: TableActions; row: any }>();
+  @Output() filterChanged = new EventEmitter<{ key: string; value: string }>();
   TableActions = TableActions;
 
+
+  onFilterChange(event: Event, columnKey: string): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.filterChanged.emit({ key: columnKey, value });
+  }
+
+  clearFilter(input: HTMLInputElement, columnKey: string): void {
+    input.value = '';
+    this.filterChanged.emit({ key: columnKey, value: '' });
+  }
+  
   handleAction(event: { action: TableActions; row: any }): void {
     const { action, row } = event;
     this.actionTriggered.emit({ action, row });
