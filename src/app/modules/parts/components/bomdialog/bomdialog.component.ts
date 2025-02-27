@@ -48,7 +48,6 @@ this.getPartList();
 getPartList():void{
   this.partService.getPartList(this.currentPage, this.pageSize).subscribe(
     (response) => {
-      console.log(response);
       this.partList = response.data?.partsList || [];
       this.existingParts = this.data.existingParts;
       this.paginatedData = this.partList;
