@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { Vendor } from '../../models/vendor';
@@ -8,34 +8,45 @@ import { Vendor } from '../../models/vendor';
 })
 export class VendorService {
 
+
   getVendorById(vendorId: string): Observable<Vendor> {
-    return this.http.get<Vendor>(`${'http://localhost:8080/vendors'}/${vendorId}`);
+    return this.http.get<Vendor>(`${'http://localhost:8081/vendors'}/${vendorId}`);
   }
 
   updateVendor(vendorId: string, vendor: Vendor): Observable<Vendor> {
-    return this.http.put<Vendor>(`${'http://localhost:8080/vendors'}/${vendorId}`, vendor);
+    return this.http.put<Vendor>(`${'http://localhost:8081/vendors'}/${vendorId}`, vendor);
   }
 
   constructor(private http: HttpClient) { }
 
-  getVendorParts(vendorId: number): Observable<any[]> {
-    return this.http.get<any[]>(`http://localhost:8080/vendors/${vendorId}/parts`).pipe(
+   getVendorParts(vendorId: number): Observable<any[]> {
+    return this.http.get<any[]>(`http://localhost:8081/vendors/${vendorId}/parts`).pipe(
       map((res:any)=>res.data));
   }
-
-  getVendorList(): Observable<Vendor[]> {
-    return this.http.get<Vendor[]>('http://localhost:8080/vendors').pipe(
-    map((res:any) => res.data)
+      
+   getVendorList(filters?: { [key: string]: string }): Observable<Vendor[]> {
+    let params = new HttpParams();
+  
+    if (filters) {
+      Object.keys(filters).forEach(key => {
+        if (filters[key]) {
+          params = params.set(key, filters[key]);
+        }
+      });
+    }
+  
+    return this.http.get<Vendor[]>('http://localhost:8081/vendors', { params }).pipe(
+      map((res: any) => res.data)
     );
   }
   
 
   deleteVendor(vendorId: string): Observable<void> {
-    return this.http.delete<void>(`http://localhost:8080/vendors/${vendorId}`);
+    return this.http.delete<void>(`http://localhost:8081/vendors/${vendorId}`);
   }
   
 
   createVendor(vendor: Vendor): Observable<any> {
-    return this.http.post<Vendor>('http://localhost:8080/vendors', vendor);
+    return this.http.post<Vendor>('http://localhost:8081/vendors', vendor);
   }
 }

@@ -15,6 +15,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import { MatDialog, MatDialogActions, MatDialogContent, MatDialogModule } from '@angular/material/dialog';
 import { BomdialogComponent } from './components/bomdialog/bomdialog.component';
 import { MatIconModule } from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -34,6 +35,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatDialogActions,
     MatDialogModule,
     MatIconModule,
+    FormsModule,
   ]
 })
 export class PartsModule { }
