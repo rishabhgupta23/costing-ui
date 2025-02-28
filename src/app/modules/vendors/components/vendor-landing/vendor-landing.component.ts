@@ -1,4 +1,4 @@
-import { Component, inject, EventEmitter, Output } from '@angular/core';
+import { Component, inject, EventEmitter, Output} from '@angular/core';
 import { Vendor } from '../../../../data/models/vendor';
 import { VENDOR_TABLE_COLUMNS } from '../../../../data/constants/vendor-table-config.constants';
 import { VendorService } from '../../../../data/services/vendor/vendor.service';
@@ -8,14 +8,18 @@ import { Router } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
 import { DiscardDialogComponent } from '../../../../shared/components/discard-dialog/discard-dialog.component';
 import { TableActions } from '../../../../shared/constants/table.constants';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+
 @Component({
   selector: 'app-vendor-landing',
   templateUrl: './vendor-landing.component.html',
   styleUrls: ['./vendor-landing.component.scss']
 })
 
-export class VendorLandingComponent {
+export class VendorLandingComponent  {
   vendorList: Vendor[] = [];
+ 
   columns: any[] = VENDOR_TABLE_COLUMNS;
   paginatedData: any[] = []; // Data to display on the current page
   pageSize: number = 100; // Default items per page
@@ -23,38 +27,63 @@ export class VendorLandingComponent {
   totalRecords: number=0;
   pageInfo: any;
   readonly dialog = inject(MatDialog);
-
+  filterCriteria: { [key: string]: string } = {};
   
-
+  private searchSubject = new Subject<{ key: string; value: string }>(); 
+  
+  
   constructor(private vendorService: VendorService, private router: Router) {
     this.getVendorList();
+    this.listenToFilterChanges(); 
   }
 
   getVendorList(): void {
-    this.vendorService.getVendorList(this.currentPage, this.pageSize).subscribe(
-      (res) =>{
-        console.log(res);
+    this.vendorService.getVendorList(this.currentPage, this.pageSize, this.filterCriteria).subscribe(
+      (res) => {
         this.vendorList = res.data;
-        this.paginatedData = this.vendorList;
         this.totalRecords = res.pageInfo?.totalRecords || 0;
+      },
+      (error) => {
+        console.error('Error fetching vendors:', error);
       }
     );
   }
+
+listenToFilterChanges(): void {
+  this.searchSubject
+    .pipe(
+      debounceTime(300), 
+      distinctUntilChanged((prev, curr) => prev.value === curr.value), // Ignore duplicate searches
+      switchMap(() =>{
+        this.currentPage=0;
+        return this.vendorService.getVendorList(this.currentPage, this.pageSize,this.filterCriteria);
+      })
+    )
+    .subscribe(
+      (res) => {
+        this.vendorList = res.data;
+        this.totalRecords = res.pageInfo?.totalRecords || 0;
+        console.log('Filtered Data:', this.vendorList);
+      },
+      (error) => {
+        console.error('Error fetching filtered vendors:', error);
+      }
+    );
+}
+
+
+  createVendor() {
+    this.router.navigateByUrl("/app/vendors/create");
+  }
   
-  createVendor(): void {
-    this.router.navigateByUrl('/app/vendors/create');
+ applyFilter(filter: { key: string; value: string }): void {
+  this.filterCriteria = {
+    ...this.filterCriteria,
+    [filter.key]: filter.value
+  };
+    this.searchSubject.next(filter);
   }
-
-  handleAction(event: { action: TableActions; row: any }): void {
-    const { action, row } = event;
-
-    if (action === TableActions.DELETE) {
-      this.openDiscardDialog(row);
-    } else if (action === TableActions.EDIT) {
-      this.router.navigateByUrl(`/app/vendors/edit/${row.id}`);
-    }
-  }
-
+  
   openDiscardDialog(row: any): void {
     const dialogRef = this.dialog.open(DiscardDialogComponent, {
       width: '600px',
@@ -67,15 +96,20 @@ export class VendorLandingComponent {
       if (result === DialogCloseResponse.DELETE) {
         this.vendorService.deleteVendor(row.id.toString()).subscribe({
           next: () => {
-            this.getVendorList();
-          },
+            this.getVendorList();  },
         });
       }
     });
   }
 
-  editRow(row: any): void {
-    this.router.navigateByUrl(`/app/vendors/edit/${row.partId}`);
+  handleAction(event: { action: TableActions; row: any }): void {
+    const { action, row } = event;
+
+    if (action === TableActions.DELETE) {
+      this.openDiscardDialog(row);
+    } else if (action === TableActions.EDIT) {
+      this.router.navigateByUrl(`/app/vendors/edit/${row.id}`);
+    }
   }
 
   onPageChange(event: PageEvent) {

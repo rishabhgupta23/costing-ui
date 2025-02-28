@@ -5,13 +5,37 @@
   <tr class="header-row">
       <ng-container *ngFor="let col of config">
           <th [title]="col?.label">{{ col?.label }}</th>
-      </ng-container>
+        </ng-container>
   </tr>
+  <tr class="filter-row" *ngIf="showFilter">
+    <ng-container *ngFor="let col of config">
+      <th>
+        <ng-container *ngIf="col.filterable">
+          <div class="filter-input-wrapper">
+            <input 
+              type="text" 
+              #filterInput 
+              (input)="onFilterChange($event, col.key)" 
+              placeholder="Filter {{ col.label }}" />
+              
+            <mat-icon *ngIf="filterInput.value" class="clear-filter-icon" (click)="clearFilter(filterInput, col.key)">
+               </mat-icon>
+             </div>
+        </ng-container>
+      </th>
+    </ng-container>
+  </tr>
+  
+
 </thead>
 
   <!-- Table Rows -->
    <tbody>
-  <ng-container *ngFor="let row of data; let i = index">
+   
+
+  <ng-container *ngFor="let row of data; let i = index"> 
+    
+
       <tr class="data-row">
           <!-- Dynamic Columns -->
 <ng-container *ngFor="let col of config">

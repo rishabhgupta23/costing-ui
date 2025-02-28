@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { Vendor } from '../../models/vendor';
@@ -18,14 +18,26 @@ export class VendorService {
 
   constructor(private http: HttpClient) { }
 
-  getVendorParts(vendorId: number): Observable<any[]> {
+   getVendorParts(vendorId: number): Observable<any[]> {
     return this.http.get<any[]>(`http://localhost:8080/vendors/${vendorId}/parts`).pipe(
       map((res:any)=>res.data));
   }
-
-  getVendorList(page: number = 0, size: number = 100): Observable<any> {
+      
+  getVendorList(page: number = 0, size: number = 100, filters?: { [key: string]: string }): Observable<any> {
+    let params = new HttpParams()
+      .set('pageNo', page.toString())
+      .set('pageSize', size.toString());
+  
+    if (filters) {
+      Object.keys(filters).forEach(key => {
+        if (filters[key]) {
+          params = params.set(key, filters[key]);
+        }
+      });
+    }
+  
     const url = `http://localhost:8080/vendors?pageNo=${page}&pageSize=${size}`;
-    return this.http.get<any>(url);
+    return this.http.get<any>(url, { params });
   }
   
 
