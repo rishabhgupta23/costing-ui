@@ -14,9 +14,8 @@ export class PartService {
   getPartById(partId: string): Observable<PartDetails> {
     return this.http.get<PartDetails>(`${'http://localhost:8080/parts'}/${partId}`);
   }
-
   getPartList(page: number = 0, size: number = 100): Observable<any> {
-    const url = `http://localhost:8080/parts?page=${page}&size=${size}`;
+    const url = `http://localhost:8080/parts?pageNo=${page}&pageSize=${size}`;
     return this.http.get<any>(url);
   }
 
@@ -33,17 +32,20 @@ export class PartService {
 
   getPartUnits(): Observable<string[]> {
     return this.http.get<string[]>("http://localhost:8080/parts/units").pipe(
-      map((res:any)=>res.data));
+      map((res:any) => res.data)
+    );
   }
 
   getPartCategories(): Observable<string[]> {
     return this.http.get<string[]>("http://localhost:8080/categories").pipe(
-      map((res:any)=>res.data));
+      map((res:any) => res.data)
+    );
   }
 
   getCostFactors(): Observable<CostFactor[]> {
     return this.http.get<CostFactor[]>("http://localhost:8080/parts/cost-factors").pipe(
-      map((res:any)=>res.data));
+      map((res:any) => res.data)
+    );
   }
 
   createPart(body: PartCreateRequest) {

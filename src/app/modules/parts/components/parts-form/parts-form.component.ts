@@ -204,7 +204,7 @@ export class PartsFormComponent implements OnDestroy {
   getVendorList() {
     this.subscriptions.push(
       this.vendorService.getVendorList().subscribe((res) => {
-        this.vendorList = res;
+        this.vendorList = res.data;
       })
     );
   }

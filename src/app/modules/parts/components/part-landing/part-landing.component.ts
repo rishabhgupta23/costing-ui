@@ -22,7 +22,7 @@ export class PartLandingComponent {
   filteredData: PartCreateRequest[] = []; 
   columns: any[] = PART_TABLE_COLUMNS;
   paginatedData: any[] = []; // Data to display on the current page
-  pageSize: number = 100 // Default items per page
+  pageSize: number = 100; // Default items per page
   currentPage: number = 0; // Current page index
   readonly dialog = inject(MatDialog);
   totalRecords: number=0;
@@ -37,6 +37,7 @@ export class PartLandingComponent {
   getPartList() {
     this.partService.getPartList(this.currentPage, this.pageSize).subscribe(
       (res) => {
+        console.log(res)
         
 
         const responseData = res.data;
@@ -57,7 +58,8 @@ export class PartLandingComponent {
         this.filteredData = [...this.partList];
         this.updatePaginatedData();
         this.paginatedData = this.partList;
-        this.totalRecords = responseData.pageInfo?.totalRecords || 0;
+        this.totalRecords = res.pageInfo?.totalRecords || 0;
+
       },
       (error) => {
         console.error("Error fetching part list:", error);

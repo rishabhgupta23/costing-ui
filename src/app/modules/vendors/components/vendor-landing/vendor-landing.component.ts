@@ -5,6 +5,7 @@ import { VendorService } from '../../../../data/services/vendor/vendor.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 import { Router } from '@angular/router';
+import { PageEvent } from '@angular/material/paginator';
 import { DiscardDialogComponent } from '../../../../shared/components/discard-dialog/discard-dialog.component';
 import { TableActions } from '../../../../shared/constants/table.constants';
 import { Subject } from 'rxjs';
@@ -20,6 +21,11 @@ export class VendorLandingComponent  {
   vendorList: Vendor[] = [];
  
   columns: any[] = VENDOR_TABLE_COLUMNS;
+  paginatedData: any[] = []; // Data to display on the current page
+  pageSize: number = 100; // Default items per page
+  currentPage: number = 0; // Current page index
+  totalRecords: number=0;
+  pageInfo: any;
   readonly dialog = inject(MatDialog);
   filterCriteria: { [key: string]: string } = {};
   
@@ -31,30 +37,29 @@ export class VendorLandingComponent  {
     this.listenToFilterChanges(); 
   }
 
-getVendorList() {
-  
-  this.vendorService.getVendorList().subscribe(
-    (res : Vendor[]) => {
-      this.vendorList =  res;
+  getVendorList(): void {
+    this.vendorService.getVendorList(this.currentPage, this.pageSize, this.filterCriteria).subscribe(
+      (res) => {
+        this.vendorList = res.data;
+        this.totalRecords = res.pageInfo?.totalRecords || 0;
+      }
+    );
   }
-    
-  );
-}
 
 listenToFilterChanges(): void {
   this.searchSubject
     .pipe(
       debounceTime(300), 
       distinctUntilChanged((prev, curr) => prev.value === curr.value), // Ignore duplicate searches
-      switchMap((filter) => this.vendorService.getVendorList({ [filter.key]: filter.value }))
+      switchMap(() =>{
+        this.currentPage=0;
+        return this.vendorService.getVendorList(this.currentPage, this.pageSize,this.filterCriteria);
+      })
     )
     .subscribe(
-      (res: Vendor[]) => {
-        this.vendorList = res;
-        console.log('Filtered Data:', this.vendorList);
-      },
-      (error) => {
-        console.error('Error fetching filtered vendors:', error);
+      (res) => {
+        this.vendorList = res.data;
+        this.totalRecords = res.pageInfo?.totalRecords || 0;
       }
     );
 }
@@ -65,7 +70,11 @@ listenToFilterChanges(): void {
   }
   
  applyFilter(filter: { key: string; value: string }): void {
-    this.searchSubject.next(filter); // Push filter change to subject
+  this.filterCriteria = {
+    ...this.filterCriteria,
+    [filter.key]: filter.value
+  };
+    this.searchSubject.next(filter);
   }
   
   openDiscardDialog(row: any): void {
@@ -95,4 +104,16 @@ listenToFilterChanges(): void {
       this.router.navigateByUrl(`/app/vendors/edit/${row.id}`);
     }
   }
+
+  onPageChange(event: PageEvent) {
+    this.pageSize = event.pageSize;
+    this.currentPage = event.pageIndex;
+    this.getVendorList();
   }
+
+  updatePaginatedData() {
+    const startIndex = this.currentPage * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedData = this.vendorList.slice(startIndex, endIndex);
+  }
+}
