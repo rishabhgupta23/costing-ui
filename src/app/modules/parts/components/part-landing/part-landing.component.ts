@@ -1,5 +1,5 @@
 
-import { Component, inject} from '@angular/core';
+import { AfterViewInit, Component,ChangeDetectorRef, OnInit, ViewChild, inject} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 import { PART_TABLE_COLUMNS } from '../../../../data/constants/part-table-config.constants';
@@ -9,15 +9,15 @@ import { PartCreateRequest } from '../../../../data/models/part';
 import { PageEvent } from '@angular/material/paginator';
 import { TableActions } from '../../../../shared/constants/table.constants';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { ColumnType } from '../../../../shared/constants/table.constants'; //new
-
+import { ColumnType } from '../../../../shared/constants/table.constants';
+import { TableComponent } from '../../../../shared/components/table/table.component';
 
 @Component({
   selector: 'app-part-landing',
   templateUrl: './part-landing.component.html',
   styleUrl: './part-landing.component.scss'
 })
-export class PartLandingComponent {
+export class PartLandingComponent implements OnInit, AfterViewInit {
   partList: PartCreateRequest[] = [];
   filteredData: PartCreateRequest[] = []; 
   columns: any[] = PART_TABLE_COLUMNS;
@@ -28,12 +28,26 @@ export class PartLandingComponent {
   totalRecords: number=0;
   pageInfo: any;
   filterCriteria: { [key: string]: string } = {};
-  
+  @ViewChild(TableComponent) tableComponent!: TableComponent;
 
-  constructor(private partService: PartService, private router: Router) {
+  constructor(private partService: PartService, private router: Router, private cd: ChangeDetectorRef) {}
+
+  ngOnInit(): void {
     this.getPartList();
   }
 
+  ngAfterViewInit(): void {
+    // Set the default sort for the shared table component after view initialization.
+    if (this.tableComponent) {
+      this.tableComponent.sortedColumn = 'partNumber';
+      this.tableComponent.sortedOrder = 'asc';
+      // Optionally, emit the sort event so that the part landing component can trigger an API call.
+      this.tableComponent.sortChanged.emit({ key: 'partNumber', order: 'asc' });
+      this.cd.detectChanges();
+    }
+  }
+
+  
   getPartList() {
     this.partService.getPartList(this.currentPage, this.pageSize).subscribe(
       (res) => {
@@ -74,7 +88,8 @@ export class PartLandingComponent {
         label: `Vendor ${i}`,
         columnType: ColumnType.GENERAL,
         key: `vendor${i}`,
-        filterable: true
+        filterable: true,
+        sortable: true
       });
     }
   }
@@ -91,6 +106,19 @@ export class PartLandingComponent {
     //   error: (err) => console.error('Filtering API error:', err)
     // });
   }
+
+  applySort(sort: { key: string; order: string }): void {
+    if (!sort.order) return;
+
+    console.log(`API call: Fetch sorted data for ${sort.key} in ${sort.order} order.`);
+    
+    // Simulate an API call:
+    // For now, we'll simply log to the console.
+    // When your API is ready, call:
+    // this.partService.getSortedPartList(sort.key, sort.order).subscribe({...});
+  }
+
+
   createPart() {
     this.router.navigateByUrl("/app/parts/create");
   }

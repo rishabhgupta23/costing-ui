@@ -1,12 +1,7 @@
-
-    
-    
   .table-container {
     max-height: 480px; /* Set a maximum height for the table container */
     overflow-y: auto; /* Enable vertical scrolling */
-    
-    
-   }
+    }
   
   .app-table {
     width: 100%;
@@ -58,8 +53,6 @@ input[matInput] {
 .edit-btn {            
     cursor: pointer;
     transition: color 0.3s ease;
-    
-    
   }
   
   .edit-btn:hover {
@@ -184,3 +177,27 @@ input[matInput] {
 .clear-filter-btn:hover{
   color: black;
 }
+.header-cell {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.sort-btn {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1.5rem;
+  height: 1.5rem;
+  min-width: 1.5rem;
+  padding: 0;
+  margin-left: 4px;
+  background: transparent;
+  border: none;
+}
+.sort-btn .sort-icon {
+  height: 100%;
+  font-size: 16px;
+  cursor: pointer;
+  color: #000000;
+  transition: color 0.2s;
+}
+

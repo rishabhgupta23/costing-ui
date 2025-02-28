@@ -5,37 +5,43 @@ export const PART_TABLE_COLUMNS = [
         label: 'Sl. No.',
         columnType: ColumnType.SERIAL_NUMBER,
         key: 'serialNumber',
-        filterable: false
+        filterable: false,
+        sortable: false
     },
     {
         label: 'Part Number',
         columnType: ColumnType.GENERAL,
         key: 'partNumber',
-        filterable: true
+        filterable: true,
+        sortable: true
     },
     {
         label: 'Part Name',
         columnType: ColumnType.GENERAL,
         key: 'partName',
-        filterable: true
+        filterable: true,
+        sortable: true
     },
     {
         label: 'Measuring Unit',
         columnType: ColumnType.GENERAL,
         key: 'unit',
-        filterable: true
+        filterable: true,
+        sortable: true
     },
     {
         label: 'Type',
         columnType: ColumnType.GENERAL,
         key: 'type',
-        filterable: true
+        filterable: true,
+        sortable: true
     },
     {
         label: 'Category',
         columnType: ColumnType.GENERAL,
         key: 'category',
-        filterable: true
+        filterable: true,
+        sortable: true
     },
     {
         label: 'Actions',

@@ -5,14 +5,16 @@
             <button class="primary-btn" (click)="createPart()">Create</button>
         </span>
     </div>
-    <div class="page-content" style="overflow: hidden;">
+    <div class="page-content" style="overflow: visible;">
         <div class="card-nc">
             <app-table
             [data]="paginatedData" 
             [config]="columns"
             (actionTriggered)="handleAction($event)"
             (filterChanged)="applyFilter($event)"
-            [showFilter]="true">
+            [showFilter]="true"
+            (sortChanged)="applySort($event)"
+            [showSort]="true">
         </app-table>
         <mat-paginator 
         [length]="totalRecords" 
