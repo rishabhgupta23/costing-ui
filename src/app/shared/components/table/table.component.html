@@ -5,10 +5,9 @@
   <tr class="header-row">
       <ng-container *ngFor="let col of config">
           <th [title]="col?.label">{{ col?.label }}</th>
-      </ng-container>
+        </ng-container>
   </tr>
-  <!-- Filter Row -->
-  <tr class="filter-row">
+  <tr class="filter-row" *ngIf="showFilter">
     <ng-container *ngFor="let col of config">
       <th>
         <ng-container *ngIf="col.filterable">
@@ -30,7 +29,11 @@
 
   <!-- Table Rows -->
    <tbody>
-  <ng-container *ngFor="let row of data; let i = index">
+   
+
+  <ng-container *ngFor="let row of data; let i = index"> 
+    
+
       <tr class="data-row">
           <!-- Dynamic Columns -->
 <ng-container *ngFor="let col of config">

@@ -71,12 +71,15 @@
                                 </ng-container>
                             </mat-select>
                         </mat-form-field>
-                        <button class="primary-btn" (click)="addVendor()">Add</button>
+                        <button class="primary-btn" (click)="addVendor(selectedVendor)">Add</button>
                     </div>
                     <mat-accordion class="example-headers-align" multi>
                         <mat-expansion-panel *ngFor="let vendor of vendorCostMap.keys(); let i=index">
                           <mat-expansion-panel-header>
-                            <mat-panel-title> Vendor {{i+1}} </mat-panel-title>
+                            <mat-panel-title> Vendor {{i+1}}: {{ getVendorName(vendor) }}  </mat-panel-title>
+                            <mat-panel-description>
+                                <mat-icon class="delete-btn" svgIcon="delete" (click)="deleteVendorFromMap(vendor)"> </mat-icon>
+                              </mat-panel-description>
                           </mat-expansion-panel-header>
                           <div class="vendor-panel-content">
                             <div class="cost-form">
@@ -88,10 +91,10 @@
                                         </ng-container>
                                     </mat-select>
                                 </mat-form-field>
-                                <button class="primary-btn" (click)="addCostFactor(i,vendor)">Add</button>
+                                <button class="primary-btn" (click)="addCostFactorFromFieldValue(i,vendor)">Add</button>
                               </div>
                               <div>
-                                <app-table *ngIf="(vendorCostMap.get(vendor) || []).length > 0" [data]="vendorCostMap.get(vendor) || []" [config]="COST_FACTOR_TABLE_COLUMNS"></app-table>
+                                <app-table *ngIf="(vendorCostMap.get(vendor) || []).length > 0" [data]="vendorCostMap.get(vendor) || []" [config]="COST_FACTOR_TABLE_COLUMNS" (actionTriggered)="handleAction($event, vendor)"></app-table>
                               </div>
                           </div>
                         </mat-expansion-panel>
@@ -115,26 +118,6 @@
                     </div> -->
                     </div>
             </div>
-            <!-- <div [formGroup]="bomDetailsForm">
-              <div class="sub-heading">BOM Details</div>
-              <div class="bom-form">
-                <div>Unit Part</div>
-                <mat-form-field appearance="outline">
-                  <mat-select placeholder="Select Unit Part" [(value)]="selectedPart">
-                    <ng-container *ngFor="let part of filteredPartList">
-                      <mat-option [value]="part">{{ part.partName }}</mat-option>
-                    </ng-container>
-                  </mat-select>
-                </mat-form-field>
-                <button class="primary-btn" (click)="addUnitPart()">Add</button>
-              </div>
-            
-              <div *ngIf="unitPartList.length > 0">
-                <div class="sub-heading">Added Unit Parts</div>
-                <app-table [data]="unitPartList" [config]="COST_FACTOR_TABLE_COLUMNS"></app-table>
-              </div>
-            </div> -->
-
             <div *ngIf="partForm.get('partType')?.value === partTypeEnum.MASTER" [formGroup]="bomDetailsForm">
                 <hr>
                 <div class="sub-heading">BOM Details</div>

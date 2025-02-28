@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
+
   selector: 'app-table',
   standalone: true,
   imports: [CommonModule, MatFormFieldModule, MatInputModule, FormsModule, MatIconModule],
@@ -15,28 +16,35 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrls: ['./table.component.scss']
 })
 export class TableComponent {
+
+  @Input() showFilter: boolean = false;
+
+ applyFilter(arg0: { key: any; value: any; }) {
+ throw new Error('Method not implemented.');
+ }
   @Input() data: any[] = [];
-  @Input() config: any[] = [];
+  @Input() config: any[] = []; 
   @Output() actionTriggered = new EventEmitter<{ action: TableActions; row: any }>();
   @Output() filterChanged = new EventEmitter<{ key: string; value: string }>();
-  TableActions = TableActions;
+ 
+  TableActions= TableActions;
+  ColumnType = ColumnType;
 
-
-  onFilterChange(event: Event, columnKey: string): void {
-    const value = (event.target as HTMLInputElement).value;
-    this.filterChanged.emit({ key: columnKey, value });
+  
+  
+  onFilterChange(event: Event, key: string): void {
+    const value = (event.target as HTMLInputElement).value.trim().toLowerCase();
+       this.filterChanged.emit({ key, value });
   }
-
+  
   clearFilter(input: HTMLInputElement, columnKey: string): void {
     input.value = '';
     this.filterChanged.emit({ key: columnKey, value: '' });
   }
-  
   handleAction(event: { action: TableActions; row: any }): void {
     const { action, row } = event;
     this.actionTriggered.emit({ action, row });
   }
+  }
 
-  ColumnType = ColumnType;
-  router: Router = inject(Router);
-}
+  
