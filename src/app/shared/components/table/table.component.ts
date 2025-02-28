@@ -26,11 +26,14 @@ export class TableComponent {
   @Input() config: any[] = []; 
   @Output() actionTriggered = new EventEmitter<{ action: TableActions; row: any }>();
   @Output() filterChanged = new EventEmitter<{ key: string; value: string }>();
+  @Output() rowClicked = new EventEmitter<any>();
  
   TableActions= TableActions;
   ColumnType = ColumnType;
 
-  
+  onRowClick(row: any) {
+    this.rowClicked.emit(row);
+  }
   
   onFilterChange(event: Event, key: string): void {
     const value = (event.target as HTMLInputElement).value.trim().toLowerCase();

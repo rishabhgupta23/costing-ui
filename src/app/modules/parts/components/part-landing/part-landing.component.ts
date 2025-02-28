@@ -33,6 +33,11 @@ export class PartLandingComponent {
     this.getPartList();
   }
 
+  onRowClicked(rowData: any) {
+    console.log(rowData);
+    this.router.navigateByUrl(`/app/parts/part-view/${rowData.partId}`);
+  }
+
   getPartList() {
     this.partService.getPartList(this.currentPage, this.pageSize).subscribe(
       (res) => {
@@ -98,6 +103,7 @@ addColumnsForVendor(maxVendorCount: number) {
         }
       });
     }
+
   }
   deletePart(partId: string) {
 

@@ -16,10 +16,11 @@ import { MatDialog, MatDialogActions, MatDialogContent, MatDialogModule } from '
 import { BomdialogComponent } from './components/bomdialog/bomdialog.component';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
+import { PartViewComponent } from './components/part-view/part-view.component';
 
 
 @NgModule({
-  declarations: [ PartLandingComponent, PartsFormComponent, BomdialogComponent],
+  declarations: [ PartLandingComponent, PartsFormComponent, BomdialogComponent, PartViewComponent],
   imports: [
     CommonModule,
     PartsRoutingModule,
