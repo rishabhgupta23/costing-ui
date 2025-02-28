@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { FormControl, FormArray, FormGroup, Validators } from '@angular/forms';
 import { COST_CALCULATOR_COLUMNS } from '../../../../data/constants/cost-calculator.constants';
-import { map, Observable, startWith } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, Observable, startWith, Subject, switchMap } from 'rxjs';
 import { PartService } from '../../../../data/services/part/part.service';
 import { Part, PartRow } from '../../../../data/models/part';
 import { CostCalculatorService } from '../../../../data/services/cost-calculator/cost-calculator.service';
-import { CostingTable } from '../../../../data/models/cost-calculator';
+import { CostItem } from '../../../../data/models/cost-calculator';
 import { PricingOptions } from '../../../../shared/constants/pricingoptions.constants';
 
 @Component({
@@ -20,24 +20,35 @@ export class CalculateComponent {
   partList: PartRow[] = [];
   currentPage=0;
   pageSize=100;
-  costingList: CostingTable[]=[];
+  costingList: CostItem[]=[];
+  filterCriteria: { [key: string]: string } = {};
+  totalRecords:number=0;
+  private searchSubject = new Subject<{ key: string; value: string }>(); 
 
   partControl = new FormControl('');
-  filteredParts: Observable<any[]> | undefined;
+  filteredParts: Observable<PartRow[]> | undefined;
 
   constructor(private partService: PartService, private costCalculatorService: CostCalculatorService) {
   }
 
   getPartList(): void {
-    this.partService.getPartList(this.currentPage, this.pageSize).subscribe(
+    this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria).subscribe(
       (response) => {
         this.partList = response.data?.partsList.map((part: PartRow) => ({
           partId: part.partId,
           partName: part.partName,
-          partNumber: part.partNumber
+          partNumber: part.partNumber,
         })) || [];
+          this.totalRecords=response.pageInfo?.totalRecords;
       }
     );
+  }
+  applyFilter(filter: { key: string; value: string }): void {
+    this.filterCriteria = {
+      ...this.filterCriteria,
+      [filter.key]: filter.value
+    };
+    this.searchSubject.next(filter);
   }
   
   pricingOptions = Object.values(PricingOptions);
@@ -73,17 +84,26 @@ export class CalculateComponent {
     this.getPartList();
     this.filteredParts = this.partControl.valueChanges.pipe(
       startWith(''),
-      map(value => this._filter(value || ''))
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap((value) => {
+        const filterValue = value ?? '';
+        this.filterCriteria = {
+          partName: filterValue,
+          partNumber: filterValue
+        };
+        return this.partService.getPartList(this.currentPage, this.pageSize, {});
+      }),
+      map((response) => {
+        this.partList = response.data?.partsList || [];
+        return this.partList.filter(part => 
+          part.partName?.toLowerCase().includes(this.filterCriteria['partName'].toLowerCase()) || 
+          part.partNumber?.toLowerCase().includes(this.filterCriteria['partNumber'].toLowerCase())
+        );
+      })
     );
   }
-
-  private _filter(value: any) {
-    const filterValue = typeof value === 'string' ? value.toLowerCase() : '';
-    return this.partList.filter(option => 
-      option.partName.toLowerCase().includes(filterValue) || 
-      option.partNumber.toLowerCase().includes(filterValue)
-    );
-  }
+  
   
 
   onReset() {

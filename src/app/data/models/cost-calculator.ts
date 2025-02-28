@@ -1,4 +1,4 @@
-export interface CostingTable{
+export interface CostItem{
     partName: string;
     partNumber: string;
     quantity: number;
