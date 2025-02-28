@@ -1,20 +1,27 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { PartBomData, PartRow } from '../../../../data/models/part';
 import { PartService } from '../../../../data/services/part/part.service';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
-
+import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-bomdialog',
   templateUrl: './bomdialog.component.html',
-  styleUrl: './bomdialog.component.scss'
+  styleUrls: ['./bomdialog.component.scss']
 })
-export class BomdialogComponent {
+export class BomdialogComponent implements OnInit {
+filterParts() {
+throw new Error('Method not implemented.');
+}
   displayedColumns: string[] = ['select', 'partName', 'partNumber'];
   existingParts: Set<number>= new Set();
   partList: PartRow[] = [];
    currentPage=0;
    pageSize=100;
+searchTerm: any;
+filteredPartList: PartRow[] = []; // ✅ Stores filtered parts
+  searchTermName: string = ''; // ✅ For filtering by name
+  searchTermNumber: string = ''; 
 
 constructor(
   public dialogRef: MatDialogRef<BomdialogComponent>,
@@ -22,6 +29,7 @@ constructor(
   private partService: PartService 
 ) {
 }
+
 
 
 closeDialog() {
@@ -37,6 +45,7 @@ togglePartSelection(part: PartRow, event: any): void {
 }
 
 ngOnInit():void{
+  this.existingParts = new Set(this.data.existingParts);
 this.getPartList();
 }
 
