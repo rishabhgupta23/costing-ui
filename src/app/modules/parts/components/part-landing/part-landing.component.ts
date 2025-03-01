@@ -9,7 +9,9 @@ import { PartCreateRequest } from '../../../../data/models/part';
 import { PageEvent } from '@angular/material/paginator';
 import { TableActions } from '../../../../shared/constants/table.constants';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { ColumnType } from '../../../../shared/constants/table.constants'; //new
+import { ColumnType } from '../../../../shared/constants/table.constants';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 
 @Component({
@@ -28,24 +30,27 @@ export class PartLandingComponent {
   totalRecords: number=0;
   pageInfo: any;
   filterCriteria: { [key: string]: string } = {};
+  private searchSubject = new Subject<{ key: string; value: string }>();
   
 
   constructor(private partService: PartService, private router: Router) {
     this.getPartList();
+    this.listenToFilterChanges();
   }
 
   getPartList() {
     this.partService.getPartList(this.currentPage, this.pageSize).subscribe(
       (res) => {
-        console.log(res)
-        
 
         const responseData = res.data;
+        const partsList = Array.isArray(responseData.partsList)
+          ? responseData.partsList
+          : [];
         const maxVendorCount = responseData.maxVendorCount || 0;
         this.addColumnsForVendor(maxVendorCount);
 
         
-        this.partList = responseData.partsList.map((part: any) => {
+        this.partList = partsList.map((part: any) => {
           let vendorData: any = { ...part };
   
         (part.vendorNames || []).forEach((vendor: any, index: number) => {
@@ -56,10 +61,8 @@ export class PartLandingComponent {
       });
 
         this.filteredData = [...this.partList];
+        this.totalRecords = res.pageInfo?.totalRecords || this.filteredData.length;
         this.updatePaginatedData();
-        this.paginatedData = this.partList;
-        this.totalRecords = res.pageInfo?.totalRecords || 0;
-
       },
       (error) => {
         console.error("Error fetching part list:", error);
@@ -80,18 +83,48 @@ export class PartLandingComponent {
       });
     }
   }
+
+  listenToFilterChanges(): void {
+    this.searchSubject
+      .pipe(
+        debounceTime(300), 
+        distinctUntilChanged((prev, curr) => prev.value === curr.value), // Ignore duplicate searches
+        switchMap(() =>{
+          this.currentPage=0;
+          return this.partService.getPartList(this.currentPage, this.pageSize,this.filterCriteria);
+        })
+      )
+      .subscribe(
+        (res) => {
+          const responseData = res.data;
+          const partsList = Array.isArray(responseData.partsList)
+            ? responseData.partsList
+            : [];
+          this.partList = partsList.map((part: any) => {
+            let vendorData = { ...part };
+            (part.vendorNames || []).forEach((vendor: any, index: number) => {
+              vendorData[`vendor${index + 1}`] = vendor;
+            });
+            return vendorData;
+          });
+          this.filteredData = [...this.partList];
+          this.totalRecords = responseData.pageInfo?.totalRecords || this.filteredData.length;
+          this.updatePaginatedData();
+        },
+        (error) => {
+          console.error("Error fetching filtered data:", error);
+      
+        }
+      );
+  }
+
   
   applyFilter(filter: { key: string; value: string }): void {
-    console.log(`API call: Fetch filtered data for ${filter.key} with filter value: "${filter.value}"`);
-    // When backend API is ready:
-    // this.partService.getFilteredPartList(filter.key, filter.value).subscribe({
-    //   next: (res) => {
-    //     this.partList = res.data;
-    //     this.filteredData = [...this.partList];
-    //     this.updatePaginatedData();
-    //   },
-    //   error: (err) => console.error('Filtering API error:', err)
-    // });
+    this.filterCriteria = {
+      ...this.filterCriteria,
+      [filter.key]: filter.value
+    };
+    this.searchSubject.next(filter);
   }
   createPart() {
     this.router.navigateByUrl("/app/parts/create");
