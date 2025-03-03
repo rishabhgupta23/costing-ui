@@ -1,4 +1,4 @@
-import { Component, inject, EventEmitter, Output} from '@angular/core';
+import { Component, inject, AfterViewInit, OnInit, ViewChild} from '@angular/core';
 import { Vendor } from '../../../../data/models/vendor';
 import { VENDOR_TABLE_COLUMNS } from '../../../../data/constants/vendor-table-config.constants';
 import { VendorService } from '../../../../data/services/vendor/vendor.service';
@@ -10,14 +10,14 @@ import { DiscardDialogComponent } from '../../../../shared/components/discard-di
 import { TableActions } from '../../../../shared/constants/table.constants';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-
+import { TableComponent } from '../../../../shared/components/table/table.component';
 @Component({
   selector: 'app-vendor-landing',
   templateUrl: './vendor-landing.component.html',
   styleUrls: ['./vendor-landing.component.scss']
 })
 
-export class VendorLandingComponent  {
+export class VendorLandingComponent implements OnInit, AfterViewInit {
   vendorList: Vendor[] = [];
  
   columns: any[] = VENDOR_TABLE_COLUMNS;
@@ -28,17 +28,29 @@ export class VendorLandingComponent  {
   pageInfo: any;
   readonly dialog = inject(MatDialog);
   filterCriteria: { [key: string]: string } = {};
+  @ViewChild(TableComponent) tableComponent!: TableComponent;
   
-  private searchSubject = new Subject<{ key: string; value: string }>(); 
+  private searchSubject = new Subject<{ key: string; value: string }>();
+  sortColumn: string = 'name';
+  sortMode: string = 'ASC';
   
   
-  constructor(private vendorService: VendorService, private router: Router) {
+  constructor(private vendorService: VendorService, private router: Router) {}
+
+  ngOnInit(): void {
     this.getVendorList();
-    this.listenToFilterChanges(); 
+    this.listenToFilterChanges();
+  }
+  ngAfterViewInit(): void {
+    if (this.tableComponent) {
+      this.tableComponent.sortedColumn = 'name';
+      this.tableComponent.sortedOrder = 'asc';
+      this.tableComponent.sortChanged.emit({ key: 'name', order: 'asc' });
+    }
   }
 
   getVendorList(): void {
-    this.vendorService.getVendorList(this.currentPage, this.pageSize, this.filterCriteria).subscribe(
+    this.vendorService.getVendorList(this.currentPage, this.pageSize, this.filterCriteria,  this.sortColumn, this.sortMode).subscribe(
       (res) => {
         this.vendorList = res.data;
         this.totalRecords = res.pageInfo?.totalRecords || 0;
@@ -53,7 +65,7 @@ listenToFilterChanges(): void {
       distinctUntilChanged((prev, curr) => prev.value === curr.value), // Ignore duplicate searches
       switchMap(() =>{
         this.currentPage=0;
-        return this.vendorService.getVendorList(this.currentPage, this.pageSize,this.filterCriteria);
+        return this.vendorService.getVendorList(this.currentPage, this.pageSize,this.filterCriteria,  this.sortColumn, this.sortMode);
       })
     )
     .subscribe(
@@ -77,6 +89,14 @@ listenToFilterChanges(): void {
     this.searchSubject.next(filter);
   }
   
+  applySort(sort: { key: string; order: string }): void {
+    if (!sort.order) return;
+    this.sortColumn = sort.key;
+    this.sortMode = sort.order.toUpperCase();
+    //console.log(`API call: Fetch sorted data for ${this.sortColumn} in ${this.sortMode} order.`);
+    this.getVendorList();
+  }
+
   openDiscardDialog(row: any): void {
     const dialogRef = this.dialog.open(DiscardDialogComponent, {
       width: '600px',

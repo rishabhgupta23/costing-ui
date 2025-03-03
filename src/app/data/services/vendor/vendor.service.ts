@@ -23,10 +23,13 @@ export class VendorService {
       map((res:any)=>res.data));
   }
       
-  getVendorList(page: number = 0, size: number = 100, filters?: { [key: string]: string }): Observable<any> {
+  getVendorList(page: number = 0, size: number = 100, filters?: { [key: string]: string }, sortColumn: string = 'name',
+    sortMode: string = 'ASC'): Observable<any> {
     let params = new HttpParams()
       .set('pageNo', page.toString())
-      .set('pageSize', size.toString());
+      .set('pageSize', size.toString())
+      .set('sortColumn', sortColumn)
+      .set('sortMode', sortMode);
   
     if (filters) {
       Object.keys(filters).forEach(key => {

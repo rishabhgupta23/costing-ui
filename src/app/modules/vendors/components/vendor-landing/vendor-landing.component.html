@@ -12,7 +12,9 @@
             (filterChanged)="applyFilter($event)"
             [config]="columns"
             [showFilter]="true"
-            (actionTriggered)="handleAction($event)">
+            (actionTriggered)="handleAction($event)"
+            (sortChanged)="applySort($event)"
+            [showSort]="true">
         </app-table>
         <mat-paginator 
         [length]="totalRecords" 
