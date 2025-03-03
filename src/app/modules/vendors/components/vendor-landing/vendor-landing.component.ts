@@ -42,9 +42,6 @@ export class VendorLandingComponent  {
       (res) => {
         this.vendorList = res.data;
         this.totalRecords = res.pageInfo?.totalRecords || 0;
-      },
-      (error) => {
-        console.error('Error fetching vendors:', error);
       }
     );
   }
@@ -63,10 +60,6 @@ listenToFilterChanges(): void {
       (res) => {
         this.vendorList = res.data;
         this.totalRecords = res.pageInfo?.totalRecords || 0;
-        console.log('Filtered Data:', this.vendorList);
-      },
-      (error) => {
-        console.error('Error fetching filtered vendors:', error);
       }
     );
 }
