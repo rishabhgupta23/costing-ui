@@ -1,5 +1,5 @@
 
-import { AfterViewInit, Component,ChangeDetectorRef, OnInit, ViewChild, inject} from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, inject} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 import { PART_TABLE_COLUMNS } from '../../../../data/constants/part-table-config.constants';
@@ -33,9 +33,10 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
   filterCriteria: { [key: string]: string } = {};
   @ViewChild(TableComponent) tableComponent!: TableComponent;
   private searchSubject = new Subject<{ key: string; value: string }>();
-  
+  sortColumn: string = 'partNumber';
+  sortMode: string = 'ASC';
 
-  constructor(private partService: PartService, private router: Router, private cd: ChangeDetectorRef) {}
+  constructor(private partService: PartService, private router: Router) {}
 
   ngOnInit(): void {
     this.getPartList();
@@ -43,19 +44,16 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // Set the default sort for the shared table component after view initialization.
     if (this.tableComponent) {
-      this.tableComponent.sortedColumn = 'partNumber';
+      this.tableComponent.sortedColumn = 'partName';
       this.tableComponent.sortedOrder = 'asc';
-      // Optionally, emit the sort event so that the part landing component can trigger an API call.
-      this.tableComponent.sortChanged.emit({ key: 'partNumber', order: 'asc' });
-      this.cd.detectChanges();
+      this.tableComponent.sortChanged.emit({ key: 'partName', order: 'asc' });
     }
   }
 
   
   getPartList() {
-    this.partService.getPartList(this.currentPage, this.pageSize).subscribe(
+    this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortColumn, this.sortMode).subscribe(
       (res) => {
 
         const responseData = res.data;
@@ -65,17 +63,7 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
         const maxVendorCount = responseData.maxVendorCount || 0;
         this.addColumnsForVendor(maxVendorCount);
 
-        
-        this.partList = partsList.map((part: any) => {
-          let vendorData: any = { ...part };
-  
-        (part.vendorNames || []).forEach((vendor: any, index: number) => {
-          vendorData[`vendor${index + 1}`] = vendor;
-        });
-
-        return vendorData;
-      });
-
+        this.partList = this.mapPartsData(responseData);
         this.filteredData = [...this.partList];
         this.totalRecords = res.pageInfo?.totalRecords || this.filteredData.length;
         this.updatePaginatedData();
@@ -90,7 +78,7 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
 
   const actionsIndex = this.columns.findIndex(col => col.columnType === ColumnType.ACTION);
 
-    for (let i = 1; i <= maxVendorCount; i++) {
+    for (let i = maxVendorCount; i >= 1; i--) {
       this.columns.splice(actionsIndex, 0,{
         label: `Vendor ${i}`,
         columnType: ColumnType.GENERAL,
@@ -101,6 +89,17 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
     }
   }
 
+  private mapPartsData(responseData: any): PartCreateRequest[] {
+    const partsList = Array.isArray(responseData.partsList) ? responseData.partsList : [];
+    return partsList.map((part: any) => {
+      const vendorData = { ...part };
+      (part.vendorNames || []).forEach((vendor: any, index: number) => {
+        vendorData[`vendor${index + 1}`] = vendor;
+      });
+      return vendorData;
+    });
+  }
+
   listenToFilterChanges(): void {
     this.searchSubject
       .pipe(
@@ -108,25 +107,17 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
         distinctUntilChanged((prev, curr) => prev.value === curr.value), // Ignore duplicate searches
         switchMap(() =>{
           this.currentPage=0;
-          return this.partService.getPartList(this.currentPage, this.pageSize,this.filterCriteria);
+          return this.partService.getPartList(this.currentPage, this.pageSize,this.filterCriteria, this.sortColumn, this.sortMode);
         })
       )
       .subscribe(
         (res) => {
           const responseData = res.data;
-          const partsList = Array.isArray(responseData.partsList)
-            ? responseData.partsList
-            : [];
-          this.partList = partsList.map((part: any) => {
-            let vendorData = { ...part };
-            (part.vendorNames || []).forEach((vendor: any, index: number) => {
-              vendorData[`vendor${index + 1}`] = vendor;
-            });
-            return vendorData;
-          });
+          this.partList = this.mapPartsData(responseData);
           this.filteredData = [...this.partList];
           this.totalRecords = responseData.pageInfo?.totalRecords || this.filteredData.length;
           this.updatePaginatedData();
+          console.log("api is called")
         },
         (error) => {
           console.error("Error fetching filtered data:", error);
@@ -146,13 +137,10 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
 
   applySort(sort: { key: string; order: string }): void {
     if (!sort.order) return;
-
-    console.log(`API call: Fetch sorted data for ${sort.key} in ${sort.order} order.`);
-    
-    // Simulate an API call:
-    // For now, we'll simply log to the console.
-    // When your API is ready, call:
-    // this.partService.getSortedPartList(sort.key, sort.order).subscribe({...});
+    this.sortColumn = sort.key;
+    this.sortMode = sort.order.toUpperCase();
+    //console.log(`API call: Fetch sorted data for ${this.sortColumn} in ${this.sortMode} order.`);
+    this.getPartList();
   }
 
 
