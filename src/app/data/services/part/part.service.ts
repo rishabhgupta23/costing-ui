@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { CostFactor, PartCreateRequest, PartDetails, PartRow } from '../../models/part';
@@ -14,10 +14,19 @@ export class PartService {
   getPartById(partId: string): Observable<PartDetails> {
     return this.http.get<PartDetails>(`${'http://localhost:8080/parts'}/${partId}`);
   }
-
-  getPartList(page: number = 0, size: number = 100): Observable<any> {
-    const url = `http://localhost:8080/parts?page=${page}&size=${size}`;
-    return this.http.get<any>(url);
+  getPartList(page: number = 0, size: number = 100, filterCriteria: { [key: string]: string } = {}): Observable<any> {
+    let params = new HttpParams()
+      .set('pageNo', page.toString())
+      .set('pageSize', size.toString());
+  
+    Object.keys(filterCriteria).forEach(key => {
+      if (filterCriteria[key]) {
+        params = params.set(key, filterCriteria[key]);
+      }
+    });
+  
+    const url = `http://localhost:8080/parts`;
+    return this.http.get<any>(url, { params });
   }
 
   deletePart(partId: string): Observable<string> {
@@ -33,17 +42,20 @@ export class PartService {
 
   getPartUnits(): Observable<string[]> {
     return this.http.get<string[]>("http://localhost:8080/parts/units").pipe(
-      map((res:any)=>res.data));
+      map((res:any) => res.data)
+    );
   }
 
   getPartCategories(): Observable<string[]> {
     return this.http.get<string[]>("http://localhost:8080/categories").pipe(
-      map((res:any)=>res.data));
+      map((res:any) => res.data)
+    );
   }
 
   getCostFactors(): Observable<CostFactor[]> {
     return this.http.get<CostFactor[]>("http://localhost:8080/parts/cost-factors").pipe(
-      map((res:any)=>res.data));
+      map((res:any) => res.data)
+    );
   }
 
   createPart(body: PartCreateRequest) {

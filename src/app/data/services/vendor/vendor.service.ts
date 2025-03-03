@@ -8,7 +8,6 @@ import { Vendor } from '../../models/vendor';
 })
 export class VendorService {
 
-
   getVendorById(vendorId: string): Observable<Vendor> {
     return this.http.get<Vendor>(`${'http://localhost:8080/vendors'}/${vendorId}`);
   }
@@ -24,8 +23,10 @@ export class VendorService {
       map((res:any)=>res.data));
   }
       
-   getVendorList(filters?: { [key: string]: string }): Observable<Vendor[]> {
-    let params = new HttpParams();
+  getVendorList(page: number = 0, size: number = 100, filters?: { [key: string]: string }): Observable<any> {
+    let params = new HttpParams()
+      .set('pageNo', page.toString())
+      .set('pageSize', size.toString());
   
     if (filters) {
       Object.keys(filters).forEach(key => {
@@ -35,9 +36,8 @@ export class VendorService {
       });
     }
   
-    return this.http.get<Vendor[]>('http://localhost:8080/vendors', { params }).pipe(
-      map((res: any) => res.data)
-    );
+    const url = `http://localhost:8080/vendors?pageNo=${page}&pageSize=${size}`;
+    return this.http.get<any>(url, { params });
   }
   
 
