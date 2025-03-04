@@ -1,19 +1,20 @@
 import { Component, OnDestroy} from '@angular/core';
 import { PartService } from '../../../../data/services/part/part.service';
-import { map, Subscription } from 'rxjs';
+import { map, Observable, Subscription } from 'rxjs';
 import { VENDOR_COST_TABLE_COLUMNS } from '../../../../data/constants/vendor-cost-table.constants';
 import { COST_FACTOR_TABLE_COLUMNS } from '../../../../data/constants/part.constants';
 import { VendorService } from '../../../../data/services/vendor/vendor.service';
 import { Vendor } from '../../../../data/models/vendor';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { PartBomData, CostFactor, CostFactorData, PartCreateRequest, PartRow, VendorCost } from '../../../../data/models/part';
+import { PartBomData, CostFactor, CostFactorData, PartCreateRequest, PartRow, VendorCost, CostHistory, CostHistoryResponse } from '../../../../data/models/part';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BomdialogComponent } from '../bomdialog/bomdialog.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BOM_TABLE_COLUMNS } from '../../../../data/constants/bom-table.constants';
 import { PartType } from '../../../../shared/constants/part.constants';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
-import { TableActions } from '../../../../shared/constants/table.constants';
+import { ColumnType, TableActions } from '../../../../shared/constants/table.constants';
+import { HistorydialogComponent } from '../../historydialog/historydialog.component';
 
 @Component({
   selector: 'app-part-view',
@@ -26,6 +27,7 @@ export class PartViewComponent {
    partUnits: string[] = [];
    partCategories: string[] = [];
    vendorList: Vendor[] = [];
+   costHistoryList: any[]=[];
    costFactorList: CostFactor[] = [];
    subscriptions: Subscription[] = [];
    VENDOR_COST_TABLE_COLUMNS = VENDOR_COST_TABLE_COLUMNS;
@@ -45,7 +47,24 @@ export class PartViewComponent {
     partType: new FormControl({ value: '', disabled: true }),
     partUnit: new FormControl({ value: '', disabled: true }),
   });
-  
+
+  filteredCostFactorTableColumns = COST_FACTOR_TABLE_COLUMNS.map(col => {
+    if (col.columnType === ColumnType.INPUT_NUMBER) {
+      return { ...col, columnType: ColumnType.GENERAL };
+    }
+    if (col.columnType === ColumnType.ACTION) {
+        return null;
+    }
+    return col;
+}).filter(col => col !== null);
+
+filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
+  if(col.columnType===ColumnType.INPUT_NUMBER){
+    return { ...col, columnType:ColumnType.GENERAL};
+  }
+  return col;
+})
+
  
    
    costDetailsForm = new FormGroup({
@@ -66,14 +85,14 @@ export class PartViewComponent {
      }
  
      ngOnInit(): void{
-       this.partId = this.route.snapshot.paramMap.get('id');
+       this.partId = this.route.snapshot.paramMap.get('id')??'';
      this.getPartTypes();
      this.getPartUnits();
      this.getPartCategories();
      this.getVendorList();
      this.getCostFactors();
  
-       if (this.partId){
+       if (this.partId){      
          this.getPartData(this.partId);
        }
        
@@ -122,14 +141,27 @@ export class PartViewComponent {
     });
     return tableData;
   }
+
+  openHistoryDialog(partId:string | null, vendorId:number):void {
+    partId = partId || '';
+    this.getCostHistory(partId, vendorId).subscribe((res) => {
+
+        this.costHistoryList = res.costHistoryList;
+        const dialogRef = this.dialog.open(HistorydialogComponent, {
+          width: '600px',
+          data: { costHistoryList: this.costHistoryList },
+        });
   
- 
-   clearVendorCostData(): void {
-     this.vendorCostMap.clear();
-     this.costDetailsForm.reset();
-   }
-   
- 
+        dialogRef.afterClosed().subscribe((res) => {
+        });
+    });
+  }
+
+getCostHistory(partId: string, vendorId: number): Observable<CostHistoryResponse> {
+  return this.partService.getPartCostByPartAndVendor(partId, vendorId);
+}
+
+
            
    getPartTypes() {
      this.subscriptions.push(
@@ -137,52 +169,6 @@ export class PartViewComponent {
          this.partTypes = res;
        })
      );
-   }
- 
-   openBomDialog(): void {
-     const dialogRef = this.dialog.open(BomdialogComponent, {
-       width: '600px',
-       data: { 
-         existingParts: new Set(this.bomPartList.map(part => part.id) || [])
-       }
-     });
-   
-     dialogRef.afterClosed().subscribe((res: {data: any, action: DialogCloseResponse}) => {
-       if(res.action == DialogCloseResponse.UPDATE) {
-         this.handleDialogClose(res?.data);
-       }
-     });
-   }
-   
-   handleDialogClose(selectedParts: Set<PartRow>): void 
-   {
-     if (!selectedParts || selectedParts.size === 0){
-       this.bomPartList = [];
-     }
- 
-     selectedParts.forEach(part => {
-       const exists = this.bomPartList.find(existingPart => part.partId == existingPart.id);
-       if(!exists) {
-         this.bomPartList.push({
-           id:part.partId,
-           partName:part.partName,
-           partNumber:part.partNumber,
-           value:0,
-         })
-       }
-     });
- 
-     // check if sme pat exist in bomPartList but not in selectedPart then delete that part from list
-   
-     this.bomPartList = this.bomPartList.filter(existingPart =>{
-       let filter = false;
-       selectedParts.forEach(p => {
-         if(p.partId === existingPart.id) {
-           filter = true;
-         }
-       });
-       return filter;
-     });
    }
    
  
@@ -208,10 +194,6 @@ export class PartViewComponent {
          this.partCategories = res;
        })
      );
-   }
- 
-   deleteVendorFromMap(vendorId: number): void {
-     this.vendorCostMap.delete(vendorId); // Directly remove vendor
    }
    
  
@@ -243,22 +225,6 @@ export class PartViewComponent {
        this.costFactors.push(new FormControl(''));
      }
    }
- 
-   handleAction(event: { action: TableActions; row: any }, vendorId: number) {
-     const { action, row } = event;
-     if (action === TableActions.DELETE) {
-       this.removeCostFactor(row, vendorId);
-     }
-   }
- 
-   removeCostFactor(costFactorToRemove: CostFactorData, vendorId: number) {
-     const costFactors = this.vendorCostMap.get(vendorId);
-   
-     if (costFactors) {
-       const updatedCostFactors = costFactors.filter(cf => cf.id !== costFactorToRemove.id);
-       this.vendorCostMap.set(vendorId, updatedCostFactors);
-     }
-   }
    
    bomDetailsForm = new FormGroup({
      masterParts: new FormArray([]),
@@ -269,10 +235,6 @@ export class PartViewComponent {
      return this.bomDetailsForm.get('masterParts') as FormArray;
    }
    
-   addCostFactorFromFieldValue(index: number, vendorId: number) {
-     const selectedValue = this.costFactors.at(index)?.value
-     this.addCostFactor(selectedValue, vendorId);
-   }
  
    addCostFactor(costFactor:CostFactorData, vendorId: number) {
      if (costFactor) {
@@ -293,7 +255,10 @@ export class PartViewComponent {
    
  
    onSubmit(): void {
+    if (this.partId) {
+      this.router.navigateByUrl(`/app/parts/edit/${this.partId}`);
    }
+  }
    generateBomDetailsBody() {
      return this.bomPartList.map(part => ({
        childPartId: part.id,

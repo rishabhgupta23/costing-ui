@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { CostFactor, PartCreateRequest, PartDetails, PartRow } from '../../models/part';
+import { CostFactor, CostHistory, CostHistoryResponse, PartCreateRequest, PartDetails, PartRow } from '../../models/part';
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +46,10 @@ return this.http.get<any>(url, { params });
     return this.http.get<string[]>("http://localhost:8080/parts/units").pipe(
       map((res:any) => res.data)
     );
+  }
+
+  getPartCostByPartAndVendor(partId: string, vendorId:number){
+    return this.http.get<CostHistoryResponse>(`http://localhost:8080/parts/cost-history?partId=${partId}&vendorId=${vendorId}`);
   }
 
   getPartCategories(): Observable<string[]> {

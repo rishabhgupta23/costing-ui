@@ -1,9 +1,9 @@
 <div class="app-page">
     <div class="page-header">
-        <span class="page-title">{{ partId ? 'Edit Part' : 'Create Part' }}</span>
+        <span class="page-title">PART VIEW</span>
         <div class="dialog-action">
             <button class="primary-btn" [disabled]="partForm.invalid" (click)="onSubmit()">
-              {{ partId ? 'Update' : 'Create' }}
+              Edit this part
             </button>
           </div>
     </div>
@@ -60,19 +60,30 @@
             <div *ngIf="partForm.get('partType')?.value === partTypeEnum.UNIT">
                 <hr>
                 <div class="sub-heading">Vendor Cost Details</div>
-                <app-table *ngIf="vendorCostMap && vendorCostMap.size > 0" 
-                           [data]="getVendorCostTableData()" 
-                           [config]="VENDOR_COST_TABLE_COLUMNS">
-                </app-table>
+                <mat-accordion class="example-headers-align" multi>
+                    <mat-expansion-panel *ngFor="let vendor of vendorCostMap.keys(); let i=index">
+                      <mat-expansion-panel-header>
+                        <mat-panel-title> Vendor {{i+1}}: {{ getVendorName(vendor) }}  </mat-panel-title>
+                      <mat-panel-description>
+                        <mat-icon class="delete-btn" svgIcon="history" (click)="openHistoryDialog(partId,vendor)"> </mat-icon>
+                      </mat-panel-description>
+                    </mat-expansion-panel-header>
+                      <div class="vendor-panel-content">
+                            <div>Cost Factor</div>
+                            <div>
+                                <app-table *ngIf="(vendorCostMap.get(vendor) || []).length > 0" [data]="vendorCostMap.get(vendor) || []" [config]="filteredCostFactorTableColumns"></app-table>
+                              </div>
+                          </div>
+                        </mat-expansion-panel>
+                    </mat-accordion>
             </div> 
-                    </div>
-            </div>
             <div *ngIf="partForm.get('partType')?.value === partTypeEnum.MASTER" [formGroup]="bomDetailsForm">
               <div *ngIf="bomPartList.length > 0">
                 <br>
                 <div class="sub-heading">BOM Parts</div>
-                <app-table [data]="bomPartList" [config]="BOM_TABLE_COLUMNS"></app-table>
+                <app-table [data]="bomPartList" [config]="filteredBomTableColumns"></app-table>
               </div>
-              
+            </div>  
         </div>
     </div>
+</div>
