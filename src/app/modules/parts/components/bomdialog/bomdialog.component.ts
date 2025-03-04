@@ -10,9 +10,10 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./bomdialog.component.scss']
 })
 export class BomdialogComponent implements OnInit {
-filterParts() {
+ /*filterParts() {
 throw new Error('Method not implemented.');
 }
+*/
   displayedColumns: string[] = ['select', 'partName', 'partNumber'];
   existingParts: Set<number>= new Set();
   partList: PartRow[] = [];
@@ -47,7 +48,11 @@ togglePartSelection(part: PartRow, event: any): void {
 ngOnInit():void{
   this.existingParts = new Set(this.data.existingParts);
 this.getPartList();
+this.getPartList();
+
+
 }
+
 
 getPartList():void{
   this.partService.getPartList(this.currentPage, this.pageSize).subscribe(
@@ -57,6 +62,9 @@ getPartList():void{
 });
 
 }
+ filterParts(): void {
+    this.getPartList(); // ✅ Calls API with updated search terms
+  }
 
 isAllSelected(): boolean {
   return this.partList.length > 0 && this.existingParts.size === this.partList.length;

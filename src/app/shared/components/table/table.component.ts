@@ -26,6 +26,7 @@ export class TableComponent {
   @Input() config: any[] = []; 
   @Output() actionTriggered = new EventEmitter<{ action: TableActions; row: any }>();
   @Output() filterChanged = new EventEmitter<{ key: string; value: string }>();
+  @Output() sortChanged = new EventEmitter<{ key: string; value: string }>();
  
   TableActions= TableActions;
   ColumnType = ColumnType;
