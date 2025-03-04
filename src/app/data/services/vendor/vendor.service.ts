@@ -23,19 +23,17 @@ export class VendorService {
       map((res:any)=>res.data));
   }
       
-  getVendorList(page: number = 0, size: number = 100, filters?: { [key: string]: string }): Observable<any> {
+  getVendorList(page: number = 0, size: number = 100, filterCriteria: Map<string, string> = new Map()): Observable<any> {
     let params = new HttpParams()
       .set('pageNo', page.toString())
       .set('pageSize', size.toString());
   
-    if (filters) {
-      Object.keys(filters).forEach(key => {
-        if (filters[key]) {
-          params = params.set(key, filters[key]);
+      filterCriteria.forEach((value, key) => {
+        if (value) {
+          params = params.set(key, value);
         }
       });
-    }
-  
+    
     const url = `http://localhost:8080/vendors?pageNo=${page}&pageSize=${size}`;
     return this.http.get<any>(url, { params });
   }
