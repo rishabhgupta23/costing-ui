@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { CostFactor, PartCreateRequest, PartRow } from '../../models/part';
+import { CostFactor, PartCreateRequest, PartDetails, PartRow } from '../../models/part';
 import { ApiUtil } from '../../../shared/utils/api.util';
 import { API_END_POINTS } from '../../../config/api.config';
 
@@ -18,19 +18,10 @@ export class PartService {
     return this.http.post<PartCreateRequest>(ApiUtil.getPreparedUrl(API_END_POINTS.PART_DETAILS, params), PartCreateRequest);
   }
 
-  getPartById(partId: string): Observable<PartRow> {
+  getPartById(partId: string): Observable<PartDetails> {
     const params = new Map<string, string>();
     params.set('partId', partId);
-    return this.http.get<PartRow>(ApiUtil.getPreparedUrl(API_END_POINTS.PART_DETAILS, params)).pipe(
-       map((res: any)=>({
-        partId: res?.partId,
-        partName: res?.partName,
-        partNumber: res?.partNumber,
-        categoryName: res?.categoryName,
-        type: res?.type,
-        unit: res?.unit
-        
-      })));
+    return this.http.get<PartDetails>(ApiUtil.getPreparedUrl(API_END_POINTS.PART_DETAILS, params));
   }
 
   getPartList(page: number = 0, size: number = 100, filters?: { [key: string]: string }): Observable<any> {
