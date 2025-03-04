@@ -49,4 +49,8 @@ export class VendorService {
   createVendor(vendor: Vendor): Observable<any> {
     return this.http.post<Vendor>('http://localhost:8080/vendors', vendor);
   }
+
+  downloadExcel() {
+    return this.http.get('http://localhost:8080/vendors/download', { responseType: 'text' });
+  }
 }
