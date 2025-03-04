@@ -4,7 +4,6 @@ export const PART_TABLE_COLUMNS = [
     {
         label: 'Sl. No.',
         columnType: ColumnType.SERIAL_NUMBER,
-        key: 'serialNumber',
         filterable: false
     },
     {

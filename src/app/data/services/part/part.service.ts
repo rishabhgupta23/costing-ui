@@ -14,14 +14,14 @@ export class PartService {
   getPartById(partId: string): Observable<PartDetails> {
     return this.http.get<PartDetails>(`${'http://localhost:8080/parts'}/${partId}`);
   }
-  getPartList(page: number = 0, size: number = 100, filterCriteria: { [key: string]: string } = {}): Observable<any> {
+  getPartList(page: number = 0, size: number = 100, filterCriteria: Map<string, string> = new Map()): Observable<any> {
     let params = new HttpParams()
       .set('pageNo', page.toString())
       .set('pageSize', size.toString());
   
-    Object.keys(filterCriteria).forEach(key => {
-      if (filterCriteria[key]) {
-        params = params.set(key, filterCriteria[key]);
+    filterCriteria.forEach((value, key) => {
+      if (value) {
+        params = params.set(key, value);
       }
     });
   

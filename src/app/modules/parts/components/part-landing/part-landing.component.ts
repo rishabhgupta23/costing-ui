@@ -21,7 +21,6 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 })
 export class PartLandingComponent {
   partList: PartCreateRequest[] = [];
-  filteredData: PartCreateRequest[] = []; 
   columns: any[] = PART_TABLE_COLUMNS;
   paginatedData: any[] = []; // Data to display on the current page
   pageSize: number = 100; // Default items per page
@@ -29,7 +28,7 @@ export class PartLandingComponent {
   readonly dialog = inject(MatDialog);
   totalRecords: number=0;
   pageInfo: any;
-  filterCriteria: { [key: string]: string } = {};
+  filterCriteria: Map<string, string> = new Map();
   private searchSubject = new Subject<{ key: string; value: string }>();
   
 
@@ -43,14 +42,10 @@ export class PartLandingComponent {
       (res) => {
 
         const responseData = res.data;
-        const partsList = Array.isArray(responseData.partsList)
-          ? responseData.partsList
-          : [];
         const maxVendorCount = responseData.maxVendorCount || 0;
         this.addColumnsForVendor(maxVendorCount);
-
         
-        this.partList = partsList.map((part: any) => {
+        this.partList = responseData.partsList.map((part: any) => {
           let vendorData: any = { ...part };
   
         (part.vendorNames || []).forEach((vendor: any, index: number) => {
@@ -60,8 +55,7 @@ export class PartLandingComponent {
         return vendorData;
       });
 
-        this.filteredData = [...this.partList];
-        this.totalRecords = res.pageInfo?.totalRecords || this.filteredData.length;
+        this.totalRecords = res.pageInfo?.totalRecords || this.partList.length;
         this.updatePaginatedData();
       },
       (error) => {
@@ -78,8 +72,7 @@ export class PartLandingComponent {
       this.columns.splice(actionsIndex, 0,{
         label: `Vendor ${i}`,
         columnType: ColumnType.GENERAL,
-        key: `vendor${i}`,
-        filterable: true
+        key: `vendor${i}`
       });
     }
   }
@@ -88,27 +81,23 @@ export class PartLandingComponent {
     this.searchSubject
       .pipe(
         debounceTime(300), 
-        distinctUntilChanged((prev, curr) => prev.value === curr.value), // Ignore duplicate searches
+        distinctUntilChanged((prev, curr) => prev.value === curr.value),
         switchMap(() =>{
           this.currentPage=0;
-          return this.partService.getPartList(this.currentPage, this.pageSize,this.filterCriteria);
+          return this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria);
         })
       )
       .subscribe(
         (res) => {
           const responseData = res.data;
-          const partsList = Array.isArray(responseData.partsList)
-            ? responseData.partsList
-            : [];
-          this.partList = partsList.map((part: any) => {
+          this.partList = responseData.partsList.map((part: any) => {
             let vendorData = { ...part };
             (part.vendorNames || []).forEach((vendor: any, index: number) => {
               vendorData[`vendor${index + 1}`] = vendor;
             });
             return vendorData;
           });
-          this.filteredData = [...this.partList];
-          this.totalRecords = responseData.pageInfo?.totalRecords || this.filteredData.length;
+          this.totalRecords = responseData.pageInfo?.totalRecords || this.partList.length;
           this.updatePaginatedData();
         },
         (error) => {
@@ -120,10 +109,7 @@ export class PartLandingComponent {
 
   
   applyFilter(filter: { key: string; value: string }): void {
-    this.filterCriteria = {
-      ...this.filterCriteria,
-      [filter.key]: filter.value
-    };
+    this.filterCriteria.set(filter.key, filter.value);
     this.searchSubject.next(filter);
   }
   createPart() {
@@ -165,7 +151,7 @@ export class PartLandingComponent {
   updatePaginatedData() {
     const startIndex = this.currentPage * this.pageSize;
     const endIndex = startIndex + this.pageSize;
-    this.paginatedData = this.filteredData.slice(startIndex, endIndex);
+    this.paginatedData = this.partList.slice(startIndex, endIndex);
   }
 }
 
