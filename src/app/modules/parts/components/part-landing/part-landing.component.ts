@@ -38,7 +38,7 @@ export class PartLandingComponent {
   }
 
   getPartList() {
-    this.partService.getPartList(this.currentPage, this.pageSize).subscribe(
+    this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria).subscribe(
       (res) => {
 
         const responseData = res.data;
@@ -80,32 +80,15 @@ export class PartLandingComponent {
   listenToFilterChanges(): void {
     this.searchSubject
       .pipe(
-        debounceTime(300), 
-        distinctUntilChanged((prev, curr) => prev.value === curr.value),
-        switchMap(() =>{
-          this.currentPage=0;
-          return this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria);
-        })
+        debounceTime(300),
+        distinctUntilChanged((prev, curr) => prev.value === curr.value)
       )
-      .subscribe(
-        (res) => {
-          const responseData = res.data;
-          this.partList = responseData.partsList.map((part: any) => {
-            let vendorData = { ...part };
-            (part.vendorNames || []).forEach((vendor: any, index: number) => {
-              vendorData[`vendor${index + 1}`] = vendor;
-            });
-            return vendorData;
-          });
-          this.totalRecords = responseData.pageInfo?.totalRecords || this.partList.length;
-          this.updatePaginatedData();
-        },
-        (error) => {
-          console.error("Error fetching filtered data:", error);
-      
-        }
-      );
+      .subscribe(() => {
+        this.currentPage = 0;
+        this.getPartList(); // ✅ Reusing existing method
+      });
   }
+  
 
   
   applyFilter(filter: { key: string; value: string }): void {
