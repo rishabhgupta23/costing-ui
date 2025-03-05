@@ -106,23 +106,22 @@ listenToFilterChanges(): void {
   }
 
   downloadExcel() {
-    this.vendorService.downloadExcel().subscribe((base64Excel: string) => {
-      const binaryData = atob(base64Excel);
-      const arrayBuffer = new ArrayBuffer(binaryData.length);
-      const uint8Array = new Uint8Array(arrayBuffer);
-      
-      for (let i = 0; i < binaryData.length; i++) {
-        uint8Array[i] = binaryData.charCodeAt(i);
-      }
+    this.vendorService.downloadExcel().subscribe(response => {
+      const base64String = response.fileData;
+      const fileName = response.fileName || 'vendorList.xlsx';
 
-      const blob = new Blob([arrayBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'vendors.xlsx';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      const byteCharacters = atob(base64String);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = fileName;
+      link.click();
     });
   }
 

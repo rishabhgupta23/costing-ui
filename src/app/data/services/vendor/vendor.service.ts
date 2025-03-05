@@ -51,6 +51,6 @@ export class VendorService {
   }
 
   downloadExcel() {
-    return this.http.get('http://localhost:8080/vendors/download', { responseType: 'text' });
+    return this.http.get<any>('http://localhost:8080/vendors/download');
   }
 }
