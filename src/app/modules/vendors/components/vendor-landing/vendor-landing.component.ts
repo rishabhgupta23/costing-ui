@@ -107,12 +107,9 @@ listenToFilterChanges(): void {
       const base64String = response.fileData;
       const fileName = response.fileName || 'vendorList.xlsx';
 
-      const byteCharacters = atob(base64String);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
-      }
-      const byteArray = new Uint8Array(byteNumbers);
+      const byteArray = new Uint8Array([...atob(base64String)].map(char => 
+        char.charCodeAt(0)
+      ));
       const blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 
       const link = document.createElement('a');
