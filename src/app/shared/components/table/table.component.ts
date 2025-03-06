@@ -17,7 +17,8 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class TableComponent {
 
-  @Input() showFilter: boolean = false;
+@Input() showFilter: boolean = false;
+@Input() showSort: boolean = true;
 
  applyFilter(arg0: { key: any; value: any; }) {
  throw new Error('Method not implemented.');
@@ -26,12 +27,16 @@ export class TableComponent {
   @Input() config: any[] = []; 
   @Output() actionTriggered = new EventEmitter<{ action: TableActions; row: any }>();
   @Output() filterChanged = new EventEmitter<{ key: string; value: string }>();
-  @Output() sortChanged = new EventEmitter<{ key: string; value: string }>();
+  @Output() sortChanged = new EventEmitter<{ key: string; order: string }>();
+  
+ 
  
   TableActions= TableActions;
   ColumnType = ColumnType;
 
-  
+  sortedColumn: string | null = null;
+  sortedOrder: 'asc' | 'desc' = 'asc';
+
   
   onFilterChange(event: Event, key: string): void {
     const value = (event.target as HTMLInputElement).value.trim().toLowerCase();
@@ -42,6 +47,32 @@ export class TableComponent {
     input.value = '';
     this.filterChanged.emit({ key: columnKey, value: '' });
   }
+
+  onSortChange(order: string, columnKey: string): void {
+    console.log(`Sorting ${columnKey} in ${order} order.`);
+    this.sortChanged.emit({ key: columnKey, order });
+  }
+
+  toggleSort(columnKey: string): void {
+    if (this.sortedColumn !== columnKey) {
+      this.sortedColumn = columnKey;
+      this.sortedOrder = 'asc';
+    } else {
+      this.sortedOrder = this.sortedOrder === 'asc' ? 'desc' : 'asc';
+    }
+    console.log(`Sorting ${columnKey} in ${this.sortedOrder} order.`);
+    this.sortChanged.emit({ key: columnKey, order: this.sortedOrder });
+  }
+
+  // Return the appropriate SVG icon name based on sort state.
+  getSortIcon(columnKey: string): string {
+    if (this.sortedColumn === columnKey) {
+      return this.sortedOrder === 'asc' ? 'asc' : 'desc';
+    }
+    return 'default-sort';
+  }
+
+
   handleAction(event: { action: TableActions; row: any }): void {
     const { action, row } = event;
     this.actionTriggered.emit({ action, row });

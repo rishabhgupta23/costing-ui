@@ -1,12 +1,7 @@
-
-    
-    
   .table-container {
     max-height: 480px; /* Set a maximum height for the table container */
     overflow-y: auto; /* Enable vertical scrolling */
-    
-    
-   }
+    }
   
   .app-table {
     width: 100%;
@@ -58,8 +53,6 @@ input[matInput] {
 .edit-btn {            
     cursor: pointer;
     transition: color 0.3s ease;
-    
-    
   }
   
   .edit-btn:hover {
@@ -122,72 +115,89 @@ input[matInput] {
   button {
     margin: 0 0.2rem; /* Add spacing between action buttons */
   }
+  /* Style for the filter inputs within the filter row */
+.filter-row input[type="text"] {
+  width: 75%;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #000000;
+  border-radius: 10px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: #ffff;
+}
 
-  .filter-row input[type="text"] {
-    width: 75%;
-    padding: 8px 12px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 30px;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    background-color: #fafafa;
-  }
-  
-  .filter-row{
-    background-color: white;
-  }
-  
-  /* Hover effect for interactive feedback */
-  .filter-row input[type="text"]:hover {
-    border-color: #999;
-  }
-  
-  /* Focus effect for better user experience */
-  .filter-row input[type="text"]:focus {
-    border-color: #95D2B3;
-    box-shadow: 0 0 5px rgba(0, 204, 170, 0.5);
-    background-color: #fff;
-    outline: none;
-  }
-  
-  /* Placeholder text style */
-  .filter-row input[type="text"]::placeholder {
-    color: #888;
-    opacity: 0.8;
-  }
-  
-  .filter-input-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-  
-  .filter-input-wrapper input[type="text"] {
-    width: 100%;
-    padding-right: 30px; /* leave space for the clear button */
-    
-  }
-  
-  .clear-filter-btn {
-    position: absolute;
-    color: #888;
-    right: 4px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 20px;
-    width: 20px;
-  }
-  .clear-filter-btn:hover{
-    color: black;
-  }
+.filter-row{
+  background-color: white;
+}
 
-  
-  
- 
-  
-  
+/* Hover effect for interactive feedback */
+.filter-row input[type="text"]:hover {
+  border-color: #000000;
+}
+
+/* Focus effect for better user experience */
+.filter-row input[type="text"]:focus {
+  border-color: #95D2B3;
+  box-shadow: 0 0 7px rgba(0, 204, 170, 0.4);
+  background-color: #fff;
+  outline: none;
+}
+
+/* Placeholder text style */
+.filter-row input[type="text"]::placeholder {
+  color: #888;
+  opacity: 0.8;
+}
+
+.filter-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.filter-input-wrapper input[type="text"] {
+  width: 100%;
+  padding-right: 30px; /* leave space for the clear button */
+}
+
+.clear-filter-btn {
+  position: absolute;
+  color: #888;
+  right: 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  width: 20px;
+}
+.clear-filter-btn:hover{
+  color: black;
+}
+.header-cell {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.sort-btn {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1.5rem;
+  height: 1.5rem;
+  min-width: 1.5rem;
+  padding: 0;
+  margin-left: 4px;
+  background: transparent;
+  border: none;
+}
+.sort-btn .sort-icon {
+  height: 100%;
+  font-size: 16px;
+  cursor: pointer;
+  color: #000000;
+  transition: color 0.2s;
+}
+

@@ -2,11 +2,22 @@
 <table class="app-table">
   <!-- Table Header -->
    <thead>
-  <tr class="header-row">
+    <tr class="header-row" *ngIf="showSort">
       <ng-container *ngFor="let col of config">
-          <th [title]="col?.label">{{ col?.label }}</th>
-        </ng-container>
-  </tr>
+        <th [title]="col?.label">
+          <div class="header-cell">
+            <span>{{ col?.label }}</span>
+            <!-- If the column is sortable, show the sort icon -->
+            <ng-container *ngIf="col.sortable">
+              <button mat-button class="sort-btn" (click)="toggleSort(col.key)">
+                <mat-icon [svgIcon]="getSortIcon(col.key)" class="sort-icon"></mat-icon>
+              </button>
+            </ng-container>
+          </div>
+        </th>
+      </ng-container>
+    </tr>
+
   <tr class="filter-row" *ngIf="showFilter">
     <ng-container *ngFor="let col of config">
       <th>
@@ -14,19 +25,17 @@
           <div class="filter-input-wrapper">
             <input 
               type="text" 
-              #filterInput 
+              #filterInput
               (input)="onFilterChange($event, col.key)" 
-              placeholder="Filter {{ col.label }}" />
-              
-            <mat-icon *ngIf="filterInput.value" class="clear-filter-icon" (click)="clearFilter(filterInput, col.key)">
-               </mat-icon>
-             </div>
+              placeholder="Enter your text" />
+            <button class="clear-filter-btn" *ngIf="filterInput.value" (click)="clearFilter(filterInput, col.key)">
+              <mat-icon svgIcon="close"></mat-icon>
+            </button>
+          </div>
         </ng-container>
       </th>
     </ng-container>
   </tr>
-  
-
 </thead>
 
   <!-- Table Rows -->

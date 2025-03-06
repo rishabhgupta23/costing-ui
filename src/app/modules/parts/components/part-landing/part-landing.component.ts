@@ -1,5 +1,5 @@
 
-import { Component, inject} from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, inject} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 import { PART_TABLE_COLUMNS } from '../../../../data/constants/part-table-config.constants';
@@ -9,7 +9,10 @@ import { PartCreateRequest } from '../../../../data/models/part';
 import { PageEvent } from '@angular/material/paginator';
 import { TableActions } from '../../../../shared/constants/table.constants';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { ColumnType } from '../../../../shared/constants/table.constants'; //new
+import { ColumnType } from '../../../../shared/constants/table.constants';
+import { TableComponent } from '../../../../shared/components/table/table.component';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 
 @Component({
@@ -17,64 +20,127 @@ import { ColumnType } from '../../../../shared/constants/table.constants'; //new
   templateUrl: './part-landing.component.html',
   styleUrl: './part-landing.component.scss'
 })
-export class PartLandingComponent {
+export class PartLandingComponent implements OnInit, AfterViewInit {
   partList: PartCreateRequest[] = [];
+  filteredData: PartCreateRequest[] = []; 
   columns: any[] = PART_TABLE_COLUMNS;
   paginatedData: any[] = []; // Data to display on the current page
-  pageSize: number = 100 // Default items per page
+  pageSize: number = 100; // Default items per page
   currentPage: number = 0; // Current page index
   readonly dialog = inject(MatDialog);
   totalRecords: number=0;
   pageInfo: any;
-  
-  
+  filterCriteria: Map<string,string > = new Map();
+  @ViewChild(TableComponent) tableComponent!: TableComponent;
+  private searchSubject = new Subject<{ key: string; value: string }>();
+  sortColumn: string = 'partNumber';
+  sortMode: string = 'ASC';
 
-  constructor(private partService: PartService, private router: Router) {
+  constructor(private partService: PartService, private router: Router) {}
+
+  ngOnInit(): void {
     this.getPartList();
+    this.listenToFilterChanges();
   }
 
+  ngAfterViewInit(): void {
+    if (this.tableComponent) {
+      this.tableComponent.sortedColumn = 'partName';
+      this.tableComponent.sortedOrder = 'asc';
+      this.tableComponent.sortChanged.emit({ key: 'partName', order: 'asc' });
+    }
+  }
+
+  
   getPartList() {
-    this.partService.getPartList(this.currentPage, this.pageSize).subscribe(
+    this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria).subscribe(
       (res) => {
-        
 
         const responseData = res.data;
+        const partsList = Array.isArray(responseData.partsList)
+          ? responseData.partsList
+          : [];
         const maxVendorCount = responseData.maxVendorCount || 0;
-         this.addColumnsForVendor(maxVendorCount);
+        this.addColumnsForVendor(maxVendorCount);
 
-        
-        this.partList = responseData.partsList.map((part: any) => {
-          let vendorData: any = { ...part };
-  
-        (part.vendorNames || []).forEach((vendor: any, index: number) => {
-          vendorData[`vendor${index + 1}`] = vendor;
-        });
-
-        return vendorData;
-      });
-
-
-        this.paginatedData = this.partList;
-        this.totalRecords = responseData.pageInfo?.totalRecords || 0;
+        this.partList = this.mapPartsData(responseData);
+        this.filteredData = [...this.partList];
+        this.totalRecords = res.pageInfo?.totalRecords || this.filteredData.length;
+        this.updatePaginatedData();
       },
       (error) => {
         console.error("Error fetching part list:", error);
       }
     );
-}
-addColumnsForVendor(maxVendorCount: number) {
+  }
+  addColumnsForVendor(maxVendorCount: number) {
   this.columns = [...PART_TABLE_COLUMNS];
 
-  for (let i = 1; i <= maxVendorCount; i++) {
-    this.columns.push({
-      label: `Vendor ${i}`,
-      columnType: ColumnType.GENERAL,
-      key: `vendor${i}`
+  const actionsIndex = this.columns.findIndex(col => col.columnType === ColumnType.ACTION);
+
+    for (let i = maxVendorCount; i >= 1; i--) {
+      this.columns.splice(actionsIndex, 0,{
+        label: `Vendor ${i}`,
+        columnType: ColumnType.GENERAL,
+        key: `vendor${i}`,
+        filterable: true,
+        sortable: true
+      });
+    }
+  }
+
+  private mapPartsData(responseData: any): PartCreateRequest[] {
+    const partsList = Array.isArray(responseData.partsList) ? responseData.partsList : [];
+    return partsList.map((part: any) => {
+      const vendorData = { ...part };
+      (part.vendorNames || []).forEach((vendor: any, index: number) => {
+        vendorData[`vendor${index + 1}`] = vendor;
+      });
+      return vendorData;
     });
   }
-}
+
+  listenToFilterChanges(): void {
+    this.searchSubject
+      .pipe(
+        debounceTime(300), 
+        distinctUntilChanged((prev, curr) => prev.value === curr.value), // Ignore duplicate searches
+        switchMap(() =>{
+          this.currentPage=0;
+          return this.partService.getPartList(this.currentPage, this.pageSize,this.filterCriteria);
+        })
+      )
+      .subscribe(
+        (res) => {
+          const responseData = res.data;
+          this.partList = this.mapPartsData(responseData);
+          this.filteredData = [...this.partList];
+          this.totalRecords = responseData.pageInfo?.totalRecords || this.filteredData.length;
+          this.updatePaginatedData();
+          console.log("api is called")
+        },
+        (error) => {
+          console.error("Error fetching filtered data:", error);
+      
+        }
+      );
+  }
+
   
-  
+  applyFilter(filter: { key: string; value: string }): void {
+    this.filterCriteria.set(filter.key, filter.value);
+    this.searchSubject.next(filter);
+  }
+
+  applySort(sort: { key: string; order: string }): void {
+    if (!sort.order) return;
+    this.sortColumn = sort.key;
+    this.sortMode = sort.order.toUpperCase();
+    //console.log(`API call: Fetch sorted data for ${this.sortColumn} in ${this.sortMode} order.`);
+    this.getPartList();
+  }
+
+
   createPart() {
     this.router.navigateByUrl("/app/parts/create");
   }
@@ -114,7 +180,7 @@ addColumnsForVendor(maxVendorCount: number) {
   updatePaginatedData() {
     const startIndex = this.currentPage * this.pageSize;
     const endIndex = startIndex + this.pageSize;
-    this.paginatedData = this.partList.slice(startIndex, endIndex);
+    this.paginatedData = this.filteredData.slice(startIndex, endIndex);
   }
 }
 

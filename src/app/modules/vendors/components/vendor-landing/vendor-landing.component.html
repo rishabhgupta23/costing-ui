@@ -8,12 +8,19 @@
     <div class="page-content">
         <div class="card-nc">
             <app-table 
-            [data]="vendorList"
+            [data]="vendorList" 
             (filterChanged)="applyFilter($event)"
             [config]="columns"
             [showFilter]="true"
-            (actionTriggered)="handleAction($event)">
+            (actionTriggered)="handleAction($event)"
+            (sortChanged)="applySort($event)"
+            [showSort]="true">
         </app-table>
+        <mat-paginator 
+        [length]="totalRecords" 
+        [pageSize]="pageSize" 
+        (page)="onPageChange($event)">
+      </mat-paginator>
         </div>
     </div>
 </div>
