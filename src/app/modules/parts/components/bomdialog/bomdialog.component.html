@@ -18,7 +18,7 @@
     <!-- Part Name Column -->
     <ng-container matColumnDef="partName">
       <th mat-header-cell *matHeaderCellDef>Part Name
-        <input matInput [(ngModel)]="searchTermName" (input)="filterParts()" placeholder="Search Name">
+        <input matInput [(ngModel)]="searchTermName" (input)="applyFilter()" placeholder="Search Name">
 
       </th>
       <td mat-cell *matCellDef="let part">{{ part.partName }}</td>
@@ -27,7 +27,7 @@
     <!-- Part Number Column -->
     <ng-container matColumnDef="partNumber">
       <th mat-header-cell *matHeaderCellDef>Part Number
-        <input matInput [(ngModel)]="searchTermNumber" (input)="filterParts()" placeholder="Search Name">
+        <input matInput [(ngModel)]="searchTermNumber" (input)="applyFilter()" placeholder="Search Name">
 
       </th>
       <td mat-cell *matCellDef="let part">{{ part.partNumber }}</td>

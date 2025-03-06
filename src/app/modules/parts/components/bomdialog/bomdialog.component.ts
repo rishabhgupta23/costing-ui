@@ -6,12 +6,14 @@ import { DialogCloseResponse } from '../../../../shared/constants/dialog.constan
 import { PageEvent } from '@angular/material/paginator';
 
 import { FormsModule } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 @Component({
   selector: 'app-bomdialog',
   templateUrl: './bomdialog.component.html',
   styleUrls: ['./bomdialog.component.scss']
 })
 export class BomdialogComponent implements OnInit {
+  //searchSubject: any;
 filterParts() {
 throw new Error('Method not implemented.');
 }
@@ -28,7 +30,8 @@ searchTerm: any;
 filteredPartList: PartRow[] = []; // ✅ Stores filtered parts
   searchTermName: string = ''; // ✅ For filtering by name
   searchTermNumber: string = ''; 
-
+ filterCriteria: Map<string, string> = new Map();
+private searchSubject = new Subject<{ key: string; value: string }>();
 constructor(
   public dialogRef: MatDialogRef<BomdialogComponent>,
   @Inject(MAT_DIALOG_DATA) public data:  { existingParts: Set<number> },
@@ -53,21 +56,54 @@ togglePartSelection(part: PartRow, event: any): void {
 ngOnInit():void{
   this.existingParts = new Set(this.data.existingParts);
 this.getPartList();
+this.listenToFilterChanges();
 }
 
 getPartList():void{
-  this.partService.getPartList(this.currentPage, this.pageSize).subscribe(
-    (response) => {
-      this.partList = response.data?.partsList || [];
+  this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria).subscribe(
+    (res) => {
+      this.partList = res.data?.partsList || [];
+      const mappedParts = this.partList.map(part => part.partName);
       this.existingParts = this.data.existingParts;
       this.paginatedData = this.partList;
-      this.totalRecords = response.pageInfo?.totalRecords || 0;
+      this.totalRecords = res.pageInfo?.totalRecords || 0;
       this.allParts = [...this.allParts, ...this.partList];
       this.allParts = Array.from(new Set(this.allParts.map(part => part.partId)))
-        .map(id => this.allParts.find(part => part.partId === id)!);
+        .map(id => this.allParts.find(part => part.partId === id)!);
 });
 
 }
+
+
+
+
+
+listenToFilterChanges(): void {
+  this.searchSubject
+    .pipe(
+      debounceTime(300),
+      distinctUntilChanged((prev, curr) => prev.value === curr.value)
+    )
+    .subscribe(() => {
+      this.currentPage = 0;
+      this.getPartList(); // ✅ Reusing existing method
+      });
+  }
+
+applyFilter(): void {
+  // Apply filter for both name and number
+  if (this.searchTermName) {
+    this.filterCriteria.set('partName', this.searchTermName);
+    this.searchSubject.next({ key: 'partName', value: this.searchTermName });
+  }
+  if (this.searchTermNumber) {
+    this.filterCriteria.set('partNumber', this.searchTermNumber);
+    this.searchSubject.next({ key: 'partNumber', value: this.searchTermNumber });
+    }
+  }
+
+
+    
 
 isAllSelected(): boolean {
   return this.partList.length > 0 && this.partList.every(part => this.existingParts.has(part.partId));
