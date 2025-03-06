@@ -24,17 +24,17 @@ export class PartService {
     return this.http.get<PartDetails>(ApiUtil.getPreparedUrl(API_END_POINTS.PART_DETAILS, params));
   }
 
-  getPartList(page: number = 0, size: number = 100, filters?: { [key: string]: string }): Observable<any> {
+  getPartList(page: number = 0, size: number = 100, filterCriteria: Map<string, string> = new Map()): Observable<any> {
     let params = new HttpParams()
-    .set('pageNo', page.toString())
-    .set('pageSize', size.toString());
-    if (filters) {
-      Object.keys(filters).forEach(key => {
-        if (filters[key]) {
-          params = params.set(key, filters[key]);
-        }
-      });
-    }
+      .set('pageNo', page.toString())
+      .set('pageSize', size.toString());
+  
+    filterCriteria.forEach((value, key) => {
+      if (value) {
+        params = params.set(key, value);
+      }
+    });
+    
     const url = ApiUtil.getApiUrl(API_END_POINTS.PARTS);
     return this.http.get<any>(url, { params });
   }
