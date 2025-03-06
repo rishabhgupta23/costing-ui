@@ -27,7 +27,7 @@ export class VendorLandingComponent  {
   totalRecords: number=0;
   pageInfo: any;
   readonly dialog = inject(MatDialog);
-  filterCriteria: { [key: string]: string } = {};
+  filterCriteria: Map<string, string> = new Map();
   
   private searchSubject = new Subject<{ key: string; value: string }>(); 
   
@@ -70,11 +70,8 @@ listenToFilterChanges(): void {
   }
   
  applyFilter(filter: { key: string; value: string }): void {
-  this.filterCriteria = {
-    ...this.filterCriteria,
-    [filter.key]: filter.value
-  };
-    this.searchSubject.next(filter);
+  this.filterCriteria.set(filter.key, filter.value);
+  this.searchSubject.next(filter);
   }
   
   openDiscardDialog(row: any): void {

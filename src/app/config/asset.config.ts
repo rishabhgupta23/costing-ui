@@ -11,5 +11,9 @@ export const SVG_ICONS = [
     {
         path: baseIconsPath + '/download_icon.svg',
         name: 'download'
+    },
+    {
+        path: baseIconsPath + '/close_icon.svg',
+        name: 'close'
     }
 ];

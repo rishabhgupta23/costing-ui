@@ -14,19 +14,15 @@
           <div class="filter-input-wrapper">
             <input 
               type="text" 
-              #filterInput 
+              #filterInput
               (input)="onFilterChange($event, col.key)" 
-              placeholder="Filter {{ col.label }}" />
-              
-            <mat-icon *ngIf="filterInput.value" class="clear-filter-icon" (click)="clearFilter(filterInput, col.key)">
-               </mat-icon>
-             </div>
+              placeholder="Enter your text" />
+              <mat-icon class="clear-filter-btn" *ngIf="filterInput.value" (click)="clearFilter(filterInput, col.key)" svgIcon="close"></mat-icon>
+          </div>
         </ng-container>
       </th>
     </ng-container>
   </tr>
-  
-
 </thead>
 
   <!-- Table Rows -->
