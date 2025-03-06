@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiUtil } from '../../../shared/utils/api.util';
@@ -9,8 +9,12 @@ import { API_END_POINTS } from '../../../config/api.config';
 })
 export class CostCalculatorService {
     getCost(partId:number,mode:string): Observable<any> {
+
+      const params = new Map<string, string>();
+      params.set('partId', partId.toString())
+      params.set('mode', mode);
       
-      const url = ApiUtil.getApiUrl(API_END_POINTS.COST_CALCULATE);
+      const url = ApiUtil.getPreparedUrl(API_END_POINTS.COST_CALCULATE, params );
       return  this.http.get<any>(url);
     }
 
