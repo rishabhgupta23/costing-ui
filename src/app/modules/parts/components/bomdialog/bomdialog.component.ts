@@ -13,22 +13,22 @@ import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
   styleUrls: ['./bomdialog.component.scss']
 })
 export class BomdialogComponent implements OnInit {
-  //searchSubject: any;
+ 
 filterParts() {
 throw new Error('Method not implemented.');
 }
   displayedColumns: string[] = ['select', 'partName', 'partNumber'];
   existingParts: Set<number>= new Set();
   partList: PartRow[] = [];
-paginatedData: any[] = []; // Data to display on the current page
-pageSize: number = 100 // Default items per page
+paginatedData: any[] = []; 
+pageSize: number = 100 
 currentPage: number = 0;
 totalRecords: number=0;
 pageInfo: any;
 allParts: PartRow[] = [];
 searchTerm: any;
-filteredPartList: PartRow[] = []; // ✅ Stores filtered parts
-  searchTermName: string = ''; // ✅ For filtering by name
+filteredPartList: PartRow[] = [];
+  searchTermName: string = ''; 
   searchTermNumber: string = ''; 
  filterCriteria: Map<string, string> = new Map();
 private searchSubject = new Subject<{ key: string; value: string }>();
@@ -86,12 +86,12 @@ listenToFilterChanges(): void {
     )
     .subscribe(() => {
       this.currentPage = 0;
-      this.getPartList(); // ✅ Reusing existing method
+      this.getPartList(); 
       });
   }
 
 applyFilter(): void {
-  // Apply filter for both name and number
+  
   if (this.searchTermName) {
     this.filterCriteria.set('partName', this.searchTermName);
     this.searchSubject.next({ key: 'partName', value: this.searchTermName });
