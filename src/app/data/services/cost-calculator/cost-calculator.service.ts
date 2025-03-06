@@ -10,7 +10,7 @@ import { API_END_POINTS } from '../../../config/api.config';
 export class CostCalculatorService {
     getCost(partId:number,mode:string): Observable<any> {
       
-      const url = ApiUtil.getApiUrl(API_END_POINTS.PARTS);
+      const url = ApiUtil.getApiUrl(API_END_POINTS.COST_CALCULATE);
       return  this.http.get<any>(url);
     }
 
