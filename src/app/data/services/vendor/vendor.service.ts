@@ -59,6 +59,6 @@ export class VendorService {
   }
 
   downloadExcel() {
-    return this.http.get<any>('http://localhost:8080/vendors/download');
+    return this.http.get<any>(ApiUtil.getApiUrl(API_END_POINTS.VENDOR_DOWNLOAD));
   }
 }
