@@ -100,9 +100,7 @@
         }
       }
     }
-  },
-  "cli": {
-    "analytics": false
   }
+
   
 }

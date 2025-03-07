@@ -13,9 +13,9 @@ import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
   styleUrls: ['./bomdialog.component.scss']
 })
 export class BomdialogComponent implements OnInit {
-  //searchSubject: any;
+
 filterParts() {
-throw new Error('Method not implemented.');
+throw new Error('Method not implemented.'); 
 }
   displayedColumns: string[] = ['select', 'partName', 'partNumber'];
   existingParts: Set<number>= new Set();
@@ -25,22 +25,19 @@ pageSize: number = 100
 currentPage: number = 0;
 totalRecords: number=0;
 pageInfo: any;
-allParts: PartRow[] = [];
+allParts: PartRow[] = []; 
 searchTerm: any;
 filteredPartList: PartRow[] = [];
-  searchTermName: string = ''; 
-  searchTermNumber: string = ''; 
+searchTermName: string = ''; 
+searchTermNumber: string = ''; 
  filterCriteria: Map<string, string> = new Map();
-private searchSubject = new Subject<{ key: string; value: string }>();
+ private searchSubject = new Subject<{ key: string; value: string }>();
 constructor(
   public dialogRef: MatDialogRef<BomdialogComponent>,
   @Inject(MAT_DIALOG_DATA) public data:  { existingParts: Set<number> },
   private partService: PartService 
 ) {
 }
-
-
-
 closeDialog() {
   this.dialogRef.close({action: DialogCloseResponse.NO_ACTION});
   }
@@ -73,11 +70,6 @@ getPartList():void{
 });
 
 }
-
-
-
-
-
 listenToFilterChanges(): void {
   this.searchSubject
     .pipe(
