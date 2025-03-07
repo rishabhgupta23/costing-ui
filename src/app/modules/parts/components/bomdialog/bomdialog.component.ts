@@ -25,7 +25,7 @@ pageSize: number = 100
 currentPage: number = 0;
 totalRecords: number=0;
 pageInfo: any;
-allParts: PartRow[] = []; 
+allParts: PartRow[] = [];  
 searchTerm: any;
 filteredPartList: PartRow[] = [];
 searchTermName: string = ''; 
