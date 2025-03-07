@@ -10,12 +10,11 @@ import { API_END_POINTS } from '../../../config/api.config';
 export class CostCalculatorService {
     getCost(partId:number,priceMode:string): Observable<any> {
 
-      const params = new Map<string, string>();
-      params.set('partId', partId.toString())
-      params.set('priceMode', priceMode );
-      
-      const url = ApiUtil.getPreparedUrl(API_END_POINTS.COST_CALCULATE, params );
-      return  this.http.get<any>(url);
+      const url = ApiUtil.getPreparedUrl(API_END_POINTS.COST_CALCULATE, new Map([
+        ['partId', partId.toString()]
+     ]));
+       const params = new HttpParams().set('priceMode', priceMode);
+      return  this.http.get<any>(url,{params});
     }
 
   constructor(private http: HttpClient) { }
