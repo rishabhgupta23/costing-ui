@@ -28,9 +28,7 @@
               #filterInput
               (input)="onFilterChange($event, col.key)" 
               placeholder="Enter your text" />
-            <button class="clear-filter-btn" *ngIf="filterInput.value" (click)="clearFilter(filterInput, col.key)">
-              <mat-icon svgIcon="close"></mat-icon>
-            </button>
+              <mat-icon class="clear-filter-btn" *ngIf="filterInput.value" (click)="clearFilter(filterInput, col.key)" svgIcon="close"></mat-icon>
           </div>
         </ng-container>
       </th>

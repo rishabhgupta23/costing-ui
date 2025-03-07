@@ -9,6 +9,10 @@ export const SVG_ICONS = [
         name: 'edit'
     },
     {
+        path: baseIconsPath + '/download_icon.svg',
+        name: 'download'
+    },
+    {
         path: baseIconsPath + '/close_icon.svg',
         name: 'close'
     },

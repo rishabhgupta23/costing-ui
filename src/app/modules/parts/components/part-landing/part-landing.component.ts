@@ -22,7 +22,6 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 })
 export class PartLandingComponent implements OnInit, AfterViewInit {
   partList: PartCreateRequest[] = [];
-  filteredData: PartCreateRequest[] = []; 
   columns: any[] = PART_TABLE_COLUMNS;
   paginatedData: any[] = []; // Data to display on the current page
   pageSize: number = 100; // Default items per page
@@ -30,8 +29,8 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
   readonly dialog = inject(MatDialog);
   totalRecords: number=0;
   pageInfo: any;
-  filterCriteria: { [key: string]: string } = {};
   @ViewChild(TableComponent) tableComponent!: TableComponent;
+  filterCriteria: Map<string, string> = new Map();
   private searchSubject = new Subject<{ key: string; value: string }>();
   sortColumn: string = 'partNumber';
   sortMode: string = 'ASC';
@@ -53,19 +52,24 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
 
   
   getPartList() {
-    this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortColumn, this.sortMode).subscribe(
+    this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria).subscribe(
       (res) => {
 
         const responseData = res.data;
-        const partsList = Array.isArray(responseData.partsList)
-          ? responseData.partsList
-          : [];
         const maxVendorCount = responseData.maxVendorCount || 0;
         this.addColumnsForVendor(maxVendorCount);
+        
+        this.partList = responseData.partsList.map((part: any) => {
+          let vendorData: any = { ...part };
+  
+        (part.vendorNames || []).forEach((vendor: any, index: number) => {
+          vendorData[`vendor${index + 1}`] = vendor;
+        });
 
-        this.partList = this.mapPartsData(responseData);
-        this.filteredData = [...this.partList];
-        this.totalRecords = res.pageInfo?.totalRecords || this.filteredData.length;
+        return vendorData;
+      });
+
+        this.totalRecords = res.pageInfo?.totalRecords || this.partList.length;
         this.updatePaginatedData();
       },
       (error) => {
@@ -82,8 +86,7 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
       this.columns.splice(actionsIndex, 0,{
         label: `Vendor ${i}`,
         columnType: ColumnType.GENERAL,
-        key: `vendor${i}`,
-        filterable: true,
+        key: `vendor${i}`
       });
     }
   }
@@ -102,35 +105,19 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
   listenToFilterChanges(): void {
     this.searchSubject
       .pipe(
-        debounceTime(300), 
-        distinctUntilChanged((prev, curr) => prev.value === curr.value), // Ignore duplicate searches
-        switchMap(() =>{
-          this.currentPage=0;
-          return this.partService.getPartList(this.currentPage, this.pageSize,this.filterCriteria, this.sortColumn, this.sortMode);
-        })
+        debounceTime(300),
+        distinctUntilChanged((prev, curr) => prev.value === curr.value)
       )
-      .subscribe(
-        (res) => {
-          const responseData = res.data;
-          this.partList = this.mapPartsData(responseData);
-          this.filteredData = [...this.partList];
-          this.totalRecords = responseData.pageInfo?.totalRecords || this.filteredData.length;
-          this.updatePaginatedData();
-          console.log("api is called")
-        },
-        (error) => {
-          console.error("Error fetching filtered data:", error);
-      
-        }
-      );
+      .subscribe(() => {
+        this.currentPage = 0;
+        this.getPartList(); // ✅ Reusing existing method
+      });
   }
+  
 
   
   applyFilter(filter: { key: string; value: string }): void {
-    this.filterCriteria = {
-      ...this.filterCriteria,
-      [filter.key]: filter.value
-    };
+    this.filterCriteria.set(filter.key, filter.value);
     this.searchSubject.next(filter);
   }
 
@@ -182,7 +169,7 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
   updatePaginatedData() {
     const startIndex = this.currentPage * this.pageSize;
     const endIndex = startIndex + this.pageSize;
-    this.paginatedData = this.filteredData.slice(startIndex, endIndex);
+    this.paginatedData = this.partList.slice(startIndex, endIndex);
   }
 }
 
