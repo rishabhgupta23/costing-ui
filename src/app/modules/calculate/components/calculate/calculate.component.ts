@@ -21,7 +21,7 @@ export class CalculateComponent {
   currentPage=0;
   pageSize=100;
   costingList: CostItem[]=[];
-  filterCriteria: { [key: string]: string } = {};
+  filterCriteria:  Map<string, string> = new Map();
   totalRecords:number=0;
   private searchSubject = new Subject<{ key: string; value: string }>(); 
 
@@ -44,10 +44,7 @@ export class CalculateComponent {
     );
   }
   applyFilter(filter: { key: string; value: string }): void {
-    this.filterCriteria = {
-      ...this.filterCriteria,
-      [filter.key]: filter.value
-    };
+    this.filterCriteria.set(filter.key, filter.value);
     this.searchSubject.next(filter);
   }
   
@@ -88,17 +85,15 @@ export class CalculateComponent {
       distinctUntilChanged(),
       switchMap((value) => {
         const filterValue = value ?? '';
-        this.filterCriteria = {
-          partName: filterValue,
-          partNumber: filterValue
-        };
-        return this.partService.getPartList(this.currentPage, this.pageSize, {});
+        this.filterCriteria.set('partName', filterValue);
+        this.filterCriteria.set('partNumber', filterValue)
+        return this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria);
       }),
       map((response) => {
         this.partList = response.data?.partsList || [];
         return this.partList.filter(part => 
-          part.partName?.toLowerCase().includes(this.filterCriteria['partName'].toLowerCase()) || 
-          part.partNumber?.toLowerCase().includes(this.filterCriteria['partNumber'].toLowerCase())
+          part.partName?.toLowerCase().includes(this.filterCriteria.get('partName')?.toLowerCase() || '') || 
+          part.partNumber?.toLowerCase().includes(this.filterCriteria.get('partNumber')?.toLowerCase() || '')
         );
       })
     );

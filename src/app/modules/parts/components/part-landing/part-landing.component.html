@@ -11,7 +11,9 @@
             [data]="paginatedData" 
             [config]="columns"
             (actionTriggered)="handleAction($event)"
-            (rowClicked)="onRowClicked($event)">
+            (rowClicked)="onRowClicked($event)"
+            (filterChanged)="applyFilter($event)"
+            [showFilter]="true">
         </app-table>
         <mat-paginator 
         [length]="totalRecords" 

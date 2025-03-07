@@ -27,7 +27,7 @@ export class VendorLandingComponent  {
   totalRecords: number=0;
   pageInfo: any;
   readonly dialog = inject(MatDialog);
-  filterCriteria: { [key: string]: string } = {};
+  filterCriteria: Map<string, string> = new Map();
   
   private searchSubject = new Subject<{ key: string; value: string }>(); 
   
@@ -70,11 +70,8 @@ listenToFilterChanges(): void {
   }
   
  applyFilter(filter: { key: string; value: string }): void {
-  this.filterCriteria = {
-    ...this.filterCriteria,
-    [filter.key]: filter.value
-  };
-    this.searchSubject.next(filter);
+  this.filterCriteria.set(filter.key, filter.value);
+  this.searchSubject.next(filter);
   }
   
   openDiscardDialog(row: any): void {
@@ -104,6 +101,24 @@ listenToFilterChanges(): void {
       this.router.navigateByUrl(`/app/vendors/edit/${row.id}`);
     }
   }
+
+  downloadExcel() {
+    this.vendorService.downloadExcel().subscribe(response => {
+      const base64String = response.fileData;
+      const fileName = response.fileName || 'vendorList.xlsx';
+
+      const byteArray = new Uint8Array([...atob(base64String)].map(char => 
+        char.charCodeAt(0)
+      ));
+      const blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = fileName;
+      link.click();
+    });
+  }
+
 
   onPageChange(event: PageEvent) {
     this.pageSize = event.pageSize;

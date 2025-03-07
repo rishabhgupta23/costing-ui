@@ -9,7 +9,9 @@ import { PartCreateRequest } from '../../../../data/models/part';
 import { PageEvent } from '@angular/material/paginator';
 import { TableActions } from '../../../../shared/constants/table.constants';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { ColumnType } from '../../../../shared/constants/table.constants'; //new
+import { ColumnType } from '../../../../shared/constants/table.constants';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 
 @Component({
@@ -26,11 +28,13 @@ export class PartLandingComponent {
   readonly dialog = inject(MatDialog);
   totalRecords: number=0;
   pageInfo: any;
-  
+  filterCriteria: Map<string, string> = new Map();
+  private searchSubject = new Subject<{ key: string; value: string }>();
   
 
   constructor(private partService: PartService, private router: Router) {
     this.getPartList();
+    this.listenToFilterChanges();
   }
 
   onRowClicked(rowData: any) {
@@ -39,15 +43,12 @@ export class PartLandingComponent {
   }
 
   getPartList() {
-    this.partService.getPartList(this.currentPage, this.pageSize).subscribe(
+    this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria).subscribe(
       (res) => {
-        console.log(res)
-        
 
         const responseData = res.data;
         const maxVendorCount = responseData.maxVendorCount || 0;
-         this.addColumnsForVendor(maxVendorCount);
-
+        this.addColumnsForVendor(maxVendorCount);
         
         this.partList = responseData.partsList.map((part: any) => {
           let vendorData: any = { ...part };
@@ -59,29 +60,46 @@ export class PartLandingComponent {
         return vendorData;
       });
 
-
-        this.paginatedData = this.partList;
-        this.totalRecords = res.pageInfo?.totalRecords || 0;
-
+        this.totalRecords = res.pageInfo?.totalRecords || this.partList.length;
+        this.updatePaginatedData();
       },
       (error) => {
         console.error("Error fetching part list:", error);
       }
     );
-}
-addColumnsForVendor(maxVendorCount: number) {
+  }
+  addColumnsForVendor(maxVendorCount: number) {
   this.columns = [...PART_TABLE_COLUMNS];
 
-  for (let i = 1; i <= maxVendorCount; i++) {
-    this.columns.push({
-      label: `Vendor ${i}`,
-      columnType: ColumnType.GENERAL,
-      key: `vendor${i}`
-    });
+  const actionsIndex = this.columns.findIndex(col => col.columnType === ColumnType.ACTION);
+
+    for (let i = 1; i <= maxVendorCount; i++) {
+      this.columns.splice(actionsIndex, 0,{
+        label: `Vendor ${i}`,
+        columnType: ColumnType.GENERAL,
+        key: `vendor${i}`
+      });
+    }
   }
-}
+
+  listenToFilterChanges(): void {
+    this.searchSubject
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged((prev, curr) => prev.value === curr.value)
+      )
+      .subscribe(() => {
+        this.currentPage = 0;
+        this.getPartList(); // ✅ Reusing existing method
+      });
+  }
   
+
   
+  applyFilter(filter: { key: string; value: string }): void {
+    this.filterCriteria.set(filter.key, filter.value);
+    this.searchSubject.next(filter);
+  }
   createPart() {
     this.router.navigateByUrl("/app/parts/create");
   }
