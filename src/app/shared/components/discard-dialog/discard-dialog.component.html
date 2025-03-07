@@ -7,14 +7,18 @@
 <!-- Table Container with Custom Styling -->
 <div class="app-table">
   <app-table 
-  [data]="dataSource.data" 
+  [data]="dataSource" 
   [config]="columns">
 </app-table>
 </div>
 
 
 <!-- Paginator -->
-<mat-paginator [pageSize]="10" [pageSizeOptions]="[10,20,30]"></mat-paginator>
+<mat-paginator 
+  [length]="totalRecords" 
+  [pageSize]="pageSize" 
+  (page)="onPageChange($event)">
+</mat-paginator>
 
 
   <p class="confirm-message">Are you sure you want to delete this Vendor?</p>

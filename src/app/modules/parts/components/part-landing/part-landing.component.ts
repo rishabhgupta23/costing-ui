@@ -5,7 +5,7 @@ import { DialogCloseResponse } from '../../../../shared/constants/dialog.constan
 import { PART_TABLE_COLUMNS } from '../../../../data/constants/part-table-config.constants';
 import { Router } from '@angular/router';
 import { PartService } from '../../../../data/services/part/part.service';
-import { PartCreateRequest } from '../../../../data/models/part';
+import { PartRow } from '../../../../data/models/part';
 import { PageEvent } from '@angular/material/paginator';
 import { TableActions } from '../../../../shared/constants/table.constants';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -20,10 +20,10 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
   styleUrl: './part-landing.component.scss'
 })
 export class PartLandingComponent {
-  partList: PartCreateRequest[] = [];
+  partList: PartRow[] = [];
   columns: any[] = PART_TABLE_COLUMNS;
   paginatedData: any[] = []; // Data to display on the current page
-  pageSize: number = 100; // Default items per page
+  pageSize: number = 10; // Default items per page
   currentPage: number = 0; // Current page index
   readonly dialog = inject(MatDialog);
   totalRecords: number=0;
@@ -56,7 +56,7 @@ export class PartLandingComponent {
       });
 
         this.totalRecords = res.pageInfo?.totalRecords || this.partList.length;
-        this.updatePaginatedData();
+        this.paginatedData = this.partList  //no need of updatePaginatedData() because it will slice the data twice
       },
       (error) => {
         console.error("Error fetching part list:", error);
@@ -85,7 +85,7 @@ export class PartLandingComponent {
       )
       .subscribe(() => {
         this.currentPage = 0;
-        this.getPartList(); // ✅ Reusing existing method
+        this.getPartList();
       });
   }
   
@@ -129,12 +129,6 @@ export class PartLandingComponent {
     this.pageSize = event.pageSize;
     this.currentPage = event.pageIndex;
     this.getPartList();
-  }
-
-  updatePaginatedData() {
-    const startIndex = this.currentPage * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.paginatedData = this.partList.slice(startIndex, endIndex);
   }
 }
 

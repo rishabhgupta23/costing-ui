@@ -1,7 +1,8 @@
 .app-table{
   height: 350px;
-  padding: 0.5rem;
+  padding: 0 1.5rem;
   margin-top: 0.5rem;
+  overflow-y: auto;
 }
 .title{
   padding: 0 1.5rem;
@@ -19,4 +20,6 @@
   padding: 0 1.5rem;
   margin-bottom: 0;
 }
-
+.paginator-style{
+  padding:0 1.5rem;
+}
