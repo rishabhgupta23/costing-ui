@@ -100,7 +100,7 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
       )
       .subscribe(() => {
         this.currentPage = 0;
-        this.getPartList(); // ✅ Reusing existing method
+        this.getPartList();
       });
   }
   
@@ -115,7 +115,6 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
     if (!sort.order) return;
     this.sortColumn = sort.key;
     this.sortMode = sort.order.toUpperCase();
-    //console.log(`API call: Fetch sorted data for ${this.sortColumn} in ${this.sortMode} order.`);
     this.getPartList();
   }
 
