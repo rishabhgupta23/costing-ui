@@ -10,5 +10,6 @@ export const API_END_POINTS = {
     PART_UNITS: '/parts/units',
     CATEGORIES: '/categories',
     COST_FACTORS: '/parts/cost-factors',
-    VENDOR_DOWNLOAD: '/vendors/download'
+    VENDOR_DOWNLOAD: '/vendors/download',
+    PART_DOWNLOAD: '/parts/download'
 };
