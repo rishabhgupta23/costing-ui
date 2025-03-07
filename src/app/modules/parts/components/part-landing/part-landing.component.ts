@@ -52,7 +52,7 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
 
   
   getPartList() {
-    this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria).subscribe(
+    this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortColumn, this.sortMode).subscribe(
       (res) => {
 
         const responseData = res.data;
@@ -91,16 +91,6 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private mapPartsData(responseData: any): PartCreateRequest[] {
-    const partsList = Array.isArray(responseData.partsList) ? responseData.partsList : [];
-    return partsList.map((part: any) => {
-      const vendorData = { ...part };
-      (part.vendorNames || []).forEach((vendor: any, index: number) => {
-        vendorData[`vendor${index + 1}`] = vendor;
-      });
-      return vendorData;
-    });
-  }
 
   listenToFilterChanges(): void {
     this.searchSubject
