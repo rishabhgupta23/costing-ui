@@ -14,9 +14,6 @@ import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 })
 export class BomdialogComponent implements OnInit {
 
-filterParts() {
-throw new Error('Method not implemented.'); 
-}
   displayedColumns: string[] = ['select', 'partName', 'partNumber'];
   existingParts: Set<number>= new Set();
   partList: PartRow[] = [];
