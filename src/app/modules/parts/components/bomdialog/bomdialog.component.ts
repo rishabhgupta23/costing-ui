@@ -13,7 +13,7 @@ import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
   styleUrls: ['./bomdialog.component.scss']
 })
 export class BomdialogComponent implements OnInit {
- 
+  //searchSubject: any;
 filterParts() {
 throw new Error('Method not implemented.');
 }
@@ -86,7 +86,7 @@ listenToFilterChanges(): void {
     )
     .subscribe(() => {
       this.currentPage = 0;
-      this.getPartList(); 
+      this.getPartList(); // ✅ Reusing existing method
       });
   }
 

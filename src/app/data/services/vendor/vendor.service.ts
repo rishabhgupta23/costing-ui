@@ -57,4 +57,8 @@ export class VendorService {
   createVendor(vendor: Vendor): Observable<any> {
     return this.http.post<Vendor>(ApiUtil.getApiUrl(API_END_POINTS.VENDORS), vendor);
   }
+
+  downloadExcel() {
+    return this.http.get<any>(ApiUtil.getApiUrl(API_END_POINTS.VENDOR_DOWNLOAD));
+  }
 }
