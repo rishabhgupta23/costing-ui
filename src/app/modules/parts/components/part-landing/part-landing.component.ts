@@ -45,9 +45,9 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     if (this.tableComponent) {
-      this.tableComponent.sortedColumn = 'partName';
+      this.tableComponent.sortedColumn = 'partNumber';
       this.tableComponent.sortedOrder = 'asc';
-      this.tableComponent.sortChanged.emit({ key: 'partName', order: 'asc' });
+      this.tableComponent.sortChanged.emit({ key: 'partNumber', order: 'asc' });
     }
   }
 
@@ -84,7 +84,6 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
         columnType: ColumnType.GENERAL,
         key: `vendor${i}`,
         filterable: true,
-        sortable: true
       });
     }
   }

@@ -27,8 +27,6 @@ export class PartService {
         params = params.set(key, filterCriteria[key]);
       }
     });
-    console.log("Query params: ", params.toString());
-  
     const url = `http://localhost:8080/parts`;
     return this.http.get<any>(url, { params });
   }
