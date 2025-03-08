@@ -5,7 +5,7 @@ import { DialogCloseResponse } from '../../../../shared/constants/dialog.constan
 import { PART_TABLE_COLUMNS } from '../../../../data/constants/part-table-config.constants';
 import { Router } from '@angular/router';
 import { PartService } from '../../../../data/services/part/part.service';
-import { PartCreateRequest } from '../../../../data/models/part';
+import { PartRow } from '../../../../data/models/part';
 import { PageEvent } from '@angular/material/paginator';
 import { TableActions } from '../../../../shared/constants/table.constants';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -21,7 +21,7 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
   styleUrl: './part-landing.component.scss'
 })
 export class PartLandingComponent implements OnInit, AfterViewInit {
-  partList: PartCreateRequest[] = [];
+  partList: PartRow[] = [];
   columns: any[] = PART_TABLE_COLUMNS;
   paginatedData: any[] = []; // Data to display on the current page
   pageSize: number = 100; // Default items per page
@@ -70,7 +70,8 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
       });
 
         this.totalRecords = res.pageInfo?.totalRecords || this.partList.length;
-        this.updatePaginatedData();
+        this.paginatedData = this.partList;
+        console.log("Api is called", responseData)
       },
       (error) => {
         console.error("Error fetching part list:", error);
@@ -172,11 +173,6 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
     this.getPartList();
   }
 
-  updatePaginatedData() {
-    const startIndex = this.currentPage * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.paginatedData = this.partList.slice(startIndex, endIndex);
-  }
 }
 
  
