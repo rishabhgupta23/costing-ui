@@ -29,9 +29,9 @@ searchTerm: any;
 filteredPartList: PartRow[] = [];
 searchTermName: string = ''; 
 searchTermNumber: string = ''; 
-sortMode: string ='ASC' ;// Default sort order
+sortMode: string ='ASC' ;
 sortColumn: string = 'partNumber';
-// sortMode: 'asc' | 'desc' = 'asc';
+
  filterCriteria: Map<string, string> = new Map();
  private searchSubject = new Subject<{ key: string; value: string }>();
 constructor(
@@ -63,49 +63,15 @@ togglePartSelection(part: PartRow, event: any): void {
 
 applySort(sort: { key: string }): void {
   if (this.sortColumn === sort.key) {
-    // Toggle sorting order between 'ASC' and 'DESC'
+    
     this.sortMode = this.sortMode === 'ASC' ? 'DESC' : 'ASC';
   } else {
-    // Set new column and default to 'ASC'
+    
     this.sortColumn = sort.key;
     this.sortMode = 'ASC';
   }
-  this.getPartList(); // Call function to fetch sorted data
+  this.getPartList(); 
 }
-
-
-// applySort(sort: { key: string; order: string }): void {
-//   if (!sort.order) return;
-//   this.sortColumn = sort.key;
-//   this.sortMode = sort.order.toUpperCase();
-//   this.getPartList();
-// }
-
-// applySort(sort: { key: string; order: string }): void {
-//   console.log('sorting is done', sort)
-//   if (!sort.order) return;
-//   this.sortColumn = sort.key;
-//   this.sortMode = sort.order.toUpperCase() as 'asc' | 'desc'; 
-  
-//   console.log('Applied sort column:', this.sortColumn); // ✅ Verify sorting column
-//   console.log('Applied sort mode:', this.sortMode); // ✅// ✅ Fix: Explicit casting
-//   this.getPartList();
-// }
-
-
-// applySort(sort: { key: string; order: string }): void {
-//   if (!sort.order) return;
-//   this.sortMode = this.sortColumn === sort.Key && this.sortMode === 'asc' ? 'desc' : 'asc';
-//   this.sortColumn = sort.Key;
-//   this.getPartList();
-// }
-
-// applySort(sort: { key: string; order: string }): void {
-//   if (!sort.order) return;
-//   this.sortColumn = sort.key;
-//   this.sortMode = sort.order.toUpperCase();
-//   this.getPartList();
-//   }
 
 
 ngOnInit():void{
@@ -138,7 +104,7 @@ listenToFilterChanges(): void {
     )
     .subscribe(() => {
       this.currentPage = 0;
-      this.getPartList(); // ✅ Reusing existing method
+      this.getPartList(); 
       });
   }
 
