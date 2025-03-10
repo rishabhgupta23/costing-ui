@@ -17,7 +17,10 @@
 
     <!-- Part Name Column -->
     <ng-container matColumnDef="partName">
-      <th mat-header-cell *matHeaderCellDef>Part Name
+      <th mat-header-cell *matHeaderCellDef (click)="sortData('partName')">Part Name
+        <span *ngIf="sortColumn === 'partName'">
+          {{ sortMode=== 'asc' ? '⬆️' : '⬇️' }}
+        </span>
         <input matInput [(ngModel)]="searchTermName" (input)="filterParts()" placeholder="Search Name">
 
       </th>
@@ -26,7 +29,10 @@
 
     <!-- Part Number Column -->
     <ng-container matColumnDef="partNumber">
-      <th mat-header-cell *matHeaderCellDef>Part Number
+      <th mat-header-cell *matHeaderCellDef (click)="sortData('partNumber')">Part Number
+        <span *ngIf="sortColumn === 'partNumber'">
+          {{ sortMode === 'asc' ? '⬆️' : '⬇️' }}
+        </span>
         <input matInput [(ngModel)]="searchTermNumber" (input)="filterParts()" placeholder="Search Name">
 
       </th>

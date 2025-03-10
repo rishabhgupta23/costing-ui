@@ -25,9 +25,13 @@ totalRecords: number=0;
 pageInfo: any;
 allParts: PartRow[] = [];
 searchTerm: any;
+filterCriteria: Map<string, string> = new Map();
+
 filteredPartList: PartRow[] = []; // ✅ Stores filtered parts
   searchTermName: string = ''; // ✅ For filtering by name
   searchTermNumber: string = ''; 
+  sortMode: 'asc' | 'desc' = 'asc'; // Default sort order
+sortColumn: string = 'partNumber';
 
 constructor(
   public dialogRef: MatDialogRef<BomdialogComponent>,
@@ -41,6 +45,7 @@ constructor(
 closeDialog() {
   this.dialogRef.close({action: DialogCloseResponse.NO_ACTION});
   }
+ 
 
 togglePartSelection(part: PartRow, event: any): void {
   if (event.checked) {
@@ -49,14 +54,29 @@ togglePartSelection(part: PartRow, event: any): void {
     this.existingParts.delete(part.partId);
   }
 }
+sortData(column: string): void {
+  if (this.sortColumn === column) {
+    this.sortMode = this.sortMode === 'asc' ? 'desc' : 'asc';
+  } else {
+    this.sortColumn = column;
+    this.sortMode = 'asc'; // Reset to ascending order when switching columns
+  }
+
+  this.getPartList(); // Refresh the list with new sorting
+}
+
 
 ngOnInit():void{
   this.existingParts = new Set(this.data.existingParts);
 this.getPartList();
+this.filterCha();
 }
 
+
 getPartList():void{
-  this.partService.getPartList(this.currentPage, this.pageSize).subscribe(
+  console.log("Fetching part list with sorting:", this.sortColumn, this.sortMode);
+  this.partService.getPartList(this.currentPage, this.pageSize , this.filterCriteria, this.sortColumn, this.sortMode 
+    ).subscribe(
     (response) => {
       this.partList = response.data?.partsList || [];
       this.existingParts = this.data.existingParts;
@@ -68,6 +88,10 @@ getPartList():void{
 });
 
 }
+/*  filterCriteria(currentPage: number, pageSize: number, sortColumn: string, sortMode: string, filterCriteria: any) {
+    throw new Error('Method not implemented.');
+  }
+    */
 
 isAllSelected(): boolean {
   return this.partList.length > 0 && this.partList.every(part => this.existingParts.has(part.partId));
