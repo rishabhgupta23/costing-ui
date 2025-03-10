@@ -16,6 +16,7 @@ import { MatDialog, MatDialogActions, MatDialogContent, MatDialogModule } from '
 import { BomdialogComponent } from './components/bomdialog/bomdialog.component';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 @NgModule({
@@ -36,6 +37,7 @@ import { FormsModule } from '@angular/forms';
     MatDialogModule,
     MatIconModule,
     FormsModule,
+    MatSnackBarModule
   ]
 })
 export class PartsModule { }

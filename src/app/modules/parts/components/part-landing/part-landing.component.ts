@@ -12,6 +12,7 @@ import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/co
 import { ColumnType } from '../../../../shared/constants/table.constants';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
 
 
 @Component({
@@ -32,7 +33,7 @@ export class PartLandingComponent {
   private searchSubject = new Subject<{ key: string; value: string }>();
   
 
-  constructor(private partService: PartService, private router: Router) {
+  constructor(private partService: PartService, private router: Router, private snackbarService: SnackbarService) {
     this.getPartList();
     this.listenToFilterChanges();
   }
@@ -137,11 +138,12 @@ export class PartLandingComponent {
   }
   deletePart(partId: string) {
 
-    this.partService.deletePart(partId).subscribe(() => {
-      this.getPartList();
-      
-    });
-    
+    this.partService.deletePart(partId).subscribe({
+      next: () => {
+        this.getPartList();
+        this.snackbarService.show('Part deleted successfully', 'success');
+        }
+      });
   }
   onPageChange(event: PageEvent) {
     this.pageSize = event.pageSize;

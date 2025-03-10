@@ -50,7 +50,9 @@ export class PartService {
   }
 
   getPartUnits(): Observable<string[]> {
-    return this.http.get<string[]>(ApiUtil.getApiUrl(API_END_POINTS.PART_UNITS));
+    return this.http.get<{ data: { unitId: number; unitName: string }[] }>(ApiUtil.getApiUrl(API_END_POINTS.PART_UNITS)).pipe(
+      map(response => response.data.map(unit => unit.unitName))
+    );
   }
 
   getPartCategories(): Observable<string[]> {
