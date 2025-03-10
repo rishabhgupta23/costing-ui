@@ -38,7 +38,7 @@
                     <div>Category</div>
                     <div>
                         <mat-form-field appearance="outline">
-                            <mat-select placeholder="Select Part Category" formControlName="categoryId">
+                            <mat-select placeholder="" formControlName="categoryId">
                                 <ng-container *ngFor="let item of partCategories">
                                     <mat-option [value]="item">{{item}}</mat-option>
                                 </ng-container>
@@ -69,7 +69,6 @@
                       </mat-panel-description>
                     </mat-expansion-panel-header>
                       <div class="vendor-panel-content">
-                            <div>Cost Factor</div>
                             <div>
                                 <app-table *ngIf="(vendorCostMap.get(vendor) || []).length > 0" [data]="vendorCostMap.get(vendor) || []" [config]="filteredCostFactorTableColumns"></app-table>
                               </div>

@@ -50,12 +50,21 @@ export class PartService {
   }
 
   getPartUnits(): Observable<string[]> {
-    return this.http.get<string[]>(ApiUtil.getApiUrl(API_END_POINTS.PART_UNITS));
+    return this.http.get<{ data: { unitId: number; unitName: string }[] }>(ApiUtil.getApiUrl(API_END_POINTS.PART_UNITS)).pipe(
+      map(response => response.data.map(unit => unit.unitName))
+    );
   }
 
-  getPartCostByPartAndVendor(partId: string, vendorId:number){
-    return this.http.get<CostHistoryResponse>(`http://localhost:8080/parts/cost-history?partId=${partId}&vendorId=${vendorId}`);
-  }
+  getPartCostByPartAndVendor(partId: string, vendorId: number) {
+    const params = new HttpParams()
+        .set('partId', partId)
+        .set('vendorId', vendorId.toString());
+
+    return this.http.get<CostHistoryResponse>(
+        ApiUtil.getApiUrl(API_END_POINTS.PART_HISTORY), 
+        { params }
+    );
+}
 
   getPartCategories(): Observable<string[]> {
     return this.http.get<string[]>(ApiUtil.getApiUrl(API_END_POINTS.CATEGORIES)).pipe(

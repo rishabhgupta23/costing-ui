@@ -8,12 +8,15 @@
     </mat-expansion-panel-header><br>
       <div class="vendor-panel-content">
                 <app-table 
-                    [data]="history.costFactorValueList" 
+                    [data]="history.costFactorList" 
                     [config]="filteredCostFactorTableColumns">
                   </app-table>    
           </div>
         </mat-expansion-panel>
     </mat-accordion>
     </mat-dialog-content>
+    <mat-dialog-actions>
+      <button class="primary-btn" (click)="closeDialog()">Cancel</button>
+    </mat-dialog-actions>
     </div>
 

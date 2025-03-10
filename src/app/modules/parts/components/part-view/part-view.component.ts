@@ -179,14 +179,12 @@ getCostHistory(partId: string, vendorId: number): Observable<CostHistoryResponse
    }
    
    getPartUnits() {
-     this.subscriptions.push(
-       this.partService.getPartUnits().pipe(
-         map((res: any[]) => res.map(unit => unit.unitName))
-       ).subscribe((unitNames) => {
-         this.partUnits = unitNames;
-       })
-     );
-   }
+    this.subscriptions.push(
+      this.partService.getPartUnits().subscribe((unitNames) => {
+        this.partUnits = unitNames;
+      })
+    );
+  }
  
    getPartCategories() {
      this.subscriptions.push(

@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CostHistory } from '../../../data/models/part';
 import { COST_FACTOR_TABLE_COLUMNS } from '../../../data/constants/part.constants';
 import { ColumnType } from '../../../shared/constants/table.constants';
+import { DialogCloseResponse } from '../../../shared/constants/dialog.constants';
 
 @Component({
   selector: 'app-historydialog',
@@ -32,4 +33,9 @@ export class HistorydialogComponent {
         }
         return col;
     }).filter(col => col !== null);
+
+
+    closeDialog() {
+      this.dialogRef.close({action: DialogCloseResponse.NO_ACTION});
+      }
   }
