@@ -1,25 +1,26 @@
 <h2 class="title">Delete Vendor</h2>
 
-<div>
-  <p class="description">This Vendor provides these items:</p>
-</div>
+<div *ngIf="hasParts; else noPartsTemplate">
+  
+  <div>
+    <p class="description">This Vendor provides these items:</p>
+  </div>
 
-<!-- Table Container with Custom Styling -->
-<div class="app-table">
-  <app-table 
+  <app-table class="app-table"
   [data]="dataSource" 
   [config]="columns">
 </app-table>
-</div>
-
-
 <!-- Paginator -->
 <mat-paginator 
   [length]="totalRecords" 
   [pageSize]="pageSize" 
   (page)="onPageChange($event)">
 </mat-paginator>
+</div>
 
+<ng-template #noPartsTemplate>
+  <p class="vendor-message">This vendor is not associated with any parts.</p>
+</ng-template>
 
   <p class="confirm-message">Are you sure you want to delete this Vendor?</p>
 

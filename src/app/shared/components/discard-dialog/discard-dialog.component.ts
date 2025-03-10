@@ -28,6 +28,7 @@ export class DiscardDialogComponent implements OnInit {
   currentPage = 0;
   pageSize = 10;
   pageInfo: any;
+  hasParts: boolean = false;
   public DialogCloseResponse = DialogCloseResponse
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -57,6 +58,7 @@ export class DiscardDialogComponent implements OnInit {
     this.vendorService.getVendorParts(vendorId, currentPage, pageSize).subscribe(res => {
       this.dataSource = res.data;
       this.totalRecords = res.pageInfo?.totalRecords || this.dataSource.length;
+      this.hasParts = this.dataSource.length > 0;
     });
 }
 
