@@ -3,3 +3,13 @@
     cursor: pointer;
     transition: background-color 0.3s ease-in-out;
 }
+.download-icon{
+    display: inline-block;
+    vertical-align: middle;
+    height: 1.2rem;
+    width: 1.2rem
+}
+.button-group{
+    display: flex;
+    gap: 0.5rem
+}

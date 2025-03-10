@@ -82,4 +82,8 @@ export class PartService {
     console.log(body);
     return this.http.post<PartCreateRequest>(ApiUtil.getApiUrl(API_END_POINTS.PARTS), body);
   }
+
+  downloadExcel() {
+    return this.http.get<any>(ApiUtil.getApiUrl(API_END_POINTS.PART_DOWNLOAD));
+  }
 }
