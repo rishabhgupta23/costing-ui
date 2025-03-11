@@ -1,10 +1,9 @@
 import { Component, Inject } from '@angular/core';
-import { PartService } from '../../../data/services/part/part.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { CostHistory } from '../../../data/models/part';
 import { COST_FACTOR_TABLE_COLUMNS } from '../../../data/constants/part.constants';
 import { ColumnType } from '../../../shared/constants/table.constants';
 import { DialogCloseResponse } from '../../../shared/constants/dialog.constants';
+import { CostHistory } from '../../../data/models/part';
 
 @Component({
   selector: 'app-historydialog',
@@ -12,7 +11,7 @@ import { DialogCloseResponse } from '../../../shared/constants/dialog.constants'
   styleUrl: './historydialog.component.scss'
 })
 export class HistorydialogComponent {
-     historyList: any[]=[];
+     historyList: CostHistory[];
 
      constructor( public dialogRef: MatDialogRef<HistorydialogComponent>,
       @Inject(MAT_DIALOG_DATA) public data: { costHistoryList: any[] }

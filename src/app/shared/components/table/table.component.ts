@@ -22,6 +22,8 @@ export class TableComponent {
  applyFilter(arg0: { key: any; value: any; }) {
  throw new Error('Method not implemented.');
  }
+
+ @Input() customClass: string = '';
   @Input() data: any[] = [];
   @Input() config: any[] = []; 
   @Output() actionTriggered = new EventEmitter<{ action: TableActions; row: any }>();

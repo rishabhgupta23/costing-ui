@@ -1,19 +1,17 @@
-import { Component, OnDestroy} from '@angular/core';
+import { Component} from '@angular/core';
 import { PartService } from '../../../../data/services/part/part.service';
-import { map, Observable, Subscription } from 'rxjs';
+import {Observable, Subscription } from 'rxjs';
 import { VENDOR_COST_TABLE_COLUMNS } from '../../../../data/constants/vendor-cost-table.constants';
 import { COST_FACTOR_TABLE_COLUMNS } from '../../../../data/constants/part.constants';
 import { VendorService } from '../../../../data/services/vendor/vendor.service';
 import { Vendor } from '../../../../data/models/vendor';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { PartBomData, CostFactor, CostFactorData, PartCreateRequest, PartRow, VendorCost, CostHistory, CostHistoryResponse } from '../../../../data/models/part';
+import {FormControl, FormGroup} from '@angular/forms';
+import { PartBomData, CostFactorData, VendorCost, CostHistoryResponse } from '../../../../data/models/part';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BomdialogComponent } from '../bomdialog/bomdialog.component';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog} from '@angular/material/dialog';
 import { BOM_TABLE_COLUMNS } from '../../../../data/constants/bom-table.constants';
 import { PartType } from '../../../../shared/constants/part.constants';
-import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
-import { ColumnType, TableActions } from '../../../../shared/constants/table.constants';
+import { ColumnType} from '../../../../shared/constants/table.constants';
 import { HistorydialogComponent } from '../../historydialog/historydialog.component';
 
 @Component({
@@ -28,14 +26,12 @@ export class PartViewComponent {
    partCategories: string[] = [];
    vendorList: Vendor[] = [];
    costHistoryList: any[]=[];
-   costFactorList: CostFactor[] = [];
    subscriptions: Subscription[] = [];
    VENDOR_COST_TABLE_COLUMNS = VENDOR_COST_TABLE_COLUMNS;
    COST_FACTOR_TABLE_COLUMNS = COST_FACTOR_TABLE_COLUMNS;
    BOM_TABLE_COLUMNS = BOM_TABLE_COLUMNS;
    vendorCostMap: Map<number, CostFactorData[]> = new Map();
    bomPartList: PartBomData[] =[]; 
-   pageSize: number = 100 // Default items per page
    partTypeEnum= PartType;
    
    
@@ -64,18 +60,7 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
   }
   return col;
 })
-
  
-   
-   costDetailsForm = new FormGroup({
-     costFactors: new FormArray([])
-    });
- 
-   selectedVendor: Vendor = undefined as any;
- 
-   // selectedPart: PartRow | null = null;
- 
-   PartCreateRequest: any;
    partId: string | null = null;
  
  
@@ -90,7 +75,6 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
      this.getPartUnits();
      this.getPartCategories();
      this.getVendorList();
-     this.getCostFactors();
  
        if (this.partId){      
          this.getPartData(this.partId);
@@ -119,14 +103,15 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
          });
        }
  
-   vendorCostListToMap(vendorCostList: VendorCost[]) {
-     vendorCostList.forEach((vc,i) => {
-       this.addVendor(vc);
-       vc.costFactorValues.forEach(cf=> {
-         this.addCostFactor(cf, vc.id);
-       })
-     });
-   }
+       vendorCostListToMap(vendorCostList: VendorCost[]) {
+        vendorCostList.forEach((vc) => {
+          vc.costFactorValues.forEach(cf => {
+            const currentList = this.vendorCostMap.get(vc.id) || [];
+            currentList.push({ id: cf.id, name: cf.name, value: cf.value || 0 });
+            this.vendorCostMap.set(vc.id, currentList);
+          });
+        });
+      }
 
    getVendorCostTableData() {
     let tableData: { vendorName: string; costFactor: string | undefined; value: number; }[] = [];
@@ -203,89 +188,12 @@ getCostHistory(partId: string, vendorId: number): Observable<CostHistoryResponse
      );
    }
  
-   getCostFactors() {
-     this.subscriptions.push(
-       this.partService.getCostFactors().subscribe((res) => {
-         this.costFactorList = res;
-       })
-     );
-   }
- 
-   get costFactors() {
-     return this.costDetailsForm.get('costFactors') as FormArray;
-   }
- 
-   addVendor(vendor: Vendor) {
-     if(vendor == undefined || this.vendorCostMap.has(vendor.id)) {
-       // show message
-     } else {
-       this.vendorCostMap.set(vendor.id, []);
-       this.costFactors.push(new FormControl(''));
-     }
-   }
-   
-   bomDetailsForm = new FormGroup({
-     masterParts: new FormArray([]),
-   });
- 
-   
-   get masterParts() {
-     return this.bomDetailsForm.get('masterParts') as FormArray;
-   }
-   
- 
-   addCostFactor(costFactor:CostFactorData, vendorId: number) {
-     if (costFactor) {
-       const currentList = this.vendorCostMap.get(vendorId) || [];
-       const isPresent = currentList?.some((cf: CostFactorData) => cf?.name === costFactor?.name);
- 
-       if (!isPresent) { 
-         currentList.push({
-           id: costFactor.id,
-           name: costFactor.name,
-           value: costFactor.value || 0
-         } as CostFactorData);
-   
-         this.vendorCostMap.set(vendorId, currentList);
-       }
-     }
-   }
-   
- 
-   onSubmit(): void {
+   editPart(): void {
     if (this.partId) {
       this.router.navigateByUrl(`/app/parts/edit/${this.partId}`);
    }
   }
-   generateBomDetailsBody() {
-     return this.bomPartList.map(part => ({
-       childPartId: part.id,
-       quantity: Number(part.value) || 1,  // Ensure quantity is not undefined
-     }));
-   }
- 
-     generateVendorCostMapBody() {
-     const vendorCostList: VendorCost[] = [];
    
-     this.vendorCostMap.forEach((costFactors: CostFactorData[], vendorId: number) => {
-       if (costFactors.length > 0) {
-       const costFactorValues = costFactors.map(cf => ({
-         id: cf.id,
-         value: cf.value
-       }));
-   
-       const vendorCostFactorData = {
-         id: vendorId,
-         costFactorValues
-       };
-   
-       vendorCostList.push(vendorCostFactorData);
-     }
-     });
-   
-     return vendorCostList;
-   }
- 
    ngOnDestroy(): void {
      this.subscriptions.forEach(s => s.unsubscribe());
    }

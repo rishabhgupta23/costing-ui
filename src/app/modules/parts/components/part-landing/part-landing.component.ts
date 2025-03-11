@@ -38,7 +38,6 @@ export class PartLandingComponent {
   }
 
   onRowClicked(rowData: any) {
-    console.log(rowData);
     this.router.navigateByUrl(`/app/parts/part-view/${rowData.partId}`);
   }
 

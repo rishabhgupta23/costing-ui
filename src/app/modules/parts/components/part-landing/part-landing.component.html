@@ -17,7 +17,8 @@
             (actionTriggered)="handleAction($event)"
             (rowClicked)="onRowClicked($event)"
             (filterChanged)="applyFilter($event)"
-            [showFilter]="true">
+            [showFilter]="true"
+            [customClass]="'highlight-table'">
         </app-table>
         <mat-paginator 
         [length]="totalRecords" 

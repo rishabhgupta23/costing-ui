@@ -13,7 +13,7 @@ export interface CostFactorData {
 
 export interface CostHistory {
     updatedDateTime: string;
-    costFactorValueList: CostFactorData[];
+    costFactorList: CostFactorData[];
 }
 
 export interface CostHistoryResponse {
