@@ -1,9 +1,10 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { CostFactor, PartCreateRequest, PartDetails, PartRow } from '../../models/part';
+import { CostFactor, PartCreateRequest, PartDetails, PartRow, SortState } from '../../models/part';
 import { ApiUtil } from '../../../shared/utils/api.util';
 import { API_END_POINTS } from '../../../config/api.config';
+import { SortIcons } from '../../../shared/constants/table.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -24,13 +25,12 @@ export class PartService {
     return this.http.get<PartDetails>(ApiUtil.getPreparedUrl(API_END_POINTS.PART_DETAILS, params));
   }
 
-  getPartList(page: number = 0, size: number = 100, filterCriteria: Map<string, string> = new Map(), sortColumn: string = 'partNumber',
-  sortMode: string = 'ASC'): Observable<any> {
+  getPartList(page: number = 0, size: number = 100, filterCriteria: Map<string, string> = new Map(), sortState: SortState = {sortColumn: 'partNumber', sortState: SortIcons.ASC}): Observable<any> {
     let params = new HttpParams()
       .set('pageNo', page.toString())
       .set('pageSize', size.toString())
-      .set('sortColumn', sortColumn)
-      .set('sortMode', sortMode);
+      .set('sortColumn', sortState?.sortColumn)
+      .set('sortMode', sortState?.sortState);
   
     filterCriteria.forEach((value, key) => {
       if (value) {

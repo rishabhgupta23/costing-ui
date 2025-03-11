@@ -1,11 +1,12 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { ColumnType, TableActions } from '../../constants/table.constants';
+import { ColumnType, SortIcons, TableActions } from '../../constants/table.constants';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { SortState } from '../../../data/models/part';
 
 @Component({
 
@@ -24,51 +25,47 @@ export class TableComponent {
  throw new Error('Method not implemented.');
  }
   @Input() data: any[] = [];
-  @Input() config: any[] = []; 
+  @Input() config: any[] = [];
+  @Input() sort: any = { sortColumn: '', sortSate: SortIcons.ASC }; 
   @Output() actionTriggered = new EventEmitter<{ action: TableActions; row: any }>();
-  @Output() filterChanged = new EventEmitter<{ key: string; value: string }>();
-  @Output() sortChanged = new EventEmitter<{ key: string; order: string }>();
+  @Output() filterChange = new EventEmitter<{ key: string; value: string }>();
+  @Output() sortChange = new EventEmitter<SortState>();
  
   TableActions= TableActions;
   ColumnType = ColumnType;
 
-  sortedColumn: string | null = null;
-  sortedOrder: 'asc' | 'desc' = 'asc';
 
   
   onFilterChange(event: Event, key: string): void {
     const value = (event.target as HTMLInputElement).value.trim().toLowerCase();
-       this.filterChanged.emit({ key, value });
+       this.filterChange.emit({ key, value });
   }
   
   clearFilter(input: HTMLInputElement, columnKey: string): void {
     input.value = '';
-    this.filterChanged.emit({ key: columnKey, value: '' });
+    this.filterChange.emit({ key: columnKey, value: '' });
   }
 
   onSortChange(order: string, columnKey: string): void {
-    console.log(`Sorting ${columnKey} in ${order} order.`);
-    this.sortChanged.emit({ key: columnKey, order });
+    this.sortChange.emit(this.sort);
   }
 
   toggleSort(columnKey: string): void {
-    if (this.sortedColumn !== columnKey) {
-      this.sortedColumn = columnKey;
-      this.sortedOrder = 'asc';
-    } else {
-      this.sortedOrder = this.sortedOrder === 'asc' ? 'desc' : 'asc';
-    }
-    console.log(`Sorting ${columnKey} in ${this.sortedOrder} order.`);
-    this.sortChanged.emit({ key: columnKey, order: this.sortedOrder });
+    this.sort = {
+      sortColumn: columnKey,
+      sortState: this.sort.sortColumn !== columnKey ? SortIcons.ASC : 
+                 this.sort.sortState === SortIcons.ASC ? SortIcons.DESC : SortIcons.ASC
+    };
+    this.sortChange.emit(this.sort);
   }
-
-  // Return the appropriate SVG icon name based on sort state.
+  
   getSortIcon(columnKey: string): string {
-    if (this.sortedColumn === columnKey) {
-      return this.sortedOrder === 'asc' ? 'asc' : 'desc';
-    }
-    return 'default-sort';
+    return this.sort.sortColumn === columnKey 
+      ? (this.sort.sortState === SortIcons.ASC ? SortIcons.ASC : SortIcons.DESC) 
+      : SortIcons.DEFAULT;
   }
+  
+
 
 
   handleAction(event: { action: TableActions; row: any }): void {

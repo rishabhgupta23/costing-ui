@@ -103,17 +103,17 @@ input[matInput] {
   }
   
   .mat-form-field {
-    width: 100%; /* Ensure input fields span the full width of the cell */
+    width: 100%;
     box-sizing: border-box;
   }
   
   input[matInput] {
-    width: 100%; /* Ensure inputs fit within the table cell */
-    font-size: 1rem; /* Match font size for consistency */
+    width: 100%;
+    font-size: 1rem;
   }
   
   button {
-    margin: 0 0.2rem; /* Add spacing between action buttons */
+    margin: 0 0.2rem;
   }
   /* Style for the filter inputs within the filter row */
 .filter-row input[type="text"] {
@@ -193,6 +193,7 @@ input[matInput] {
   background: transparent;
   border: none;
 }
+
 .sort-btn .sort-icon {
   height: 100%;
   font-size: 16px;

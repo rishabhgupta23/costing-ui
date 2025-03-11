@@ -18,14 +18,14 @@ export const SVG_ICONS = [
     },
     {
         path: baseIconsPath + '/asc_icon.svg',
-        name: 'asc'
+        name: 'ASC'
     },
     {
         path: baseIconsPath + '/desc_icon.svg',
-        name: 'desc'
+        name: 'DESC'
     },
     {
         path: baseIconsPath + '/default-sort_icon.svg',
-        name: 'default-sort'
+        name: 'DEFAULT-SORT'
     }
 ];

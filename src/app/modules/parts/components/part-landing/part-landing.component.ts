@@ -1,18 +1,17 @@
 
-import { AfterViewInit, Component, OnInit, ViewChild, inject} from '@angular/core';
+import { Component, OnInit, inject} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 import { PART_TABLE_COLUMNS } from '../../../../data/constants/part-table-config.constants';
 import { Router } from '@angular/router';
 import { PartService } from '../../../../data/services/part/part.service';
-import { PartRow } from '../../../../data/models/part';
+import { PartRow, SortState } from '../../../../data/models/part';
 import { PageEvent } from '@angular/material/paginator';
-import { TableActions } from '../../../../shared/constants/table.constants';
+import { SortIcons, TableActions } from '../../../../shared/constants/table.constants';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ColumnType } from '../../../../shared/constants/table.constants';
-import { TableComponent } from '../../../../shared/components/table/table.component';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged} from 'rxjs/operators';
 
 
 @Component({
@@ -20,20 +19,17 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
   templateUrl: './part-landing.component.html',
   styleUrl: './part-landing.component.scss'
 })
-export class PartLandingComponent implements OnInit, AfterViewInit {
+export class PartLandingComponent implements OnInit {
   partList: PartRow[] = [];
   columns: any[] = PART_TABLE_COLUMNS;
-  paginatedData: any[] = []; // Data to display on the current page
   pageSize: number = 100; // Default items per page
   currentPage: number = 0; // Current page index
   readonly dialog = inject(MatDialog);
   totalRecords: number=0;
   pageInfo: any;
-  @ViewChild(TableComponent) tableComponent!: TableComponent;
   filterCriteria: Map<string, string> = new Map();
   private searchSubject = new Subject<{ key: string; value: string }>();
-  sortColumn: string = 'partNumber';
-  sortMode: string = 'ASC';
+  sortState: SortState = {sortColumn: 'partNumber', sortState: SortIcons.ASC}
 
   constructor(private partService: PartService, private router: Router) {}
 
@@ -42,19 +38,12 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
     this.listenToFilterChanges();
   }
 
-  ngAfterViewInit(): void {
-    if (this.tableComponent) {
-      this.tableComponent.sortedColumn = 'partNumber';
-      this.tableComponent.sortedOrder = 'asc';
-      this.tableComponent.sortChanged.emit({ key: 'partNumber', order: 'asc' });
-    }
-  }
 
   
   getPartList() {
-    this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortColumn, this.sortMode).subscribe(
+    this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortState).subscribe(
       (res) => {
-
+        console.log("API Response:", res);
         const responseData = res.data;
         const maxVendorCount = responseData.maxVendorCount || 0;
         this.addColumnsForVendor(maxVendorCount);
@@ -70,8 +59,6 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
       });
 
         this.totalRecords = res.pageInfo?.totalRecords || this.partList.length;
-        this.paginatedData = this.partList;
-        console.log("Api is called", responseData)
       },
       (error) => {
         console.error("Error fetching part list:", error);
@@ -81,14 +68,12 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
   addColumnsForVendor(maxVendorCount: number) {
   this.columns = [...PART_TABLE_COLUMNS];
 
-  const actionsIndex = this.columns.findIndex(col => col.columnType === ColumnType.ACTION);
-
-    for (let i = maxVendorCount; i >= 1; i--) {
-      this.columns.splice(actionsIndex, 0,{
+    for (let i = 1; i <= maxVendorCount; i++) {
+      this.columns.splice(this.columns.length-1,0,{
         label: `Vendor ${i}`,
         columnType: ColumnType.GENERAL,
         key: `vendor${i}`
-      });
+      })
     }
   }
 
@@ -112,10 +97,8 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
     this.searchSubject.next(filter);
   }
 
-  applySort(sort: { key: string; order: string }): void {
-    if (!sort.order) return;
-    this.sortColumn = sort.key;
-    this.sortMode = sort.order.toUpperCase();
+  applySort(sort: SortState): void {
+    this.sortState = sort;
     this.getPartList();
   }
 
