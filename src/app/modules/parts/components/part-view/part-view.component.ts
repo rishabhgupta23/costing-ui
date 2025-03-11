@@ -193,6 +193,24 @@ getCostHistory(partId: string, vendorId: number): Observable<CostHistoryResponse
       this.router.navigateByUrl(`/app/parts/edit/${this.partId}`);
    }
   }
+
+  downloadBomExcel() {
+    const partId= this.partId ||'';
+    this.partService.downloadBomExcel(partId).subscribe(response => {
+      const base64String = response.fileData;
+      const fileName = response.fileName || 'bomPartList.xlsx';
+
+      const byteArray = new Uint8Array([...atob(base64String)].map(char => 
+        char.charCodeAt(0)
+      ));
+      const blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = fileName;
+      link.click();
+    });
+  }
    
    ngOnDestroy(): void {
      this.subscriptions.forEach(s => s.unsubscribe());

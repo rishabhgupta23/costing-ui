@@ -86,4 +86,10 @@ export class PartService {
   downloadExcel() {
     return this.http.get<any>(ApiUtil.getApiUrl(API_END_POINTS.PART_DOWNLOAD));
   }
+
+  downloadBomExcel(partId:string){
+    const params = new Map<string, string>();
+  params.set('partId', partId);
+    return this.http.get<any>(ApiUtil.getPreparedUrl(API_END_POINTS.BOM_DOWNLOAD, params));
+  }
 }
