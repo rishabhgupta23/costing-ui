@@ -43,7 +43,6 @@ export class PartLandingComponent implements OnInit {
   getPartList() {
     this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortState).subscribe(
       (res) => {
-        console.log("API Response:", res);
         const responseData = res.data;
         const maxVendorCount = responseData.maxVendorCount || 0;
         this.addColumnsForVendor(maxVendorCount);

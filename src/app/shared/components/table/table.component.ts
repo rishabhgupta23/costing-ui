@@ -26,7 +26,7 @@ export class TableComponent {
  }
   @Input() data: any[] = [];
   @Input() config: any[] = [];
-  @Input() sort: any = { sortColumn: '', sortSate: SortIcons.ASC }; 
+  @Input() sort: SortState = { sortColumn: '', sortState: SortIcons.ASC }; 
   @Output() actionTriggered = new EventEmitter<{ action: TableActions; row: any }>();
   @Output() filterChange = new EventEmitter<{ key: string; value: string }>();
   @Output() sortChange = new EventEmitter<SortState>();
@@ -46,9 +46,6 @@ export class TableComponent {
     this.filterChange.emit({ key: columnKey, value: '' });
   }
 
-  onSortChange(order: string, columnKey: string): void {
-    this.sortChange.emit(this.sort);
-  }
 
   toggleSort(columnKey: string): void {
     this.sort = {
