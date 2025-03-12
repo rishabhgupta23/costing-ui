@@ -71,9 +71,9 @@ export class TableComponent {
 
 
 
-  handleAction(event: { action: TableActions; row: any }): void {
-    const { action, row } = event;
-    this.actionTriggered.emit({ action, row });
+  handleAction(event:MouseEvent, actionData: { action: TableActions; row: any }): void {
+    event.stopPropagation();
+    this.actionTriggered.emit(actionData);
   }
   }
 
