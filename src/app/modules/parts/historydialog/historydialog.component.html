@@ -1,0 +1,22 @@
+<div class="dialog-box">
+    <h2 mat-dialog-title>Cost History</h2>
+    <mat-dialog-content>
+<mat-accordion class="example-headers-align" multi>
+    <mat-expansion-panel *ngFor="let history of historyList">
+      <mat-expansion-panel-header>
+        <mat-panel-title>{{history.updatedDateTime | date:'medium'}}</mat-panel-title>
+    </mat-expansion-panel-header><br>
+      <div class="vendor-panel-content">
+                <app-table 
+                    [data]="history.costFactorList" 
+                    [config]="filteredCostFactorTableColumns">
+                  </app-table>    
+          </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button class="primary-btn" (click)="closeDialog()">Cancel</button>
+    </mat-dialog-actions>
+    </div>
+

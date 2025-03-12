@@ -125,3 +125,8 @@ $costing-ui-theme: mat.define-theme((
   position:fixed;
   top:40px;
 }
+.highlight-table tbody tr:hover{
+  background-color: #dedede;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}

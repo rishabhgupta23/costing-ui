@@ -27,7 +27,7 @@ export class VendorService {
   getVendorParts(vendorId: number): Observable<any[]> {
     const pathParams = new Map<string, string>();
     pathParams.set('vendorId', vendorId.toString());
-    return this.http.get<any[]>(ApiUtil.getPreparedUrl(API_END_POINTS.VENDOR_DETAILS, pathParams)).pipe(
+    return this.http.get<any[]>(ApiUtil.getPreparedUrl(API_END_POINTS.VENDOR_PARTS, pathParams)).pipe(
       map((res:any)=>res.data));
   }
       

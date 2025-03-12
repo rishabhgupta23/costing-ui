@@ -9,14 +9,19 @@
             </button>
         </span>
     </div>
-    <div class="page-content" style="overflow: hidden;">
+    <div class="page-content">
         <div class="card-nc">
             <app-table
-            [data]="paginatedData" 
+            [data]="partList" 
+            [(sort)] = "sortState"
             [config]="columns"
             (actionTriggered)="handleAction($event)"
+            (rowClicked)="onRowClicked($event)"
             (filterChanged)="applyFilter($event)"
-            [showFilter]="true">
+            [showFilter]="true"
+            (sortChange)="applySort($event)"
+            [showSort]="true"
+            [customClass]="'highlight-table'">
         </app-table>
         <mat-paginator 
         [length]="totalRecords" 
