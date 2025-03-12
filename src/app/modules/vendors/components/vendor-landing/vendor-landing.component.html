@@ -13,7 +13,7 @@
         <div class="card-nc">
             <app-table 
             [data]="vendorList" 
-            (filterChanged)="applyFilter($event)"
+            (filterChange)="applyFilter($event)"
             [config]="columns"
             [showFilter]="true"
             (actionTriggered)="handleAction($event)">

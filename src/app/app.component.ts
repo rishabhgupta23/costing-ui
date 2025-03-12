@@ -38,7 +38,6 @@ export class AppComponent {
 
   registerIcons() {
     SVG_ICONS.forEach(icon => {
-      console.log(icon);
       this.iconRegistry.addSvgIcon(icon.name, this.sanitizer.bypassSecurityTrustResourceUrl(icon.path));
     });
   }

@@ -2,11 +2,22 @@
 <table class="app-table" [ngClass]="customClass">
   <!-- Table Header -->
    <thead>
-  <tr class="header-row">
+    <tr class="header-row" *ngIf="showSort">
       <ng-container *ngFor="let col of config">
-          <th [title]="col?.label">{{ col?.label }}</th>
-        </ng-container>
-  </tr>
+        <th [title]="col?.label">
+          <div class="header-cell">
+            <span>{{ col?.label }}</span>
+            <!-- If the column is sortable, show the sort icon -->
+            <ng-container *ngIf="col.sortable">
+              <button mat-button class="sort-btn" (click)="toggleSort(col.key)">
+                <mat-icon [svgIcon]="getSortIcon(col.key)" class="sort-icon"></mat-icon>
+              </button>
+            </ng-container>
+          </div>
+        </th>
+      </ng-container>
+    </tr>
+
   <tr class="filter-row" *ngIf="showFilter">
     <ng-container *ngFor="let col of config">
       <th>

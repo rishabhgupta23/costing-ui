@@ -1,17 +1,17 @@
 
-import { Component, inject} from '@angular/core';
+import { Component, OnInit, inject} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 import { PART_TABLE_COLUMNS } from '../../../../data/constants/part-table-config.constants';
 import { Router } from '@angular/router';
 import { PartService } from '../../../../data/services/part/part.service';
-import { PartCreateRequest } from '../../../../data/models/part';
+import { PartRow, SortState } from '../../../../data/models/part';
 import { PageEvent } from '@angular/material/paginator';
-import { TableActions } from '../../../../shared/constants/table.constants';
+import { SortIcons, TableActions } from '../../../../shared/constants/table.constants';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ColumnType } from '../../../../shared/constants/table.constants';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged} from 'rxjs/operators';
 
 
 @Component({
@@ -19,10 +19,9 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
   templateUrl: './part-landing.component.html',
   styleUrl: './part-landing.component.scss'
 })
-export class PartLandingComponent {
-  partList: PartCreateRequest[] = [];
+export class PartLandingComponent implements OnInit {
+  partList: PartRow[] = [];
   columns: any[] = PART_TABLE_COLUMNS;
-  paginatedData: any[] = []; // Data to display on the current page
   pageSize: number = 100; // Default items per page
   currentPage: number = 0; // Current page index
   readonly dialog = inject(MatDialog);
@@ -30,9 +29,11 @@ export class PartLandingComponent {
   pageInfo: any;
   filterCriteria: Map<string, string> = new Map();
   private searchSubject = new Subject<{ key: string; value: string }>();
-  
+  sortState: SortState = {sortColumn: 'partNumber', sortState: SortIcons.ASC}
 
-  constructor(private partService: PartService, private router: Router) {
+  constructor(private partService: PartService, private router: Router) {}
+
+  ngOnInit(): void {
     this.getPartList();
     this.listenToFilterChanges();
   }
@@ -40,11 +41,10 @@ export class PartLandingComponent {
   onRowClicked(rowData: any) {
     this.router.navigateByUrl(`/app/parts/view/${rowData.partId}`);
   }
-
+  
   getPartList() {
-    this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria).subscribe(
+    this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortState).subscribe(
       (res) => {
-
         const responseData = res.data;
         const maxVendorCount = responseData.maxVendorCount || 0;
         this.addColumnsForVendor(maxVendorCount);
@@ -60,7 +60,6 @@ export class PartLandingComponent {
       });
 
         this.totalRecords = res.pageInfo?.totalRecords || this.partList.length;
-        this.updatePaginatedData();
       },
       (error) => {
         console.error("Error fetching part list:", error);
@@ -70,16 +69,15 @@ export class PartLandingComponent {
   addColumnsForVendor(maxVendorCount: number) {
   this.columns = [...PART_TABLE_COLUMNS];
 
-  const actionsIndex = this.columns.findIndex(col => col.columnType === ColumnType.ACTION);
-
     for (let i = 1; i <= maxVendorCount; i++) {
-      this.columns.splice(actionsIndex, 0,{
+      this.columns.splice(this.columns.length-1,0,{
         label: `Vendor ${i}`,
         columnType: ColumnType.GENERAL,
         key: `vendor${i}`
-      });
+      })
     }
   }
+
 
   listenToFilterChanges(): void {
     this.searchSubject
@@ -89,7 +87,7 @@ export class PartLandingComponent {
       )
       .subscribe(() => {
         this.currentPage = 0;
-        this.getPartList(); // ✅ Reusing existing method
+        this.getPartList();
       });
   }
   
@@ -99,6 +97,12 @@ export class PartLandingComponent {
     this.filterCriteria.set(filter.key, filter.value);
     this.searchSubject.next(filter);
   }
+
+  applySort(sort: SortState): void {
+    this.sortState = sort;
+    this.getPartList();
+  }
+
 
   downloadExcel() {
     this.partService.downloadExcel().subscribe(response => {
@@ -154,11 +158,6 @@ export class PartLandingComponent {
     this.getPartList();
   }
 
-  updatePaginatedData() {
-    const startIndex = this.currentPage * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.paginatedData = this.partList.slice(startIndex, endIndex);
-  }
 }
 
  
