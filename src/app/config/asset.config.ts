@@ -15,5 +15,17 @@ export const SVG_ICONS = [
     {
         path: baseIconsPath + '/close_icon.svg',
         name: 'close'
+    },
+    {
+        path: baseIconsPath + '/asc_icon.svg',
+        name: 'ASC'
+    },
+    {
+        path: baseIconsPath + '/desc_icon.svg',
+        name: 'DESC'
+    },
+    {
+        path: baseIconsPath + '/default-sort_icon.svg',
+        name: 'DEFAULT-SORT'
     }
 ];

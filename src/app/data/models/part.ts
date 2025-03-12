@@ -1,3 +1,4 @@
+import { SortIcons } from "../../shared/constants/table.constants";
 import { Vendor } from "./vendor";
 
 export interface CostFactor {
@@ -49,6 +50,11 @@ export interface PartRow{
 export interface PartDetails extends Part {
     bom: {childPartId: number; quantity: number; childPartName: string; childPartNumber: string}[];
     vendorCostList: VendorCost[];
+}
+
+export interface SortState{
+    sortColumn: string,
+    sortState: SortIcons
 }
 
 export interface TableActionEvent {
