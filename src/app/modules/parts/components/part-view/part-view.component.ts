@@ -20,11 +20,7 @@ import { HistorydialogComponent } from '../../historydialog/historydialog.compon
   styleUrl: './part-view.component.scss'
 })
 export class PartViewComponent {
-  partNames: string[] =[];
-   partTypes: string[] = [];
-   partUnits: string[] = [];
-   partCategories: string[] = [];
-   vendorList: Vendor[] = [];
+   vendorCostList: VendorCost[] = [];
    costHistoryList: any[]=[];
    subscriptions: Subscription[] = [];
    VENDOR_COST_TABLE_COLUMNS = VENDOR_COST_TABLE_COLUMNS;
@@ -34,8 +30,6 @@ export class PartViewComponent {
    bomPartList: PartBomData[] =[]; 
    partTypeEnum= PartType;
    
-   
- 
    partForm = new FormGroup({
     partNumber: new FormControl({ value: '', disabled: true }),
     partName: new FormControl({ value: '', disabled: true }),
@@ -62,19 +56,16 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
 })
  
    partId: string | null = null;
+  part: any;
  
  
-   constructor(private partService: PartService, private vendorService: VendorService,     private route: ActivatedRoute,
+   constructor(private partService: PartService, private route: ActivatedRoute,
      private router: Router, private dialog: MatDialog) {
        
      }
  
      ngOnInit(): void{
        this.partId = this.route.snapshot.paramMap.get('id')??'';
-     this.getPartTypes();
-     this.getPartUnits();
-     this.getPartCategories();
-     this.getVendorList();
  
        if (this.partId){      
          this.getPartData(this.partId);
@@ -84,7 +75,7 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
  
        getPartData(id: string): void {
          this.partService.getPartById(id).subscribe((part) => {
-           console.log('Part Data:', part); // Debug: Check the part structure
+           this.vendorCostList = part.vendorCostList || [];
            this.partForm.patchValue({
              partNumber: part.partNumber ?? '',
              partName: part.partName ?? '',
@@ -113,19 +104,22 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
         });
       }
 
-   getVendorCostTableData() {
-    let tableData: { vendorName: string; costFactor: string | undefined; value: number; }[] = [];
-    this.vendorCostMap.forEach((costFactors, vendor) => {
-      costFactors.forEach(costFactor => {
-        tableData.push({
-          vendorName: this.getVendorName(vendor),
-          costFactor: costFactor.name,
-          value: costFactor.value
+      getVendorCostTableData() {
+        let tableData: { vendorName: string; costFactor: string | undefined; value: number }[] = [];
+        this.vendorCostMap.forEach((costFactors, vendorId) => {
+          const vendor = this.vendorCostList.find((vc: { id: number; }) => vc.id === vendorId);
+          const vendorName = vendor?.name || 'Unknown Vendor';
+      
+          costFactors.forEach(costFactor => {
+            tableData.push({
+              vendorName: vendorName,
+              costFactor: costFactor.name,
+              value: costFactor.value
+            });
+          });
         });
-      });
-    });
-    return tableData;
-  }
+        return tableData;
+      }
 
   openHistoryDialog(partId:string | null, vendorId:number):void {
     partId = partId || '';
@@ -145,48 +139,6 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
 getCostHistory(partId: string, vendorId: number): Observable<CostHistoryResponse> {
   return this.partService.getPartCostByPartAndVendor(partId, vendorId);
 }
-
-
-           
-   getPartTypes() {
-     this.subscriptions.push(
-       this.partService.getPartTypes().subscribe((res) => {
-         this.partTypes = res;
-       })
-     );
-   }
-   
- 
- 
-   getVendorName(vendorId: number): string {
-     const vendor = this.vendorList.find(v => v.id === vendorId);
-     return vendor?.name || 'Unknown Vendor';
-   }
-   
-   getPartUnits() {
-    this.subscriptions.push(
-      this.partService.getPartUnits().subscribe((unitNames) => {
-        this.partUnits = unitNames;
-      })
-    );
-  }
- 
-   getPartCategories() {
-     this.subscriptions.push(
-       this.partService.getPartCategories().subscribe((res) => {
-         this.partCategories = res;
-       })
-     );
-   }
-   
- 
-   getVendorList() {
-     this.subscriptions.push(
-       this.vendorService.getVendorList().subscribe((res) => {
-         this.vendorList = res.data;
-       })
-     );
-   }
  
    editPart(): void {
     if (this.partId) {

@@ -9,3 +9,9 @@ export enum TableActions {
     EDIT,
     DELETE
 }
+
+export enum SortIcons {
+    ASC = 'ASC',
+    DESC = 'DESC',
+    DEFAULT = 'DEFAULT-SORT'
+}
