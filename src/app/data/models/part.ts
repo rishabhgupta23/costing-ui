@@ -12,6 +12,18 @@ export interface CostFactorData {
     value: number;
 }
 
+export interface CostHistory {
+    updatedDateTime: string;
+    costFactorList: CostFactorData[];
+}
+
+export interface CostHistoryResponse {
+    partId: number;
+    vendorId: number;
+    costHistoryList: CostHistory[];
+}
+
+
 export interface VendorCost extends Vendor {
     costFactorValues: CostFactorData[];
 }

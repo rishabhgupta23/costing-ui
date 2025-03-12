@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { CostFactor, PartCreateRequest, PartDetails, PartRow, SortState } from '../../models/part';
+import { CostFactor, CostHistoryResponse, PartCreateRequest, PartDetails, PartRow, SortState } from '../../models/part';
 import { ApiUtil } from '../../../shared/utils/api.util';
 import { API_END_POINTS } from '../../../config/api.config';
 import { SortIcons } from '../../../shared/constants/table.constants';
@@ -53,8 +53,21 @@ export class PartService {
   }
 
   getPartUnits(): Observable<string[]> {
-    return this.http.get<string[]>(ApiUtil.getApiUrl(API_END_POINTS.PART_UNITS));
+    return this.http.get<{ data: { unitId: number; unitName: string }[] }>(ApiUtil.getApiUrl(API_END_POINTS.PART_UNITS)).pipe(
+      map(response => response.data.map(unit => unit.unitName))
+    );
   }
+
+  getPartCostByPartAndVendor(partId: string, vendorId: number) {
+    const params = new HttpParams()
+        .set('partId', partId)
+        .set('vendorId', vendorId.toString());
+
+    return this.http.get<CostHistoryResponse>(
+        ApiUtil.getApiUrl(API_END_POINTS.PART_HISTORY), 
+        { params }
+    );
+}
 
   getPartCategories(): Observable<string[]> {
     return this.http.get<string[]>(ApiUtil.getApiUrl(API_END_POINTS.CATEGORIES)).pipe(

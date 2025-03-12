@@ -38,7 +38,9 @@ export class PartLandingComponent implements OnInit {
     this.listenToFilterChanges();
   }
 
-
+  onRowClicked(rowData: any) {
+    this.router.navigateByUrl(`/app/parts/view/${rowData.partId}`);
+  }
   
   getPartList() {
     this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortState).subscribe(
@@ -140,6 +142,7 @@ export class PartLandingComponent implements OnInit {
         }
       });
     }
+
   }
   deletePart(partId: string) {
 

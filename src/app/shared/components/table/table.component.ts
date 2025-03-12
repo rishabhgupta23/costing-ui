@@ -24,17 +24,23 @@ export class TableComponent {
  applyFilter(arg0: { key: any; value: any; }) {
  throw new Error('Method not implemented.');
  }
+
+ @Input() customClass: string = '';
   @Input() data: any[] = [];
   @Input() config: any[] = [];
   @Input() sort: SortState = { sortColumn: '', sortState: SortIcons.ASC }; 
   @Output() actionTriggered = new EventEmitter<{ action: TableActions; row: any }>();
+  @Output() filterChanged = new EventEmitter<{ key: string; value: string }>();
+  @Output() rowClicked = new EventEmitter<any>();
   @Output() filterChange = new EventEmitter<{ key: string; value: string }>();
   @Output() sortChange = new EventEmitter<SortState>();
  
   TableActions= TableActions;
   ColumnType = ColumnType;
 
-
+  onRowClick(row: any) {
+    this.rowClicked.emit(row);
+  }
   
   onFilterChange(event: Event, key: string): void {
     const value = (event.target as HTMLInputElement).value.trim().toLowerCase();

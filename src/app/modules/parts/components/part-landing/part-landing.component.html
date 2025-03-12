@@ -16,10 +16,12 @@
             [(sort)] = "sortState"
             [config]="columns"
             (actionTriggered)="handleAction($event)"
-            (filterChange)="applyFilter($event)"
+            (rowClicked)="onRowClicked($event)"
+            (filterChanged)="applyFilter($event)"
             [showFilter]="true"
             (sortChange)="applySort($event)"
-            [showSort]="true">
+            [showSort]="true"
+            [customClass]="'highlight-table'">
         </app-table>
         <mat-paginator 
         [length]="totalRecords" 
