@@ -75,7 +75,6 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
  
        getPartData(id: string): void {
          this.partService.getPartById(id).subscribe((part) => {
-           console.log('Part Data:', part); // Debug: Check the part structure
            this.vendorCostList = part.vendorCostList || [];
            this.partForm.patchValue({
              partNumber: part.partNumber ?? '',
@@ -108,7 +107,7 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
       getVendorCostTableData() {
         let tableData: { vendorName: string; costFactor: string | undefined; value: number }[] = [];
         this.vendorCostMap.forEach((costFactors, vendorId) => {
-          const vendor = this.part?.PartDetails.vendorCostList.find((vc: { id: number; }) => vc.id === vendorId);
+          const vendor = this.vendorCostList.find((vc: { id: number; }) => vc.id === vendorId);
           const vendorName = vendor?.name || 'Unknown Vendor';
       
           costFactors.forEach(costFactor => {

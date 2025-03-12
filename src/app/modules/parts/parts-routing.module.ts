@@ -11,7 +11,7 @@ const routes: Routes = [
     component: PartLandingComponent
   },
   {
-    path: 'part-view/:id', component: PartViewComponent
+    path: 'view/:id', component: PartViewComponent
   },
   {
     path: ":mode",
