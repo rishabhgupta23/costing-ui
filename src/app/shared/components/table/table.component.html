@@ -67,7 +67,7 @@
         <mat-icon 
           class="edit-btn" 
           svgIcon="edit" 
-          (click)="handleAction({ action: action, row: row })">
+          (click)="handleAction($event, { action: action, row: row })">
         </mat-icon>
       </span>
       
@@ -75,7 +75,7 @@
         <mat-icon 
           class="delete-btn" 
           svgIcon="delete"
-          (click)="handleAction({ action: action, row: row })">
+          (click)="handleAction($event, { action: action, row: row })">
         </mat-icon>
       </span>
     </ng-container>
