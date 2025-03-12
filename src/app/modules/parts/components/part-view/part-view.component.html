@@ -28,31 +28,19 @@
                     <div>Type</div>
                     <div>
                         <mat-form-field appearance="outline">
-                            <mat-select placeholder="Select Part Type" formControlName="partType">
-                                <ng-container *ngFor="let item of partTypes">
-                                    <mat-option [value]="item">{{item}}</mat-option>
-                                </ng-container>
-                            </mat-select>
+                            <input matInput placeholder="Select Part Type" formControlName="partType" readonly>
                         </mat-form-field>
                     </div>
                     <div>Category</div>
                     <div>
                         <mat-form-field appearance="outline">
-                            <mat-select formControlName="categoryId">
-                                <ng-container *ngFor="let item of partCategories">
-                                    <mat-option [value]="item">{{item}}</mat-option>
-                                </ng-container>
-                            </mat-select>
+                            <input matInput formControlName="categoryId" readonly>
                         </mat-form-field>
                     </div>
                     <div>Unit</div>
                     <div>
                         <mat-form-field appearance="outline">
-                            <mat-select placeholder="Select Part Unit" formControlName="partUnit">
-                                <ng-container *ngFor="let item of partUnits">
-                                    <mat-option [value]="item">{{item}}</mat-option>
-                                </ng-container>
-                            </mat-select>
+                            <input matInput placeholder="Select Part Unit" formControlName="partUnit" readonly>
                         </mat-form-field>
                     </div>
                 </div>  
@@ -61,16 +49,16 @@
                 <hr>
                 <div class="sub-heading">Vendor Cost Details</div>
                 <mat-accordion class="example-headers-align" multi>
-                    <mat-expansion-panel *ngFor="let vendor of vendorCostMap.keys(); let i=index">
+                    <mat-expansion-panel *ngFor="let vendor of vendorCostList; let i=index">
                       <mat-expansion-panel-header>
-                        <mat-panel-title> Vendor {{i+1}}: {{ getVendorName(vendor) }}  </mat-panel-title>
+                        <mat-panel-title> Vendor {{i+1}}: {{ vendor.name }}  </mat-panel-title>
                       <mat-panel-description>
-                        <mat-icon class="delete-btn" svgIcon="history" (click)="openHistoryDialog(partId,vendor)"> </mat-icon>
+                        <mat-icon class="delete-btn" svgIcon="history" (click)="openHistoryDialog(partId,vendor.id)"> </mat-icon>
                       </mat-panel-description>
                     </mat-expansion-panel-header>
                       <div class="vendor-panel-content">
                             <div>
-                                <app-table *ngIf="(vendorCostMap.get(vendor) || []).length > 0" [data]="vendorCostMap.get(vendor) || []" [config]="filteredCostFactorTableColumns"></app-table>
+                                <app-table *ngIf="(vendorCostMap.get(vendor.id) || []).length > 0" [data]="vendorCostMap.get(vendor.id) || []" [config]="filteredCostFactorTableColumns"></app-table>
                               </div>
                           </div>
                         </mat-expansion-panel>
