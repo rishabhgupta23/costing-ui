@@ -10,6 +10,7 @@ import { DiscardDialogComponent } from '../../../../shared/components/discard-di
 import { TableActions } from '../../../../shared/constants/table.constants';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { downloadFile } from '../../../../shared/utils/fileDownload.util';
 
 @Component({
   selector: 'app-vendor-landing',
@@ -104,18 +105,7 @@ listenToFilterChanges(): void {
 
   downloadExcel() {
     this.vendorService.downloadExcel().subscribe(response => {
-      const base64String = response.fileData;
-      const fileName = response.fileName || 'vendorList.xlsx';
-
-      const byteArray = new Uint8Array([...atob(base64String)].map(char => 
-        char.charCodeAt(0)
-      ));
-      const blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = fileName;
-      link.click();
+      downloadFile(response.fileData,response.fileName || 'vendorList.xlsx')
     });
   }
 

@@ -13,6 +13,7 @@ import { BOM_TABLE_COLUMNS } from '../../../../data/constants/bom-table.constant
 import { PartType } from '../../../../shared/constants/part.constants';
 import { ColumnType} from '../../../../shared/constants/table.constants';
 import { HistorydialogComponent } from '../../historydialog/historydialog.component';
+import { downloadFile } from '../../../../shared/utils/fileDownload.util';
 
 @Component({
   selector: 'app-part-view',
@@ -147,22 +148,12 @@ getCostHistory(partId: string, vendorId: number): Observable<CostHistoryResponse
   }
 
   downloadBomExcel() {
-    const partId= this.partId ||'';
+    const partId = this.partId || '';
     this.partService.downloadBomExcel(partId).subscribe(response => {
-      const base64String = response.fileData;
-      const fileName = response.fileName || 'bomPartList.xlsx';
-
-      const byteArray = new Uint8Array([...atob(base64String)].map(char => 
-        char.charCodeAt(0)
-      ));
-      const blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = fileName;
-      link.click();
+      downloadFile(response.fileData, response.fileName || 'bomPartList.xlsx');
     });
   }
+  
    
    ngOnDestroy(): void {
      this.subscriptions.forEach(s => s.unsubscribe());

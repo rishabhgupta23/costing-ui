@@ -84,6 +84,9 @@ $costing-ui-theme: mat.define-theme((
 }
 
 .primary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 0.6rem 1.6rem;
     font-weight: bold;
     cursor: pointer;
@@ -95,7 +98,17 @@ $costing-ui-theme: mat.define-theme((
     &:hover {
         background-color: darken(#55ad9b , 10%);
     }
+
+    .btn-icon {
+      display: inline-block;
+      font-weight: normal;
+      vertical-align: middle;
+      height: 1.2rem;
+      width: 1.2rem;
+    }
 }
+
+
 
 .secondary-btn {
     padding: 0.6rem 1.6rem;
