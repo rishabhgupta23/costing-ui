@@ -13,7 +13,7 @@ import { BOM_TABLE_COLUMNS } from '../../../../data/constants/bom-table.constant
 import { PartType } from '../../../../shared/constants/part.constants';
 import { ColumnType} from '../../../../shared/constants/table.constants';
 import { HistorydialogComponent } from '../../historydialog/historydialog.component';
-import { downloadFile } from '../../../../shared/utils/fileDownload.util';
+import { downloadFile } from '../../../../shared/utils/file-download.util';
 
 @Component({
   selector: 'app-part-view',

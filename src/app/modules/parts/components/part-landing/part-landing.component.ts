@@ -12,7 +12,7 @@ import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/co
 import { ColumnType } from '../../../../shared/constants/table.constants';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged} from 'rxjs/operators';
-import { downloadFile } from '../../../../shared/utils/fileDownload.util';
+import { downloadFile } from '../../../../shared/utils/file-download.util';
 
 
 @Component({

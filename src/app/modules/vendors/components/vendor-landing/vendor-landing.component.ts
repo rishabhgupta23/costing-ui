@@ -10,7 +10,7 @@ import { DiscardDialogComponent } from '../../../../shared/components/discard-di
 import { TableActions } from '../../../../shared/constants/table.constants';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { downloadFile } from '../../../../shared/utils/fileDownload.util';
+import { downloadFile } from '../../../../shared/utils/file-download.util';
 
 @Component({
   selector: 'app-vendor-landing',
