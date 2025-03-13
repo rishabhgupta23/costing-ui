@@ -11,13 +11,15 @@ import { SortIcons, TableActions } from '../../../../shared/constants/table.cons
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { SortState } from '../../../../data/models/part';
+import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
+
 @Component({
   selector: 'app-vendor-landing',
   templateUrl: './vendor-landing.component.html',
   styleUrls: ['./vendor-landing.component.scss']
 })
 
-export class VendorLandingComponent implements OnInit {
+export class VendorLandingComponent {
   vendorList: Vendor[] = [];
  
   columns: any[] = VENDOR_TABLE_COLUMNS;
@@ -32,9 +34,7 @@ export class VendorLandingComponent implements OnInit {
 
   
   
-  constructor(private vendorService: VendorService, private router: Router) {}
-
-  ngOnInit(): void {
+  constructor(private vendorService: VendorService, private router: Router, private snackbarService:SnackbarService) {
     this.getVendorList();
     this.listenToFilterChanges();
   }
@@ -88,7 +88,9 @@ export class VendorLandingComponent implements OnInit {
       if (result === DialogCloseResponse.DELETE) {
         this.vendorService.deleteVendor(row.id.toString()).subscribe({
           next: () => {
-            this.getVendorList();  },
+            this.snackbarService.success('Vendor deleted successfully!');
+            this.getVendorList(); 
+             },
         });
       }
     });

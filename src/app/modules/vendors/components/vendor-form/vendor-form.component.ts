@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Vendor } from '../../../../data/models/vendor';
 import { VendorService } from '../../../../data/services/vendor/vendor.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
 
 @Component({
   selector: 'app-vendor-form',
@@ -26,7 +27,8 @@ export class VendorFormComponent implements OnInit {
   constructor(
     private vendorService: VendorService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private snackbarService: SnackbarService
   ) {}
 
   ngOnInit(): void {
@@ -90,13 +92,18 @@ export class VendorFormComponent implements OnInit {
   onSubmit() {
     if (this.vendorForm.valid) {
       if (this.vendorId) {
-        // If vendorId exists, update the vendor
-        this.vendorService.updateVendor(this.vendorId, this.vendorForm.value as Vendor).subscribe(() => {
+        this.vendorService.updateVendor(this.vendorId, this.vendorForm.value as Vendor).subscribe({
+          next: () => {
+            this.snackbarService.success('Vendor updated successfully!');
           this.router.navigateByUrl('/app/vendors');
+          }
         });
       } else {
-        this.vendorService.createVendor(this.vendorForm.value as Vendor).subscribe(() => {
+        this.vendorService.createVendor(this.vendorForm.value as Vendor).subscribe({
+          next: () => {
+            this.snackbarService.success('Vendor created successfully!');
           this.router.navigateByUrl('/app/vendors');
+          }
         });
       }
     } else {

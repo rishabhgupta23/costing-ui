@@ -119,6 +119,12 @@ $costing-ui-theme: mat.define-theme((
     }
 }
 
+.mat-mdc-snack-bar-container .mat-mdc-snackbar-surface{
+  --mdc-snackbar-container-color: none;
+  box-shadow: none;
+  position:fixed;
+  top:40px;
+}
 .highlight-table tbody tr:hover{
   background-color: #dedede;
   cursor: pointer;
