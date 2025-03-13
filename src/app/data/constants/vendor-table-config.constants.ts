@@ -12,28 +12,28 @@ export const VENDOR_TABLE_COLUMNS = [
         columnType: ColumnType.GENERAL,
         key: 'name',
         filterable: true,
-        
+        sortable: true
     },
     {
         label: 'Email ID',
         columnType: ColumnType.GENERAL,
         key: 'emailId',
         filterable: true,
-        
+        sortable: true
     },
     {
         label: 'Contact No.',
         columnType: ColumnType.GENERAL,
         key: 'contactNumber',
         filterable: true,
-        
+        sortable: true
     },
     {
         label: 'Address',
         columnType: ColumnType.GENERAL,
         key: 'address',
         filterable: true,
-        
+        sortable: true
     },
     {
         label: 'Actions',

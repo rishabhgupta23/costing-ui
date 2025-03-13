@@ -7,10 +7,11 @@ import { DialogCloseResponse } from '../../../../shared/constants/dialog.constan
 import { Router } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
 import { DiscardDialogComponent } from '../../../../shared/components/discard-dialog/discard-dialog.component';
-import { TableActions } from '../../../../shared/constants/table.constants';
+import { SortIcons, TableActions } from '../../../../shared/constants/table.constants';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
+import { SortState } from '../../../../data/models/part';
 
 @Component({
   selector: 'app-vendor-landing',
@@ -22,13 +23,13 @@ export class VendorLandingComponent  {
   vendorList: Vendor[] = [];
  
   columns: any[] = VENDOR_TABLE_COLUMNS;
-  paginatedData: any[] = []; // Data to display on the current page
   pageSize: number = 100; // Default items per page
   currentPage: number = 0; // Current page index
   totalRecords: number=0;
   pageInfo: any;
   readonly dialog = inject(MatDialog);
   filterCriteria: Map<string, string> = new Map();
+  sortState: SortState = {sortColumn: 'name', sortState: SortIcons.ASC}
   
   private searchSubject = new Subject<{ key: string; value: string }>(); 
   
@@ -39,7 +40,7 @@ export class VendorLandingComponent  {
   }
 
   getVendorList(): void {
-    this.vendorService.getVendorList(this.currentPage, this.pageSize, this.filterCriteria).subscribe(
+    this.vendorService.getVendorList(this.currentPage, this.pageSize, this.filterCriteria, this.sortState).subscribe(
       (res) => {
         this.vendorList = res.data;
         this.totalRecords = res.pageInfo?.totalRecords || 0;
@@ -52,15 +53,11 @@ listenToFilterChanges(): void {
     .pipe(
       debounceTime(300), 
       distinctUntilChanged((prev, curr) => prev.value === curr.value), // Ignore duplicate searches
-      switchMap(() =>{
-        this.currentPage=0;
-        return this.vendorService.getVendorList(this.currentPage, this.pageSize,this.filterCriteria);
-      })
     )
     .subscribe(
       (res) => {
-        this.vendorList = res.data;
-        this.totalRecords = res.pageInfo?.totalRecords || 0;
+        this.currentPage = 0;
+        this.getVendorList();
       }
     );
 }
@@ -73,6 +70,11 @@ listenToFilterChanges(): void {
  applyFilter(filter: { key: string; value: string }): void {
   this.filterCriteria.set(filter.key, filter.value);
   this.searchSubject.next(filter);
+  }
+
+  applySort(sort: SortState): void {
+    this.sortState = sort;
+    this.getVendorList();
   }
   
   openDiscardDialog(row: any): void {
@@ -129,9 +131,4 @@ listenToFilterChanges(): void {
     this.getVendorList();
   }
 
-  updatePaginatedData() {
-    const startIndex = this.currentPage * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.paginatedData = this.vendorList.slice(startIndex, endIndex);
-  }
 }
