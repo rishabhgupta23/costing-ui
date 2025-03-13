@@ -1,20 +1,27 @@
 <div class="app-page">
     <div class="page-header">
         <span class="page-title">Parts</span>
-        <span>
+        <span class="button-group">
             <button class="primary-btn" (click)="createPart()">Create</button>
+            <button class="primary-btn" (click)="downloadExcel()">
+                <mat-icon class="download-icon" svgIcon="download" ></mat-icon>
+                Download
+            </button>
         </span>
     </div>
-    <div class="page-content" style="overflow: visible;">
+    <div class="page-content">
         <div class="card-nc">
             <app-table
-            [data]="paginatedData" 
+            [data]="partList" 
+            [(sort)] = "sortState"
             [config]="columns"
             (actionTriggered)="handleAction($event)"
+            (rowClicked)="onRowClicked($event)"
             (filterChanged)="applyFilter($event)"
             [showFilter]="true"
-            (sortChanged)="applySort($event)"
-            [showSort]="true">
+            (sortChange)="applySort($event)"
+            [showSort]="true"
+            [customClass]="'highlight-table'">
         </app-table>
         <mat-paginator 
         [length]="totalRecords" 

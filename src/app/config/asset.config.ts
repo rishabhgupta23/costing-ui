@@ -9,19 +9,27 @@ export const SVG_ICONS = [
         name: 'edit'
     },
     {
+        path: baseIconsPath + '/history_icon.svg',
+        name: 'history'
+    },
+    {
+        path: baseIconsPath + '/download_icon.svg',
+        name: 'download'
+    },
+    {
         path: baseIconsPath + '/close_icon.svg',
         name: 'close'
     },
     {
         path: baseIconsPath + '/asc_icon.svg',
-        name: 'asc'
+        name: 'ASC'
     },
     {
         path: baseIconsPath + '/desc_icon.svg',
-        name: 'desc'
+        name: 'DESC'
     },
     {
         path: baseIconsPath + '/default-sort_icon.svg',
-        name: 'default-sort'
+        name: 'DEFAULT-SORT'
     }
 ];

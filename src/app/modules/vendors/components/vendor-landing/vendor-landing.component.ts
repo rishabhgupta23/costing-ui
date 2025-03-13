@@ -17,7 +17,7 @@ import { TableComponent } from '../../../../shared/components/table/table.compon
   styleUrls: ['./vendor-landing.component.scss']
 })
 
-export class VendorLandingComponent implements OnInit, AfterViewInit {
+export class VendorLandingComponent implements OnInit {
   vendorList: Vendor[] = [];
  
   columns: any[] = VENDOR_TABLE_COLUMNS;
@@ -27,8 +27,7 @@ export class VendorLandingComponent implements OnInit, AfterViewInit {
   totalRecords: number=0;
   pageInfo: any;
   readonly dialog = inject(MatDialog);
-  filterCriteria: { [key: string]: string } = {};
-  @ViewChild(TableComponent) tableComponent!: TableComponent;
+  filterCriteria: Map<string, string> = new Map();
   
   private searchSubject = new Subject<{ key: string; value: string }>();
   sortColumn: string = 'name';
@@ -41,16 +40,10 @@ export class VendorLandingComponent implements OnInit, AfterViewInit {
     this.getVendorList();
     this.listenToFilterChanges();
   }
-  ngAfterViewInit(): void {
-    if (this.tableComponent) {
-      this.tableComponent.sortedColumn = 'name';
-      this.tableComponent.sortedOrder = 'asc';
-      this.tableComponent.sortChanged.emit({ key: 'name', order: 'asc' });
-    }
-  }
+  
 
   getVendorList(): void {
-    this.vendorService.getVendorList(this.currentPage, this.pageSize, this.filterCriteria,  this.sortColumn, this.sortMode).subscribe(
+    this.vendorService.getVendorList(this.currentPage, this.pageSize, this.filterCriteria).subscribe(
       (res) => {
         this.vendorList = res.data;
         this.totalRecords = res.pageInfo?.totalRecords || 0;
@@ -65,7 +58,7 @@ listenToFilterChanges(): void {
       distinctUntilChanged((prev, curr) => prev.value === curr.value), // Ignore duplicate searches
       switchMap(() =>{
         this.currentPage=0;
-        return this.vendorService.getVendorList(this.currentPage, this.pageSize,this.filterCriteria,  this.sortColumn, this.sortMode);
+        return this.vendorService.getVendorList(this.currentPage, this.pageSize,this.filterCriteria);
       })
     )
     .subscribe(
@@ -82,11 +75,8 @@ listenToFilterChanges(): void {
   }
   
  applyFilter(filter: { key: string; value: string }): void {
-  this.filterCriteria = {
-    ...this.filterCriteria,
-    [filter.key]: filter.value
-  };
-    this.searchSubject.next(filter);
+  this.filterCriteria.set(filter.key, filter.value);
+  this.searchSubject.next(filter);
   }
   
   applySort(sort: { key: string; order: string }): void {
@@ -124,6 +114,24 @@ listenToFilterChanges(): void {
       this.router.navigateByUrl(`/app/vendors/edit/${row.id}`);
     }
   }
+
+  downloadExcel() {
+    this.vendorService.downloadExcel().subscribe(response => {
+      const base64String = response.fileData;
+      const fileName = response.fileName || 'vendorList.xlsx';
+
+      const byteArray = new Uint8Array([...atob(base64String)].map(char => 
+        char.charCodeAt(0)
+      ));
+      const blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = fileName;
+      link.click();
+    });
+  }
+
 
   onPageChange(event: PageEvent) {
     this.pageSize = event.pageSize;

@@ -1,15 +1,19 @@
 <div class="app-page">
     <div class="page-header">
         <span class="page-title">Vendors</span>
-        <span>
+        <span class="button-group">
             <button class="primary-btn" (click)="createVendor()">Create</button>
+            <button class="primary-btn" (click)="downloadExcel()">
+                <mat-icon class="download-icon" svgIcon="download" ></mat-icon>
+                Download
+            </button>
         </span>
     </div>
     <div class="page-content">
         <div class="card-nc">
             <app-table 
             [data]="vendorList" 
-            (filterChanged)="applyFilter($event)"
+            (filterChange)="applyFilter($event)"
             [config]="columns"
             [showFilter]="true"
             (actionTriggered)="handleAction($event)"

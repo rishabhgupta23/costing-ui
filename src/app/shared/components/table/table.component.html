@@ -1,5 +1,5 @@
 <div class="table-container">
-<table class="app-table">
+<table class="app-table" [ngClass]="customClass">
   <!-- Table Header -->
    <thead>
     <tr class="header-row" *ngIf="showSort">
@@ -28,9 +28,7 @@
               #filterInput
               (input)="onFilterChange($event, col.key)" 
               placeholder="Enter your text" />
-            <button class="clear-filter-btn" *ngIf="filterInput.value" (click)="clearFilter(filterInput, col.key)">
-              <mat-icon svgIcon="close"></mat-icon>
-            </button>
+              <mat-icon class="clear-filter-btn" *ngIf="filterInput.value" (click)="clearFilter(filterInput, col.key)" svgIcon="close"></mat-icon>
           </div>
         </ng-container>
       </th>
@@ -45,7 +43,7 @@
   <ng-container *ngFor="let row of data; let i = index"> 
     
 
-      <tr class="data-row">
+      <tr class="data-row" (click)="onRowClick(row)">
           <!-- Dynamic Columns -->
 <ng-container *ngFor="let col of config">
     <td *ngIf="col?.columnType === ColumnType.SERIAL_NUMBER">
@@ -69,7 +67,7 @@
         <mat-icon 
           class="edit-btn" 
           svgIcon="edit" 
-          (click)="handleAction({ action: action, row: row })">
+          (click)="handleAction($event, { action: action, row: row })">
         </mat-icon>
       </span>
       
@@ -77,7 +75,7 @@
         <mat-icon 
           class="delete-btn" 
           svgIcon="delete"
-          (click)="handleAction({ action: action, row: row })">
+          (click)="handleAction($event, { action: action, row: row })">
         </mat-icon>
       </span>
     </ng-container>

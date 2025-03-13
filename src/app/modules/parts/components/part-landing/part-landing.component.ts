@@ -1,18 +1,17 @@
 
-import { AfterViewInit, Component, OnInit, ViewChild, inject} from '@angular/core';
+import { Component, OnInit, inject} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 import { PART_TABLE_COLUMNS } from '../../../../data/constants/part-table-config.constants';
 import { Router } from '@angular/router';
 import { PartService } from '../../../../data/services/part/part.service';
-import { PartCreateRequest } from '../../../../data/models/part';
+import { PartRow, SortState } from '../../../../data/models/part';
 import { PageEvent } from '@angular/material/paginator';
-import { TableActions } from '../../../../shared/constants/table.constants';
+import { SortIcons, TableActions } from '../../../../shared/constants/table.constants';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ColumnType } from '../../../../shared/constants/table.constants';
-import { TableComponent } from '../../../../shared/components/table/table.component';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged} from 'rxjs/operators';
 
 
 @Component({
@@ -20,21 +19,17 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
   templateUrl: './part-landing.component.html',
   styleUrl: './part-landing.component.scss'
 })
-export class PartLandingComponent implements OnInit, AfterViewInit {
-  partList: PartCreateRequest[] = [];
-  filteredData: PartCreateRequest[] = []; 
+export class PartLandingComponent implements OnInit {
+  partList: PartRow[] = [];
   columns: any[] = PART_TABLE_COLUMNS;
-  paginatedData: any[] = []; // Data to display on the current page
   pageSize: number = 100; // Default items per page
   currentPage: number = 0; // Current page index
   readonly dialog = inject(MatDialog);
   totalRecords: number=0;
   pageInfo: any;
-  filterCriteria: Map<string,string > = new Map();
-  @ViewChild(TableComponent) tableComponent!: TableComponent;
+  filterCriteria: Map<string, string> = new Map();
   private searchSubject = new Subject<{ key: string; value: string }>();
-  sortColumn: string = 'partNumber';
-  sortMode: string = 'ASC';
+  sortState: SortState = {sortColumn: 'partNumber', sortState: SortIcons.ASC}
 
   constructor(private partService: PartService, private router: Router) {}
 
@@ -43,30 +38,28 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
     this.listenToFilterChanges();
   }
 
-  ngAfterViewInit(): void {
-    if (this.tableComponent) {
-      this.tableComponent.sortedColumn = 'partName';
-      this.tableComponent.sortedOrder = 'asc';
-      this.tableComponent.sortChanged.emit({ key: 'partName', order: 'asc' });
-    }
+  onRowClicked(rowData: any) {
+    this.router.navigateByUrl(`/app/parts/view/${rowData.partId}`);
   }
-
   
   getPartList() {
-    this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria).subscribe(
+    this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortState).subscribe(
       (res) => {
-
         const responseData = res.data;
-        const partsList = Array.isArray(responseData.partsList)
-          ? responseData.partsList
-          : [];
         const maxVendorCount = responseData.maxVendorCount || 0;
         this.addColumnsForVendor(maxVendorCount);
+        
+        this.partList = responseData.partsList.map((part: any) => {
+          let vendorData: any = { ...part };
+  
+        (part.vendorNames || []).forEach((vendor: any, index: number) => {
+          vendorData[`vendor${index + 1}`] = vendor;
+        });
 
-        this.partList = this.mapPartsData(responseData);
-        this.filteredData = [...this.partList];
-        this.totalRecords = res.pageInfo?.totalRecords || this.filteredData.length;
-        this.updatePaginatedData();
+        return vendorData;
+      });
+
+        this.totalRecords = res.pageInfo?.totalRecords || this.partList.length;
       },
       (error) => {
         console.error("Error fetching part list:", error);
@@ -76,55 +69,28 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
   addColumnsForVendor(maxVendorCount: number) {
   this.columns = [...PART_TABLE_COLUMNS];
 
-  const actionsIndex = this.columns.findIndex(col => col.columnType === ColumnType.ACTION);
-
-    for (let i = maxVendorCount; i >= 1; i--) {
-      this.columns.splice(actionsIndex, 0,{
+    for (let i = 1; i <= maxVendorCount; i++) {
+      this.columns.splice(this.columns.length-1,0,{
         label: `Vendor ${i}`,
         columnType: ColumnType.GENERAL,
-        key: `vendor${i}`,
-        filterable: true,
-        sortable: true
-      });
+        key: `vendor${i}`
+      })
     }
   }
 
-  private mapPartsData(responseData: any): PartCreateRequest[] {
-    const partsList = Array.isArray(responseData.partsList) ? responseData.partsList : [];
-    return partsList.map((part: any) => {
-      const vendorData = { ...part };
-      (part.vendorNames || []).forEach((vendor: any, index: number) => {
-        vendorData[`vendor${index + 1}`] = vendor;
-      });
-      return vendorData;
-    });
-  }
 
   listenToFilterChanges(): void {
     this.searchSubject
       .pipe(
-        debounceTime(300), 
-        distinctUntilChanged((prev, curr) => prev.value === curr.value), // Ignore duplicate searches
-        switchMap(() =>{
-          this.currentPage=0;
-          return this.partService.getPartList(this.currentPage, this.pageSize,this.filterCriteria);
-        })
+        debounceTime(300),
+        distinctUntilChanged((prev, curr) => prev.value === curr.value)
       )
-      .subscribe(
-        (res) => {
-          const responseData = res.data;
-          this.partList = this.mapPartsData(responseData);
-          this.filteredData = [...this.partList];
-          this.totalRecords = responseData.pageInfo?.totalRecords || this.filteredData.length;
-          this.updatePaginatedData();
-          console.log("api is called")
-        },
-        (error) => {
-          console.error("Error fetching filtered data:", error);
-      
-        }
-      );
+      .subscribe(() => {
+        this.currentPage = 0;
+        this.getPartList();
+      });
   }
+  
 
   
   applyFilter(filter: { key: string; value: string }): void {
@@ -132,14 +98,28 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
     this.searchSubject.next(filter);
   }
 
-  applySort(sort: { key: string; order: string }): void {
-    if (!sort.order) return;
-    this.sortColumn = sort.key;
-    this.sortMode = sort.order.toUpperCase();
-    //console.log(`API call: Fetch sorted data for ${this.sortColumn} in ${this.sortMode} order.`);
+  applySort(sort: SortState): void {
+    this.sortState = sort;
     this.getPartList();
   }
 
+
+  downloadExcel() {
+    this.partService.downloadExcel().subscribe(response => {
+      const base64String = response.fileData;
+      const fileName = response.fileName || 'partList.xlsx';
+
+      const byteArray = new Uint8Array([...atob(base64String)].map(char => 
+        char.charCodeAt(0)
+      ));
+      const blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = fileName;
+      link.click();
+    });
+  }
 
   createPart() {
     this.router.navigateByUrl("/app/parts/create");
@@ -162,6 +142,7 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
         }
       });
     }
+
   }
   deletePart(partId: string) {
 
@@ -177,11 +158,6 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
     this.getPartList();
   }
 
-  updatePaginatedData() {
-    const startIndex = this.currentPage * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.paginatedData = this.filteredData.slice(startIndex, endIndex);
-  }
 }
 
  
