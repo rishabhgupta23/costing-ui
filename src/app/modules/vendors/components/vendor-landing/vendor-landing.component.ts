@@ -7,10 +7,10 @@ import { DialogCloseResponse } from '../../../../shared/constants/dialog.constan
 import { Router } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
 import { DiscardDialogComponent } from '../../../../shared/components/discard-dialog/discard-dialog.component';
-import { TableActions } from '../../../../shared/constants/table.constants';
+import { SortIcons, TableActions } from '../../../../shared/constants/table.constants';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { TableComponent } from '../../../../shared/components/table/table.component';
+import { SortState } from '../../../../data/models/part';
 @Component({
   selector: 'app-vendor-landing',
   templateUrl: './vendor-landing.component.html',
@@ -21,17 +21,15 @@ export class VendorLandingComponent implements OnInit {
   vendorList: Vendor[] = [];
  
   columns: any[] = VENDOR_TABLE_COLUMNS;
-  paginatedData: any[] = []; // Data to display on the current page
-  pageSize: number = 100; // Default items per page
-  currentPage: number = 0; // Current page index
+  pageSize: number = 100;
+  currentPage: number = 0;
   totalRecords: number=0;
   pageInfo: any;
   readonly dialog = inject(MatDialog);
   filterCriteria: Map<string, string> = new Map();
-  
+  sortState: SortState = {sortColumn: 'name', sortState: SortIcons.ASC}
   private searchSubject = new Subject<{ key: string; value: string }>();
-  sortColumn: string = 'name';
-  sortMode: string = 'ASC';
+
   
   
   constructor(private vendorService: VendorService, private router: Router) {}
@@ -43,7 +41,7 @@ export class VendorLandingComponent implements OnInit {
   
 
   getVendorList(): void {
-    this.vendorService.getVendorList(this.currentPage, this.pageSize, this.filterCriteria).subscribe(
+    this.vendorService.getVendorList(this.currentPage, this.pageSize, this.filterCriteria, this.sortState).subscribe(
       (res) => {
         this.vendorList = res.data;
         this.totalRecords = res.pageInfo?.totalRecords || 0;
@@ -51,23 +49,17 @@ export class VendorLandingComponent implements OnInit {
     );
   }
 
-listenToFilterChanges(): void {
-  this.searchSubject
-    .pipe(
-      debounceTime(300), 
-      distinctUntilChanged((prev, curr) => prev.value === curr.value), // Ignore duplicate searches
-      switchMap(() =>{
-        this.currentPage=0;
-        return this.vendorService.getVendorList(this.currentPage, this.pageSize,this.filterCriteria);
-      })
-    )
-    .subscribe(
-      (res) => {
-        this.vendorList = res.data;
-        this.totalRecords = res.pageInfo?.totalRecords || 0;
-      }
-    );
-}
+  listenToFilterChanges(): void {
+    this.searchSubject
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged((prev, curr) => prev.value === curr.value)
+      )
+      .subscribe(() => {
+        this.currentPage = 0;
+        this.getVendorList();
+      });
+  }
 
 
   createVendor() {
@@ -79,11 +71,8 @@ listenToFilterChanges(): void {
   this.searchSubject.next(filter);
   }
   
-  applySort(sort: { key: string; order: string }): void {
-    if (!sort.order) return;
-    this.sortColumn = sort.key;
-    this.sortMode = sort.order.toUpperCase();
-    //console.log(`API call: Fetch sorted data for ${this.sortColumn} in ${this.sortMode} order.`);
+  applySort(sort: SortState): void {
+    this.sortState = sort;
     this.getVendorList();
   }
 
@@ -137,11 +126,5 @@ listenToFilterChanges(): void {
     this.pageSize = event.pageSize;
     this.currentPage = event.pageIndex;
     this.getVendorList();
-  }
-
-  updatePaginatedData() {
-    const startIndex = this.currentPage * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.paginatedData = this.vendorList.slice(startIndex, endIndex);
   }
 }

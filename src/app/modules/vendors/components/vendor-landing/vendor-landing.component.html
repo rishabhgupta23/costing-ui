@@ -13,11 +13,12 @@
         <div class="card-nc">
             <app-table 
             [data]="vendorList" 
+            [(sort)] = "sortState"
             (filterChange)="applyFilter($event)"
             [config]="columns"
             [showFilter]="true"
             (actionTriggered)="handleAction($event)"
-            (sortChanged)="applySort($event)"
+            (sortChange)="applySort($event)"
             [showSort]="true">
         </app-table>
         <mat-paginator 
