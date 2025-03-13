@@ -11,7 +11,8 @@ import { SortIcons, TableActions } from '../../../../shared/constants/table.cons
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ColumnType } from '../../../../shared/constants/table.constants';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged} from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
 
 
 @Component({
@@ -31,8 +32,8 @@ export class PartLandingComponent implements OnInit {
   private searchSubject = new Subject<{ key: string; value: string }>();
   sortState: SortState = {sortColumn: 'partNumber', sortState: SortIcons.ASC}
 
-  constructor(private partService: PartService, private router: Router) {}
-
+  constructor(private partService: PartService, private router: Router, private snackbarService: SnackbarService) {}
+  
   ngOnInit(): void {
     this.getPartList();
     this.listenToFilterChanges();
@@ -146,11 +147,12 @@ export class PartLandingComponent implements OnInit {
   }
   deletePart(partId: string) {
 
-    this.partService.deletePart(partId).subscribe(() => {
-      this.getPartList();
-      
-    });
-    
+    this.partService.deletePart(partId).subscribe({
+      next: () => {
+        this.getPartList();
+        this.snackbarService.success('Part deleted successfully');
+        }
+      });
   }
   onPageChange(event: PageEvent) {
     this.pageSize = event.pageSize;

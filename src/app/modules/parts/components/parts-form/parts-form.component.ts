@@ -13,6 +13,7 @@ import { BOM_TABLE_COLUMNS } from '../../../../data/constants/bom-table.constant
 import { PartType } from '../../../../shared/constants/part.constants';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 import { TableActions } from '../../../../shared/constants/table.constants';
+import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
 
 @Component({
   selector: 'app-parts-form',
@@ -37,11 +38,11 @@ export class PartsFormComponent implements OnDestroy {
   
 
   partForm = new FormGroup({
-    partNumber: new FormControl(''),
-    partName: new FormControl(''),
+    partNumber: new FormControl('', Validators.required),
+    partName: new FormControl('', Validators.required),
     categoryId: new FormControl(),
-    partType: new FormControl(),
-    partUnit: new FormControl(),
+    partType: new FormControl('', Validators.required),
+    partUnit: new FormControl('', Validators.required),
   });
 
   
@@ -58,7 +59,7 @@ export class PartsFormComponent implements OnDestroy {
 
 
   constructor(private partService: PartService, private vendorService: VendorService,     private route: ActivatedRoute,
-    private router: Router, private dialog: MatDialog) {
+    private router: Router, private dialog: MatDialog, private snackbarService: SnackbarService) {
       
     }
 
@@ -284,19 +285,27 @@ export class PartsFormComponent implements OnDestroy {
       type: this.partForm.get('partType')?.value || '',
       unit: this.partForm.get('partUnit')?.value || '',
       vendorCostList: this.generateVendorCostMapBody(),
-      categoryId: categoryIdValue ,
+      categoryId: categoryIdValue,
       bom: this.generateBomDetailsBody()
     };
 
+    if (this.partForm.invalid) {
+      this.snackbarService.error('Please fill all required fields!');
+      return;
+    }
     if (this.partId) {
-      // Update part if ID exists
-      this.partService.updatePart(this.partId, body).subscribe(() => {
-        this.router.navigateByUrl('/app/parts'); // Redirect to parts list
+      this.partService.updatePart(this.partId, body).subscribe({
+        next: () => {
+            this.snackbarService.success('Part updated successfully!');
+            this.router.navigateByUrl('/app/parts');
+        }
       });
     } else {
-      // Create new part
-      this.partService.createPart(body).subscribe(() => {
-        this.router.navigateByUrl('/app/parts'); // Redirect to parts list
+      this.partService.createPart(body).subscribe({
+        next:() => {
+            this.snackbarService.success('Part created successfully!');
+            this.router.navigateByUrl('/app/parts');
+        }
       });
     }
   }

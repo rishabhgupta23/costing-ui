@@ -10,6 +10,7 @@ import { DiscardDialogComponent } from '../../../../shared/components/discard-di
 import { TableActions } from '../../../../shared/constants/table.constants';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
 
 @Component({
   selector: 'app-vendor-landing',
@@ -32,7 +33,7 @@ export class VendorLandingComponent  {
   private searchSubject = new Subject<{ key: string; value: string }>(); 
   
   
-  constructor(private vendorService: VendorService, private router: Router) {
+  constructor(private vendorService: VendorService, private router: Router, private snackbarService:SnackbarService) {
     this.getVendorList();
     this.listenToFilterChanges(); 
   }
@@ -86,7 +87,9 @@ listenToFilterChanges(): void {
       if (result === DialogCloseResponse.DELETE) {
         this.vendorService.deleteVendor(row.id.toString()).subscribe({
           next: () => {
-            this.getVendorList();  },
+            this.snackbarService.success('Vendor deleted successfully!');
+            this.getVendorList(); 
+             },
         });
       }
     });
