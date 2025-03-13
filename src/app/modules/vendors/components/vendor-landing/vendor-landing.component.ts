@@ -87,7 +87,7 @@ listenToFilterChanges(): void {
       if (result === DialogCloseResponse.DELETE) {
         this.vendorService.deleteVendor(row.id.toString()).subscribe({
           next: () => {
-            this.snackbarService.show('Vendor deleted successfully!', 'success');
+            this.snackbarService.success('Vendor deleted successfully!');
             this.getVendorList(); 
              },
         });

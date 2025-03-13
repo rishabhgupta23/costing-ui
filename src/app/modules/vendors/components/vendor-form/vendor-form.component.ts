@@ -94,14 +94,14 @@ export class VendorFormComponent implements OnInit {
       if (this.vendorId) {
         this.vendorService.updateVendor(this.vendorId, this.vendorForm.value as Vendor).subscribe({
           next: () => {
-            this.snackbarService.show('Vendor updated successfully!', 'success');
+            this.snackbarService.success('Vendor updated successfully!');
           this.router.navigateByUrl('/app/vendors');
           }
         });
       } else {
         this.vendorService.createVendor(this.vendorForm.value as Vendor).subscribe({
           next: () => {
-            this.snackbarService.show('Vendor created successfully!', 'success');
+            this.snackbarService.success('Vendor created successfully!');
           this.router.navigateByUrl('/app/vendors');
           }
         });

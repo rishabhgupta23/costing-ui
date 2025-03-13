@@ -150,7 +150,7 @@ export class PartLandingComponent implements OnInit {
     this.partService.deletePart(partId).subscribe({
       next: () => {
         this.getPartList();
-        this.snackbarService.show('Part deleted successfully', 'success');
+        this.snackbarService.success('Part deleted successfully');
         }
       });
   }

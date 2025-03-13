@@ -8,14 +8,24 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class SnackbarService {
   constructor(private snackBar: MatSnackBar) {}
 
-  show(message: string, type: 'success' | 'warning' | 'error',
-    verticalPosition: 'top' | 'bottom' = 'top',
-  ) {
+  show(message: string, type: 'success' | 'warning' | 'error') {
     this.snackBar.openFromComponent(SnackbarComponent, {
       data: { message, type },
       duration: 1000,
       panelClass: type,
-      verticalPosition
+      verticalPosition: 'top'
     });
+  }
+
+  success(message: string) {
+    this.show(message, 'success');
+  }
+
+  error(message: string) {
+    this.show(message, 'error');
+  }
+
+  warning(message: string) {
+    this.show(message, 'warning');
   }
 }

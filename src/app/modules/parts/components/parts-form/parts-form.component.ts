@@ -38,11 +38,11 @@ export class PartsFormComponent implements OnDestroy {
   
 
   partForm = new FormGroup({
-    partNumber: new FormControl(''),
-    partName: new FormControl(''),
+    partNumber: new FormControl('', Validators.required),
+    partName: new FormControl('', Validators.required),
     categoryId: new FormControl(),
-    partType: new FormControl(),
-    partUnit: new FormControl(),
+    partType: new FormControl('', Validators.required),
+    partUnit: new FormControl('', Validators.required),
   });
 
   
@@ -288,26 +288,22 @@ export class PartsFormComponent implements OnDestroy {
       categoryId: categoryIdValue,
       bom: this.generateBomDetailsBody()
     };
-    const partName = this.partForm.get('partName')?.value?.trim();
-    const partNumber = this.partForm.get('partNumber')?.value?.trim();
-    const partType = this.partForm.get('partType')?.value?.trim();
-    const partUnit = this.partForm.get('partUnit')?.value?.trim();
-  
-    if (!partName || !partNumber || !partType || !partUnit) {
-      this.snackbarService.show('Please fill all required fields!', 'error');
+
+    if (this.partForm.invalid) {
+      this.snackbarService.error('Please fill all required fields!');
       return;
     }
     if (this.partId) {
       this.partService.updatePart(this.partId, body).subscribe({
         next: () => {
-            this.snackbarService.show('Part updated successfully!', 'success');
+            this.snackbarService.success('Part updated successfully!');
             this.router.navigateByUrl('/app/parts');
         }
       });
     } else {
       this.partService.createPart(body).subscribe({
         next:() => {
-            this.snackbarService.show('Part created successfully!', 'success');
+            this.snackbarService.success('Part created successfully!');
             this.router.navigateByUrl('/app/parts');
         }
       });
