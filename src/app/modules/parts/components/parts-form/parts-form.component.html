@@ -2,7 +2,7 @@
     <div class="page-header">
         <span class="page-title">{{ partId ? 'Edit Part' : 'Create Part' }}</span>
         <div class="dialog-action">
-            <button class="primary-btn" [disabled]="partForm.invalid" (click)="onSubmit()">
+            <button class="primary-btn" (click)="onSubmit()">
               {{ partId ? 'Update' : 'Create' }}
             </button>
           </div>
