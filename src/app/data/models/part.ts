@@ -1,3 +1,4 @@
+import { SortIcons } from "../../shared/constants/table.constants";
 import { Vendor } from "./vendor";
 
 export interface CostFactor {
@@ -10,6 +11,18 @@ export interface CostFactorData {
     name?: string;
     value: number;
 }
+
+export interface CostHistory {
+    updatedDateTime: string;
+    costFactorList: CostFactorData[];
+}
+
+export interface CostHistoryResponse {
+    partId: number;
+    vendorId: number;
+    costHistoryList: CostHistory[];
+}
+
 
 export interface VendorCost extends Vendor {
     costFactorValues: CostFactorData[];
@@ -49,6 +62,11 @@ export interface PartRow{
 export interface PartDetails extends Part {
     bom: {childPartId: number; quantity: number; childPartName: string; childPartNumber: string}[];
     vendorCostList: VendorCost[];
+}
+
+export interface SortState{
+    sortColumn: string,
+    sortState: SortIcons
 }
 
 export interface TableActionEvent {

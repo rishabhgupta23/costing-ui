@@ -84,6 +84,9 @@ $costing-ui-theme: mat.define-theme((
 }
 
 .primary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 0.6rem 1.6rem;
     font-weight: bold;
     cursor: pointer;
@@ -95,7 +98,17 @@ $costing-ui-theme: mat.define-theme((
     &:hover {
         background-color: darken(#55ad9b , 10%);
     }
+
+    .btn-icon {
+      display: inline-block;
+      font-weight: normal;
+      vertical-align: middle;
+      height: 1.2rem;
+      width: 1.2rem;
+    }
 }
+
+
 
 .secondary-btn {
     padding: 0.6rem 1.6rem;
@@ -117,4 +130,16 @@ $costing-ui-theme: mat.define-theme((
         padding: 1rem;
         border-radius: 12px;
     }
+}
+
+.mat-mdc-snack-bar-container .mat-mdc-snackbar-surface{
+  --mdc-snackbar-container-color: none;
+  box-shadow: none;
+  position:fixed;
+  top:40px;
+}
+.highlight-table tbody tr:hover{
+  background-color: #dedede;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
 }

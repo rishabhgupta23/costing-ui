@@ -1,9 +1,10 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { CostFactor, PartCreateRequest, PartDetails, PartRow } from '../../models/part';
+import { CostFactor, CostHistoryResponse, PartCreateRequest, PartDetails, PartRow, SortState } from '../../models/part';
 import { ApiUtil } from '../../../shared/utils/api.util';
 import { API_END_POINTS } from '../../../config/api.config';
+import { SortIcons } from '../../../shared/constants/table.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -24,10 +25,12 @@ export class PartService {
     return this.http.get<PartDetails>(ApiUtil.getPreparedUrl(API_END_POINTS.PART_DETAILS, params));
   }
 
-  getPartList(page: number = 0, size: number = 100, filterCriteria: Map<string, string> = new Map()): Observable<any> {
+  getPartList(page: number = 0, size: number = 100, filterCriteria: Map<string, string> = new Map(), sortState: SortState = {sortColumn: 'partNumber', sortState: SortIcons.ASC}): Observable<any> {
     let params = new HttpParams()
       .set('pageNo', page.toString())
-      .set('pageSize', size.toString());
+      .set('pageSize', size.toString())
+      .set('sortColumn', sortState?.sortColumn)
+      .set('sortMode', sortState?.sortState);
   
     filterCriteria.forEach((value, key) => {
       if (value) {
@@ -50,8 +53,21 @@ export class PartService {
   }
 
   getPartUnits(): Observable<string[]> {
-    return this.http.get<string[]>(ApiUtil.getApiUrl(API_END_POINTS.PART_UNITS));
+    return this.http.get<{ data: { unitId: number; unitName: string }[] }>(ApiUtil.getApiUrl(API_END_POINTS.PART_UNITS)).pipe(
+      map(response => response.data.map(unit => unit.unitName))
+    );
   }
+
+  getPartCostByPartAndVendor(partId: string, vendorId: number) {
+    const params = new HttpParams()
+        .set('partId', partId)
+        .set('vendorId', vendorId.toString());
+
+    return this.http.get<CostHistoryResponse>(
+        ApiUtil.getApiUrl(API_END_POINTS.PART_HISTORY), 
+        { params }
+    );
+}
 
   getPartCategories(): Observable<string[]> {
     return this.http.get<string[]>(ApiUtil.getApiUrl(API_END_POINTS.CATEGORIES)).pipe(
@@ -72,5 +88,11 @@ export class PartService {
 
   downloadExcel() {
     return this.http.get<any>(ApiUtil.getApiUrl(API_END_POINTS.PART_DOWNLOAD));
+  }
+
+  downloadBomExcel(partId:string){
+    const params = new Map<string, string>();
+  params.set('partId', partId);
+    return this.http.get<any>(ApiUtil.getPreparedUrl(API_END_POINTS.BOM_DOWNLOAD, params));
   }
 }

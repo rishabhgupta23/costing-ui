@@ -16,10 +16,13 @@ import { MatDialog, MatDialogActions, MatDialogContent, MatDialogModule } from '
 import { BomdialogComponent } from './components/bomdialog/bomdialog.component';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { PartViewComponent } from './components/part-view/part-view.component';
+import { HistorydialogComponent } from './historydialog/historydialog.component';
 
 
 @NgModule({
-  declarations: [ PartLandingComponent, PartsFormComponent, BomdialogComponent],
+  declarations: [ PartLandingComponent, PartsFormComponent, BomdialogComponent, PartViewComponent, HistorydialogComponent],
   imports: [
     CommonModule,
     PartsRoutingModule,
@@ -36,6 +39,7 @@ import { FormsModule } from '@angular/forms';
     MatDialogModule,
     MatIconModule,
     FormsModule,
+    MatSnackBarModule
   ]
 })
 export class PartsModule { }

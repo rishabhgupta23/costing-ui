@@ -1,12 +1,23 @@
 <div class="table-container">
-<table class="app-table">
+<table class="app-table" [ngClass]="customClass">
   <!-- Table Header -->
    <thead>
-  <tr class="header-row">
+    <tr class="header-row" *ngIf="showSort">
       <ng-container *ngFor="let col of config">
-          <th [title]="col?.label">{{ col?.label }}</th>
-        </ng-container>
-  </tr>
+        <th [title]="col?.label">
+          <div class="header-cell">
+            <span>{{ col?.label }}</span>
+            <!-- If the column is sortable, show the sort icon -->
+            <ng-container *ngIf="col.sortable">
+              <button mat-button class="sort-btn" (click)="toggleSort(col.key)">
+                <mat-icon [svgIcon]="getSortIcon(col.key)" class="sort-icon"></mat-icon>
+              </button>
+            </ng-container>
+          </div>
+        </th>
+      </ng-container>
+    </tr>
+
   <tr class="filter-row" *ngIf="showFilter">
     <ng-container *ngFor="let col of config">
       <th>
@@ -32,7 +43,7 @@
   <ng-container *ngFor="let row of data; let i = index"> 
     
 
-      <tr class="data-row">
+      <tr class="data-row" (click)="onRowClick(row)">
           <!-- Dynamic Columns -->
 <ng-container *ngFor="let col of config">
     <td *ngIf="col?.columnType === ColumnType.SERIAL_NUMBER">
@@ -56,7 +67,7 @@
         <mat-icon 
           class="edit-btn" 
           svgIcon="edit" 
-          (click)="handleAction({ action: action, row: row })">
+          (click)="handleAction($event, { action: action, row: row })">
         </mat-icon>
       </span>
       
@@ -64,7 +75,7 @@
         <mat-icon 
           class="delete-btn" 
           svgIcon="delete"
-          (click)="handleAction({ action: action, row: row })">
+          (click)="handleAction($event, { action: action, row: row })">
         </mat-icon>
       </span>
     </ng-container>
