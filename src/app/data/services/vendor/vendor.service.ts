@@ -4,6 +4,8 @@ import { map, Observable } from 'rxjs';
 import { Vendor } from '../../models/vendor';
 import { ApiUtil } from '../../../shared/utils/api.util';
 import { API_END_POINTS } from '../../../config/api.config';
+import { SortState } from '../../models/part';
+import { SortIcons } from '../../../shared/constants/table.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -31,10 +33,12 @@ export class VendorService {
       map((res:any)=>res.data));
   }
       
-  getVendorList(page: number = 0, size: number = 100, filterCriteria: Map<string, string> = new Map()): Observable<any> {
+  getVendorList(page: number = 0, size: number = 100, filterCriteria: Map<string, string> = new Map(), sortState: SortState = {sortColumn: 'name', sortState: SortIcons.ASC}): Observable<any> {
     let params = new HttpParams()
       .set('pageNo', page.toString())
-      .set('pageSize', size.toString());
+      .set('pageSize', size.toString())
+      .set('sortColumn', sortState?.sortColumn)
+      .set('sortMode', sortState?.sortState);
   
       filterCriteria.forEach((value, key) => {
         if (value) {
