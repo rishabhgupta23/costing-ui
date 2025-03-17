@@ -1,9 +1,10 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { CostFactor, PartCreateRequest, PartDetails, PartRow } from '../../models/part';
+import { CostFactor, CostHistoryResponse, PartCreateRequest, PartDetails, PartRow, SortState } from '../../models/part';
 import { ApiUtil } from '../../../shared/utils/api.util';
 import { API_END_POINTS } from '../../../config/api.config';
+import { SortIcons } from '../../../shared/constants/table.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,10 @@ export class PartService {
     return this.http.get<PartDetails>(ApiUtil.getPreparedUrl(API_END_POINTS.PART_DETAILS, params));
   }
 
-  getPartList(page: number = 0, size: number = 100, filterCriteria: Map<string, string> = new Map(), sortColumn: string = 'partNumber',
+  // getPartList(page: number = 0, size: number = 100, filterCriteria: Map<string, string> = new Map(), sortColumn: string, sortMode: string ): Observable<any> {
+  //   let params = new HttpParams()
+
+    getPartList(page: number = 0, size: number = 100, filterCriteria: Map<string, string> = new Map(), sortColumn: string = 'partNumber',
   sortMode: string = 'ASC'): Observable<any> {
     let params = new HttpParams()
       .set('pageNo', page.toString())
@@ -60,6 +64,17 @@ export class PartService {
     );
   }
 
+  getPartCostByPartAndVendor(partId: string, vendorId: number) {
+    const params = new HttpParams()
+        .set('partId', partId)
+        .set('vendorId', vendorId.toString());
+
+    return this.http.get<CostHistoryResponse>(
+        ApiUtil.getApiUrl(API_END_POINTS.PART_HISTORY), 
+        { params }
+    );
+}
+
   getPartCategories(): Observable<string[]> {
     return this.http.get<string[]>(ApiUtil.getApiUrl(API_END_POINTS.CATEGORIES)).pipe(
       map((res:any) => res.data)
@@ -79,5 +94,11 @@ export class PartService {
 
   downloadExcel() {
     return this.http.get<any>(ApiUtil.getApiUrl(API_END_POINTS.PART_DOWNLOAD));
+  }
+
+  downloadBomExcel(partId:string){
+    const params = new Map<string, string>();
+  params.set('partId', partId);
+    return this.http.get<any>(ApiUtil.getPreparedUrl(API_END_POINTS.BOM_DOWNLOAD, params));
   }
 }

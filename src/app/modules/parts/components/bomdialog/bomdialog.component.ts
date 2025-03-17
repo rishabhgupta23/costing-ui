@@ -1,4 +1,4 @@
-import { AfterViewInit,Component, Inject, OnInit, ViewChild, viewChild } from '@angular/core';
+import { AfterViewInit,Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { PartBomData, PartRow } from '../../../../data/models/part';
 import { PartService } from '../../../../data/services/part/part.service';
@@ -8,12 +8,14 @@ import { PageEvent } from '@angular/material/paginator';
 import { FormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { TableComponent } from '../../../../shared/components/table/table.component';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 @Component({
   selector: 'app-bomdialog',
   templateUrl: './bomdialog.component.html',
   styleUrls: ['./bomdialog.component.scss']
 })
-export class BomdialogComponent implements OnInit,AfterViewInit {
+
+export class BomdialogComponent implements OnInit {
 
   displayedColumns: string[] = ['select', 'partName', 'partNumber'];
   existingParts: Set<number>= new Set();
@@ -44,13 +46,7 @@ closeDialog() {
   this.dialogRef.close({action: DialogCloseResponse.NO_ACTION});
   }
 
-  ngAfterViewInit(): void {
-    if (this.tableComponent) {
-      this.tableComponent.sortedColumn = 'partNumber';
-      this.tableComponent.sortedOrder = 'asc';
-      this.tableComponent.sortChanged.emit({ key: 'partNumber', order: 'asc' });
-    }
-  }
+ 
  
 
 togglePartSelection(part: PartRow, event: any): void {
@@ -80,22 +76,6 @@ this.getPartList();
 this.listenToFilterChanges();
 }
 
-
-getPartList():void{
-  this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortColumn, this.sortMode).subscribe(
-    (res) => {
-      
-      this.partList = res.data?.partsList || [];
-      const mappedParts = this.partList.map(part => part.partName);
-      this.existingParts = this.data.existingParts;
-      this.paginatedData = this.partList;
-      this.totalRecords = res.pageInfo?.totalRecords || 0;
-      this.allParts = [...this.allParts, ...this.partList];
-      this.allParts = Array.from(new Set(this.allParts.map(part => part.partId)))
-        .map(id => this.allParts.find(part => part.partId === id)!);
-});
-
-}
 listenToFilterChanges(): void {
   this.searchSubject
     .pipe(
@@ -105,6 +85,7 @@ listenToFilterChanges(): void {
     .subscribe(() => {
       this.currentPage = 0;
       this.getPartList(); 
+      
       });
   }
 
@@ -120,17 +101,41 @@ applyFilter(): void {
     }
   }
 
-
-    
-
 isAllSelected(): boolean {
   return this.partList.length > 0 && this.partList.every(part => this.existingParts.has(part.partId));
 }
+  
 
+
+getPartList():void{
+  this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortColumn, this.sortMode).subscribe(
+    (res) => {
+    
+      this.partList = res.data?.partsList || [];
+      const mappedParts = this.partList.map(part => part.partName);
+      this.existingParts = this.data.existingParts;
+      this.paginatedData = this.partList;
+      this.totalRecords = res.pageInfo?.totalRecords || 0;
+      this.allParts = [...this.allParts, ...this.partList];
+      this.allParts = Array.from(new Set(this.allParts.map(part => part.partId)))
+        .map(id => this.allParts.find(part => part.partId === id)!);
+});
+
+}
+
+
+
+
+
+
+    
 isIndeterminate(): boolean {
   return this.partList.some(part => this.existingParts.has(part.partId)) &&
          !this.isAllSelected();
 }
+
+
+
 
 selectAll(event: any): void {
   if (event.checked) {
@@ -162,3 +167,6 @@ confirmSelection(): void {
   }
 
 }
+
+
+

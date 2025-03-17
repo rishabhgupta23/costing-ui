@@ -1,0 +1,47 @@
+.part-form {
+    display: grid;
+    grid-template-columns: auto auto;
+    width: 50%;
+}
+
+.sub-heading {
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.vendor-panel-content {
+    padding-top: 1rem;
+}
+
+
+.part-form-container {
+    .action-section {
+        position: absolute;
+    }
+}
+
+
+.history-btn {
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .history-btn:hover {
+    color: #f44336;
+  }
+
+mat-panel-description{
+    justify-content: right;
+}
+
+.button{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.bom-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
