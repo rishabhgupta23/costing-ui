@@ -1,31 +1,31 @@
-<div class="app-page">
-    <div class="page-header">
-        <span class="page-title">Vendors</span>
-        <span class="button-group">
-            <button class="primary-btn" (click)="createVendor()">Create</button>
-            <button class="primary-btn" (click)="downloadExcel()">
-                <mat-icon class="download-icon" svgIcon="download" ></mat-icon>
-                Download
-            </button>
-        </span>
-    </div>
-    <div class="page-content">
-        <div class="card-nc">
-            <app-table 
-            [data]="vendorList"
-            [(sort)] = "sortState" 
-            (filterChange)="applyFilter($event)"
-            (sortChange)="applySort($event)"
-            [config]="columns"
-            [showFilter]="true"
-            [showSort]="true"
-            (actionTriggered)="handleAction($event)">
-        </app-table>
-        <mat-paginator 
-        [length]="totalRecords" 
-        [pageSize]="pageSize" 
-        (page)="onPageChange($event)">
-      </mat-paginator>
+    <div class="app-page">
+        <div class="page-header">
+            <span class="page-title">Vendors</span>
+            <span class="button-group">
+                <button class="primary-btn" (click)="createVendor()">Create</button>
+                <button class="primary-btn" (click)="downloadExcel()">
+                    <mat-icon class="btn-icon" svgIcon="download" ></mat-icon>
+                    Download
+                </button>
+            </span>
+        </div>
+        <div class="page-content">
+            <div class="card-nc">
+                <app-table 
+                [data]="vendorList" 
+                [(sort)] = "sortState" 
+                (filterChange)="applyFilter($event)"
+                (sortChange)="applySort($event)"
+                [config]="columns"
+                [showFilter]="true"
+                [showSort]="true"
+                (actionTriggered)="handleAction($event)">
+            </app-table>
+            <mat-paginator 
+            [length]="totalRecords" 
+            [pageSize]="pageSize" 
+            (page)="onPageChange($event)">
+        </mat-paginator>
+            </div>
         </div>
     </div>
-</div>

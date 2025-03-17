@@ -11,6 +11,7 @@ import { SortIcons, TableActions } from '../../../../shared/constants/table.cons
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ColumnType } from '../../../../shared/constants/table.constants';
 import { Subject } from 'rxjs';
+import { downloadFile } from '../../../../shared/utils/file-download.util';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
 
@@ -104,21 +105,9 @@ export class PartLandingComponent implements OnInit {
     this.getPartList();
   }
 
-
   downloadExcel() {
     this.partService.downloadExcel().subscribe(response => {
-      const base64String = response.fileData;
-      const fileName = response.fileName || 'partList.xlsx';
-
-      const byteArray = new Uint8Array([...atob(base64String)].map(char => 
-        char.charCodeAt(0)
-      ));
-      const blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = fileName;
-      link.click();
+      downloadFile(response.fileData, response.fileName || 'partList.xlsx')
     });
   }
 
