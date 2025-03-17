@@ -37,6 +37,8 @@ export class PartService {
         params = params.set(key, value);
       }
     });
+
+    
     
     const url = ApiUtil.getApiUrl(API_END_POINTS.PARTS);
     return this.http.get<any>(url, { params });
@@ -53,8 +55,10 @@ export class PartService {
   }
 
   getPartUnits(): Observable<string[]> {
-    return this.http.get<string[]>(ApiUtil.getApiUrl(API_END_POINTS.PART_UNITS));
-  }
+    return this.http.get<{ data: { unitId: number; unitName: string }[] }>(ApiUtil.getApiUrl(API_END_POINTS.PART_UNITS)).pipe(
+      map(response => response.data.map(unit => unit.unitName))
+    );
+  }
 
   getPartCategories(): Observable<string[]> {
     return this.http.get<string[]>(ApiUtil.getApiUrl(API_END_POINTS.CATEGORIES)).pipe(
@@ -71,5 +75,9 @@ export class PartService {
   createPart(body: PartCreateRequest) {
     console.log(body);
     return this.http.post<PartCreateRequest>(ApiUtil.getApiUrl(API_END_POINTS.PARTS), body);
+  }
+
+  downloadExcel() {
+    return this.http.get<any>(ApiUtil.getApiUrl(API_END_POINTS.PART_DOWNLOAD));
   }
 }

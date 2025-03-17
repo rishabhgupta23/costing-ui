@@ -180,13 +180,11 @@ export class PartsFormComponent implements OnDestroy {
   
   getPartUnits() {
     this.subscriptions.push(
-      this.partService.getPartUnits().pipe(
-        map((res: any[]) => res.map(unit => unit.unitName))
-      ).subscribe((unitNames) => {
+      this.partService.getPartUnits().subscribe((unitNames) => {
         this.partUnits = unitNames;
-      })
-    );
-  }
+      })
+    );
+  }
 
   getPartCategories() {
     this.subscriptions.push(

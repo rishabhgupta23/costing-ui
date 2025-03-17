@@ -111,13 +111,22 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
     this.searchSubject.next(filter);
   }
 
-  applySort(sort: { key: string; order: string }): void {
-    if (!sort.order) return;
-    this.sortColumn = sort.key;
-    this.sortMode = sort.order.toUpperCase();
-    this.getPartList();
-  }
+  downloadExcel() {
+    this.partService.downloadExcel().subscribe(response => {
+      const base64String = response.fileData;
+      const fileName = response.fileName || 'partList.xlsx';
 
+      const byteArray = new Uint8Array([...atob(base64String)].map(char => 
+        char.charCodeAt(0)
+      ));
+      const blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = fileName;
+      link.click();
+    });
+  }
 
   createPart() {
     this.router.navigateByUrl("/app/parts/create");
@@ -140,6 +149,12 @@ export class PartLandingComponent implements OnInit, AfterViewInit {
         }
       });
     }
+  }
+  applySort(sort: { key: string; order: string }): void {
+    if (!sort.order) return;
+    this.sortColumn = sort.key;
+    this.sortMode = sort.order.toUpperCase();
+    this.getPartList();
   }
   deletePart(partId: string) {
 
