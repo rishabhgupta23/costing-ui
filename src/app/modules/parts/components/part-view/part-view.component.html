@@ -67,7 +67,15 @@
             <div *ngIf="partForm.get('partType')?.value === partTypeEnum.MASTER">
               <div *ngIf="bomPartList.length > 0">
                 <br>
-                <div class="sub-heading">BOM Parts</div>
+                <div class="bom-section">
+                    <span class="sub-heading">BOM Parts</span>
+                <span class="button">
+                    <button class="primary-btn" (click)="downloadBomExcel()">
+                        <mat-icon class="btn-icon" svgIcon="download" ></mat-icon>
+                        Download
+                    </button>
+                </span>
+            </div>
                 <app-table [data]="bomPartList" [config]="filteredBomTableColumns"></app-table>
               </div>
             </div>  

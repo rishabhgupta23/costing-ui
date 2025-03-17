@@ -33,3 +33,15 @@
 mat-panel-description{
     justify-content: right;
 }
+
+.button{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.bom-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
