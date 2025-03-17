@@ -3,7 +3,7 @@
 <div *ngIf="hasParts; else noPartsTemplate">
   
   <div>
-    <p class="description">This Vendor provides these items:</p>
+    <p class="description"><span class="vendor-name">{{ data.row.name }}</span> provides these items:</p>
   </div>
 
   <app-table class="app-table"
@@ -19,7 +19,7 @@
 </div>
 
 <ng-template #noPartsTemplate>
-  <p class="vendor-message">This vendor is not associated with any parts.</p>
+  <p class="vendor-message"><span class="vendor-name">{{ data.row.name }}</span> is not associated with any parts.</p>
 </ng-template>
 
   <p class="confirm-message">Are you sure you want to delete this Vendor?</p>

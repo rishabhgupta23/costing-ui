@@ -11,7 +11,7 @@ import { DISCARD_TABLE_COLUMNS } from '../../constants/discard.constant';
 import { TableComponent } from '../table/table.component';
 import { InfoDialogComponent } from '../infodialog/infodialog.component';
 import { VendorService } from '../../../data/services/vendor/vendor.service';
-import { PartCreateRequest } from '../../../data/models/part';
+import { PartRow } from '../../../data/models/part';
 
 @Component({
   selector: 'app-discard-dialog',
@@ -22,11 +22,11 @@ import { PartCreateRequest } from '../../../data/models/part';
 })
 export class DiscardDialogComponent implements OnInit {
   columns = DISCARD_TABLE_COLUMNS;
-  partList: PartCreateRequest[] = [];
+  partList: PartRow[] = [];
   dataSource: any[] = []; // Storing data from API
   totalRecords = 0;
   currentPage = 0;
-  pageSize = 10;
+  pageSize = 100;
   pageInfo: any;
   hasParts: boolean = false;
   public DialogCloseResponse = DialogCloseResponse
@@ -56,7 +56,7 @@ export class DiscardDialogComponent implements OnInit {
 
   fetchData(vendorId: number, currentPage: number, pageSize: number) {
     this.vendorService.getVendorParts(vendorId, currentPage, pageSize).subscribe(res => {
-      this.dataSource = res.data;
+      this.dataSource = res;
       this.totalRecords = res.pageInfo?.totalRecords || this.dataSource.length;
       this.hasParts = this.dataSource.length > 0;
     });
