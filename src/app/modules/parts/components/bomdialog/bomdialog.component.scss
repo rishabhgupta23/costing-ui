@@ -27,3 +27,62 @@ mat-dialog-actions{
         display: flex;
   flex-direction: column;
       }
+     
+      .sort-btn {
+        display: inline-block;
+        vertical-align: middle;
+        width: 1.5rem;
+        height: 1.5rem;
+        min-width: 1.5rem;
+        padding: 0;
+        margin-left: 4px;
+        background: transparent;
+        border: none;
+      }
+      
+      .sort-btn .sort-icon {
+        height: 100%;
+        font-size: 16px;
+        cursor: pointer;
+        color: #000000;
+        transition: color 0.2s;
+      }
+
+      .filter-row input[matInput] {
+        width: 60%;
+        padding: 5px 5px;
+        font-size: 12px;
+        border: 1px solid #000000;
+        border-radius: 10px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        background-color: #ffff;
+      }
+      
+      
+      .filter-row input[matInput]:hover {
+        border-color: #000000;
+      }
+      
+      
+      .filter-row input[matInput]:focus {
+        border-color: #95D2B3;
+        box-shadow: 0 0 7px rgba(0, 204, 170, 0.4);
+        background-color: #fff;
+        outline: none;
+      }
+      
+      .filter-row input[matInput]::placeholder {
+        color: #888;
+        opacity: 0.8;
+      }
+      
+      .filter-input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+      
+      .filter-input-wrapper input[matInput] {
+        width: 60%;
+        padding-right: 30px; /* leave space for the clear button */
+      }   

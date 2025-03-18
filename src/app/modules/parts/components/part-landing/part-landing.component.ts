@@ -32,6 +32,8 @@ export class PartLandingComponent implements OnInit {
   filterCriteria: Map<string, string> = new Map();
   private searchSubject = new Subject<{ key: string; value: string }>();
   sortState: SortState = {sortColumn: 'partNumber', sortState: SortIcons.ASC}
+  sortColumn: string | undefined;
+  sortMode: string | undefined;
 
   constructor(private partService: PartService, private router: Router, private snackbarService: SnackbarService) {}
   
@@ -45,8 +47,9 @@ export class PartLandingComponent implements OnInit {
   }
   
   getPartList() {
-    this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortState).subscribe(
+    this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortColumn , this.sortState ).subscribe(
       (res) => {
+
         const responseData = res.data;
         const maxVendorCount = responseData.maxVendorCount || 0;
         this.addColumnsForVendor(maxVendorCount);
@@ -100,6 +103,7 @@ export class PartLandingComponent implements OnInit {
     this.searchSubject.next(filter);
   }
 
+      
   applySort(sort: SortState): void {
     this.sortState = sort;
     this.getPartList();
@@ -134,6 +138,7 @@ export class PartLandingComponent implements OnInit {
     }
 
   }
+  
   deletePart(partId: string) {
 
     this.partService.deletePart(partId).subscribe({

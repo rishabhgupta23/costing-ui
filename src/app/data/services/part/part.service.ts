@@ -18,14 +18,14 @@ export class PartService {
     params.set('partId', partId);
     return this.http.post<PartCreateRequest>(ApiUtil.getPreparedUrl(API_END_POINTS.PART_DETAILS, params), PartCreateRequest);
   }
-
   getPartById(partId: string): Observable<PartDetails> {
     const params = new Map<string, string>();
     params.set('partId', partId);
     return this.http.get<PartDetails>(ApiUtil.getPreparedUrl(API_END_POINTS.PART_DETAILS, params));
   }
 
-  getPartList(page: number = 0, size: number = 100, filterCriteria: Map<string, string> = new Map(), sortState: SortState = {sortColumn: 'partNumber', sortState: SortIcons.ASC}): Observable<any> {
+  getPartList(page: number = 0, size: number = 100, filterCriteria: Map<string, string> = new Map(), sortColumn: string = 'partNumber',sortState={sortColumn:'partNumber', sortState: SortIcons.ASC},
+): Observable<any> {
     let params = new HttpParams()
       .set('pageNo', page.toString())
       .set('pageSize', size.toString())
@@ -36,8 +36,7 @@ export class PartService {
       if (value) {
         params = params.set(key, value);
       }
-    });
-    
+    }); 
     const url = ApiUtil.getApiUrl(API_END_POINTS.PARTS);
     return this.http.get<any>(url, { params });
   }
@@ -55,8 +54,8 @@ export class PartService {
   getPartUnits(): Observable<string[]> {
     return this.http.get<{ data: { unitId: number; unitName: string }[] }>(ApiUtil.getApiUrl(API_END_POINTS.PART_UNITS)).pipe(
       map(response => response.data.map(unit => unit.unitName))
-    );
-  }
+    );
+  }
 
   getPartCostByPartAndVendor(partId: string, vendorId: number) {
     const params = new HttpParams()
@@ -68,8 +67,7 @@ export class PartService {
         { params }
     );
 }
-
-  getPartCategories(): Observable<string[]> {
+   getPartCategories(): Observable<string[]> {
     return this.http.get<string[]>(ApiUtil.getApiUrl(API_END_POINTS.CATEGORIES)).pipe(
       map((res:any) => res.data)
     );
