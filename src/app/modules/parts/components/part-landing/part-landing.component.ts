@@ -153,7 +153,6 @@ export class PartLandingComponent implements OnInit {
     this.currentPage = event.pageIndex;
     this.getPartList();
   }
-
 }
 
  

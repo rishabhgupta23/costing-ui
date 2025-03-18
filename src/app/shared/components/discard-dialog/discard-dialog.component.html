@@ -1,21 +1,26 @@
 <h2 class="title">Delete Vendor</h2>
 
-<div>
-  <p class="description">This Vendor provides these items:</p>
-</div>
+<div *ngIf="hasParts; else noPartsTemplate">
+  
+  <div>
+    <p class="description"><span class="vendor-name">{{ data.row.name }}</span> is associated with these parts:</p>
+  </div>
 
-<!-- Table Container with Custom Styling -->
-<div class="app-table">
-  <app-table 
-  [data]="dataSource.data" 
+  <app-table class="app-table"
+  [data]="dataSource" 
   [config]="columns">
 </app-table>
+<!-- Paginator -->
+<mat-paginator 
+  [length]="totalRecords" 
+  [pageSize]="pageSize" 
+  (page)="onPageChange($event)">
+</mat-paginator>
 </div>
 
-
-<!-- Paginator -->
-<mat-paginator [pageSize]="10" [pageSizeOptions]="[10,20,30]"></mat-paginator>
-
+<ng-template #noPartsTemplate>
+  <p class="vendor-message"><span class="vendor-name">{{ data.row.name }}</span> is not associated with any parts.</p>
+</ng-template>
 
   <p class="confirm-message">Are you sure you want to delete this Vendor?</p>
 

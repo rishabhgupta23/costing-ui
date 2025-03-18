@@ -26,10 +26,14 @@ export class VendorService {
 
   constructor(private http: HttpClient) { }
 
-  getVendorParts(vendorId: number): Observable<any[]> {
+  getVendorParts(vendorId: number, page: number =0, size: number=100): Observable<any> {
     const pathParams = new Map<string, string>();
     pathParams.set('vendorId', vendorId.toString());
-    return this.http.get<any[]>(ApiUtil.getPreparedUrl(API_END_POINTS.VENDOR_PARTS, pathParams)).pipe(
+    let params = new HttpParams()
+      .set('pageNo', page.toString())
+      .set('pageSize', size.toString());
+
+    return this.http.get<any>(ApiUtil.getPreparedUrl(API_END_POINTS.VENDOR_PARTS, pathParams), {params}).pipe(
       map((res:any)=>res.data));
   }
       
