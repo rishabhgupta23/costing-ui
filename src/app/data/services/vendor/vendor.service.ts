@@ -32,7 +32,6 @@ export class VendorService {
     let params = new HttpParams()
       .set('pageNo', page.toString())
       .set('pageSize', size.toString());
-      console.log('Fetching:', { vendorId, pageNo: page, pageSize: size });
 
     return this.http.get<any>(ApiUtil.getPreparedUrl(API_END_POINTS.VENDOR_PARTS, pathParams), {params}).pipe(
       map((res:any)=>res.data));

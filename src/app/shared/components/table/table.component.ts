@@ -30,7 +30,6 @@ export class TableComponent {
   @Input() config: any[] = [];
   @Input() sort: SortState = { sortColumn: '', sortState: SortIcons.ASC }; 
   @Output() actionTriggered = new EventEmitter<{ action: TableActions; row: any }>();
-  @Output() filterChanged = new EventEmitter<{ key: string; value: string }>();
   @Output() rowClicked = new EventEmitter<any>();
   @Output() filterChange = new EventEmitter<{ key: string; value: string }>();
   @Output() sortChange = new EventEmitter<SortState>();
