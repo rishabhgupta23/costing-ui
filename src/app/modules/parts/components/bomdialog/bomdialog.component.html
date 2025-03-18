@@ -19,10 +19,7 @@
 
     <ng-container matColumnDef="partName">
       <th mat-header-cell *matHeaderCellDef (click)="toggleSort('partName')">Part Name
-        <button mat-button class="sort-btn">
-          <mat-icon [svgIcon]="getSortIcon('partName')" class="sort-icon"></mat-icon>
-        </button>
-        
+        <mat-icon [svgIcon]="getSortIcon('partName')" class="sort-icon"></mat-icon>
         <div class="filter-row">
           <div class="filter-input-wrapper">
             <input matInput [(ngModel)]="searchTermName" (input)="applyFilter()" placeholder="Search Name">
@@ -37,10 +34,8 @@
     <!-- Part Number Column -->
     <ng-container matColumnDef="partNumber">
       <th mat-header-cell *matHeaderCellDef (click)="toggleSort('partNumber')">Part Number
-        <button mat-button class="sort-btn">
           <mat-icon [svgIcon]="getSortIcon('partNumber')" class="sort-icon"></mat-icon>
-        </button>
-        <div class="filter-row">
+         <div class="filter-row">
           <div class="filter-input-wrapper">
             <input matInput [(ngModel)]="searchTermNumber" (input)="applyFilter()" placeholder="Search Number">
           </div> </div>

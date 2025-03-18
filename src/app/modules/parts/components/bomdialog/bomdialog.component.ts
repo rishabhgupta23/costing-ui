@@ -30,7 +30,7 @@ searchTerm: any;
 filteredPartList: PartRow[] = [];
 searchTermName: string = ''; 
 searchTermNumber: string = ''; 
-sortMode: string ='ASC' ;
+sortMode: string = SortIcons.ASC ;
 sortColumn: string = 'partNumber';
 sortState: SortState={sortColumn:'partNumber',sortState:SortIcons.ASC}
 
