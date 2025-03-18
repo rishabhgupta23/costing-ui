@@ -11,21 +11,21 @@
         </div>
         <div class="page-content">
             <div class="card-nc">
-                <app-table 
-                [data]="vendorList" 
-                [(sort)] = "sortState" 
-                (filterChange)="applyFilter($event)"
-                (sortChange)="applySort($event)"
-                [config]="columns"
-                [showFilter]="true"
-                [showSort]="true"
-                (actionTriggered)="handleAction($event)">
-            </app-table>
-            <mat-paginator 
-            [length]="totalRecords" 
-            [pageSize]="pageSize" 
-            (page)="onPageChange($event)">
-        </mat-paginator>
-            </div>
-        </div>
-    </div>
+                <app-table
+                            [data]="vendorList" 
+                            [(sort)] = "sortState" 
+                            (filterChange)="applyFilter($event)"
+                            (sortChange)="applySort($event)"
+                            [config]="columns"
+                            [showFilter]="true"
+                            [showSort]="true"
+                            (actionTriggered)="handleAction($event)">
+                        </app-table>
+                        <mat-paginator 
+                        [length]="totalRecords" 
+                        [pageSize]="pageSize" 
+                        (page)="onPageChange($event)">
+                    </mat-paginator>
+                        </div>
+                    </div>
+                </div>

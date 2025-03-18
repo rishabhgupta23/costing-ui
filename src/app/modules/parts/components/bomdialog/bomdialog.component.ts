@@ -1,6 +1,6 @@
 import { AfterViewInit,Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { PartBomData, PartRow } from '../../../../data/models/part';
+import { PartBomData, PartRow, SortState } from '../../../../data/models/part';
 import { PartService } from '../../../../data/services/part/part.service';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 import { PageEvent } from '@angular/material/paginator';
@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { TableComponent } from '../../../../shared/components/table/table.component';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { SortIcons } from '../../../../shared/constants/table.constants';
 @Component({
   selector: 'app-bomdialog',
   templateUrl: './bomdialog.component.html',
@@ -16,11 +17,9 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 })
 
 export class BomdialogComponent implements OnInit {
-
-  displayedColumns: string[] = ['select', 'partName', 'partNumber'];
+displayedColumns: string[] = ['select', 'partName', 'partNumber'];
   existingParts: Set<number>= new Set();
   partList: PartRow[] = [];
-  @ViewChild(TableComponent) tableComponent!: TableComponent;
 paginatedData: any[] = []; 
 pageSize: number = 100 
 currentPage: number = 0;
@@ -33,9 +32,11 @@ searchTermName: string = '';
 searchTermNumber: string = ''; 
 sortMode: string ='ASC' ;
 sortColumn: string = 'partNumber';
+sortState: SortState={sortColumn:'partNumber',sortState:SortIcons.ASC}
 
  filterCriteria: Map<string, string> = new Map();
  private searchSubject = new Subject<{ key: string; value: string }>();
+col: any;
 constructor(
   public dialogRef: MatDialogRef<BomdialogComponent>,
   @Inject(MAT_DIALOG_DATA) public data:  { existingParts: Set<number> },
@@ -46,8 +47,20 @@ closeDialog() {
   this.dialogRef.close({action: DialogCloseResponse.NO_ACTION});
   }
 
- 
- 
+   toggleSort(key: string): void {
+      this.sortState = {
+        sortColumn: key,
+        sortState: this.sortState.sortColumn !== key ? SortIcons.ASC : 
+                   this.sortState.sortState === SortIcons.ASC ? SortIcons.DESC : SortIcons.ASC
+      };
+      this.applySort(this.sortState);
+    }
+    
+    getSortIcon(key: string): string {
+      return this.sortState.sortColumn === key 
+        ? (this.sortState.sortState === SortIcons.ASC ? SortIcons.ASC : SortIcons.DESC) 
+        : SortIcons.DEFAULT;
+    }
 
 togglePartSelection(part: PartRow, event: any): void {
   if (event.checked) {
@@ -57,16 +70,9 @@ togglePartSelection(part: PartRow, event: any): void {
   }
 }
 
-applySort(sort: { key: string }): void {
-  if (this.sortColumn === sort.key) {
-    
-    this.sortMode = this.sortMode === 'ASC' ? 'DESC' : 'ASC';
-  } else {
-    
-    this.sortColumn = sort.key;
-    this.sortMode = 'ASC';
-  }
-  this.getPartList(); 
+applySort(sort:SortState): void {
+  this.sortState=sort;
+  this.getPartList();
 }
 
 
@@ -105,10 +111,8 @@ isAllSelected(): boolean {
   return this.partList.length > 0 && this.partList.every(part => this.existingParts.has(part.partId));
 }
   
-
-
 getPartList():void{
-  this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortColumn, this.sortMode).subscribe(
+  this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortColumn, this.sortState).subscribe(
     (res) => {
     
       this.partList = res.data?.partsList || [];
@@ -123,20 +127,10 @@ getPartList():void{
 
 }
 
-
-
-
-
-
-    
 isIndeterminate(): boolean {
   return this.partList.some(part => this.existingParts.has(part.partId)) &&
          !this.isAllSelected();
 }
-
-
-
-
 selectAll(event: any): void {
   if (event.checked) {
     this.partList.forEach(part => this.existingParts.add(part.partId));

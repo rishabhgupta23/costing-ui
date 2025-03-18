@@ -14,41 +14,38 @@
         </mat-checkbox>
       </td>
     </ng-container>
-
+    
     <!-- Part Name Column -->
 
     <ng-container matColumnDef="partName">
-      <th mat-header-cell *matHeaderCellDef (click)="applySort({ key: 'partName' })">Part Name
-        <span *ngIf="sortColumn === 'partName'">
-          {{ sortMode === 'ASC' ? '↓' : '↑' }}
-        </span>
-
-        <input matInput [(ngModel)]="searchTermName" (input)="applyFilter()" placeholder="Search Name">
-      
+      <th mat-header-cell *matHeaderCellDef (click)="toggleSort('partName')">Part Name
+        <button mat-button class="sort-btn">
+          <mat-icon [svgIcon]="getSortIcon('partName')" class="sort-icon"></mat-icon>
+        </button>
+        
+        <div class="filter-row">
+          <div class="filter-input-wrapper">
+            <input matInput [(ngModel)]="searchTermName" (input)="applyFilter()" placeholder="Search Name">
+          </div>
+        </div>
+        
       </th>
      
-
-   
-    <td mat-cell *matCellDef="let part">{{ part.partName }}</td>
+<td mat-cell *matCellDef="let part">{{ part.partName }}</td>
     </ng-container>
 
     <!-- Part Number Column -->
     <ng-container matColumnDef="partNumber">
-      <th mat-header-cell *matHeaderCellDef (click)="applySort({ key: 'partNumber' })">Part Number
-        <span *ngIf="sortColumn === 'partName'">
-  {{ sortMode === 'ASC' ? '↓' : '↑'}}
-</span>
- 
-
-     
-       
-        
-          <input matInput [(ngModel)]="searchTermNumber" (input)="applyFilter()" placeholder="Search Number">
-  
-        </th>
-
-      
-      <td mat-cell *matCellDef="let part">{{ part.partNumber }}</td>
+      <th mat-header-cell *matHeaderCellDef (click)="toggleSort('partNumber')">Part Number
+        <button mat-button class="sort-btn">
+          <mat-icon [svgIcon]="getSortIcon('partNumber')" class="sort-icon"></mat-icon>
+        </button>
+        <div class="filter-row">
+          <div class="filter-input-wrapper">
+            <input matInput [(ngModel)]="searchTermNumber" (input)="applyFilter()" placeholder="Search Number">
+          </div> </div>
+          </th>
+  <td mat-cell *matCellDef="let part">{{ part.partNumber }}</td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

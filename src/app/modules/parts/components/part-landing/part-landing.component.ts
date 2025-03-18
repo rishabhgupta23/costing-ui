@@ -47,7 +47,7 @@ export class PartLandingComponent implements OnInit {
   }
   
   getPartList() {
-    this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortColumn, this.sortMode).subscribe(
+    this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortColumn , this.sortState ).subscribe(
       (res) => {
 
         const responseData = res.data;
