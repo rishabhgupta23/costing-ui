@@ -37,7 +37,7 @@ export const PART_TABLE_COLUMNS = [
     {
         label: 'Category',
         columnType: ColumnType.GENERAL,
-        key: 'category',
+        key: 'categoryName',
         filterable: true,
         sortable: true
     },
