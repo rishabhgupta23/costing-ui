@@ -15,11 +15,13 @@ export class ErrorInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
-
-        const errorTitle = `Error ${error.status}${error.statusText ? ' - ' + error.statusText : ''}`;
-
+        const backendStatus = error.error?.status || error.statusText || 'Error';
+        const errorTitle = `Error ${error.status} - ${backendStatus}`;
+  
+        // Extract error message from backend response
         const errorMessage = error.error?.message || 'An unexpected error occurred.';
-
+  
+        // Open error dialog
         this.dialog.open(InfoDialogComponent, {
           width: '400px',
           data: { 
@@ -27,9 +29,10 @@ export class ErrorInterceptor implements HttpInterceptor {
             message: errorMessage
           }
         });
-
+  
         return throwError(() => error);
       })
     );
   }
+  
 }
