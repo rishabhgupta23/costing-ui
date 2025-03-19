@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse
-} from '@angular/common/http';
+import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
@@ -17,11 +15,9 @@ export class ErrorInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         const backendStatus = error.error?.status || error.statusText || 'Error';
         const errorTitle = `Error ${error.status} - ${backendStatus}`;
-  
-        // Extract error message from backend response
+
         const errorMessage = error.error?.message || 'An unexpected error occurred.';
-  
-        // Open error dialog
+
         this.dialog.open(InfoDialogComponent, {
           width: '400px',
           data: { 
