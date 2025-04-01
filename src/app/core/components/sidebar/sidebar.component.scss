@@ -4,6 +4,33 @@
     width: 8rem;
     background: #55ad9b;
     color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .menu-bottom {
+        padding-bottom: 1rem;
+        display: flex;
+        flex-direction: column;
+
+        .menu-item {
+            display: block;
+            padding: 1rem;
+            border-radius: 16px 0 0 16px;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+
+            &:hover {
+                background: rgb(241 248 237 / 15%);
+            }
+        }
+
+        .menu-item--active {
+            background: #f1f8ed4a;
+            font-weight: bold;
+        }
+ /* Adds spacing from the bottom */
+    }
 
     .menu-container {
         display: flex;

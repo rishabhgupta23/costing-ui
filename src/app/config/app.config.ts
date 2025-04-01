@@ -11,6 +11,11 @@ export class AppConfig {
     {
       label: 'Cost Calculator',
       route: '/app/calculate',
+    },
+    {
+      label: 'Settings',
+      route: '/app/users',
+      position: 'bottom',
     }
   ];
 }
