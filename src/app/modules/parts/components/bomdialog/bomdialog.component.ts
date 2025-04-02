@@ -107,10 +107,10 @@ applyFilter(): void {
     this.searchSubject.next({ key: 'partNumber', value: this.searchTermNumber });
     }else {
   this.filterCriteria.delete('partNumber'); // Remove filter if input is cleared
-}
+}}
    const filterObject = Object.fromEntries(this.filterCriteria);
    this.searchSubject.next({ key: 'update', value: JSON.stringify(filterObject) });
-  }}
+  }
 
 isAllSelected(): boolean {
   return this.partList.length > 0 && this.partList.every(part => this.existingParts.has(part.partId));
