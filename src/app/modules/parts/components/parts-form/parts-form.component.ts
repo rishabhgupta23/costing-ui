@@ -34,7 +34,7 @@ export class PartsFormComponent implements OnDestroy {
   bomPartList: PartBomData[] =[]; 
   pageSize: number = 100 // Default items per page
   partTypeEnum= PartType;
-  
+  selectedStepIndex: number = 0;
   
 
   partForm = new FormGroup({
@@ -110,6 +110,10 @@ export class PartsFormComponent implements OnDestroy {
       })
     });
   }
+
+  onStepChange(event: any) {
+    this.selectedStepIndex = event.selectedIndex;
+}
 
   clearVendorCostData(): void {
     this.vendorCostMap.clear();

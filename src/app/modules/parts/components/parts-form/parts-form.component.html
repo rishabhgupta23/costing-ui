@@ -1,33 +1,40 @@
 <div class="app-page">
     <div class="page-header">
         <span class="page-title">{{ partId ? 'Edit Part' : 'Create Part' }}</span>
-        <div class="dialog-action">
-            <button class="primary-btn" (click)="onSubmit()">
-              {{ partId ? 'Update' : 'Create' }}
-            </button>
-          </div>
+    </div>
+
+    <div class="stepper-container">
+        <mat-stepper linear #stepper (selectionChange)="onStepChange($event)">
+
+            <mat-step [stepControl]="partForm">
+                <ng-template matStepLabel>Part Details</ng-template>
+            </mat-step>
+            <mat-step [stepControl]="partForm.get('partType')?.value === partTypeEnum.UNIT ? costDetailsForm : bomDetailsForm">
+                <ng-template matStepLabel>Additional Details</ng-template>
+            </mat-step>
+            <mat-step>
+                <ng-template matStepLabel>Confirm & Submit</ng-template>
+            </mat-step>
+        </mat-stepper>
     </div>
     <div class="page-content">
-        <div class="card part-form-container">
-            <div [formGroup]="partForm">
+        <div class="card-part-form-container">
+            <div *ngIf="selectedStepIndex === 0" [formGroup]="partForm">
                 <!-- Part Details Section-->
                 <div class="sub-heading">Part Details</div>
                 <div class="part-form">
-                    <div>Part Number</div>
-                    <div>
-                        <mat-form-field appearance="outline">
+                    <div>Part Number
+                        <mat-form-field appearance="outline" class="custom-textfield">
                             <input matInput placeholder="Enter Part Number" formControlName="partNumber">
                         </mat-form-field>
                     </div>
-                    <div>Part Name</div>
-                    <div>
-                        <mat-form-field appearance="outline">
+                    <div>Part Name
+                        <mat-form-field appearance="outline" class="custom-textfield">
                             <input matInput placeholder="Enter Name" formControlName="partName">
                         </mat-form-field>
                     </div>
-                    <div>Type</div>
-                    <div>
-                        <mat-form-field appearance="outline">
+                    <div>Type
+                        <mat-form-field appearance="outline" class="custom-textfield">
                             <mat-select placeholder="Select Part Type" formControlName="partType">
                                 <ng-container *ngFor="let item of partTypes">
                                     <mat-option [value]="item">{{item}}</mat-option>
@@ -35,9 +42,8 @@
                             </mat-select>
                         </mat-form-field>
                     </div>
-                    <div>Category</div>
-                    <div>
-                        <mat-form-field appearance="outline">
+                    <div>Category
+                        <mat-form-field appearance="outline" class="custom-textfield">
                             <mat-select placeholder="Select Part Category" formControlName="categoryId">
                                 <ng-container *ngFor="let item of partCategories">
                                     <mat-option [value]="item">{{item}}</mat-option>
@@ -45,9 +51,8 @@
                             </mat-select>
                         </mat-form-field>
                     </div>
-                    <div>Unit</div>
-                    <div>
-                        <mat-form-field appearance="outline">
+                    <div>Unit
+                        <mat-form-field appearance="outline" class="custom-textfield">
                             <mat-select placeholder="Select Part Unit" formControlName="partUnit">
                                 <ng-container *ngFor="let item of partUnits">
                                     <mat-option [value]="item">{{item}}</mat-option>
@@ -57,14 +62,14 @@
                     </div>
                 </div>  
             </div>
+            <div *ngIf="selectedStepIndex === 1">
             <div *ngIf="partForm.get('partType')?.value === partTypeEnum.UNIT" [formGroup]="costDetailsForm">
-                <hr>
                 <!-- Cost Section-->
                  <div formArrayName="costFactors">
                     <div class="sub-heading"> Cost Details </div>
                     <div class="cost-form">
-                        <div>Vendor</div>
-                        <mat-form-field appearance="outline">
+                        Vendor
+                        <mat-form-field appearance="outline" class="custom-vendor-textfield">
                             <mat-select placeholder="Select vendor" [(value)]="selectedVendor">
                                 <ng-container *ngFor="let item of vendorList">
                                     <mat-option [value]="item">{{item.name}}</mat-option>
@@ -84,7 +89,7 @@
                           <div class="vendor-panel-content">
                             <div class="cost-form">
                                 <div>Cost Factor</div>
-                                <mat-form-field appearance="outline">
+                                <mat-form-field appearance="outline" class="custom-cost-textfield">
                                     <mat-select placeholder="Select Cost Factor" [formControlName]="i">
                                         <ng-container *ngFor="let item of costFactorList">
                                             <mat-option [value]="item">{{item.name}}</mat-option>
@@ -94,32 +99,14 @@
                                 <button class="primary-btn" (click)="addCostFactorFromFieldValue(i,vendor)">Add</button>
                               </div>
                               <div>
-                                <app-table *ngIf="(vendorCostMap.get(vendor) || []).length > 0" [data]="vendorCostMap.get(vendor) || []" [config]="COST_FACTOR_TABLE_COLUMNS" (actionTriggered)="handleAction($event, vendor)"></app-table>
+                                <app-table *ngIf ="(vendorCostMap.get(vendor) || []).length > 0" [data]="vendorCostMap.get(vendor) || []" [config]="COST_FACTOR_TABLE_COLUMNS" (actionTriggered)="handleAction($event, vendor)"></app-table>
                               </div>
                           </div>
                         </mat-expansion-panel>
                     </mat-accordion> 
-                    <!-- <hr>
-                    <div *ngFor="let vendor of vendorCostMap.keys(); let i=index">
-                        <div class="cost-form">
-                            <div>Cost Factor</div>
-                            <mat-form-field appearance="outline">
-                                <mat-select placeholder="Select Cost Factor" [formControlName]="i">
-                                    <ng-container *ngFor="let item of partUnits">
-                                        <mat-option [value]="item">{{item}}</mat-option>
-                                    </ng-container>
-                                </mat-select>
-                            </mat-form-field>
-                            <button class="primary-btn" (click)="addCostFactor(i,vendor)">Add</button>
-                        </div>
-                        <div>
-                            <app-table [data]="vendorCostMap.get(vendor) || []" [config]="COST_FACTOR_TABLE_COLUMNS"></app-table>
-                        </div>
-                    </div> -->
                     </div>
             </div>
             <div *ngIf="partForm.get('partType')?.value === partTypeEnum.MASTER" [formGroup]="bomDetailsForm">
-                <hr>
                 <div class="sub-heading">BOM Details</div>
                 <button class="primary-btn" (click)="openBomDialog()">Select Parts</button>
                 
@@ -131,5 +118,39 @@
               </div>
               
         </div>
-    </div>
+        </div>
+        <div *ngIf="selectedStepIndex === 2">
+    <!-- Step 3: Confirmation -->
+        <div class="sub-heading">Review & Submit</div>
+        <p>Please review the details entered before submitting.</p>
+        <div class="confirmation-details">
+            <p><strong>Part Number:</strong> {{ partForm.get('partNumber')?.value }}</p>
+            <p><strong>Part Name:</strong> {{ partForm.get('partName')?.value }}</p>
+            <p><strong>Part Type:</strong> {{ partForm.get('partType')?.value }}</p>
+            <p><strong>Category:</strong> {{ partForm.get('categoryId')?.value }}</p>
+            <p><strong>Unit:</strong> {{ partForm.get('partUnit')?.value }}</p>
+            <!-- Add any other details for confirmation -->
+        </div>
+        </div>
+        <div class="fixed-actions">
+            <!-- Disable Previous button if on first step -->
+            <button mat-icon-button (click)="stepper.previous(); selectedStepIndex = stepper.selectedIndex" 
+                [disabled]="selectedStepIndex === 0">
+                <mat-icon>chevron_left</mat-icon>
+            </button>
+        
+            <!-- Disable Next button if on last step -->
+            <button mat-icon-button (click)="stepper.next(); selectedStepIndex = stepper.selectedIndex" 
+                [disabled]="selectedStepIndex === 2">
+                <mat-icon>chevron_right</mat-icon>
+            </button>
+        
+            <!-- Submit Button: Only enabled on last step -->
+            <button class="primary-btn" (click)="onSubmit()" [disabled]="selectedStepIndex !== 2">
+                {{ partId ? 'Update' : 'Create' }}
+            </button>
+        </div>
+        
+</div>
+</div>
 </div>

@@ -1,3 +1,13 @@
+
+.bom-table th:first-child {
+  border-top-left-radius: 12px;
+}
+
+.bom-table th:last-child {
+  border-top-right-radius: 12px;
+}
+
+
 mat-dialog-actions{
     gap:10px;
     position: sticky;
@@ -8,8 +18,11 @@ mat-dialog-actions{
 .bom-table th{
         position: sticky;
         top: 0; 
-        background-color: #f9f9f9; 
+        background-color: #C8D9E6; 
         z-index: 1;
+        align-items: center; 
+        justify-content: space-between;
+        padding: 12px 16px;
       }
 
       
@@ -28,36 +41,42 @@ mat-dialog-actions{
   flex-direction: column;
       }
      
-      .sort-btn {
-        display: inline-block;
-        vertical-align: middle;
-        width: 1.5rem;
-        height: 1.5rem;
-        min-width: 1.5rem;
-        padding: 0;
-        margin-left: 4px;
-        background: transparent;
-        border: none;
-      }
-      
-      .sort-btn .sort-icon {
-        height: 100%;
-        font-size: 16px;
-        cursor: pointer;
-        color: #000000;
-        transition: color 0.2s;
-      }
+/* Sort button alignment */
+.sort-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  margin-left: 8px;
+}
 
-      .filter-row input[matInput] {
-        width: 60%;
-        padding: 5px 5px;
-        font-size: 12px;
-        border: 1px solid #000000;
-        border-radius: 10px;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        background-color: #ffff;
-      }
-      
+.sort-btn .sort-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+  color: #000;
+  transition: color 0.2s;
+}
+
+.filter-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.filter-row input[matInput] {
+  width: 85%; /* Makes input fields consistent */
+  padding: 6px 8px;
+  font-size: 12px;
+  border: 1px solid #000000;
+  border-radius: 8px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: #fff;
+}
       
       .filter-row input[matInput]:hover {
         border-color: #000000;

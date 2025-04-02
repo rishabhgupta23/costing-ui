@@ -19,6 +19,7 @@ import { FormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { PartViewComponent } from './components/part-view/part-view.component';
 import { HistorydialogComponent } from './historydialog/historydialog.component';
+import {MatStepperModule} from '@angular/material/stepper';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import { HistorydialogComponent } from './historydialog/historydialog.component'
     MatDialogModule,
     MatIconModule,
     FormsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatStepperModule
   ]
 })
 export class PartsModule { }
