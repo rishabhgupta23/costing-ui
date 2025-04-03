@@ -100,11 +100,17 @@ applyFilter(): void {
   if (this.searchTermName) {
     this.filterCriteria.set('partName', this.searchTermName);
     this.searchSubject.next({ key: 'partName', value: this.searchTermName });
+  }else {
+    this.filterCriteria.delete('partName'); 
   }
   if (this.searchTermNumber) {
     this.filterCriteria.set('partNumber', this.searchTermNumber);
     this.searchSubject.next({ key: 'partNumber', value: this.searchTermNumber });
-    }
+    }else {
+  this.filterCriteria.delete('partNumber'); // Remove filter if input is cleared
+}
+   const filterObject = Object.fromEntries(this.filterCriteria);
+   this.searchSubject.next({ key: 'update', value: JSON.stringify(filterObject) });
   }
 
 isAllSelected(): boolean {
