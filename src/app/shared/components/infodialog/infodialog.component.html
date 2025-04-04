@@ -1,10 +1,15 @@
-<h2 mat-dialog-title>
-    {{ data.title }}
-    <span *ngIf="data.status" class="error-code">(Status: {{ data.status }})</span>
-  </h2>
-  <div mat-dialog-content>
-    <p>{{ data.message }}</p>
+<div class="main-container" style="overflow: hidden;">
+  <div class="image-container">
+  <img src="assets/images/error-img.webp" alt="">
+</div>
+
+  <div mat-dialog-content style="overflow: hidden;">
+    <h2 >
+      Error message : {{ data.message }}
+    </h2>
+    <p>Error code : {{ data.title }}</p>
   </div>
   <div mat-dialog-actions align="end">
     <button mat-button (click)="dialogRef.close()">OK</button>
   </div>
+</div>

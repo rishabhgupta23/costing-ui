@@ -13,12 +13,12 @@ export class ErrorInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
-        const backendStatus = error.error?.status || error.statusText || 'Error';
-        const errorTitle = `Error ${error.status} - ${backendStatus}`;
+        const errorTitle = error.status;
 
         const errorMessage = error.error?.message || 'An unexpected error occurred.';
 
         this.dialog.open(InfoDialogComponent, {
+          height: '380px',
           width: '400px',
           data: { 
             title: errorTitle,

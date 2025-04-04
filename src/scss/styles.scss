@@ -92,11 +92,12 @@ $costing-ui-theme: mat.define-theme((
     cursor: pointer;
     border-radius: 24px;
     min-width: 5rem;
-    background-color: #95D2B3;
+    background-color: #2f4156;
+    color: white;
     border: none;
     font-size: $base-font-size;
     &:hover {
-        background-color: darken(#55ad9b , 10%);
+        background-color: darken(#2f4156a9 , 10%);
     }
 
     .btn-icon {
@@ -115,13 +116,13 @@ $costing-ui-theme: mat.define-theme((
     font-weight: bold;
     cursor: pointer;
     border-radius: 24px;
-    border: 1px;
-    background-color: #c3c2c266;  
+    border: 2px solid #2C3E50;;
+    background-color: #ffffff;  
     min-width: 5rem;
-    border: none;
+    color: black;
     font-size: $base-font-size;
     &:hover {
-      background-color: darken(#979797a1, 10%);
+      background-color: darken(#dadada53, 10%);
     }
   }
 
@@ -142,4 +143,11 @@ $costing-ui-theme: mat.define-theme((
   background-color: #dedede;
   cursor: pointer;
   transition: background-color 0.3s ease-in-out;
+}
+.mat-mdc-paginator-container{
+  background-color: white;
+}
+.cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px); /* for Safari support */
 }

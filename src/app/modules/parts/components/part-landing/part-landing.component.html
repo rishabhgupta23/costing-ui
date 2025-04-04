@@ -4,30 +4,36 @@
         <span class="button-group">
             <button class="primary-btn" (click)="createPart()">Create</button>
             <button class="primary-btn" (click)="downloadExcel()">
-                <mat-icon class="btn-icon" svgIcon="download" ></mat-icon>
+                <mat-icon class="btn-icon" svgIcon="download"></mat-icon>
                 Download
             </button>
         </span>
     </div>
+
     <div class="page-content">
         <div class="card-nc">
-            <app-table
-            [data]="partList" 
-            [(sort)] = "sortState"
-            [config]="columns"
-            (actionTriggered)="handleAction($event)"
-            (rowClicked)="onRowClicked($event)"
-            (filterChange)="applyFilter($event)"
-            [showFilter]="true"
-            (sortChange)="applySort($event)"
-            [showSort]="true"
-            [customClass]="'highlight-table'">
-        </app-table>
-        <mat-paginator 
-        [length]="totalRecords" 
-        [pageSize]="pageSize" 
-        (page)="onPageChange($event)">
-      </mat-paginator>
+            <div class="table-container">
+                <div class="table-content">
+                    <app-table
+                        [data]="partList"
+                        [(sort)]="sortState"
+                        [config]="columns"
+                        (actionTriggered)="handleAction($event)"
+                        (rowClicked)="onRowClicked($event)"
+                        (filterChange)="applyFilter($event)"
+                        [showFilter]="true"
+                        (sortChange)="applySort($event)"
+                        [showSort]="true"
+                        [customClass]="'highlight-table'">
+                    </app-table>
+                </div>
+
+                <mat-paginator 
+                    [length]="totalRecords" 
+                    [pageSize]="pageSize" 
+                    (page)="onPageChange($event)">
+                </mat-paginator>
+            </div>
         </div>
     </div>
 </div>

@@ -5,9 +5,9 @@
     <div class="page-content">
         <div class="card">
             <form [formGroup]="calculateform" class="cost-form">
-              <div>Select Part</div>
               <div>
-                <mat-form-field appearance="outline">
+                Select Part
+                <mat-form-field appearance="outline" class="custom-textfield">
                     <input type="text" 
                            placeholder="Select Part" 
                            matInput 
@@ -20,12 +20,11 @@
                         </mat-option>
                     </mat-autocomplete>
                 </mat-form-field>
-                
               </div>
-              
-                    <div>Select Pricing</div>
+
                     <div>
-                        <mat-form-field appearance="outline">
+                      Select Pricing
+                        <mat-form-field appearance="outline" class="custom-textfield">
                             <mat-select placeholder="Select Pricing" formControlName="pricing">
                               <ng-container *ngFor="let price of pricingOptions">
                                 <mat-option [value]="price.value">{{ price.label }}</mat-option>

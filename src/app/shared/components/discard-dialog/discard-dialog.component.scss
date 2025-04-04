@@ -1,13 +1,17 @@
 .app-table{
-  height: 400px;
+  height: 350px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   padding: 0 1.5rem;
 }
 .title{
-  padding: 0 1.5rem;
+  border-radius: 16px 16px 0px 0px;
+  background: #2F4156;
+  padding: 1rem 1.5rem;
   margin-bottom: 1rem;
+  margin-top: 0;
+  color: white;
 }
 .btn-group{
   display: flex;
@@ -31,4 +35,10 @@
 }
 .vendor-name{
   font-weight: 600;
+}
+.no-vendor-dialog{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
