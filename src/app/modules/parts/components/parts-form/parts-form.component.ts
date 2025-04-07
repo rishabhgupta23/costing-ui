@@ -14,6 +14,7 @@ import { PartType } from '../../../../shared/constants/part.constants';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 import { TableActions } from '../../../../shared/constants/table.constants';
 import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
+import { MatStepper } from '@angular/material/stepper';
 
 @Component({
   selector: 'app-parts-form',
@@ -135,7 +136,8 @@ export class PartsFormComponent implements OnDestroy {
       width: '600px',
       data: { 
         existingParts: new Set(this.bomPartList.map(part => part.id) || [])
-      }
+      },
+      autoFocus:false
     });
   
     dialogRef.afterClosed().subscribe((res: {data: any, action: DialogCloseResponse}) => {
@@ -278,6 +280,15 @@ export class PartsFormComponent implements OnDestroy {
         this.vendorCostMap.set(vendorId, currentList);
       }
     }
+  }
+  goToNextStep(stepper: MatStepper): void {
+    if (this.partForm.invalid) {
+      this.snackbarService.error('Please fill all required fields!');
+      return;
+    }
+  
+    stepper.next();
+    this.selectedStepIndex = stepper.selectedIndex;
   }
   
 

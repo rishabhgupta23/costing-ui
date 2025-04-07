@@ -7,6 +7,10 @@
   border-top-right-radius: 12px;
 }
 
+.bom-header{
+  font-size: larger;
+}
+
 
 mat-dialog-actions{
     gap:10px;
@@ -14,6 +18,21 @@ mat-dialog-actions{
     bottom:0;
     justify-content: flex-end;
 }
+
+.header-det{
+display: flex;
+}
+
+.bom-table .mat-mdc-cell,
+.bom-table .mat-mdc-header-cell {
+  border-bottom: 1px solid #d1d5d8;
+}
+
+.bom-table .mdc-data-table__cell{
+  font-size: 1rem;
+}
+
+
 
 .bom-table th{
         position: sticky;
@@ -23,8 +42,8 @@ mat-dialog-actions{
         align-items: center; 
         justify-content: space-between;
         padding: 12px 16px;
+        font-size: 1rem;
       }
-
       
       mat-paginator {
         margin-top: 10px;
@@ -43,15 +62,15 @@ mat-dialog-actions{
      
 /* Sort button alignment */
 .sort-btn {
-  display: flex;
-  align-items: center;
+  display: inline-block;
+  vertical-align: middle;
   justify-content: center;
-  width: 24px;
+  width: 1.5;
   height: 24px;
   border: none;
   background: transparent;
   cursor: pointer;
-  margin-left: 8px;
+  margin-left: 4px;
 }
 
 .sort-btn .sort-icon {
@@ -71,21 +90,16 @@ mat-dialog-actions{
 .filter-row input[matInput] {
   width: 85%; /* Makes input fields consistent */
   padding: 6px 8px;
-  font-size: 12px;
-  border: 1px solid #000000;
+  font-size: 1rem;
+  border: 1px solid #00000055;
   border-radius: 8px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
   background-color: #fff;
 }
       
-      .filter-row input[matInput]:hover {
-        border-color: #000000;
-      }
-      
       
       .filter-row input[matInput]:focus {
-        border-color: #95D2B3;
-        box-shadow: 0 0 7px rgba(0, 204, 170, 0.4);
+        border-color: #2F4156;
         background-color: #fff;
         outline: none;
       }

@@ -3,7 +3,6 @@
     border-radius: 10px;
 }
 
-
 .page-content {
     flex-grow: 1;
     overflow-y: auto;
@@ -23,22 +22,25 @@
   }
 .part-form {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Two columns for better spacing */
-    gap: 20px; /* Space between grid items */
+    grid-template-columns: repeat(3, 1fr);
     width: 100%;
     align-items: center;
+    column-gap: 2rem;
+}
+
+.form-detail{
+    width:100%
 }
 
 .part-form > div {
     display: flex;
     flex-direction: column;
-    font-size: large;
+    font-size: 1rem;
 
 }
 
 mat-form-field {
     padding-top: 8px;
-    width: 70%;
 }
 .custom-textfield {
     --mdc-outlined-text-field-container-shape: 12px; /* Example for rounded corners */
@@ -60,11 +62,6 @@ mat-form-field {
     padding-left: 1rem;
     font-weight: bold;
     font-size: larger;
-}
-.sub-heading {
-    font-weight: bold;
-    margin-bottom: 1rem;
-    font-size: large;
 }
 
 .vendor-panel-content {
@@ -115,14 +112,26 @@ mat-panel-description{
 .fixed-actions {
     position: fixed;
     bottom: 0;
+    left: 9rem;
     right: 0;
     display: flex;
-    justify-content: flex-end;
-    justify-self: center;
+    justify-content: space-between; /* Spread to left and right */
     align-items: center;
-    gap: 10px;
-    padding: 10px;
+    padding: 10px 20px;
+    background: #fff; /* Optional: gives it a solid background */
+    z-index: 10;
 }
+
+.nav-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.submit-button {
+    display: flex;
+    align-items: center;
+}
+
 
 .primary-btn {
     width: 150px;

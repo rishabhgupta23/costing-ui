@@ -133,6 +133,11 @@ $costing-ui-theme: mat.define-theme((
     }
 }
 
+.mat-step-text-label{
+  font-size: 1rem;
+  font-family:Poppins, Roboto, sans-serif;
+}
+
 .mat-mdc-snack-bar-container .mat-mdc-snackbar-surface{
   --mdc-snackbar-container-color: none;
   box-shadow: none;

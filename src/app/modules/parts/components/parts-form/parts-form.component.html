@@ -21,19 +21,18 @@
         <div class="card-part-form-container">
             <div *ngIf="selectedStepIndex === 0" [formGroup]="partForm">
                 <!-- Part Details Section-->
-                <div class="sub-heading">Part Details</div>
                 <div class="part-form">
-                    <div>Part Number
+                    <div class="form-detail">Part Number
                         <mat-form-field appearance="outline" class="custom-textfield">
                             <input matInput placeholder="Enter Part Number" formControlName="partNumber">
                         </mat-form-field>
                     </div>
-                    <div>Part Name
+                    <div class="form-detail">Part Name
                         <mat-form-field appearance="outline" class="custom-textfield">
                             <input matInput placeholder="Enter Name" formControlName="partName">
                         </mat-form-field>
                     </div>
-                    <div>Type
+                    <div class="form-detail">Type
                         <mat-form-field appearance="outline" class="custom-textfield">
                             <mat-select placeholder="Select Part Type" formControlName="partType">
                                 <ng-container *ngFor="let item of partTypes">
@@ -42,7 +41,7 @@
                             </mat-select>
                         </mat-form-field>
                     </div>
-                    <div>Category
+                    <div class="form-detail">Category
                         <mat-form-field appearance="outline" class="custom-textfield">
                             <mat-select placeholder="Select Part Category" formControlName="categoryId">
                                 <ng-container *ngFor="let item of partCategories">
@@ -51,7 +50,7 @@
                             </mat-select>
                         </mat-form-field>
                     </div>
-                    <div>Unit
+                    <div class="form-detail">Unit
                         <mat-form-field appearance="outline" class="custom-textfield">
                             <mat-select placeholder="Select Part Unit" formControlName="partUnit">
                                 <ng-container *ngFor="let item of partUnits">
@@ -66,7 +65,6 @@
             <div *ngIf="partForm.get('partType')?.value === partTypeEnum.UNIT" [formGroup]="costDetailsForm">
                 <!-- Cost Section-->
                  <div formArrayName="costFactors">
-                    <div class="sub-heading"> Cost Details </div>
                     <div class="cost-form">
                         Vendor
                         <mat-form-field appearance="outline" class="custom-vendor-textfield">
@@ -107,7 +105,6 @@
                     </div>
             </div>
             <div *ngIf="partForm.get('partType')?.value === partTypeEnum.MASTER" [formGroup]="bomDetailsForm">
-                <div class="sub-heading">BOM Details</div>
                 <button class="primary-btn" (click)="openBomDialog()">Select Parts</button>
                 
                 
@@ -121,7 +118,6 @@
         </div>
         <div *ngIf="selectedStepIndex === 2">
     <!-- Step 3: Confirmation -->
-        <div class="sub-heading">Review & Submit</div>
         <p>Please review the details entered before submitting.</p>
         <div class="confirmation-details">
             <p><strong>Part Number:</strong> {{ partForm.get('partNumber')?.value }}</p>
@@ -133,23 +129,25 @@
         </div>
         </div>
         <div class="fixed-actions">
-            <!-- Disable Previous button if on first step -->
-            <button mat-icon-button (click)="stepper.previous(); selectedStepIndex = stepper.selectedIndex" 
-                [disabled]="selectedStepIndex === 0">
-                <mat-icon>chevron_left</mat-icon>
-            </button>
-        
-            <!-- Disable Next button if on last step -->
-            <button mat-icon-button (click)="stepper.next(); selectedStepIndex = stepper.selectedIndex" 
-                [disabled]="selectedStepIndex === 2">
-                <mat-icon>chevron_right</mat-icon>
-            </button>
-        
-            <!-- Submit Button: Only enabled on last step -->
-            <button class="primary-btn" (click)="onSubmit()" [disabled]="selectedStepIndex !== 2">
+            <div class="nav-buttons">
+              <button mat-icon-button (click)="stepper.previous(); selectedStepIndex = stepper.selectedIndex" 
+                  [disabled]="selectedStepIndex === 0">
+                  <mat-icon>chevron_left</mat-icon>
+              </button>
+          
+              <button mat-icon-button (click)="goToNextStep(stepper)" 
+                  [disabled]="selectedStepIndex === 2">
+                  <mat-icon>chevron_right</mat-icon>
+              </button>
+            </div>
+          
+            <div class="submit-button">
+              <button class="primary-btn" (click)="onSubmit()" [disabled]="selectedStepIndex !== 2">
                 {{ partId ? 'Update' : 'Create' }}
-            </button>
-        </div>
+              </button>
+            </div>
+          </div>
+          
         
 </div>
 </div>
