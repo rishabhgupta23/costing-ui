@@ -51,14 +51,50 @@ fdescribe('PartLandingComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load part list on init', () => {
-    partServiceSpy.getPartList.and.returnValue(of(MOCK_PART_LIST_RESPONSE));
+  it('should call getPartList on init', () => {
+    const getPartListSpy = spyOn(component, 'getPartList');
     component.ngOnInit();
+    expect(getPartListSpy).toHaveBeenCalled();
+  });  
+
+  it('should fetch and map part list correctly for defined and undefined maxVendorCount', () => {
+    const addColumnsSpy = spyOn(component, 'addColumnsForVendor').and.callThrough();
+  
+    // Case 1: maxVendorCount defined
+    partServiceSpy.getPartList.and.returnValue(of(MOCK_PART_LIST_RESPONSE));
+    component.getPartList();
+  
     expect(partServiceSpy.getPartList).toHaveBeenCalled();
     expect(component.partList.length).toBe(2);
     expect(component.totalRecords).toBe(2);
-  });
+    expect(addColumnsSpy).toHaveBeenCalledWith(1);
+    expect(component.columns.some(col => col.label === 'Vendor 1')).toBeTrue();
+  
+    addColumnsSpy.calls.reset();
+    component.columns = [];
+  
+    const mockWithoutMaxVendor = {
+      data: {
+        partsList: MOCK_PART_LIST_RESPONSE.data.partsList
 
+      }
+    };
+  
+    partServiceSpy.getPartList.and.returnValue(of(mockWithoutMaxVendor));
+    component.getPartList();
+  
+    expect(addColumnsSpy).toHaveBeenCalledWith(0);
+    expect(component.partList.length).toBe(2);
+    expect(component.columns.some(col => col.label.startsWith('Vendor'))).toBeFalse();
+  });
+  
+  
+
+  it('should navigate to create part page', () => {
+    component.createPart();
+    expect(routerSpy.navigateByUrl).toHaveBeenCalledWith('/app/parts/create');
+  });
+  
   it('should navigate on row click', () => {
     const row = { partId: 1 };
     component.onRowClicked(row);
