@@ -1,3 +1,5 @@
+import { CostHistoryResponse } from "../data/models/part";
+
 export const MOCK_PART_LIST_RESPONSE = {
     data: {
       partsList: [
@@ -35,6 +37,7 @@ export const MOCK_PART_LIST_RESPONSE = {
     partName: 'UPDATED PART',
     partNumber: '1234',
     categoryName: null,
+    categoryId: 1,
     type: 'UNIT',
     unit: 'NOS',
     vendorCostList: [
@@ -52,4 +55,37 @@ export const MOCK_PART_LIST_RESPONSE = {
     ],
     bom: []
   };
+
+  const costHistoryMock: CostHistoryResponse = {
+    partId: 1,
+    vendorId: 1,
+    costHistoryList: [
+      {
+        updatedDateTime: '2024-04-01T10:00:00Z',
+        costFactorList: [
+          { id: 1, name: 'Labor Cost', value: 100 }
+        ]
+      },
+      {
+        updatedDateTime: '2024-04-02T11:00:00Z',
+        costFactorList: [
+          { id: 2, name: 'Cost Price', value: 150 }
+        ]
+      }
+    ]
+  };
+   export const MOCK_PART_WITH_BOM_ONLY = {
+    ...MOCK_SINGLE_PART,
+    vendorCostList: [],
+    "bom": [
+    {
+        "childPartId": 1,
+        "quantity": 5.0,
+        "childPartName": "abc",
+        "childPartNumber": "12"
+    }
+]
+  };
+  
+  
   
