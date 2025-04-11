@@ -5,7 +5,7 @@
     <div class="page-content">
         <div class="card">
             <form [formGroup]="calculateform" class="cost-form">
-              <div>
+              <div class="cost-field">
                 Select Part
                 <mat-form-field appearance="outline" class="custom-textfield">
                     <input type="text" 
@@ -22,7 +22,7 @@
                 </mat-form-field>
               </div>
 
-                    <div>
+                    <div class="cost-field">
                       Select Pricing
                         <mat-form-field appearance="outline" class="custom-textfield">
                             <mat-select placeholder="Select Pricing" formControlName="pricing">
@@ -32,21 +32,22 @@
                             </mat-select>
                           </mat-form-field>
                     </div>
-            </form>
-            <div class="dialog-action">
+                    <div class="dialog-action">
                 <button class="primary-btn" (click)="onReset()">Reset</button>
                 <button class="primary-btn" (click)="getCost()">Calculate</button>
             </div>
+            </form>
+            
             <br>
             <br>
             <div class="sub-heading" *ngIf="isCalculated">COSTING</div>
-            <app-table [data]="costingList" [config]="COST_CALCULATOR_COLUMNS" *ngIf="isCalculated"></app-table>
-            <div class="total-cost-container" *ngIf="isCalculated"><br>
-              <div class="total-cost-label">
-                  <strong>Total Cost:  </strong>
-                  <strong>{{ totalQP }}</strong>
-              </div>
-          </div>
+            <app-table [data]="costingList" [config]="COST_CALCULATOR_COLUMNS" *ngIf="isCalculated">
+              <tr table-footer>
+                <td colspan="4" class="footer-data"><strong>Total Cost:</strong></td>
+                <td colspan="1" class="footer-cell">{{ totalQP }}</td>
+              </tr>
+            </app-table>
+            
 
           </div>
         </div>

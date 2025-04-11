@@ -1,15 +1,20 @@
-<div class="main-container" style="overflow: hidden;">
+<div class="main-container">
   <div class="image-container">
-  <img src="assets/images/error-img.webp" alt="">
-</div>
-
-  <div mat-dialog-content style="overflow: hidden;">
-    <h2 >
-      Error message : {{ data.message }}
-    </h2>
-    <p>Error code : {{ data.title }}</p>
+    <img src="assets/images/error-img.webp" alt="">
   </div>
+
+  <div mat-dialog-content class="content-box">
+    <div class="error-row">
+      <span class="label">Error message :</span>
+      <span class="value">{{ data.message }}</span>
+    </div>
+    <div class="error-row">
+      <span class="label">Error code :</span>
+      <span class="value">{{ data.title }}</span>
+    </div>
+  </div>
+
   <div mat-dialog-actions align="end">
-    <button mat-button (click)="dialogRef.close()">OK</button>
+    <button class="custom-button" (click)="dialogRef.close()">OK</button>
   </div>
 </div>

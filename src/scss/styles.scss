@@ -44,7 +44,8 @@ $costing-ui-theme: mat.define-theme((
     font-family: Poppins, Roboto, sans-serif;
     margin: 0;
     padding: 0;
-    background: #f8f8f8;
+    background: #ffffff;
+    overflow: hidden;
 }
 .app-page {
     height: calc(100% - 2rem);
@@ -79,8 +80,7 @@ $costing-ui-theme: mat.define-theme((
 .card {
     padding: 1rem;
     height: calc(100% - 2rem);
-    overflow:scroll;
-    overflow-x:hidden;
+    overflow:hidden;
 }
 
 .primary-btn {
@@ -97,7 +97,7 @@ $costing-ui-theme: mat.define-theme((
     border: none;
     font-size: $base-font-size;
     &:hover {
-        background-color: darken(#2f4156a9 , 10%);
+        background-color: darken(#2f4156ce , 10%);
     }
 
     .btn-icon {
@@ -122,7 +122,7 @@ $costing-ui-theme: mat.define-theme((
     color: black;
     font-size: $base-font-size;
     &:hover {
-      background-color: darken(#dadada53, 10%);
+      background-color: darken(#eeeeee8a, 10%);
     }
   }
 
@@ -130,7 +130,11 @@ $costing-ui-theme: mat.define-theme((
     .mat-mdc-dialog-surface {
         padding: 1rem;
         border-radius: 12px;
+        
     }
+}
+.mat-mdc-dialog-surface{
+  --mdc-dialog-container-color: #ffffff;
 }
 
 .mat-mdc-snack-bar-container .mat-mdc-snackbar-surface{
@@ -140,7 +144,7 @@ $costing-ui-theme: mat.define-theme((
   top:40px;
 }
 .highlight-table tbody tr:hover{
-  background-color: #dedede;
+  background-color: #c8d9e62f;
   cursor: pointer;
   transition: background-color 0.3s ease-in-out;
 }

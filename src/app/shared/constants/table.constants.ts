@@ -1,5 +1,5 @@
 export enum ColumnType {
-    SERIAL_NUMBER,
+    // SERIAL_NUMBER,
     GENERAL,
     INPUT_NUMBER,
     ACTION = 'ACTION'

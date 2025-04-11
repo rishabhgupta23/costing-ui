@@ -46,9 +46,9 @@
       <tr class="data-row" (click)="onRowClick(row)">
           <!-- Dynamic Columns -->
 <ng-container *ngFor="let col of config">
-    <td *ngIf="col?.columnType === ColumnType.SERIAL_NUMBER">
+    <!-- <td *ngIf="col?.columnType === ColumnType.SERIAL_NUMBER">
         {{ i + 1 }}
-    </td>
+    </td> -->
 
     <td *ngIf="col?.columnType === ColumnType.GENERAL">
         {{ row[col?.key] }}
@@ -85,5 +85,9 @@
       </tr>
   </ng-container>
 </tbody>
+<tfoot>
+  <ng-content select="[table-footer]"></ng-content>
+</tfoot>
+
 </table>
 </div>

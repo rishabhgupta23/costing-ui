@@ -1,20 +1,19 @@
 .cost-form {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     flex-direction: column;
     gap: 2rem;
     align-items: center;
 
-    div {
+    .cost-field {
       display: flex;
       flex-direction: column;
-      font-size: 16px;
       font-weight: 500;
       margin-bottom: 5px;
     }
 
     mat-form-field {
-      width: 50%;
+      width: 100%;
       padding-top: 8px;
     }
   }
@@ -30,6 +29,20 @@
   }
 
 .primary-btn{
-  margin:5px;
+  margin:0;
 }
-
+.dialog-action{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start; // Start-align buttons in their grid cell
+  align-items: center;
+  gap: 10px;
+}
+.footer-data{
+  padding-top: 1rem;
+  text-align: center;
+}
+.footer-cell{
+  padding-left: 1rem ;
+  padding-top: 1rem;
+}

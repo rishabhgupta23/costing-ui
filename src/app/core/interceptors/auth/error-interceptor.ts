@@ -20,6 +20,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         this.dialog.open(InfoDialogComponent, {
           height: '380px',
           width: '400px',
+          autoFocus: false,
           data: { 
             title: errorTitle,
             message: errorMessage
