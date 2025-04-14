@@ -13,6 +13,7 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { downloadFile } from '../../../../shared/utils/file-download.util';
 import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
 import { SortState } from '../../../../data/models/part';
+import { getValueOrNull } from '../../../../shared/utils/string.util';
 
 @Component({
   selector: 'app-vendor-landing',
@@ -44,7 +45,7 @@ export class VendorLandingComponent  {
     this.vendorService.getVendorList(this.currentPage, this.pageSize, this.filterCriteria, this.sortState).subscribe(
       (res) => {
         this.vendorList = res.data;
-        this.totalRecords = res.pageInfo?.totalRecords || 0;
+        this.totalRecords = getValueOrNull(res.pageInfo?.totalRecords);
       }
     );
   }
