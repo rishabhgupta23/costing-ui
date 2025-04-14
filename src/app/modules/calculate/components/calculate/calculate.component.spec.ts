@@ -72,13 +72,12 @@ fdescribe('CalculateComponent', () => {
 
   it('should calculate cost when valid form is submitted', () => {
    const selectedPart = mockPartList[0]; 
-    const pricingMode = 'MIN'; 
     component.calculateform.get('part')?.setValue(selectedPart);
-    component.calculateform.get('pricing')?.setValue(pricingMode as any);
+    component.calculateform.get('pricing')?.setValue( PricingOptions.MIN.value as any);
     mockCostCalculatorService.getCost.and.returnValue(of(mockCostResponse));
     component.getCost();
   
-    expect(mockCostCalculatorService.getCost).toHaveBeenCalledWith(1, 'MIN');  // 1 is the partId in your mock data
+    expect(mockCostCalculatorService.getCost).toHaveBeenCalledWith(1,  PricingOptions.MIN.value);  
     expect(component.costingList).toEqual(mockCostResponse.costCalcDtoList);
     expect(component.totalQP).toBe(mockCostResponse.totalCost); expect(component.isCalculated).toBeTrue();
   });
@@ -108,9 +107,8 @@ fdescribe('CalculateComponent', () => {
     expect(mockCostCalculatorService.getCost).not.toHaveBeenCalled();
   });
 
-  it('should filter parts from mockPartList based on input value', (done) => {
+  it('should filter parts from mockPartList based on input value', () => {
     const partNameToFilter = 'Bolt'; 
-
     const filteredParts = mockPartList
       .filter(part => part.partName === partNameToFilter)
       .map(part => ({
@@ -121,17 +119,16 @@ fdescribe('CalculateComponent', () => {
         type: 'Some Type',  
         unit: 'Some Unit', 
       }));
+  
     component.filteredParts = of(filteredParts);
+    
     component.filteredParts?.subscribe(filteredParts => {
-      expect(filteredParts.length).toBe(1);  // Assuming 'Bolt' exists
-      expect(filteredParts[0].partName).toBe('Bolt');  // The filtered part should have partName 'Bolt'
+      expect(filteredParts.length).toBe(1);  
+      expect(filteredParts[0].partName).toBe('Bolt');  
       expect(filteredParts[0].hasOwnProperty('partId')).toBeTrue();
-      // Ensuring the required property 'partId' is there
-      done();  // Ensures the test completes
     });
   });
   
-
   it('should reset the form and cost data', () => {
     component.calculateform.setValue({
       part: mockPartList[0],
@@ -165,7 +162,7 @@ fdescribe('CalculateComponent', () => {
   flush();
   fixture.detectChanges();
   expect(component.filterCriteria.has('partName')).toBe(true);
-  expect(component.filterCriteria.has('partNumber')).toBe(true);'
+  expect(component.filterCriteria.has('partNumber')).toBe(true);
   expect(component.filterCriteria.get('partName')).toBe('123');
   expect(component.filterCriteria.get('partNumber')).toBe('123');
 })); 
