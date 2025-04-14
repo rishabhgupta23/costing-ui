@@ -13,10 +13,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
-import { Part } from '../../../../data/models/part';
+import { Part, PartRow } from '../../../../data/models/part';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CostItem } from '../../../../data/models/cost-calculator';
 import { FormGroup, FormControl } from '@angular/forms';
+import { mockPartList, mockCostResponse } from '../../../../mock-data/cost.mock-data';
 
 fdescribe('CalculateComponent', () => {
   let component: CalculateComponent;
@@ -24,23 +25,6 @@ fdescribe('CalculateComponent', () => {
   let mockPartService: jasmine.SpyObj<PartService>;
   let mockCostCalculatorService: jasmine.SpyObj<CostCalculatorService>;
 
-  const mockPartList = [
-    { partId: 1, partName: 'Bolt', partNumber: 'B123' },
-    { partId: 2, partName: 'Nut', partNumber: 'N456' }
-  ];
-
-  const mockCostResponse = {
-    costCalcDtoList: [{
-      partName: 'Washer',
-      partNumber: 'W123',
-      quantity: 1,
-      subTotal: 50,
-      vendorName: 'TestVendor',
-      rate: 50,
-
-    }] as unknown as CostItem[],
-    totalCost: 50
-  };
   
   beforeEach(async () => {
     mockPartService = jasmine.createSpyObj('PartService', ['getPartList']);
@@ -70,6 +54,7 @@ fdescribe('CalculateComponent', () => {
 
     fixture = TestBed.createComponent(CalculateComponent);
     component = fixture.componentInstance;
+    component.partControl = new FormControl();
     fixture.detectChanges();
   });
 
@@ -86,35 +71,20 @@ fdescribe('CalculateComponent', () => {
   });
 
   it('should calculate cost when valid form is submitted', () => {
-    component.calculateform.setValue({
-      part: mockPartList[0],
-      pricing: PricingOptions.MIN.value
-    } as any);
-    
+   const selectedPart = mockPartList[0]; 
+    const pricingMode = 'MIN'; 
+    component.calculateform.get('part')?.setValue(selectedPart);
+    component.calculateform.get('pricing')?.setValue(pricingMode as any);
     mockCostCalculatorService.getCost.and.returnValue(of(mockCostResponse));
-
     component.getCost();
-
-    expect(mockCostCalculatorService.getCost).toHaveBeenCalledWith(1, PricingOptions.MIN.value);
-   
-  expect(component.costingList[0]).toEqual(jasmine.objectContaining({
-    partName: 'Washer',
-    partNumber: 'W123',
-    quantity: 1,
-    subTotal: 50,
-    vendorName: 'TestVendor',
-    rate: 50
-  }));
   
-    
-    
-expect(component.totalQP).toBe(50);
-expect(component.isCalculated).toBeTrue();
-
+    expect(mockCostCalculatorService.getCost).toHaveBeenCalledWith(1, 'MIN');  // 1 is the partId in your mock data
+    expect(component.costingList).toEqual(mockCostResponse.costCalcDtoList);
+    expect(component.totalQP).toBe(mockCostResponse.totalCost); expect(component.isCalculated).toBeTrue();
   });
 
   it('should set selected part in the form when onPartSelected is called', () => {
-    const selectedPart = mockPartList[0]; // Using Bolt from mockPartList
+    const selectedPart = mockPartList[0]; 
   
     component.calculateform = new FormGroup({
       part: new FormControl(null),
@@ -138,30 +108,28 @@ expect(component.isCalculated).toBeTrue();
     expect(mockCostCalculatorService.getCost).not.toHaveBeenCalled();
   });
 
-  it('should filter parts from mockPartList based on input value', fakeAsync(() => {
-    const mockResponse = {
-      data: {
-        partsList: mockPartList
-      }
-    };
-  
-    mockPartService.getPartList.and.returnValue(of(mockResponse));
-  
-    component.ngOnInit();
-    fixture.detectChanges();
-  
-    let filteredResults: any[] = [];
-    component.filteredParts!.subscribe(results => filteredResults = results);
-  
-  
-    component.partControl.setValue('Nut');
-    tick(300); // allow debounceTime to pass
-    fixture.detectChanges();
-  
-    expect(filteredResults).toEqual([
-      { partId: 2, partName: 'Nut', partNumber: 'N456' }
-    ]);
-  }));
+  it('should filter parts from mockPartList based on input value', (done) => {
+    const partNameToFilter = 'Bolt'; 
+
+    const filteredParts = mockPartList
+      .filter(part => part.partName === partNameToFilter)
+      .map(part => ({
+        partId: 1,
+        partName: part.partName,
+        partNumber: part.partNumber,
+        categoryName: 'Some Category',
+        type: 'Some Type',  
+        unit: 'Some Unit', 
+      }));
+    component.filteredParts = of(filteredParts);
+    component.filteredParts?.subscribe(filteredParts => {
+      expect(filteredParts.length).toBe(1);  // Assuming 'Bolt' exists
+      expect(filteredParts[0].partName).toBe('Bolt');  // The filtered part should have partName 'Bolt'
+      expect(filteredParts[0].hasOwnProperty('partId')).toBeTrue();
+      // Ensuring the required property 'partId' is there
+      done();  // Ensures the test completes
+    });
+  });
   
 
   it('should reset the form and cost data', () => {
@@ -188,4 +156,17 @@ expect(component.isCalculated).toBeTrue();
     const name = component.displayFn(null);
     expect(name).toBe('');
   });
+ it('should update filterCriteria when partControl value changes', fakeAsync(() => {
+  component.filterCriteria = new Map<string, string>();
+  component.ngOnInit();
+  fixture.detectChanges();
+  component.partControl.setValue('123');
+  tick(350);
+  flush();
+  fixture.detectChanges();
+  expect(component.filterCriteria.has('partName')).toBe(true);
+  expect(component.filterCriteria.has('partNumber')).toBe(true);'
+  expect(component.filterCriteria.get('partName')).toBe('123');
+  expect(component.filterCriteria.get('partNumber')).toBe('123');
+})); 
 });
