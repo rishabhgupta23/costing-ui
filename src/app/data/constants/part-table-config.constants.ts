@@ -2,11 +2,6 @@ import { ColumnType, TableActions } from "../../shared/constants/table.constants
 
 export const PART_TABLE_COLUMNS = [
     {
-        label: 'Sl. No.',
-        columnType: ColumnType.SERIAL_NUMBER,
-        filterable: false
-    },
-    {
         label: 'Part Number',
         columnType: ColumnType.GENERAL,
         key: 'partNumber',

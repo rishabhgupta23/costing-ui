@@ -1,13 +1,18 @@
+@import "src/scss/_base.scss";
 .app-table{
-  height: 400px;
+  height: 350px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   padding: 0 1.5rem;
 }
 .title{
-  padding: 0 1.5rem;
+  border-radius: $base-discard-header-radius;
+  background: $c-background-color;
+  padding: 1rem 1.5rem;
   margin-bottom: 1rem;
+  margin-top: 0;
+  color: $c-white-color;
 }
 .btn-group{
   display: flex;
@@ -31,4 +36,10 @@
 }
 .vendor-name{
   font-weight: 600;
+}
+.no-vendor-dialog{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }

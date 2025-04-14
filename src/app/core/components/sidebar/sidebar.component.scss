@@ -1,58 +1,64 @@
-.sidebar{
+@import 'src/scss/_base.scss';
+.sidebar {
     height: calc(100% - 2rem);
-    padding: 1rem 0 1rem 1rem;
-    width: 8rem;
-    background: #55ad9b;
-    color: white;
+    padding: 1rem 0 1rem 0.5rem;
+    width: 5rem;
+    background: $c-white-color;
+    color: $c-black-hover;
+    border-right: 1px solid $c-border-color;
+}
+
+.menu-container {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    font-size: .75rem;
+}
 
-    .menu-bottom {
-        padding-bottom: 1rem;
-        display: flex;
-        flex-direction: column;
+.menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: .75rem;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+    position: relative;
+    transition: background 0.3s, color 0.3s;
+}
+.menu-label{
+    text-align: center;
+}
+/* Hover Effect */
+.menu-item:hover {
+    color: $c-black-color;
+}
 
-        .menu-item {
-            display: block;
-            padding: 1rem;
-            border-radius: 16px 0 0 16px;
-            cursor: pointer;
-            margin-bottom: 0.5rem;
+/* Light Opacity Border on Hover */
+.menu-item:not(.menu-item--active):hover::before {
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 0;
+    height: 100%;
+    width: 2px;
+    background-color: $c-black-hover;
+    opacity: 0.5;
+}
 
-            &:hover {
-                background: rgb(241 248 237 / 15%);
-            }
-        }
+/* Active Item */
+.menu-item--active {
+    color: $c-black-color;
+    font-weight: bold;
+    position: relative;
+    background-color: $c-table-hover-color;
+}
 
-        .menu-item--active {
-            background: #f1f8ed4a;
-            font-weight: bold;
-        }
- /* Adds spacing from the bottom */
-    }
-
-    .menu-container {
-        display: flex;
-        flex-direction: column;
-
-        .menu-item {
-            display: block;
-            padding: 1rem;
-            border-radius: 16px 0 0 16px;
-            cursor: pointer;
-            margin-bottom: 0.5rem;
-
-            &:hover {
-                background: rgb(241 248 237 / 15%);
-            }
-        }
-
-        .menu-item--active {
-            background: #f1f8ed4a;
-            font-weight: bold;
-        }
-
-
-    }
+/* Active Item Border */
+.menu-item--active::before {
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 0;
+    height: 100%;
+    width: 3px;
+    background-color: $c-background-color;
 }
