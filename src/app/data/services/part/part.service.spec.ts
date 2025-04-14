@@ -64,7 +64,7 @@ fdescribe('PartService', () => {
     expect(req.request.params.get('category')).toBe('Electrical');
     expect(req.request.params.get('pageNo')).toBe('1');
     expect(req.request.params.get('sortColumn')).toBe('partName');
-    expect(req.request.params.get('sortState')).toBe(SortIcons.ASC);
+    expect(req.request.params.get('sortMode')).toBe(SortIcons.ASC);
     req.flush({ content: [] });
   });
   
