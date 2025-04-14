@@ -15,13 +15,13 @@ fdescribe('HistorydialogComponent', () => {
   let dialogRefSpy: jasmine.SpyObj<MatDialogRef<HistorydialogComponent>>;
 
   beforeEach(async () => {
-    const mockDialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+    dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
 
     await TestBed.configureTestingModule({
       declarations: [HistorydialogComponent],
       imports: [MatTableModule, BrowserAnimationsModule, MatDialogModule, MatAccordion, MatExpansionModule,TableComponent],
       providers: [
-        { provide: MatDialogRef, useValue: mockDialogRef },
+        { provide: MatDialogRef, useValue: dialogRefSpy },
         { provide: MAT_DIALOG_DATA, useValue: { costHistoryList: MOCK_COST_HISTORY_LIST } }
       ]
     }).compileComponents();

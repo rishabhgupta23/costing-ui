@@ -19,17 +19,17 @@ fdescribe('PartViewComponent', () => {
   let dialogSpy: jasmine.SpyObj<MatDialog>;
 
   beforeEach(async () => {
-    const partServiceMock = jasmine.createSpyObj('PartService', ['getPartById', 'getPartCostByPartAndVendor', 'downloadBomExcel']);
-    const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl']);
-    const dialogMock = jasmine.createSpyObj('MatDialog', ['open']);
+    partServiceSpy = jasmine.createSpyObj('PartService', ['getPartById', 'getPartCostByPartAndVendor', 'downloadBomExcel']);
+    routerSpy = jasmine.createSpyObj('Router', ['navigateByUrl']);
+    dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
 
     await TestBed.configureTestingModule({
       declarations: [PartViewComponent],
       imports:[ MatFormFieldModule,MatInputModule,MatSelectModule],
       providers: [
-        { provide: PartService, useValue: partServiceMock },
-        { provide: Router, useValue: routerMock },
-        { provide: MatDialog, useValue: dialogMock },
+        { provide: PartService, useValue: partServiceSpy},
+        { provide: Router, useValue: routerSpy },
+        { provide: MatDialog, useValue: dialogSpy },
         {
           provide: ActivatedRoute,
           useValue: {

@@ -1,5 +1,3 @@
-// ... same imports ...
-
 import { MatPaginatorModule, PageEvent } from "@angular/material/paginator";
 import { MOCK_PART_LIST_RESPONSE, MOCK_PART_ROW_LIST } from "../../../../mock-data/part.mock-data";
 import { SortIcons } from "../../../../shared/constants/table.constants";

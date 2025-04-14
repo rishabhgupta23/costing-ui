@@ -22,19 +22,19 @@ fdescribe('PartLandingComponent', () => {
   let snackbarSpy: jasmine.SpyObj<SnackbarService>;
 
   beforeEach(async () => {
-    const partSpy = jasmine.createSpyObj('PartServiceSpy', ['getPartList', 'deletePart', 'downloadExcel']);
-    const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl']);
-    const dialogMock = jasmine.createSpyObj('MatDialog', ['open']);
-    const snackbarMock = jasmine.createSpyObj('SnackbarService', ['success']);
+    partServiceSpy = jasmine.createSpyObj('PartService', ['getPartList', 'deletePart', 'downloadExcel']);
+    routerSpy = jasmine.createSpyObj('Router', ['navigateByUrl']);
+    dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
+    snackbarSpy = jasmine.createSpyObj('SnackbarService', ['success']);
 
     await TestBed.configureTestingModule({
       declarations: [PartLandingComponent],
       imports: [MatIconModule, TableComponent, MatPaginatorModule, SnackbarComponent],
       providers: [
-        { provide: PartService, useValue: partSpy },
-        { provide: Router, useValue: routerMock },
-        { provide: MatDialog, useValue: dialogMock },
-        { provide: SnackbarService, useValue: snackbarMock }
+        { provide: PartService, useValue: partServiceSpy },
+        { provide: Router, useValue: routerSpy },
+        { provide: MatDialog, useValue: dialogSpy },
+        { provide: SnackbarService, useValue: snackbarSpy }
       ]
     }).compileComponents();
 
