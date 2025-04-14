@@ -7,7 +7,6 @@
         <th [title]="col?.label">
           <div class="header-cell">
             <span>{{ col?.label }}</span>
-            <!-- If the column is sortable, show the sort icon -->
             <ng-container *ngIf="col.sortable">
               <button mat-button class="sort-btn" (click)="toggleSort(col.key)">
                 <mat-icon [svgIcon]="getSortIcon(col.key)" class="sort-icon"></mat-icon>
@@ -46,10 +45,6 @@
       <tr class="data-row" (click)="onRowClick(row)">
           <!-- Dynamic Columns -->
 <ng-container *ngFor="let col of config">
-    <!-- <td *ngIf="col?.columnType === ColumnType.SERIAL_NUMBER">
-        {{ i + 1 }}
-    </td> -->
-
     <td *ngIf="col?.columnType === ColumnType.GENERAL">
         {{ row[col?.key] }}
     </td>

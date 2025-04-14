@@ -1,23 +1,22 @@
+@import "src/scss/_base.scss";
 .app-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #fff;
-    //background: linear-gradient(180deg, #07255C 0%, rgba(0,26,52,1) 100%);
-    box-shadow: 0px 3px 12px #6a749a1f;
-    //border-radius: 0 0 15px 15px;
+    background: $c-white-color;
+    box-shadow: $box-shadow;
     height: 2rem;
     padding: 1rem;
-    border-bottom: 1px solid rgba(0,0,0,0.2);
+    border-bottom: 1px solid $c-border-color;
     position: relative;
 
     .app-logo, .app-title {
         font-size: 1.25rem;
         font-weight: bold;
-        color: rgb(0, 0, 0);
+        color: $c-black-color;
     }
     .app-info{
-        color: rgb(0, 0, 0);
+        color: $c-black-color;
         display: flex;
         justify-content: center;
         align-items: center;

@@ -30,5 +30,4 @@
     flex-grow: 1;
     overflow-y: auto; /* ✅ Enables vertical scrolling */
     min-height: 0; /* ✅ Important for scrolling */
-    max-height: calc(100vh - 2rem); /* Adjust based on layout */
 }

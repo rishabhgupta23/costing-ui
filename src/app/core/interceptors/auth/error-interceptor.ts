@@ -18,8 +18,8 @@ export class ErrorInterceptor implements HttpInterceptor {
         const errorMessage = error.error?.message || 'An unexpected error occurred.';
 
         this.dialog.open(InfoDialogComponent, {
-          height: '380px',
-          width: '400px',
+          height: '23rem',
+          width: '25rem',
           autoFocus: false,
           data: { 
             title: errorTitle,

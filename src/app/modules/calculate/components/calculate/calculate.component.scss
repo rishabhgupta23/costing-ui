@@ -12,13 +12,6 @@
       margin-bottom: 5px;
     }
 
-    mat-form-field {
-      width: 100%;
-      padding-top: 8px;
-    }
-  }
-  .custom-textfield {
-    --mdc-outlined-text-field-container-shape: 12px; /* Example for rounded corners */
 }
 
   .sub-heading {
@@ -36,7 +29,7 @@
   flex-direction: row;
   justify-content: flex-start; // Start-align buttons in their grid cell
   align-items: center;
-  gap: 10px;
+  gap: 0.5rem;
 }
 .footer-data{
   padding-top: 1rem;

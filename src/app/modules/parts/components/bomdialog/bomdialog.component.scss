@@ -1,3 +1,4 @@
+@import "src/scss/_base.scss";
 mat-dialog-actions{
     gap:10px;
     position: sticky;
@@ -16,7 +17,7 @@ mat-dialog-actions{
       mat-paginator {
         margin-top: 10px;
         padding-top: 10px;
-        background: white;
+        background: $c-white-color;
         position: sticky;
       }
 
@@ -44,7 +45,7 @@ mat-dialog-actions{
         height: 100%;
         font-size: 16px;
         cursor: pointer;
-        color: #000000;
+        color: $c-black-color;
         transition: color 0.2s;
       }
 
@@ -52,27 +53,27 @@ mat-dialog-actions{
         width: 60%;
         padding: 5px 5px;
         font-size: 12px;
-        border: 1px solid #000000;
+        border: 1px solid $c-black-color;
         border-radius: 10px;
         transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        background-color: #ffff;
+        background-color: $c-white-color;
       }
       
       
       .filter-row input[matInput]:hover {
-        border-color: #000000;
+        border-color: $c-black-color;
       }
       
       
       .filter-row input[matInput]:focus {
         border-color: #95D2B3;
         box-shadow: 0 0 7px rgba(0, 204, 170, 0.4);
-        background-color: #fff;
+        background-color: $c-white-color;
         outline: none;
       }
       
       .filter-row input[matInput]::placeholder {
-        color: #888;
+        color: $c-placeholder-color;
         opacity: 0.8;
       }
       
@@ -84,5 +85,5 @@ mat-dialog-actions{
       
       .filter-input-wrapper input[matInput] {
         width: 60%;
-        padding-right: 30px; /* leave space for the clear button */
+        padding-right: 1.85rem; /* leave space for the clear button */
       }   
