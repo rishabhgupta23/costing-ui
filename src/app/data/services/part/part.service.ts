@@ -30,7 +30,7 @@ export class PartService {
       .set('pageNo', page.toString())
       .set('pageSize', size.toString())
       .set('sortColumn', sortState?.sortColumn)
-      .set('sortMode', sortState?.sortState);
+      .set('sortState', sortState?.sortState);
   
     filterCriteria.forEach((value, key) => {
       if (value) {

@@ -18,7 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { PartViewComponent } from './components/part-view/part-view.component';
-import { HistorydialogComponent } from './historydialog/historydialog.component';
+import { HistorydialogComponent } from './components/historydialog/historydialog.component';
 
 
 @NgModule({

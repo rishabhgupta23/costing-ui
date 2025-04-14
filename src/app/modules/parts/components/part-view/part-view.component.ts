@@ -12,7 +12,7 @@ import { MatDialog} from '@angular/material/dialog';
 import { BOM_TABLE_COLUMNS } from '../../../../data/constants/bom-table.constants';
 import { PartType } from '../../../../shared/constants/part.constants';
 import { ColumnType} from '../../../../shared/constants/table.constants';
-import { HistorydialogComponent } from '../../historydialog/historydialog.component';
+import { HistorydialogComponent } from '../historydialog/historydialog.component';
 import { downloadFile } from '../../../../shared/utils/file-download.util';
 import { getValueOrNull } from '../../../../shared/utils/string.util';
 

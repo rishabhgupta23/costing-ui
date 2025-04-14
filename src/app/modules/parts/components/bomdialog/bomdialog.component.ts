@@ -10,6 +10,7 @@ import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { TableComponent } from '../../../../shared/components/table/table.component';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { SortIcons } from '../../../../shared/constants/table.constants';
+import { getValueOrNull } from '../../../../shared/utils/string.util';
 @Component({
   selector: 'app-bomdialog',
   templateUrl: './bomdialog.component.html',
@@ -121,11 +122,11 @@ getPartList():void{
   this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortColumn, this.sortState).subscribe(
     (res) => {
     
-      this.partList = res.data?.partsList || [];
+      this.partList = getValueOrNull(res.data?.partsList);
       const mappedParts = this.partList.map(part => part.partName);
       this.existingParts = this.data.existingParts;
       this.paginatedData = this.partList;
-      this.totalRecords = res.pageInfo?.totalRecords || 0;
+      this.totalRecords = getValueOrNull(res.pageInfo?.totalRecords);
       this.allParts = [...this.allParts, ...this.partList];
       this.allParts = Array.from(new Set(this.allParts.map(part => part.partId)))
         .map(id => this.allParts.find(part => part.partId === id)!);

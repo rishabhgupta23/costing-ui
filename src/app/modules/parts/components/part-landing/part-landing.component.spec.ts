@@ -22,7 +22,7 @@ fdescribe('PartLandingComponent', () => {
   let snackbarSpy: jasmine.SpyObj<SnackbarService>;
 
   beforeEach(async () => {
-    const partSpy = jasmine.createSpyObj('PartService', ['getPartList', 'deletePart', 'downloadExcel']);
+    const partSpy = jasmine.createSpyObj('PartServiceSpy', ['getPartList', 'deletePart', 'downloadExcel']);
     const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl']);
     const dialogMock = jasmine.createSpyObj('MatDialog', ['open']);
     const snackbarMock = jasmine.createSpyObj('SnackbarService', ['success']);
@@ -114,25 +114,55 @@ fdescribe('PartLandingComponent', () => {
     fixture.detectChanges();
   
  
-    expect(partServiceSpy.getPartList).toHaveBeenCalled();
+    expect(partServiceSpy.getPartList).toHaveBeenCalledWith(
+      0,
+      100,
+      new Map([['partName', 'test']]),
+      undefined,
+      { sortColumn: 'partNumber', sortState: SortIcons.ASC }
+    );
+    
   }));
   
 
   it('should sort data when applySort is called', () => {
+    const expectedFilter = new Map();
+    const expectedSort = { sortColumn: 'partName', sortState: SortIcons.ASC };
+  
     partServiceSpy.getPartList.and.returnValue(of(MOCK_PART_LIST_RESPONSE));
-    component.applySort({ sortColumn: 'partName', sortState: SortIcons.ASC });
+  
+    component.applySort(expectedSort);
+  
     expect(component.sortState.sortColumn).toBe('partName');
-    expect(partServiceSpy.getPartList).toHaveBeenCalled();
+    expect(partServiceSpy.getPartList).toHaveBeenCalledWith(
+      0,
+      100,
+      expectedFilter,
+      undefined,
+      expectedSort
+    );
   });
+  
 
   it('should change page on pagination', () => {
+    const expectedFilter = new Map();
+    const expectedSort = { sortColumn: 'partNumber', sortState: SortIcons.ASC };
     partServiceSpy.getPartList.and.returnValue(of(MOCK_PART_LIST_RESPONSE));
     const event: PageEvent = { pageIndex: 1, pageSize: 10, length: 2 };
+    component.sortState = expectedSort;
     component.onPageChange(event);
     expect(component.currentPage).toBe(1);
     expect(component.pageSize).toBe(10);
-    expect(partServiceSpy.getPartList).toHaveBeenCalled();
+  
+    expect(partServiceSpy.getPartList).toHaveBeenCalledWith(
+      1,
+      10,
+      expectedFilter,
+      undefined,
+      expectedSort
+    );
   });
+  
 
   it('should navigate to edit page on EDIT action', () => {
     const event = { action: TableActions.EDIT, row: { partId: 1 } };

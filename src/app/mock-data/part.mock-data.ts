@@ -1,4 +1,4 @@
-import { CostHistoryResponse } from "../data/models/part";
+import { CostHistory, CostHistoryResponse, PartRow } from "../data/models/part";
 
 export const MOCK_PART_LIST_RESPONSE = {
     data: {
@@ -56,24 +56,6 @@ export const MOCK_PART_LIST_RESPONSE = {
     bom: []
   };
 
-  const costHistoryMock: CostHistoryResponse = {
-    partId: 1,
-    vendorId: 1,
-    costHistoryList: [
-      {
-        updatedDateTime: '2024-04-01T10:00:00Z',
-        costFactorList: [
-          { id: 1, name: 'Labor Cost', value: 100 }
-        ]
-      },
-      {
-        updatedDateTime: '2024-04-02T11:00:00Z',
-        costFactorList: [
-          { id: 2, name: 'Cost Price', value: 150 }
-        ]
-      }
-    ]
-  };
    export const MOCK_PART_WITH_BOM_ONLY = {
     ...MOCK_SINGLE_PART,
     vendorCostList: [],
@@ -87,5 +69,40 @@ export const MOCK_PART_LIST_RESPONSE = {
 ]
   };
   
+  export const MOCK_COST_HISTORY_LIST: CostHistory[] = [
+    {
+      updatedDateTime: '2024-04-01T10:00:00Z',
+      costFactorList: [
+        { id: 1, name: 'Labor Cost', value: 100 }
+      ]
+    },
+    {
+      updatedDateTime: '2024-04-02T11:00:00Z',
+      costFactorList: [
+        { id: 2, name: 'Cost Price', value: 150 }
+      ]
+    }
+  ];
+  
+  export const MOCK_PART_ROW_LIST: PartRow[] = [
+    {
+      partId: 1,
+      partName: 'Gear Assembly',
+      partNumber: 'GA-001',
+      categoryName: 'Mechanical',
+      type: 'Assembly',
+      unit: 'PCS',
+      vendorNames: ['Vendor A']
+    },
+    {
+      partId: 2,
+      partName: 'Motor Shaft',
+      partNumber: 'MS-002',
+      categoryName: 'Electrical',
+      type: 'Component',
+      unit: 'PCS',
+      vendorNames: ['Vendor B']
+    }
+  ];
   
   
