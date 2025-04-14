@@ -45,11 +45,7 @@ fdescribe('CostCalculatorService', () => {
     req.flush(mockResponse);  
     httpMock.verify();
   });
-  
 
-  afterEach(() => {
-    httpMock.verify(); 
-  });
 });
 
   
