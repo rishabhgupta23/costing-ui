@@ -12,8 +12,9 @@ import { MatDialog} from '@angular/material/dialog';
 import { BOM_TABLE_COLUMNS } from '../../../../data/constants/bom-table.constants';
 import { PartType } from '../../../../shared/constants/part.constants';
 import { ColumnType} from '../../../../shared/constants/table.constants';
-import { HistorydialogComponent } from '../../historydialog/historydialog.component';
+import { HistorydialogComponent } from '../historydialog/historydialog.component';
 import { downloadFile } from '../../../../shared/utils/file-download.util';
+import { getValueOrNull } from '../../../../shared/utils/string.util';
 
 @Component({
   selector: 'app-part-view',
@@ -66,8 +67,7 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
      }
  
      ngOnInit(): void{
-       this.partId = this.route.snapshot.paramMap.get('id')??'';
- 
+      this.partId = getValueOrNull(this.route.snapshot.paramMap.get('id'));
        if (this.partId){      
          this.getPartData(this.partId);
        }
@@ -75,31 +75,34 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
        }
  
        getPartData(id: string): void {
-         this.partService.getPartById(id).subscribe((part) => {
-           this.vendorCostList = part.vendorCostList || [];
-           this.partForm.patchValue({
-             partNumber: part.partNumber ?? '',
-             partName: part.partName ?? '',
-             // categoryId: part.categoryName ?? '',
-             partType: part.type ?? '',
-             partUnit: part.unit ?? ''
-           });
-           this.vendorCostListToMap(part.vendorCostList);
-           
-           this.bomPartList = part.bom?.map(bomPart => ({
-             id: bomPart.childPartId, // Ensure correct mapping
-             partName: bomPart.childPartName, // Assuming API returns partName
-             partNumber: bomPart.childPartNumber, // Assuming API returns partNumber
-             value: bomPart.quantity || 0
-           })) || [];
-         });
-       }
+        this.partService.getPartById(id).subscribe((part) => {
+          this.vendorCostList = getValueOrNull(part.vendorCostList);
+      
+          this.partForm.patchValue({
+            partNumber: getValueOrNull(part.partNumber),
+            partName: getValueOrNull(part.partName),
+            // categoryId: getValueOrNull(part.categoryName),
+            partType: getValueOrNull(part.type),
+            partUnit: getValueOrNull(part.unit)
+          });
+      
+          this.vendorCostListToMap(this.vendorCostList);
+      
+          this.bomPartList = getValueOrNull(part.bom).map(bomPart => ({
+            id: getValueOrNull(bomPart.childPartId),
+            partName: getValueOrNull(bomPart.childPartName),
+            partNumber: getValueOrNull(bomPart.childPartNumber),
+            value: getValueOrNull(bomPart.quantity)
+          }));
+        });
+      }
+      
  
        vendorCostListToMap(vendorCostList: VendorCost[]) {
         vendorCostList.forEach((vc) => {
           vc.costFactorValues.forEach(cf => {
             const currentList = this.vendorCostMap.get(vc.id) || [];
-            currentList.push({ id: cf.id, name: cf.name, value: cf.value || 0 });
+            currentList.push({ id: cf.id, name: cf.name, value: getValueOrNull(cf.value)});
             this.vendorCostMap.set(vc.id, currentList);
           });
         });
@@ -109,7 +112,7 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
         let tableData: { vendorName: string; costFactor: string | undefined; value: number }[] = [];
         this.vendorCostMap.forEach((costFactors, vendorId) => {
           const vendor = this.vendorCostList.find((vc: { id: number; }) => vc.id === vendorId);
-          const vendorName = vendor?.name || 'Unknown Vendor';
+          const vendorName = getValueOrNull(vendor?.name);
       
           costFactors.forEach(costFactor => {
             tableData.push({
@@ -123,7 +126,7 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
       }
 
   openHistoryDialog(partId:string | null, vendorId:number):void {
-    partId = partId || '';
+    partId = getValueOrNull(partId);
     this.getCostHistory(partId, vendorId).subscribe((res) => {
 
         this.costHistoryList = res.costHistoryList;
@@ -148,7 +151,7 @@ getCostHistory(partId: string, vendorId: number): Observable<CostHistoryResponse
   }
 
   downloadBomExcel() {
-    const partId = this.partId || '';
+    const partId = getValueOrNull(this.partId);
     this.partService.downloadBomExcel(partId).subscribe(response => {
       downloadFile(response.fileData, response.fileName || 'bomPartList.xlsx');
     });
