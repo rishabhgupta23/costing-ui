@@ -1,0 +1,26 @@
+.user-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 2rem;
+    width: 100%;
+    align-items: center;
+}
+.user-form > div {
+    display: flex;
+    flex-direction: column;
+}
+  mat-form-field {
+    padding-top: 8px;
+}
+
+.custom-textfield {
+    --mdc-outlined-text-field-container-shape: 12px; /* Example for rounded corners */
+}
+.dialog-action{
+    display: flex;
+    position: fixed;
+    bottom: 1rem;
+    right: 2rem;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}

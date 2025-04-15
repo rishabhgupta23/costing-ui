@@ -1,19 +1,28 @@
 <div class="sidebar">
     <div class="menu-container">
-        <ng-container *ngFor="let item of menuItems">
-<span class="menu-item" [ngClass]="item === selectedMenu ? 'menu-item--active': ''" (click)="menuClicked(item)">
-    <mat-icon class="menu-icon" svgIcon="{{ item.icon }}"></mat-icon>
-    <span class="menu-label">{{item.label}}</span></span>
-        </ng-container>
-    </div>
-    <div class="menu-bottom">
-        <ng-container *ngFor="let item of menuItems">
-            <span *ngIf="item.position === 'bottom'" 
-                class="menu-item" 
-                [ngClass]="item === selectedMenu ? 'menu-item--active' : ''" 
+      <ng-container *ngFor="let item of menuItems">
+        <ng-container *ngIf="!item.position">
+          <span class="menu-item"
+                [ngClass]="item === selectedMenu ? 'menu-item--active' : ''"
                 (click)="menuClicked(item)">
-                {{ item.label }}
-            </span>
+            <mat-icon class="menu-icon" svgIcon="{{ item.icon }}"></mat-icon>
+            <span class="menu-label">{{ item.label }}</span>
+          </span>
         </ng-container>
+      </ng-container>
     </div>
-</div>
+  
+    <div class="menu-bottom">
+      <ng-container *ngFor="let item of menuItems">
+        <ng-container *ngIf="item.position === 'bottom'">
+          <span class="menu-item"
+                [ngClass]="item === selectedMenu ? 'menu-item--active' : ''"
+                (click)="menuClicked(item)">
+            <mat-icon class="menu-icon" svgIcon="{{ item.icon }}"></mat-icon>
+            <span class="menu-label">{{ item.label }}</span>
+          </span>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+  

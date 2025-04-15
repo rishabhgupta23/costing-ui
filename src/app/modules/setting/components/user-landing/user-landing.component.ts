@@ -12,6 +12,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
+import { getValueOrNull } from '../../../../shared/utils/string.util';
 
 @Component({
   selector: 'app-user-landing',
@@ -31,7 +32,8 @@ export class UserLandingComponent implements OnInit {
   constructor(
     private router: Router,
     private userService: UserService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private snackbarService: SnackbarService
   ) {}
 
   ngOnInit(): void {
@@ -44,8 +46,8 @@ export class UserLandingComponent implements OnInit {
       .getUserList(this.currentPage, this.pageSize, this.filterCriteria, this.sortState)
       .subscribe({
         next: (res) => {
-          this.users = res?.data ?? [];
-          this.totalRecords = res?.pageInfo?.totalRecords ?? 0;
+          this.users = getValueOrNull(res?.data);
+          this.totalRecords = getValueOrNull(res?.pageInfo?.totalRecords);
         }
       });
   }
@@ -78,20 +80,10 @@ export class UserLandingComponent implements OnInit {
     this.sortState = sort;
     this.getUsers();
   }
-  // if (action === TableActions.EDIT) {
-  //   this.router.navigate([`/setting/users/edit`, row.id]); 
-  // }
   handleAction(event: { action: TableActions; row: User }): void {
     const { action, row } = event;
   
     if (action === TableActions.DELETE) {
-      console.log("Attempting to delete user with ID:", row.userId); // Debugging
-      
-      if (!row.userId) {
-        console.error("Error: userId is null or undefined!");
-        return;
-      }
-  
       const dialogData: ConfirmDialogData = {
         title: 'Delete User',
         message: 'Are you sure you want to delete this user?'
@@ -101,7 +93,7 @@ export class UserLandingComponent implements OnInit {
   
       dialogRef.afterClosed().subscribe((result: any) => {
         if (result === DialogCloseResponse.DELETE) {
-          this.deleteUser(row.userId);
+          this.deleteUser(row.userId!);
         }
       });
     }
@@ -110,24 +102,15 @@ export class UserLandingComponent implements OnInit {
   }
 }
   
-  deleteUser(userId: number | undefined): void {
-    if (userId === undefined) {
-      console.error('Error: userId is undefined');
-      return;
-    }
+  deleteUser(userId: number): void {
     
     this.userService.deleteUser(userId).subscribe({
       next: () => {
-        console.log('User deleted successfully');
-        this.getUsers(); // Refresh list after deletion
+        this.getUsers();
+        this.snackbarService.success('User deleted successfully');
       },
-      error: (err) => console.error('Error deleting user:', err)
     });
   }
-  
-  
-  
-  
 
   onPageChange(event: PageEvent) {
     this.pageSize = event.pageSize;

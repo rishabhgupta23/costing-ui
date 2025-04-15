@@ -11,7 +11,7 @@ import {
   PartDetails
 } from '../../models/part';
 
-fdescribe('PartService', () => {
+describe('PartService', () => {
   let service: PartService;
   let httpMock: HttpTestingController;
 

@@ -3,6 +3,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../../../data/services/user/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import {  Subscription } from 'rxjs';
+import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
+import { getValueOrNull } from '../../../../shared/utils/string.util';
 
 @Component({
   selector: 'app-user-form',
@@ -16,39 +18,40 @@ export class UserFormComponent {
     displayName: new FormControl('', Validators.required), // Changed from userName
     emailId: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required),
-    role: new FormControl(null, Validators.required) // Ensure this is a number
+    role: new FormControl<number | null>(null, Validators.required)
+
   });
   
   private subscriptions = new Subscription();
 
-  constructor(private userService: UserService, private router: Router,  private route: ActivatedRoute) {}
+  constructor(private userService: UserService, private router: Router,  private route: ActivatedRoute, private snackbarService: SnackbarService) {}
 
   onSubmit() {
     if (this.userForm.valid) {
       const formData = {
-        displayName: this.userForm.controls.displayName.value ?? '',  
-        emailId: this.userForm.controls.emailId.value ?? '',
-        password: this.userForm.controls.password.value ?? '',
-        roleId: this.userForm.controls.role.value ? Number(this.userForm.controls.role.value) : 0  // Ensure a number
+        displayName: getValueOrNull(this.userForm.controls.displayName.value),  
+        emailId: getValueOrNull(this.userForm.controls.emailId.value),
+        password: getValueOrNull(this.userForm.controls.password.value),
+        roleId: this.userForm.controls.role.value ? Number(this.userForm.controls.role.value) : 0
       };
   
       if (this.userId) {
-        // **Update existing user**
-        this.userService.updateUser(this.userId, formData).subscribe(() => {
+        this.userService.updateUser(this.userId, formData).subscribe({
+          next: () => {
+          this.snackbarService.success('User updated successfully!');
           this.router.navigate(['/app/users']);
-        });
+        }
+      });
       } else {
-        // **Create new user**
-        this.userService.createUser(formData).subscribe(() => {
+        this.userService.createUser(formData).subscribe({
+          next: () => {
+          this.snackbarService.success('User created successfully!');
           this.router.navigate(['/app/users']);
+          }
         });
       }
     }
   }
-  
-  
-  
-  
   
 
 getUserRole() {
@@ -56,7 +59,7 @@ getUserRole() {
     this.userService.getUserRoles().subscribe(
       (roles:any) => {
         this.userRoles = roles.map((role: any) => ({
-          roleId: Number(role.roleId), // Convert to number
+          roleId: Number(role.roleId), 
           roleName: role.roleName
         }));
   }));
@@ -82,7 +85,6 @@ getUserById(userId: number) {
       role: user.roleId
     });
 
-    // Make fields readonly for existing users
     this.userForm.controls.displayName.disable();
     this.userForm.controls.emailId.disable();
     this.userForm.controls.password.disable();

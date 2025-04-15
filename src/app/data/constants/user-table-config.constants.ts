@@ -2,11 +2,6 @@ import { ColumnType, TableActions } from "../../shared/constants/table.constants
 
 export const USER_TABLE_COLUMNS = [
     {
-        label: 'Sl. No.',
-        columnType: ColumnType.SERIAL_NUMBER,
-        filterable: false
-    },
-    {
         label: 'User Name',
         columnType: ColumnType.GENERAL,
         key: 'displayName',

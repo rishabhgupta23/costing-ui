@@ -8,36 +8,37 @@
   <div class="page-content">
     <div class="card">
       <form class="user-form" [formGroup]="userForm" >
-        <div>Name</div>
-        <mat-form-field appearance="outline">
+        <div>Name
+        <mat-form-field appearance="outline" class="custom-textfield">
           <input
             matInput
             placeholder="Enter User Name"
             formControlName="displayName"
           />
         </mat-form-field>
+      </div>
 
-        <div>Email Id</div>
-        <mat-form-field appearance="outline">   
+        <div>Email Id
+        <mat-form-field appearance="outline" class="custom-textfield">   
           <input
             matInput
             placeholder="Enter Email ID"
             formControlName="emailId"
           />
         </mat-form-field>
-
-        <div>Password</div>
-        <mat-form-field appearance="outline">   
+      </div>
+        <div>Password
+        <mat-form-field appearance="outline" class="custom-textfield">   
           <input
             matInput
             placeholder="Enter Password"
             formControlName="password"
           />
         </mat-form-field>
+      </div>
 
-        <div>Role</div>
-        <div>
-            <mat-form-field appearance="outline">
+        <div>Role
+            <mat-form-field appearance="outline" class="custom-textfield">
                 <mat-select placeholder="Select User Role" formControlName="role">
                     <mat-option *ngFor="let item of userRoles" [value]="item.roleId">
                         {{ item.roleName }}
@@ -45,7 +46,6 @@
                 </mat-select>
             </mat-form-field>
         </div>
-        
       </form>
 
       <div class="dialog-action">
