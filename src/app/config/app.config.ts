@@ -19,6 +19,7 @@ export class AppConfig {
       label: 'Settings',
       route: '/app/users',
       position: 'bottom',
+      icon: 'setting_icon'
     }
   ];
 }
