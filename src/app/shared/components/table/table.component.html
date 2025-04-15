@@ -60,7 +60,7 @@
     <ng-container *ngFor="let action of col.actions">
       <span class="icon-wrapper" *ngIf="action === TableActions.EDIT">
         <mat-icon 
-          class="edit-btn" 
+          class="icon-btn" 
           svgIcon="edit" 
           (click)="handleAction($event, { action: action, row: row })">
         </mat-icon>
@@ -68,7 +68,7 @@
       
       <span class="icon-wrapper" *ngIf="action === TableActions.DELETE">
         <mat-icon 
-          class="delete-btn" 
+          class="icon-btn" 
           svgIcon="delete"
           (click)="handleAction($event, { action: action, row: row })">
         </mat-icon>

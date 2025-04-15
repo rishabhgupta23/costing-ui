@@ -3,20 +3,20 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: $c-white-color;
+    background: $c-default-bg;
     box-shadow: $box-shadow;
     height: 2rem;
     padding: 1rem;
-    border-bottom: 1px solid $c-border-color;
+    border-bottom: 1px solid $c-border;
     position: relative;
 
     .app-logo, .app-title {
         font-size: 1.25rem;
         font-weight: bold;
-        color: $c-black-color;
+        color: $c-default-text;
     }
     .app-info{
-        color: $c-black-color;
+        color: $c-default-text;
         display: flex;
         justify-content: center;
         align-items: center;
