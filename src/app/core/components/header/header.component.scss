@@ -1,14 +1,30 @@
+@import "src/scss/_base.scss";
 .app-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #ffffff;
-    box-shadow: 0px 3px 12px #6a749a1f;
+    background: $c-default-bg;
+    box-shadow: $box-shadow;
     height: 2rem;
     padding: 1rem;
+    border-bottom: 1px solid $c-border;
+    position: relative;
 
     .app-logo, .app-title {
         font-size: 1.25rem;
         font-weight: bold;
+        color: $c-default-text;
+    }
+    .app-info{
+        color: $c-default-text;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .user-icon{
+        height: 2rem;
+        width: 2rem;
+        padding: 10px;
     }
 }

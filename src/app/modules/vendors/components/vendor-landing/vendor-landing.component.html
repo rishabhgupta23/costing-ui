@@ -11,6 +11,8 @@
         </div>
         <div class="page-content">
             <div class="card-nc">
+                <div class="table-container">
+                <div class="table-content">
                 <app-table
                             [data]="vendorList" 
                             [(sort)] = "sortState" 
@@ -21,11 +23,14 @@
                             [showSort]="true"
                             (actionTriggered)="handleAction($event)">
                         </app-table>
-                        <mat-paginator 
+                        
+            </div>
+            <mat-paginator 
                         [length]="totalRecords" 
                         [pageSize]="pageSize" 
                         (page)="onPageChange($event)">
                     </mat-paginator>
-                        </div>
                     </div>
                 </div>
+        </div>
+    </div>
