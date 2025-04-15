@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { LoginRequest, LoginResponse, User } from '../../models/user';
 import { ApiUtil } from '../../../shared/utils/api.util';
 import { API_END_POINTS } from '../../../config/api.config';
@@ -11,11 +11,18 @@ import { SortIcons } from '../../../shared/constants/table.constants';
   providedIn: 'root'
 })
 export class UserService {
+  private currentUserSubject = new BehaviorSubject<User | null>(null);
+  public currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient) { }
 
   whoAmI(): Observable<User> {
-    return this.http.get<User>(ApiUtil.getApiUrl(API_END_POINTS.WHO_AM_I));
+    return this.http.get<User>(ApiUtil.getApiUrl(API_END_POINTS.WHO_AM_I)).pipe(
+      map(user => {
+        this.currentUserSubject.next(user);
+        return user;
+      })
+    );
   }
 
   login(body: LoginRequest): Observable<LoginResponse> {

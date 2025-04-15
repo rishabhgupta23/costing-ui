@@ -52,6 +52,10 @@ export class UserFormComponent {
       }
     }
   }
+
+  onCancel() {
+    this.router.navigateByUrl('/app/users');
+  }
   
 
 getUserRole() {

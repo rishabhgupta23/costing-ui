@@ -49,10 +49,9 @@
       </form>
 
       <div class="dialog-action">
-        <button class="secondary-btn">Cancel</button>
+        <button class="secondary-btn" (click)="onCancel()">Cancel</button>
         <button class="primary-btn" (click)="onSubmit()">
-          <!-- {{ vendorId ? 'Update' : 'Create' }} -->
-          Create
+          {{ userId ? 'Update' : 'Create' }}
         </button>
       </div>
     </div>
