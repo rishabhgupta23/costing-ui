@@ -1,147 +1,163 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { VendorLandingComponent } from './vendor-landing.component';
 import { VendorService } from '../../../../data/services/vendor/vendor.service';
 import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { PageEvent } from '@angular/material/paginator';
-import { SortIcons, TableActions } from '../../../../shared/constants/table.constants';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
+import { SortIcons, TableActions } from '../../../../shared/constants/table.constants';
 import { MatIconModule } from '@angular/material/icon';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 fdescribe('VendorLandingComponent', () => {
   let component: VendorLandingComponent;
   let fixture: ComponentFixture<VendorLandingComponent>;
-
   let vendorServiceSpy: jasmine.SpyObj<VendorService>;
-  let snackbarServiceSpy: jasmine.SpyObj<SnackbarService>;
-  let dialogSpy: jasmine.SpyObj<MatDialog>;
   let routerSpy: jasmine.SpyObj<Router>;
-
-  const mockVendors = [
-    { id: 1, name: 'Vendor A' },
-    { id: 2, name: 'Vendor B' }
-  ];
+  let dialogSpy: jasmine.SpyObj<MatDialog>;
+  let snackbarSpy: jasmine.SpyObj<SnackbarService>;
 
   beforeEach(async () => {
-    const vendorService = jasmine.createSpyObj('VendorService', ['getVendorList', 'deleteVendor', 'downloadExcel']);
-    const snackbarService = jasmine.createSpyObj('SnackbarService', ['success']);
-    const dialog = jasmine.createSpyObj('MatDialog', ['open']);
-    const router = jasmine.createSpyObj('Router', ['navigateByUrl']);
+    vendorServiceSpy = jasmine.createSpyObj('VendorService', ['getVendorList', 'deleteVendor', 'downloadExcel']);
+    routerSpy = jasmine.createSpyObj('Router', ['navigateByUrl']);
+    dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
+    snackbarSpy = jasmine.createSpyObj('SnackbarService', ['success']);
+
+    vendorServiceSpy.getVendorList.and.returnValue(of({
+      data: [{ id: 1, name: 'Vendor A' }],
+      pageInfo: { totalRecords: 1 }
+    }));
+    vendorServiceSpy.deleteVendor.and.returnValue(of(undefined));
+
+    dialogSpy.open.and.returnValue({
+      afterClosed: () => of(DialogCloseResponse.DELETE)
+    } as any);
 
     await TestBed.configureTestingModule({
       declarations: [VendorLandingComponent],
-      imports: [
-        MatIconModule,
-      ],
+      imports: [MatIconModule],
       providers: [
-        provideHttpClientTesting(),
-        { provide: VendorService, useValue: vendorService },
-        { provide: SnackbarService, useValue: snackbarService },
-        { provide: MatDialog, useValue: dialog },
-        { provide: Router, useValue: router },
+        { provide: VendorService, useValue: vendorServiceSpy },
+        { provide: SnackbarService, useValue: snackbarSpy },
+        { provide: MatDialog, useValue: dialogSpy },
+        { provide: Router, useValue: routerSpy },
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
-
-    vendorServiceSpy = TestBed.inject(VendorService) as jasmine.SpyObj<VendorService>;
-    snackbarServiceSpy = TestBed.inject(SnackbarService) as jasmine.SpyObj<SnackbarService>;
-    dialogSpy = TestBed.inject(MatDialog) as jasmine.SpyObj<MatDialog>;
-    routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
-
-    vendorServiceSpy.getVendorList.and.returnValue(of({ data: mockVendors, pageInfo: { totalRecords: 2 } }));
 
     fixture = TestBed.createComponent(VendorLandingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
   it('should fetch vendor list on init', () => {
     expect(vendorServiceSpy.getVendorList).toHaveBeenCalled();
-    expect(component.vendorList.length).toBe(2);
+    expect(component.vendorList.length).toBeGreaterThan(0);
+    expect(component.totalRecords).toBe(1);
   });
 
-  it('should apply sort and fetch sorted vendor list', () => {
-    const sortState = { sortColumn: 'name', sortState: SortIcons.DESC };
-    component.applySort(sortState);
-    expect(component.sortState).toEqual(sortState);
-    expect(vendorServiceSpy.getVendorList).toHaveBeenCalledTimes(2);
-  });
-
-  it('should apply filter and trigger search subject', () => {
-    const filter = { key: 'name', value: 'A' };
-    component.applyFilter(filter);
-    expect(component.filterCriteria.get('name')).toBe('A');
-  });
-
-  it('should navigate to create vendor page', () => {
+  it('should navigate to vendor create page', () => {
     component.createVendor();
     expect(routerSpy.navigateByUrl).toHaveBeenCalledWith('/app/vendors/create');
   });
 
-  it('should handle EDIT action and navigate to edit page', () => {
-    const row = { id: 1 };
-    component.handleAction({ action: TableActions.EDIT, row });
+  it('should apply filter and debounce', fakeAsync(() => {
+  
+    component.applyFilter({ key: 'name', value: 'test' });
+  
+    tick(300);
+    fixture.detectChanges();
+  
+    expect(vendorServiceSpy.getVendorList).toHaveBeenCalledWith(
+      0,
+      100,
+      new Map([['name', 'test']]),
+      { sortColumn: 'name', sortState: SortIcons.ASC }
+    );
+  }));  
+  
+
+  it('should sort data when applySort is called', () => {
+    const expectedFilter = new Map();
+    const expectedSort = { sortColumn: 'name', sortState: SortIcons.ASC };
+  
+    component.applySort(expectedSort);
+  
+    expect(component.sortState.sortColumn).toBe('name');
+    expect(vendorServiceSpy.getVendorList).toHaveBeenCalledWith(
+      0,
+      100,
+      expectedFilter,
+      expectedSort
+    );
+  });
+
+  it('should open discard dialog and delete vendor', () => {
+    component.openDiscardDialog({ id: 1 });
+    expect(dialogSpy.open).toHaveBeenCalled();
+    expect(vendorServiceSpy.deleteVendor).toHaveBeenCalledWith('1');
+    expect(snackbarSpy.success).toHaveBeenCalledWith('Vendor deleted successfully!');
+  });
+
+  it('should handle EDIT action', () => {
+    const event = { action: TableActions.EDIT, row: { id: 1 } };
+    component.handleAction(event);
     expect(routerSpy.navigateByUrl).toHaveBeenCalledWith('/app/vendors/edit/1');
   });
 
-  it('should call downloadExcel and trigger download', () => {
-    const fileResponse = {
-      fileData: new Blob(['mock data'], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
-      fileName: 'vendors.xlsx'
-    };
-    vendorServiceSpy.downloadExcel.and.returnValue(of(fileResponse));
-
-    spyOn<any>(component, 'downloadExcel').and.callThrough();
-
-    component.downloadExcel();
-
-    expect(vendorServiceSpy.downloadExcel).toHaveBeenCalled();
-  });
-
-  it('should change pagination and fetch new page', () => {
-    const pageEvent: PageEvent = { pageIndex: 1, pageSize: 50, length: 2 };
-    component.onPageChange(pageEvent);
-    expect(component.currentPage).toBe(1);
-    expect(component.pageSize).toBe(50);
-    expect(vendorServiceSpy.getVendorList).toHaveBeenCalledTimes(2);
-  });
-
-  it('should open discard dialog and delete vendor if confirmed', () => {
-    const mockRow = { id: 1 };
+  it('should open dialog and delete vendor on DELETE', () => {
+    const dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(DialogCloseResponse.DELETE) });
+    dialogSpy.open.and.returnValue(dialogRefSpy);
   
-    // Mock the deleteVendor method to return a successful observable (without value, like Observable<void>)
-    vendorServiceSpy.deleteVendor.and.returnValue(of(undefined));  // Using of(undefined) to return Observable<void>
+    vendorServiceSpy.deleteVendor.and.returnValue(of(void 0));
+
+    const event = { action: TableActions.DELETE, row: { id: 1 } };
+    component.handleAction(event);
   
-    // Create a spy for the dialog's afterClosed method to simulate the DELETE response
-    const afterClosedSpy = jasmine.createSpyObj('afterClosed', ['subscribe']);
-    afterClosedSpy.subscribe.and.callFake((fn: any) => fn(DialogCloseResponse.DELETE)); // Simulate DELETE response
-  
-    // Mock the dialog open method to return the afterClosed spy
-    dialogSpy.open.and.returnValue({ afterClosed: () => afterClosedSpy } as any);
-  
-    // Call the method that opens the discard dialog
-    component.openDiscardDialog(mockRow);
-  
-    // Ensure that deleteVendor was called with the correct argument
+    expect(dialogSpy.open).toHaveBeenCalled();
     expect(vendorServiceSpy.deleteVendor).toHaveBeenCalledWith('1');
-  
-    // Ensure the Snackbar success method is called with the expected message after the vendor is deleted
-    expect(snackbarServiceSpy.success).toHaveBeenCalledWith('Vendor deleted successfully!');
+    expect(snackbarSpy.success).toHaveBeenCalledWith('Vendor deleted successfully!');
   });
   
 
-  it('should handle DELETE action by opening discard dialog', () => {
-    const mockRow = { id: 1 };
-    spyOn(component, 'openDiscardDialog');
-    component.handleAction({ action: TableActions.DELETE, row: mockRow });
-    expect(component.openDiscardDialog).toHaveBeenCalledWith(mockRow);
+  it('should trigger file download', () => {
+    const base64String = btoa('test file content');
+    vendorServiceSpy.downloadExcel.and.returnValue(of({ fileData: base64String, fileName: 'vendorList.xlsx' }));
+  
+    spyOn(window.URL, 'createObjectURL').and.returnValue('blob:url');
+    const mockAnchor = { click: jasmine.createSpy('click'), href: '', download: '' } as any;
+    spyOn(document, 'createElement').and.returnValue(mockAnchor);
+  
+    component.downloadExcel();
+  
+    expect(vendorServiceSpy.downloadExcel).toHaveBeenCalled();
+    expect(mockAnchor.click).toHaveBeenCalled();
   });
+  
+
+  it('should change page on pagination', () => {
+    const expectedFilter = new Map();
+    const expectedSort = { sortColumn: 'name', sortState: SortIcons.ASC };
+
+  
+    const event: PageEvent = { pageIndex: 1, pageSize: 10, length: 2 };
+    component.sortState = expectedSort;
+    component.onPageChange(event);
+  
+    expect(component.currentPage).toBe(1);
+    expect(component.pageSize).toBe(10);
+  
+    expect(vendorServiceSpy.getVendorList).toHaveBeenCalledWith(
+      1,
+      10,
+      expectedFilter,
+      expectedSort
+    );
+  });  
 });
