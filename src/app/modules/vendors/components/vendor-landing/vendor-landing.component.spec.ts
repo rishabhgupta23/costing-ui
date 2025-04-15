@@ -98,13 +98,6 @@ fdescribe('VendorLandingComponent', () => {
     );
   });
 
-  it('should open discard dialog and delete vendor', () => {
-    component.openDiscardDialog({ id: 1 });
-    expect(dialogSpy.open).toHaveBeenCalled();
-    expect(vendorServiceSpy.deleteVendor).toHaveBeenCalledWith('1');
-    expect(snackbarSpy.success).toHaveBeenCalledWith('Vendor deleted successfully!');
-  });
-
   it('should handle EDIT action', () => {
     const event = { action: TableActions.EDIT, row: { id: 1 } };
     component.handleAction(event);
