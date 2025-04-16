@@ -47,14 +47,6 @@
     }
 }
 
-.delete-btn {
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
-  
-  .delete-btn:hover {
-    color: $c-red-hover-color;
-  }
 
 mat-panel-description{
     justify-content: right;

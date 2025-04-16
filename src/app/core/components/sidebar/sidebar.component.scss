@@ -6,9 +6,9 @@
     padding: 1rem 0 1rem 0.5rem;
     width: 5rem;
     justify-content: space-between;
-    background: $c-white-color;
-    color: $c-black-hover;
-    border-right: 1px solid $c-border-color;
+    background: $c-default-bg;
+    color: $c-text-hover;
+    border-right: 1px solid $c-border;
 }
 
 .menu-bottom{
@@ -44,7 +44,7 @@
 }
 /* Hover Effect */
 .menu-item:hover {
-    color: $c-black-color;
+    color: $c-default-text;
 }
 
 /* Light Opacity Border on Hover */
@@ -55,16 +55,16 @@
     top: 0;
     height: 100%;
     width: 2px;
-    background-color: $c-black-hover;
+    background-color: $c-text-hover;
     opacity: 0.5;
 }
 
 /* Active Item */
 .menu-item--active {
-    color: $c-black-color;
+    color: $c-default-text;
     font-weight: bold;
     position: relative;
-    background-color: $c-table-hover-color;
+    background-color: $c-tr-hover;
 }
 
 /* Active Item Border */

@@ -44,7 +44,7 @@ $costing-ui-theme: mat.define-theme((
     font-family: Poppins, Roboto, sans-serif;
     margin: 0;
     padding: 0;
-    background: $c-white-color;
+    background: $c-default-bg;
     overflow: hidden;
 }
 .app-page {
@@ -71,7 +71,7 @@ $costing-ui-theme: mat.define-theme((
 
 .card,.card-nc {
     border-radius: 12px;
-    background-color: $c-white-color;
+    background-color: $c-default-bg;
     border: 1px solid #f8f8f8; 
     box-shadow: $box-shadow;
     height: 100%;
@@ -80,7 +80,7 @@ $costing-ui-theme: mat.define-theme((
 .card {
     padding: 1rem;
     height: calc(100% - 2rem);
-    overflow:scroll;
+    overflow:auto;
     overflow-x:hidden;
 }
 
@@ -94,7 +94,7 @@ $costing-ui-theme: mat.define-theme((
     border-radius: 0.5rem;
     min-width: 5rem;
     background-color: $c-background-color;
-    color: $c-white-color;
+    color: $c-default-bg;
     border: none;
     font-size: $base-font-size;
     &:hover {
@@ -116,9 +116,9 @@ $costing-ui-theme: mat.define-theme((
     cursor: pointer;
     border-radius: 0.5rem;
     border: 2px solid $c-background-color;
-    background-color: $c-white-color;  
+    background-color: $c-default-bg;  
     min-width: 5rem;
-    color: $c-black-color;
+    color: $c-default-text;
     font-size: $base-font-size;
     &:hover {
       background-color: darken(#f3f3f349, 10%);
@@ -134,12 +134,12 @@ $costing-ui-theme: mat.define-theme((
     cursor: pointer;
     border-radius: 1rem;
     min-width: 5rem;
-    background-color: $c-white-color;
+    background-color: $c-default-bg;
     color: $c-background-color;
     border: none;
   
     &:hover {
-      background-color: $c-btn-hover-tertiary;
+      background-color: $c-btn-hover;
     }
   }
 
@@ -166,14 +166,34 @@ $costing-ui-theme: mat.define-theme((
   top:40px;
 }
 .highlight-table tbody tr:hover{
-  background-color: $c-table-hover-color;
+  background-color: $c-tr-hover;
   cursor: pointer;
   transition: background-color 0.3s ease-in-out;
 }
 .mat-mdc-paginator-container{
-  background-color: $c-white-color;
+  background-color: $c-default-bg;
 }
 .cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px); /* for Safari support */
+}
+
+.icon-btn {
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+.icon-btn:hover {
+  color: $c-default-text;
+  background-color: $c-btn-hover;
+}
+
+.icon-btn:active {
+  background-color: darken($c-btn-hover, 75%);
 }

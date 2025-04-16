@@ -9,17 +9,17 @@
     border-radius: 12px;
     border-collapse: collapse;
     table-layout: fixed; /* Prevent columns from expanding */
-    background: $c-white-color;
+    background: $c-default-bg;
 
     thead {
         position: sticky;
         top: 0; 
-        background-color: $c-white-color; 
+        background-color: $c-default-bg; 
         z-index: 1;
       }
     
     .header-row {
-        background-color: $c-table-bg;
+        background-color: $c-table-header-bg;
         border-radius: 12px 12px 0 0;
         th:first-child {
             border-radius: 12px 0 0 0;
@@ -40,7 +40,7 @@
     }
 
     td {
-        border-bottom: 1px solid $c-border-color;
+        border-bottom: 1px solid $c-border;
     }
     
 }
@@ -54,27 +54,6 @@ input[matInput] {
   font-size: 1rem;
 }
 
-.edit-btn {            
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
-  
-  .edit-btn:hover {
-    color: $c-green-hover-color;
-  }
-  
-  .delete-btn {
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
-  
-  .delete-btn:hover {
-    color: $c-red-hover-color;
-  }
-
-  .icon-wrapper {
-    margin-right: 0.5rem;
-  }
   
   input[matInput] {
     width: 100%;
@@ -88,33 +67,33 @@ input[matInput] {
 .filter-row input[type="text"] {
   width: 75%;
   padding: 8px 12px;
-  font-size: 14px;
-  border: 1px solid $c-black-color;
+  font-size: 0.85rem;
+  border: 1px solid $c-default-text;
   border-radius: $base-border-radius;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  background-color: $c-white-color;
+  background-color: $c-default-bg;
 }
 
 .filter-row{
-  background-color: $c-table-bg;
+  background-color: $c-table-header-bg;
 }
 
 /* Hover effect for interactive feedback */
 .filter-row input[type="text"]:hover {
-  border-color: $c-black-color;
+  border-color: $c-default-text;
 }
 
 /* Focus effect for better user experience */
 .filter-row input[type="text"]:focus {
   border-color: $c-background-color;
   border: 2px solid $c-background-color;
-  background-color: $c-white-color;
+  background-color: $c-default-bg;
   outline: none;
 }
 
 /* Placeholder text style */
 .filter-row input[type="text"]::placeholder {
-  color: $c-placeholder-color;
+  color: $c-placeholder;
   opacity: 0.8;
 }
 
@@ -131,7 +110,7 @@ input[matInput] {
 
 .clear-filter-btn {
   position: absolute;
-  color: $c-placeholder-color;
+  color: $c-placeholder;
   right: 4px;
   background: transparent;
   border: none;
@@ -144,7 +123,7 @@ input[matInput] {
   width: 20px;
 }
 .clear-filter-btn:hover{
-  color: $c-black-color;
+  color: $c-default-text;
 }
 .header-cell {
   text-align: left;
@@ -167,7 +146,7 @@ input[matInput] {
   height: 100%;
   font-size: 16px;
   cursor: pointer;
-  color: $c-black-color;
+  color: $c-default-text;
   transition: color 0.2s;
 }
 
