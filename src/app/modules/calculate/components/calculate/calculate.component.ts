@@ -14,7 +14,7 @@ import { PricingOptions } from '../../../../shared/constants/pricingoptions.cons
   styleUrl: './calculate.component.scss'
 })
 export class CalculateComponent {
-  COST_CALCULATOR_COLUMNS = COST_CALCULATOR_COLUMNS;
+  costCalculatorColumn: any[] = COST_CALCULATOR_COLUMNS(false); 
   isCalculated: boolean | undefined;
   totalQP: number | undefined;
   partList: PartRow[] = [];
@@ -23,7 +23,7 @@ export class CalculateComponent {
   costingList: CostItem[]=[];
   filterCriteria:  Map<string, string> = new Map();
   totalRecords:number=0;
-  private searchSubject = new Subject<{ key: string; value: string }>(); 
+  toggleControl = new FormControl(false);
 
   partControl = new FormControl('');
   filteredParts: Observable<PartRow[]> | undefined;
@@ -43,11 +43,6 @@ export class CalculateComponent {
       }
     );
   }
-  applyFilter(filter: { key: string; value: string }): void {
-    this.filterCriteria.set(filter.key, filter.value);
-    this.searchSubject.next(filter);
-  }
-  
   pricingOptions = Object.values(PricingOptions);
     
   calculateform = new FormGroup({
@@ -86,17 +81,16 @@ export class CalculateComponent {
       switchMap((value) => {
         const filterValue = value ?? '';
         this.filterCriteria.set('partName', filterValue);
-        this.filterCriteria.set('partNumber', filterValue)
         return this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria);
       }),
       map((response) => {
         this.partList = response.data?.partsList || [];
-        return this.partList.filter(part => 
-          part.partName?.toLowerCase().includes(this.filterCriteria.get('partName')?.toLowerCase() || '') || 
-          part.partNumber?.toLowerCase().includes(this.filterCriteria.get('partNumber')?.toLowerCase() || '')
-        );
+        return this.partList;
       })
     );
+    this.toggleControl.valueChanges.subscribe((value) => {
+      this.costCalculatorColumn = COST_CALCULATOR_COLUMNS(value ?? false);
+    });
   }
   
   
