@@ -44,6 +44,9 @@
     }
     
 }
+.custom-textfield {
+  --mdc-outlined-text-field-container-shape: 12px;
+}
 .mat-form-field {
   width: 100%; /* Ensure input fields span the full width of the cell */
   box-sizing: border-box;
@@ -55,14 +58,20 @@ input[matInput] {
 }
 
   
-  input[matInput] {
-    width: 100%;
-    font-size: 1rem;
-  }
-  
   button {
     margin: 0 0.2rem;
   }
+
+  .data-row input[type="number"]{
+  padding: 6px 10px;
+  font-size: 1rem;
+  border: 1px solid $c-default-text;
+  border-radius: $base-border-radius;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: $c-default-bg;
+
+  }
+
   /* Style for the filter inputs within the filter row */
 .filter-row input[type="text"] {
   width: 75%;

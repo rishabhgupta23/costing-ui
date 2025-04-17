@@ -50,9 +50,11 @@
     </td>
 
     <td *ngIf="col?.columnType === ColumnType.INPUT_NUMBER">
-        <mat-form-field>
-            <input matInput type="number" [(ngModel)]="row[col?.key]">
-        </mat-form-field>
+      <input
+      type="number"
+      class="custom-textfield"
+      [(ngModel)]="row[col?.key]">
+    
     </td>
 
     <!-- Dynamic Action Buttons -->

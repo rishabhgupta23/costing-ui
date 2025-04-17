@@ -78,7 +78,6 @@ export class PartsFormComponent implements OnDestroy {
       }
       this.partForm.get('partType')?.valueChanges.subscribe((value) => {
         if (value === this.partTypeEnum.MASTER) {
-          this.vendorList = [];
           this.clearVendorCostData();
         }
       });
