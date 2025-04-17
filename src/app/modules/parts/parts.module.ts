@@ -18,8 +18,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { PartViewComponent } from './components/part-view/part-view.component';
-import { HistorydialogComponent } from './historydialog/historydialog.component';
-import {MatStepperModule} from '@angular/material/stepper';
+import { HistorydialogComponent } from './components/historydialog/historydialog.component';
+import { MatStepperModule } from '@angular/material/stepper';
 
 
 @NgModule({

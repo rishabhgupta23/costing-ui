@@ -13,33 +13,37 @@
                 <!-- Part Details Section-->
                 <div class="sub-heading">Part Details</div>
                 <div class="part-form">
-                    <div>Part Number</div>
                     <div>
-                        <mat-form-field appearance="outline">
+                        <label>Part Number</label>
+                        <mat-form-field appearance="outline" class="custom-textfield">
                             <input matInput placeholder="Enter Part Number" formControlName="partNumber" readonly>
                         </mat-form-field>
                     </div>
-                    <div>Part Name</div>
+                    
                     <div>
-                        <mat-form-field appearance="outline">
+                        <label>Part Name</label>
+                        <mat-form-field appearance="outline" class="custom-textfield">
                             <input matInput placeholder="Enter Name" formControlName="partName" readonly>
                         </mat-form-field>
                     </div>
-                    <div>Type</div>
+                    
                     <div>
-                        <mat-form-field appearance="outline">
+                        <label>Type</label>
+                        <mat-form-field appearance="outline" class="custom-textfield">
                             <input matInput placeholder="Select Part Type" formControlName="partType" readonly>
                         </mat-form-field>
                     </div>
-                    <div>Category</div>
+                    
                     <div>
-                        <mat-form-field appearance="outline">
+                        <label>Category</label>
+                        <mat-form-field appearance="outline" class="custom-textfield">
                             <input matInput formControlName="categoryId" readonly>
                         </mat-form-field>
                     </div>
-                    <div>Unit</div>
+                    
                     <div>
-                        <mat-form-field appearance="outline">
+                        <label>Unit</label>
+                        <mat-form-field appearance="outline" class="custom-textfield">
                             <input matInput placeholder="Select Part Unit" formControlName="partUnit" readonly>
                         </mat-form-field>
                     </div>
@@ -53,7 +57,7 @@
                       <mat-expansion-panel-header>
                         <mat-panel-title> Vendor {{i+1}}: {{ vendor.name }}  </mat-panel-title>
                       <mat-panel-description>
-                        <mat-icon class="history-btn" svgIcon="history" (click)="openHistoryDialog(partId,vendor.id)"> </mat-icon>
+                        <mat-icon class="icon-btn" svgIcon="history" (click)="openHistoryDialog(partId,vendor.id)"> </mat-icon>
                       </mat-panel-description>
                     </mat-expansion-panel-header>
                       <div class="vendor-panel-content">

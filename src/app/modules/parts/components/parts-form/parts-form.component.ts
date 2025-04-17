@@ -15,6 +15,7 @@ import { DialogCloseResponse } from '../../../../shared/constants/dialog.constan
 import { TableActions } from '../../../../shared/constants/table.constants';
 import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
 import { MatStepper } from '@angular/material/stepper';
+import { getValueOrNull } from '../../../../shared/utils/string.util';
 
 @Component({
   selector: 'app-parts-form',
@@ -77,6 +78,7 @@ export class PartsFormComponent implements OnDestroy {
       }
       this.partForm.get('partType')?.valueChanges.subscribe((value) => {
         if (value === this.partTypeEnum.MASTER) {
+          this.vendorList = [];
           this.clearVendorCostData();
         }
       });
@@ -86,11 +88,11 @@ export class PartsFormComponent implements OnDestroy {
         this.partService.getPartById(id).subscribe((part) => {
           console.log('Part Data:', part); // Debug: Check the part structure
           this.partForm.patchValue({
-            partNumber: part.partNumber ?? '',
-            partName: part.partName ?? '',
+            partNumber: getValueOrNull(part.partNumber),
+            partName: getValueOrNull(part.partName),
             // categoryId: part.categoryName ?? '',
-            partType: part.type ?? '',
-            partUnit: part.unit ?? ''
+            partType: getValueOrNull(part.type),
+            partUnit: getValueOrNull(part.unit)
           });
           this.vendorCostListToMap(part.vendorCostList);
           
@@ -98,7 +100,7 @@ export class PartsFormComponent implements OnDestroy {
             id: bomPart.childPartId, // Ensure correct mapping
             partName: bomPart.childPartName, // Assuming API returns partName
             partNumber: bomPart.childPartNumber, // Assuming API returns partNumber
-            value: bomPart.quantity || 0
+            value: getValueOrNull(bomPart.quantity)
           })) || [];
         });
       }

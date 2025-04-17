@@ -1,9 +1,9 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { COST_FACTOR_TABLE_COLUMNS } from '../../../data/constants/part.constants';
-import { ColumnType } from '../../../shared/constants/table.constants';
-import { DialogCloseResponse } from '../../../shared/constants/dialog.constants';
-import { CostHistory } from '../../../data/models/part';
+import { COST_FACTOR_TABLE_COLUMNS } from '../../../../data/constants/part.constants';
+import { ColumnType } from '../../../../shared/constants/table.constants';
+import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
+import { CostHistory } from '../../../../data/models/part';
 
 @Component({
   selector: 'app-historydialog',
@@ -26,9 +26,6 @@ export class HistorydialogComponent {
         }
         if (col.columnType === ColumnType.ACTION) {
             return null;
-        }
-        if(col.columnType=== ColumnType.SERIAL_NUMBER){
-          return null;
         }
         return col;
     }).filter(col => col !== null);

@@ -2,12 +2,6 @@ import { ColumnType, TableActions } from "../../shared/constants/table.constants
 
 export const VENDOR_TABLE_COLUMNS = [
     {
-        label: 'Sl. No.',
-        columnType: ColumnType.SERIAL_NUMBER
-        
-    },
-
-    {
         label: 'Name',
         columnType: ColumnType.GENERAL,
         key: 'name',
