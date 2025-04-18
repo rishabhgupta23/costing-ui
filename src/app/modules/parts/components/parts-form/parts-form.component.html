@@ -12,9 +12,6 @@
             <mat-step [stepControl]="partForm.get('partType')?.value === partTypeEnum.UNIT ? costDetailsForm : bomDetailsForm">
                 <ng-template matStepLabel>Additional Details</ng-template>
             </mat-step>
-            <mat-step>
-                <ng-template matStepLabel>Confirm & Submit</ng-template>
-            </mat-step>
         </mat-stepper>
     </div>
     <div class="page-content">
@@ -116,18 +113,6 @@
               
         </div>
         </div>
-        <div *ngIf="selectedStepIndex === 2">
-    <!-- Step 3: Confirmation -->
-        <p>Please review the details entered before submitting.</p>
-        <div class="confirmation-details">
-            <p><strong>Part Number:</strong> {{ partForm.get('partNumber')?.value }}</p>
-            <p><strong>Part Name:</strong> {{ partForm.get('partName')?.value }}</p>
-            <p><strong>Part Type:</strong> {{ partForm.get('partType')?.value }}</p>
-            <p><strong>Category:</strong> {{ partForm.get('categoryId')?.value }}</p>
-            <p><strong>Unit:</strong> {{ partForm.get('partUnit')?.value }}</p>
-            <!-- Add any other details for confirmation -->
-        </div>
-        </div>
         <div class="fixed-actions">
             <div class="nav-buttons">
               <button mat-icon-button (click)="stepper.previous(); selectedStepIndex = stepper.selectedIndex" 
@@ -136,15 +121,18 @@
               </button>
           
               <button mat-icon-button (click)="goToNextStep(stepper)" 
-                  [disabled]="selectedStepIndex === 2">
+                  [disabled]="selectedStepIndex === 1">
                   <mat-icon>chevron_right</mat-icon>
               </button>
             </div>
           
             <div class="submit-button">
-              <button class="primary-btn" (click)="onSubmit()" [disabled]="selectedStepIndex !== 2">
-                {{ partId ? 'Update' : 'Create' }}
-              </button>
+                <button class="primary-btn" 
+                (click)="onSubmit()" 
+                [disabled]="!isFormValidForSubmit()">
+          {{ partId ? 'Update' : 'Create' }}
+        </button>
+        
             </div>
           </div>
           

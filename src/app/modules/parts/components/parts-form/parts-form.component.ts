@@ -113,6 +113,10 @@ export class PartsFormComponent implements OnDestroy {
     });
   }
 
+  isFormValidForSubmit(): boolean {
+    return this.partForm.valid;
+  }
+  
   onStepChange(event: any) {
     this.selectedStepIndex = event.selectedIndex;
 }
