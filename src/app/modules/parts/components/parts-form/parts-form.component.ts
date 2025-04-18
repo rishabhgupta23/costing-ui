@@ -313,6 +313,23 @@ export class PartsFormComponent implements OnDestroy {
       this.snackbarService.error('Please fill all required fields!');
       return;
     }
+
+    for (const [vendorId, costFactors] of this.vendorCostMap) {
+      for (const costFactor of costFactors) {
+        if (!costFactor.value || costFactor.value === 0) {
+          this.snackbarService.error('Cost Factor value cannot be 0');
+          return;
+        }
+      }
+    }
+    
+
+    for (const part of this.bomPartList) {
+      if (!part.value || Number(part.value) === 0) {
+        this.snackbarService.error('Quantity of the child parts cannot be 0');
+        return;
+      }
+    }
     if (this.partId) {
       this.partService.updatePart(this.partId, body).subscribe({
         next: () => {
@@ -332,7 +349,7 @@ export class PartsFormComponent implements OnDestroy {
   generateBomDetailsBody() {
     return this.bomPartList.map(part => ({
       childPartId: part.id,
-      quantity: Number(part.value) || 1,  // Ensure quantity is not undefined
+      quantity: Number(part.value),
     }));
   }
 

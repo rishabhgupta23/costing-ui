@@ -21,6 +21,7 @@ export class CalculateComponent {
   currentPage=0;
   pageSize=100;
   costingList: CostItem[]=[];
+  defaultCostingList: CostItem[] = [];
   filterCriteria:  Map<string, string> = new Map();
   totalRecords:number=0;
   toggleControl = new FormControl(false);
@@ -58,6 +59,7 @@ export class CalculateComponent {
       this.costCalculatorService.getCost(part.partId, mode).subscribe(
         (response) => {
           this.costingList = response.costCalcDtoList || [];
+          this.defaultCostingList = JSON.parse(JSON.stringify(this.costingList));
           this.totalQP = response.totalCost || 0;
           this.isCalculated = true;
         }
@@ -69,6 +71,11 @@ export class CalculateComponent {
 
   onPartSelected(selectedPart: any) {
     this.calculateform.get('part')?.setValue(selectedPart);
+  }
+
+  onClick(){
+      this.costingList = JSON.parse(JSON.stringify(this.defaultCostingList));
+      this.totalQP = this.costingList.reduce((sum, item) => sum + (item.subTotal ?? 0), 0);
   }
   
 
@@ -90,6 +97,10 @@ export class CalculateComponent {
     );
     this.toggleControl.valueChanges.subscribe((value) => {
       this.costCalculatorColumn = COST_CALCULATOR_COLUMNS(value ?? false);
+      if (!value) {
+        this.costingList = JSON.parse(JSON.stringify(this.defaultCostingList));
+        this.totalQP = this.costingList.reduce((sum, item) => sum + (item.subTotal ?? 0), 0);
+      }
     });
   }
   
@@ -100,6 +111,15 @@ export class CalculateComponent {
     this.isCalculated = false;
     this.totalQP = undefined;
   }
+  onCellEdit(row: CostItem, changedKey: string): void {
+    if (this.toggleControl.value) {
+      const quantity = row.quantity ?? 0;
+      const rate = row.rate ?? 0;
+      row.subTotal = quantity * rate;
+      this.totalQP = this.costingList.reduce((sum, item) => sum + (item.subTotal ?? 0), 0);
+    }
+  }
+  
   
 
 displayFn(part: any): string {

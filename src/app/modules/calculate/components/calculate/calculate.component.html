@@ -43,9 +43,12 @@
             <br>
             <div class="sub-heading" *ngIf="isCalculated">COSTING</div>
             <div *ngIf="isCalculated" class="slide-toggle-container">
+              <button class="primary-btn" (click)="onClick()">Reset</button>
               <mat-slide-toggle [formControl]="toggleControl">Enable Simulation</mat-slide-toggle>
             </div>
-            <app-table [data]="costingList" [config]="costCalculatorColumn" *ngIf="isCalculated" [editable]="toggleControl.value ?? false">
+            <app-table [data]="costingList" [config]="costCalculatorColumn" *ngIf="isCalculated" 
+            (cellEdit)="onCellEdit($event.row, $event.key)"
+            [editable]="toggleControl.value ?? false">
               <tr table-footer>
                 <td colspan="4" class="footer-data"><strong>Total Cost:</strong></td>
                 <td colspan="1" class="footer-cell">{{ totalQP }}</td>

@@ -53,7 +53,8 @@
       <input
       type="number"
       class="custom-textfield"
-      [(ngModel)]="row[col?.key]">
+      [(ngModel)]="row[col?.key]" 
+      (ngModelChange)="cellEdit.emit({ row: row, key: col?.key })" />
     
     </td>
 

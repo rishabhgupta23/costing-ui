@@ -34,6 +34,7 @@ export class TableComponent {
   @Output() rowClicked = new EventEmitter<any>();
   @Output() filterChange = new EventEmitter<{ key: string; value: string }>();
   @Output() sortChange = new EventEmitter<SortState>();
+  @Output() cellEdit = new EventEmitter<{ row: any, key: string }>();
  
   TableActions= TableActions;
   ColumnType = ColumnType;
