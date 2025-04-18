@@ -11,7 +11,7 @@ export class SnackbarService {
   show(message: string, type: 'success' | 'warning' | 'error') {
     this.snackBar.openFromComponent(SnackbarComponent, {
       data: { message, type },
-      duration:  100000,
+      duration:  1000,
       panelClass: type,
       verticalPosition: 'top'
     });
