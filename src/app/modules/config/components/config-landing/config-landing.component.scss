@@ -1,0 +1,30 @@
+@import 'src/scss/_base.scss';
+.tiles-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: flex-start;
+    padding: 2rem;
+  }
+  
+  .tile {
+    width: 12.5rem;
+    height: 7.5rem;
+    background-color: $c-border;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: $base-font-size;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: $box-shadow;
+  
+    &:hover {
+      background-color: $c-table-header-bg;
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+  }
+  

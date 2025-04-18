@@ -1,0 +1,24 @@
+<div class="category-container">
+    <h2>Category Management</h2>
+  
+    <div class="input-section">
+      <input  placeholder="Enter category name" />
+      <button (click)="addCategory()">Add Category</button>
+    </div>
+  
+    <table class="category-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Category Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cat of categories; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ cat }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  

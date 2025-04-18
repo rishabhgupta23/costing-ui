@@ -1,0 +1,39 @@
+.category-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .input-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  
+    input {
+      flex: 1;
+      padding: 8px;
+      font-size: 16px;
+    }
+  
+    button {
+      padding: 8px 16px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  }
+  
+  .category-table {
+    width: 100%;
+    border-collapse: collapse;
+  
+    th, td {
+      padding: 12px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+  
+    thead {
+      background-color: #f5f5f5;
+    }
+  }
+  

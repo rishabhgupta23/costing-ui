@@ -23,6 +23,10 @@ const routes: Routes = [
       {
         path: "calculate",
         loadChildren: () => import("../calculate/calculate.module").then((module) => module.CalculateModule)
+      },
+      {
+        path: "config",
+        loadChildren: () => import("../config/config.module").then((module) => module.ConfigModule)
       }
     ]
   }

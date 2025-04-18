@@ -14,6 +14,11 @@ export class AppConfig {
       label: 'Cost Calculator',
       route: '/app/calculate',
       icon: 'calculate_icon'
+    },
+    {
+      label: 'Config',
+      route: '/app/config',
+      icon: 'config_icon'
     }
   ];
 }
