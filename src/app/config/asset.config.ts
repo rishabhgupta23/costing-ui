@@ -35,5 +35,17 @@ export const SVG_ICONS = [
     {
         path: baseIconsPath + '/info_icon.svg',
         name:'info'
-    }
+    },
+    {
+        path: baseIconsPath + '/parts_icon.svg',
+        name:'parts_icon'
+    },
+    {
+        path: baseIconsPath + '/vendor_icon.svg',
+        name:'vendor_icon'
+    },
+    {
+        path: baseIconsPath + '/calculate_icon.svg',
+        name:'calculate_icon'
+    },
 ];

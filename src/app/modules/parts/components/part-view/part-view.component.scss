@@ -1,9 +1,15 @@
+@import "src/scss/_base.scss";
 .part-form {
     display: grid;
-    grid-template-columns: auto auto;
-    width: 50%;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 2rem;
+    width: 100%;
+    align-items: center;
 }
-
+.part-form > div {
+    display: flex;
+    flex-direction: column;
+}
 .sub-heading {
     font-weight: bold;
     margin-bottom: 1rem;
@@ -21,14 +27,6 @@
 }
 
 
-.history-btn {
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
-  
-  .history-btn:hover {
-    color: #f44336;
-  }
 
 mat-panel-description{
     justify-content: right;

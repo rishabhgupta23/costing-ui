@@ -27,9 +27,6 @@ export class HistorydialogComponent {
         if (col.columnType === ColumnType.ACTION) {
             return null;
         }
-        if(col.columnType=== ColumnType.SERIAL_NUMBER){
-          return null;
-        }
         return col;
     }).filter(col => col !== null);
 

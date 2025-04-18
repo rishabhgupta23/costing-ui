@@ -1,3 +1,4 @@
+@import "src/scss/_base.scss";
 .part-form {
     display: grid;
     grid-template-columns: auto auto;
@@ -46,14 +47,6 @@
     }
 }
 
-.delete-btn {
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
-  
-  .delete-btn:hover {
-    color: #f44336;
-  }
 
 mat-panel-description{
     justify-content: right;

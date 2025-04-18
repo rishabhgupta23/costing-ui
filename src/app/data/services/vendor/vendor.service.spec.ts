@@ -81,7 +81,7 @@ fdescribe('VendorService', () => {
 
   it('should call getVendorList with default parameters', () => {
     service.getVendorList().subscribe(res => {
-      expect(res).toEqual({ content: [] });
+      expect(res).toEqual({ data: [], pageInfo: { totalRecords: 0 } });
     });
   
     const req = httpMock.expectOne(req =>
@@ -92,7 +92,7 @@ fdescribe('VendorService', () => {
     expect(req.request.params.get('pageSize')).toBe('100');
     expect(req.request.params.get('sortColumn')).toBe('name');
     expect(req.request.params.get('sortMode')).toBe(SortIcons.ASC);
-    req.flush({ content: [] });
+    req.flush({ data: [], pageInfo: { totalRecords: 0 } });
   });
   
 

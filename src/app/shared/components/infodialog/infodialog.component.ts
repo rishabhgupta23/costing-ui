@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 export interface InfoDialogData {
   title: string;
   message: string;
-  status?: number; // optional status code
+  status?: number;
 }
 
 @Component({
