@@ -39,8 +39,8 @@
                     <div>
                         <mat-form-field appearance="outline">
                             <mat-select placeholder="Select Part Category" formControlName="categoryId">
-                                <ng-container *ngFor="let item of partCategories">
-                                    <mat-option [value]="item">{{item}}</mat-option>
+                                <ng-container *ngFor="let category of partCategories">
+                                    <mat-option [value]="category.categoryId">{{category.name}}</mat-option>
                                 </ng-container>
                             </mat-select>
                         </mat-form-field>

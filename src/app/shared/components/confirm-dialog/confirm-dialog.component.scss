@@ -1,9 +1,11 @@
+@import "src/scss/_base.scss";
 .title {
-    font-family: 'Poppins', 'Roboto', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    padding: 0 1.5rem;
+  border-radius: $base-discard-header-radius;
+  background: $c-background-color;
+  padding: 0.5rem 1.5rem;
+  margin-bottom: 0rem;
+  margin-top: 0;
+  color: $c-default-bg;
 }
 .confirm-message {
     font-family: 'Poppins', 'Roboto', sans-serif;

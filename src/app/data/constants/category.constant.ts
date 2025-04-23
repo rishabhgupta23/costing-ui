@@ -4,7 +4,9 @@ export const CATEGORY_TABLE_COLUMNS = [
     {
         label: 'Category Name',
         key: 'name',
-        columnType: ColumnType.GENERAL
+        columnType: ColumnType.GENERAL,
+        filterable: true,
+        sortable: true
     },
     {
         label: 'Actions',

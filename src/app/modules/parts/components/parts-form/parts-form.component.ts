@@ -15,6 +15,7 @@ import { DialogCloseResponse } from '../../../../shared/constants/dialog.constan
 import { TableActions } from '../../../../shared/constants/table.constants';
 import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
 import { getValueOrNull } from '../../../../shared/utils/string.util';
+import { Category } from 'src/app/data/models/category';
 
 @Component({
   selector: 'app-parts-form',
@@ -25,7 +26,7 @@ export class PartsFormComponent implements OnDestroy {
   partNames: string[] =[];
   partTypes: string[] = [];
   partUnits: string[] = [];
-  partCategories: string[] = [];
+  partCategories: Category[] = [];
   vendorList: Vendor[] = [];
   costFactorList: CostFactor[] = [];
   subscriptions: Subscription[] = [];

@@ -1,6 +1,6 @@
 <h2 class="title">{{ data.title || 'Confirm' }}</h2>
     <div class="confirm-message">
-      <p>{{ data.message }}</p>
+      <p [innerHTML]="data.message"></p>
     </div>
     <div class="btn-group" align="end">
       <button  class="secondary-btn" (click)="onCancel()">Cancel</button>

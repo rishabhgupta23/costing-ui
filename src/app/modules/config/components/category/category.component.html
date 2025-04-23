@@ -1,24 +1,40 @@
-<div class="category-container">
-    <h2>Category Management</h2>
-  
-    <div class="input-section">
-      <input  placeholder="Enter category name" />
-      <button (click)="addCategory()">Add Category</button>
-    </div>
-  
-    <table class="category-table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Category Name</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let cat of categories; let i = index">
-          <td>{{ i + 1 }}</td>
-          <td>{{ cat }}</td>
-        </tr>
-      </tbody>
-    </table>
+<div class="app-page">
+  <div class="page-header">
+    <span class="page-title">Category</span>
+  </div>
+  <div class="form-field">
+    <label>Category Name</label>
+    <mat-form-field appearance="outline" class="custom-textfield">
+      <input matInput  class="input-field"
+        type="text" [(ngModel)]="categoryName" 
+        name="categoryName" 
+        placeholder="Enter Category Name" />
+    </mat-form-field>
+    <button class="primary-btn" (click)="submitCategoryForm()">
+      Add
+    </button>
   </div>
   
+  <div class="page-content">
+    <div class="card-nc">
+      <app-table
+      [config]="columns"
+      [data]="dataSource"
+      [(sort)] = "sortState" 
+      [showFilter]="true"
+      [showSort]="true"
+      (filterChange)="applyFilter($event)"
+      (sortChange)="applySort($event)"
+      (actionTriggered)="handleAction($event)">
+      </app-table>
+    </div>
+  </div>
+
+<div>
+<mat-paginator 
+            [length]="totalRecords" 
+            [pageSize]="pageSize" 
+            (page)="onPageChange($event)">
+        </mat-paginator>
+        </div>
+</div>

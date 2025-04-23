@@ -26,7 +26,8 @@ export class AppComponent {
     this.router.events.subscribe((val) => {
       if (val instanceof NavigationEnd) {
         AppConfig.MENU_ITEMS.some((item) => {
-          if (item.route === val?.urlAfterRedirects) {
+          const routeRegex = new RegExp(`^${item.route}(/|$)`);
+          if (routeRegex.test(val.urlAfterRedirects)) {
             this.sidebarService.updateSelectedMenu(item);
             return true;
           }
