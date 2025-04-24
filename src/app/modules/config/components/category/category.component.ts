@@ -53,9 +53,6 @@ export class CategoryComponent {
           this.dataSource = [...this.dataSource, res]; 
           this.categoryName = '';
           this.getCategoryList()
-        },
-        error: (err) => {
-          console.error('Failed to create category:', err);
         }
       });
     }
@@ -135,6 +132,6 @@ export class CategoryComponent {
 
   applyFilter(filter: { key: string; value: string }): void {
     this.filterCriteria.set(filter.key, filter.value);
-    this.getCategoryList();
+    this.searchSubject.next(filter);
   }
 }

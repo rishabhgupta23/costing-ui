@@ -10,6 +10,7 @@ import {
   PartCreateRequest,
   PartDetails
 } from '../../models/part';
+import { Category } from '../../models/category';
 
 fdescribe('PartService', () => {
   let service: PartService;
@@ -114,13 +115,19 @@ fdescribe('PartService', () => {
   });
 
   it('should get part categories', () => {
+    const mockCategories: Category[] = [
+      { categoryId: 1, name: 'Cat1' },
+      { categoryId: 2, name: 'Cat2' }
+    ];
+  
     service.getPartCategories().subscribe(categories => {
-      expect(categories).toEqual(['Cat1', 'Cat2']);
+      expect(categories).toEqual(mockCategories);
     });
-
+  
     const req = httpMock.expectOne(ApiUtil.getApiUrl(API_END_POINTS.CATEGORIES));
-    req.flush({ data: ['Cat1', 'Cat2'] });
+    req.flush({ data: mockCategories });
   });
+  
 
   it('should get cost factors', () => {
     const mockFactors: CostFactor[] = [{ id: 1, name: 'Labor' }] as any;
