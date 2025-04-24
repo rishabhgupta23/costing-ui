@@ -5,7 +5,7 @@ import { CostFactor, CostHistoryResponse, PartCreateRequest, PartDetails, PartRo
 import { ApiUtil } from '../../../shared/utils/api.util';
 import { API_END_POINTS } from '../../../config/api.config';
 import { SortIcons } from '../../../shared/constants/table.constants';
-import { Category } from '../../models/category';
+import { ListItems } from '../../models/list-items';
 
 @Injectable({
   providedIn: 'root'
@@ -68,7 +68,7 @@ export class PartService {
         { params }
     );
 }
-   getPartCategories(): Observable<Category[]> {
+   getPartCategories(): Observable<ListItems[]> {
     return this.http.get<any>(ApiUtil.getApiUrl(API_END_POINTS.CATEGORIES)).pipe(
       map((res:any) => res.data)
     );

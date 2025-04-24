@@ -1,5 +1,5 @@
-export interface Category{
-    categoryId?: number,
+export interface ListItems{
+    id?: number,
     name: string
 }
 
