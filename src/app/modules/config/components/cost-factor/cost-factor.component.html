@@ -1,0 +1,40 @@
+<div class="app-page">
+    <div class="page-header">
+      <span class="page-title">Cost Factor</span>
+    </div>
+    <div class="form-field">
+      <label>Cost Factor</label>
+      <mat-form-field appearance="outline" class="custom-textfield">
+        <input matInput  class="input-field"
+          type="text" [(ngModel)]="costFactorName" 
+          name="costFactorName" 
+          placeholder="Enter Cost Factor" />
+      </mat-form-field>
+      <!-- <button class="primary-btn" (click)="submitCategoryForm()">
+        Add
+      </button> -->
+    </div>
+    
+    <div class="page-content">
+      <div class="card-nc" *ngIf="dataSource.length > 0">
+        <app-table
+        [config]="columns"
+        [data]="dataSource"
+        [(sort)] = "sortState" 
+        [showFilter]="true"
+        [showSort]="true"
+        (filterChange)="applyFilter($event)"
+        (sortChange)="applySort($event)"
+        (actionTriggered)="handleAction($event)">
+        </app-table>
+      </div>
+    </div>
+  
+  <div>
+  <mat-paginator 
+              [length]="totalRecords" 
+              [pageSize]="pageSize" 
+              (page)="onPageChange($event)">
+          </mat-paginator>
+          </div>
+  </div>
