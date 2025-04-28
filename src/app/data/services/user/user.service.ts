@@ -53,13 +53,13 @@ export class UserService {
       }
     });
 
-    const url = ApiUtil.getApiUrl(API_END_POINTS.GETUSER);
+    const url = ApiUtil.getApiUrl(API_END_POINTS.GET_USER);
 
     return this.http.get<any>(url, { params });
   }
 
   createUser(userData: { emailId: string; password: string; displayName: string; roleId: number }): Observable<User> {
-    return this.http.post<User>(ApiUtil.getApiUrl(API_END_POINTS.CREATEUSER), userData)
+    return this.http.post<User>(ApiUtil.getApiUrl(API_END_POINTS.CREATE_USER), userData)
   }
 
   deleteUser(userId: number): Observable<void> {

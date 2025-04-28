@@ -30,21 +30,17 @@ export class SidebarComponent {
       this.selectedMenu = menuItem;
     });
   }
-  isRoleLoaded = false;
 
   fetchUserRole() {
     this.userService.currentUser$.subscribe((user: any) => {
       if (user) {
         this.userRole = user.roleName.toLowerCase();
-        this.isRoleLoaded = true;
-        this.changeDetector.detectChanges();
       }
     });
   }
   
   isSettingsVisible(item: any): boolean {
-    return item.label !== 'Settings' || 
-           (this.userRole === UserRole.ADMIN || this.userRole === UserRole.SUPERADMIN);
+    return this.userRole === UserRole.ADMIN || this.userRole === UserRole.SUPERADMIN;
   }
   
 

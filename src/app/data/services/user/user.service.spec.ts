@@ -73,7 +73,7 @@ describe('UserService', () => {
     });
   
     const req = httpMock.expectOne((req) =>
-      req.url === ApiUtil.getApiUrl(API_END_POINTS.GETUSER) &&
+      req.url === ApiUtil.getApiUrl(API_END_POINTS.GET_USER) &&
       req.params.get('pageNo') === '0' &&
       req.params.get('pageSize') === '100' &&
       req.params.get('companyId') === '10' &&
@@ -110,7 +110,7 @@ describe('UserService', () => {
       expect(user).toEqual(mockCreatedUser);
     });
 
-    const req = httpMock.expectOne(ApiUtil.getApiUrl(API_END_POINTS.CREATEUSER));
+    const req = httpMock.expectOne(ApiUtil.getApiUrl(API_END_POINTS.CREATE_USER));
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(newUser);
     req.flush(mockCreatedUser);
@@ -152,9 +152,9 @@ describe('UserService', () => {
 
     const mockUpdatedUser: User = { 
       userId, 
-      displayName: userToUpdate.displayName || 'Default Name', 
-      emailId: userToUpdate.emailId || 'default@example.com',
-      roleId: userToUpdate.roleId || 1  
+      displayName: userToUpdate.displayName!, 
+      emailId: userToUpdate.emailId!,
+      roleId: userToUpdate.roleId
     };
   
     // Call the updateUser method and assert the result
