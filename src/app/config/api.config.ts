@@ -15,5 +15,7 @@ export const API_END_POINTS = {
     PART_HISTORY:'/parts/cost-history',
     COST_CALCULATE: '/cost/calculate/{partId}',
     PART_DOWNLOAD: '/parts/download',
-    BOM_DOWNLOAD:'/parts/bom/{partId}/download'
+    BOM_DOWNLOAD:'/parts/bom/{partId}/download',
+    PART_ATTRIBUTE: '/part-attributes',
+    PART_ATTRIBUTE_DETAILS: '/part-attributes/{attributeId}' 
 };

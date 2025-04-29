@@ -11,8 +11,10 @@ export class ConfigLandingComponent {
   onTileClick(tile: string) {
     if (tile === 'category') {
       this.router.navigateByUrl("/app/config/category");
-    } else {
-      alert('This feature is coming soon!');
+    } else if(tile === 'cost-factor'){
+      this.router.navigateByUrl("/app/config/cost-factor");
+    }else{
+      this.router.navigateByUrl("/app/config/part-attribute");
     }
   }
 }
