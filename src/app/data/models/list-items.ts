@@ -3,6 +3,11 @@ export interface ListItems{
     name: string
 }
 
+export interface CostFactorItems{
+    id?: number,
+    factorName: string
+}
+
 export interface TableActionEvent {
     action: string;
     row: any;
