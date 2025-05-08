@@ -18,8 +18,7 @@ export class SidebarComponent {
   constructor(
     private router: Router,
     private sidebarService: SidebarService,
-    private userService: UserService, // ⬅️ ADD THIS
-    private changeDetector: ChangeDetectorRef
+    private userService: UserService,
   ) {
     this.listenToMenuChanges();
     this.fetchUserRole();

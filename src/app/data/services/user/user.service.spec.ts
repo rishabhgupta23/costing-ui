@@ -73,7 +73,7 @@ describe('UserService', () => {
     });
   
     const req = httpMock.expectOne((req) =>
-      req.url === ApiUtil.getApiUrl(API_END_POINTS.GET_USER) &&
+      req.url === ApiUtil.getApiUrl(API_END_POINTS.USER) &&
       req.params.get('pageNo') === '0' &&
       req.params.get('pageSize') === '100' &&
       req.params.get('companyId') === '10' &&
@@ -110,22 +110,23 @@ describe('UserService', () => {
       expect(user).toEqual(mockCreatedUser);
     });
 
-    const req = httpMock.expectOne(ApiUtil.getApiUrl(API_END_POINTS.CREATE_USER));
+    const req = httpMock.expectOne(ApiUtil.getApiUrl(API_END_POINTS.USER));
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(newUser);
     req.flush(mockCreatedUser);
   });
 
-  it('should call deleteUser and return no content', () => {
+  it('should call deleteUser and return GeneralResponseDto', () => {
     const userId = 1;
+    const mockResponse = { message: 'User deleted successfully', status: 200 };
 
     service.deleteUser(userId).subscribe(response => {
-      expect(response).toBeNull();
+      expect(response).toEqual(mockResponse);
     });
 
-    const req = httpMock.expectOne(ApiUtil.getPreparedUrl(API_END_POINTS.USER_DETAILS, new Map([['userId', '1']])));
+    const req = httpMock.expectOne((request) => request.url === ApiUtil.getPreparedUrl(API_END_POINTS.USER_DETAILS, new Map([['userId', '1']])));
     expect(req.request.method).toBe('DELETE');
-    req.flush(null);
+    req.flush(mockResponse);
   });
   
   it('should call getUserById and return user data', () => {
