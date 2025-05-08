@@ -5,6 +5,7 @@ import { API_END_POINTS } from '../../../config/api.config';
 import { ApiUtil } from '../../../shared/utils/api.util';
 import { SortIcons } from '../../../shared/constants/table.constants';
 import { SortState } from '../../models/part';
+import { CostFactorItems } from '../../models/list-items';
 
 @Injectable({
   providedIn: 'root'
@@ -40,19 +41,21 @@ export class CostFactorService {
     return this.http.get<any>(url, { params });
   }
 
-  updateCostFactor(costFactorId: number, factorName: string): Observable<any> {
-    const params = new HttpParams()
-      .set('costFactorId', costFactorId.toString())
-      .set('factorName', factorName);
-    const url = ApiUtil.getApiUrl(API_END_POINTS.COST_FACTORS_TOOL);
-    return this.http.put<any>(url, null, { params });
+  updateCostFactor(id: number, factorName: CostFactorItems): Observable<CostFactorItems> {
+    const pathParams = new Map<string, string>();
+    pathParams.set('id', id.toString());
+  
+    const url = ApiUtil.getPreparedUrl(API_END_POINTS.COST_FACTORS_DETAILS, pathParams);
+    const params = new HttpParams().set('factorName', factorName.toString());
+  
+    return this.http.put<CostFactorItems>(url,factorName, { params });
   }
 
-  deleteCostFactor(costFactorId: number): Observable<any> {
+  deleteCostFactor(costFactorId: string): Observable<any> {
     const pathParams = new Map<string, string>();
-    pathParams.set('id', costFactorId.toString()); // ✅ Make sure key is 'id'
-    return this.http.delete<any>(ApiUtil.getPreparedUrl(API_END_POINTS.COST_FACTORS_DETAILS, pathParams));
+    pathParams.set('id', costFactorId);
+    const url = ApiUtil.getPreparedUrl(API_END_POINTS.COST_FACTORS_DETAILS, pathParams);
+    return this.http.delete<any>(url);
   }
-  
   
 }

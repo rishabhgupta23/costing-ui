@@ -46,11 +46,12 @@ export class CostFactorComponent {
       this.sortState
     ).subscribe({
       next: (res) => {
-        this.dataSource = res.data || [];
+        this.dataSource = res.data.map((item: any) => ({
+          ...item,
+          factorName: item.name
+        }));
+
         this.totalRecords = res.pageInfo?.totalRecords || 0;
-      },
-      error: () => {
-        this.snackbarService.error('Failed to load Cost Factors.');
       }
     });
   }
@@ -87,22 +88,18 @@ export class CostFactorComponent {
       width: '30rem',
       height: '16rem',
       data: {
-        name: row.factorName,
-        title: 'Edit Cost Factor',
-        label: 'Cost Factor Name'
+        labelName: 'Cost Factor Name',
+        dialogTitle: 'Edit Cost Factor',
+        name: row.factorName
       }
     });
-
+  
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.costFactorService.updateCostFactor(row.costFactorId, res).subscribe({
-          next: () => {
-            this.snackbarService.success('Cost Factor updated successfully!');
-            this.getCostFactorList();
-          },
-          error: () => {
-            this.snackbarService.error('Failed to update Cost Factor. Please try again.');
-          }
+        this.costFactorService.updateCostFactor(row.id, res).subscribe(() => {
+          this.snackbarService.success('Cost Factor updated successfully!');
+          this.getCostFactorList();
+          row.factorName = res;
         });
       }
     });
@@ -120,7 +117,7 @@ export class CostFactorComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === DialogCloseResponse.DELETE) {
-        this.costFactorService.deleteCostFactor(row.costFactorId).subscribe({
+        this.costFactorService.deleteCostFactor(row.id).subscribe({
           next: () => {
             this.snackbarService.success('Cost Factor deleted successfully!');
             this.getCostFactorList();
