@@ -48,4 +48,8 @@ export const SVG_ICONS = [
         path: baseIconsPath + '/calculate_icon.svg',
         name:'calculate_icon'
     },
+    {
+        path: baseIconsPath + '/setting_icon.svg',
+        name:'setting_icon'
+    },
 ];

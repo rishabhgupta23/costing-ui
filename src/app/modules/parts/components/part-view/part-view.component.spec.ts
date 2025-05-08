@@ -11,7 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select'; 
 
 
-fdescribe('PartViewComponent', () => {
+describe('PartViewComponent', () => {
   let component: PartViewComponent;
   let fixture: ComponentFixture<PartViewComponent>;
   let partServiceSpy: jasmine.SpyObj<PartService>;
