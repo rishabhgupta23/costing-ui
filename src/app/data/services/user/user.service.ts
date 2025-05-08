@@ -4,7 +4,7 @@ import { BehaviorSubject, map, Observable } from 'rxjs';
 import { LoginRequest, LoginResponse, User } from '../../models/user';
 import { ApiUtil } from '../../../shared/utils/api.util';
 import { API_END_POINTS } from '../../../config/api.config';
-import { SortState } from '../../models/part';
+import { GeneralResponseDto, SortState } from '../../models/part';
 import { SortIcons } from '../../../shared/constants/table.constants';
 
 @Injectable({
@@ -53,19 +53,19 @@ export class UserService {
       }
     });
 
-    const url = ApiUtil.getApiUrl(API_END_POINTS.GET_USER);
+    const url = ApiUtil.getApiUrl(API_END_POINTS.USER);
 
     return this.http.get<any>(url, { params });
   }
 
   createUser(userData: { emailId: string; password: string; displayName: string; roleId: number }): Observable<User> {
-    return this.http.post<User>(ApiUtil.getApiUrl(API_END_POINTS.CREATE_USER), userData)
+    return this.http.post<User>(ApiUtil.getApiUrl(API_END_POINTS.USER), userData)
   }
 
-  deleteUser(userId: number): Observable<void> {
+  deleteUser(userId: number): Observable<GeneralResponseDto> {
     const params = new Map<string, string>();
     params.set('userId', userId.toString());
-    return this.http.delete<void>(ApiUtil.getPreparedUrl(API_END_POINTS.USER_DETAILS, params));
+    return this.http.delete<GeneralResponseDto>(ApiUtil.getPreparedUrl(API_END_POINTS.USER_DETAILS, params));
   }
 
   getUserById(userId: number): Observable<any> {
