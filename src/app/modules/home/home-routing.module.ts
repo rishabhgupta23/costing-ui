@@ -25,6 +25,10 @@ const routes: Routes = [
         loadChildren: () => import("../calculate/calculate.module").then((module) => module.CalculateModule)
       },
       {
+        path: "config",
+        loadChildren: () => import("../config/config.module").then((module) => module.ConfigModule)
+      },
+      {
         path: "users",
         loadChildren: () => import("../setting/setting.module").then((module) => module.SettingModule)
       }

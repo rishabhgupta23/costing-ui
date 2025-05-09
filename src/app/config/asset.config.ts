@@ -49,6 +49,10 @@ export const SVG_ICONS = [
         name:'calculate_icon'
     },
     {
+        path: baseIconsPath + '/config_icon.svg',
+        name:'config_icon'
+    },
+    {
         path: baseIconsPath + '/setting_icon.svg',
         name:'setting_icon'
     },
