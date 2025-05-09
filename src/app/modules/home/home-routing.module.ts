@@ -23,6 +23,10 @@ const routes: Routes = [
       {
         path: "calculate",
         loadChildren: () => import("../calculate/calculate.module").then((module) => module.CalculateModule)
+      },
+      {
+        path: "users",
+        loadChildren: () => import("../setting/setting.module").then((module) => module.SettingModule)
       }
     ]
   }

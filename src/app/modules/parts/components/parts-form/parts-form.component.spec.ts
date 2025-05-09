@@ -15,7 +15,7 @@ import { PartRow } from '../../../../data/models/part';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 import { TableActions } from '../../../../shared/constants/table.constants';
 
-fdescribe('PartsFormComponent', () => {
+describe('PartsFormComponent', () => {
   let component: PartsFormComponent;
   let fixture: ComponentFixture<PartsFormComponent>;
 

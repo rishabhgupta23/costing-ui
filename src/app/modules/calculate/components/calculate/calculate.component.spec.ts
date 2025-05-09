@@ -19,7 +19,7 @@ import { CostItem } from '../../../../data/models/cost-calculator';
 import { FormGroup, FormControl } from '@angular/forms';
 import { mockPartList, mockCostResponse } from '../../../../mock-data/cost.mock-data';
 
-fdescribe('CalculateComponent', () => {
+describe('CalculateComponent', () => {
   let component: CalculateComponent;
   let fixture: ComponentFixture<CalculateComponent>;
   let mockPartService: jasmine.SpyObj<PartService>;

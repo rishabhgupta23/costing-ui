@@ -1,0 +1,31 @@
+<div class="app-page">
+    <div class="page-header">
+        <span class="page-title">User</span>
+        <span class="button-group">
+            <button class="primary-btn" (click)="createUser()">Add User</button>
+        </span>
+    </div>
+    <div class="page-content">
+        <div class="card-nc">
+            <div class="table-container">
+                <div class="table-content">
+            <app-table
+            [data]="users" 
+            [(sort)] = "sortState"
+            [config]="columns"
+            (filterChange)="applyFilter($event)"
+            [showFilter]="true"
+            (actionTriggered)="handleAction($event)"
+            (sortChange)="applySort($event)"
+            [showSort]="true">
+        </app-table>
+        </div>
+        <mat-paginator 
+        [length]="totalRecords" 
+        [pageSize]="pageSize" 
+        (page)="onPageChange($event)">
+      </mat-paginator>
+    </div>
+        </div>
+    </div>
+</div>

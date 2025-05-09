@@ -9,7 +9,7 @@ import { COST_FACTOR_TABLE_COLUMNS } from '../../../../data/constants/part.const
 import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
 import { TableComponent } from '../../../../shared/components/table/table.component';
 
-fdescribe('HistorydialogComponent', () => {
+describe('HistorydialogComponent', () => {
   let component: HistorydialogComponent;
   let fixture: ComponentFixture<HistorydialogComponent>;
   let dialogRefSpy: jasmine.SpyObj<MatDialogRef<HistorydialogComponent>>;
