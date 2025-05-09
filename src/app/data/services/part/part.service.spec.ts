@@ -123,10 +123,11 @@ describe('PartService', () => {
     service.getPartCategories().subscribe(categories => {
       expect(categories).toEqual(mockCategories);
     });
-
+  
     const req = httpMock.expectOne(ApiUtil.getApiUrl(API_END_POINTS.CATEGORIES));
     req.flush({ data: mockCategories });
   });
+  
 
   it('should get cost factors', () => {
     const mockFactors: CostFactor[] = [{ id: 1, name: 'Labor' }] as any;

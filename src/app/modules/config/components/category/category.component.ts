@@ -131,6 +131,6 @@ export class CategoryComponent {
 
   applyFilter(filter: { key: string; value: string }): void {
     this.filterCriteria.set(filter.key, filter.value);
-    this.getCategoryList();
+    this.searchSubject.next(filter);
   }
 }
