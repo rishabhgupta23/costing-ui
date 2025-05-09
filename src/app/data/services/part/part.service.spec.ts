@@ -10,7 +10,7 @@ import {
   PartCreateRequest,
   PartDetails
 } from '../../models/part';
-import { ListItems } from '../../models/list-items';
+import { ListItem } from '../../models/list-items';
 
 describe('PartService', () => {
   let service: PartService;
@@ -116,7 +116,7 @@ describe('PartService', () => {
 
 
   it('should get part categories', () => {
-    const mockCategories: ListItems[] = [
+    const mockCategories: ListItem[] = [
       { id: 1, name: 'Cat1' },
       { id: 2, name: 'Cat2' }
     ];

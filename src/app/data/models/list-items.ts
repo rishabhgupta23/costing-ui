@@ -1,9 +1,4 @@
-export interface ListItems{
-    id?: number,
+export interface ListItem{
+    id: number,
     name: string
-}
-
-export interface TableActionEvent {
-    action: string;
-    row: any;
 }
