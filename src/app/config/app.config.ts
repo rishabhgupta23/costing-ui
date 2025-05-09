@@ -18,7 +18,13 @@ export class AppConfig {
     {
       label: 'Config',
       route: '/app/config',
-      icon: 'config_icon'
+      icon: 'config_icon',
+    },
+    {
+      label: 'Settings',
+      route: '/app/users',
+      position: 'bottom',
+      icon: 'setting_icon'
     }
   ];
 }

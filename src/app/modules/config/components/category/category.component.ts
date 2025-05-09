@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CATEGORY_TABLE_COLUMNS } from 'src/app/data/constants/category.constant';
+import { CATEGORY_TABLE_COLUMNS } from 'src/app/data/constants/config-columns.constant';
 import { CategoryService } from 'src/app/data/services/category/category.service';
 import { PageEvent } from '@angular/material/paginator';
 import { SortState } from 'src/app/data/models/part'; // Import SortState if you need sorting
@@ -24,17 +24,15 @@ export class CategoryComponent {
   pageSize: number = 100;
   currentPage: number = 0;
   totalRecords: number = 0;
-  readonly dialog = inject(MatDialog);
   filterCriteria: Map<string, string> = new Map();
   sortState: SortState = { sortColumn: 'name', sortState: SortIcons.ASC };
   private searchSubject = new Subject<{ key: string; value: string }>(); 
 
-  constructor(private categoryService: CategoryService, private snackbarService:SnackbarService) {
+  constructor(private categoryService: CategoryService, private snackbarService: SnackbarService, private dialog: MatDialog) {
     this.getCategoryList();
     this.listenToFilterChanges();
   }
 
-  // Method to fetch categories with pagination, sorting, and filtering
   getCategoryList(): void {
     this.categoryService.getCategoryList(this.currentPage, this.pageSize, this.filterCriteria, this.sortState
     ).subscribe({
@@ -49,10 +47,9 @@ export class CategoryComponent {
     if (this.categoryName) {
       const payload = { name: this.categoryName };
       this.categoryService.createCategory(payload).subscribe({
-        next: (res) => {
-          this.dataSource = [...this.dataSource, res]; 
+        next: () => {
           this.categoryName = '';
-          this.getCategoryList()
+          this.getCategoryList();
         }
       });
     }
@@ -72,22 +69,24 @@ export class CategoryComponent {
       );
   }
 
-  openEditDialog(row: any){
+  openEditDialog(row: any): void {
     const dialogRef = this.dialog.open(EditDialogComponent, {
       width: '30rem',
       height: '16rem',
       data: { name: row.name }
     });
-
+  
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        const updatedCategory = { name: res };
+        const updatedCategory = { id: row.categoryId, name: res };
         this.categoryService.updateCategory(row.categoryId, updatedCategory).subscribe(() => {
           row.name = res;
         });
       }
     });
   }
+  
+  
 
   openDeleteDialog(row:any){
     const dialogData: ConfirmDialogData = {
