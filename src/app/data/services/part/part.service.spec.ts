@@ -10,9 +10,9 @@ import {
   PartCreateRequest,
   PartDetails
 } from '../../models/part';
-import { ListItems } from '../../models/list-items';
+import { ListItem } from '../../models/list-items';
 
-fdescribe('PartService', () => {
+describe('PartService', () => {
   let service: PartService;
   let httpMock: HttpTestingController;
 
@@ -56,7 +56,7 @@ fdescribe('PartService', () => {
   it('should call getPartList with sort and search term', () => {
     const filters = new Map([['category', 'Electrical']]);
     service.getPartList(1, 20, filters, 'partName', { sortColumn: 'partName', sortState: SortIcons.ASC }).subscribe(res => {
-      expect(res).toEqual({ content: [] });
+      expect(res).toEqual({ data: [], pageInfo: { totalRecords: 0 } });
     });
   
     const req = httpMock.expectOne(req =>
@@ -66,7 +66,7 @@ fdescribe('PartService', () => {
     expect(req.request.params.get('pageNo')).toBe('1');
     expect(req.request.params.get('sortColumn')).toBe('partName');
     expect(req.request.params.get('sortMode')).toBe(SortIcons.ASC);
-    req.flush({ content: [] });
+    req.flush({ data: [], pageInfo: { totalRecords: 0 } });
   });
   
 
@@ -114,18 +114,20 @@ fdescribe('PartService', () => {
     req.flush(mockCostHistory);
   });
 
+
   it('should get part categories', () => {
-    const mockCategories: ListItems[] = [
+    const mockCategories: ListItem[] = [
       { id: 1, name: 'Cat1' },
       { id: 2, name: 'Cat2' }
     ];
     service.getPartCategories().subscribe(categories => {
       expect(categories).toEqual(mockCategories);
     });
-
+  
     const req = httpMock.expectOne(ApiUtil.getApiUrl(API_END_POINTS.CATEGORIES));
     req.flush({ data: mockCategories });
   });
+  
 
   it('should get cost factors', () => {
     const mockFactors: CostFactor[] = [{ id: 1, name: 'Labor' }] as any;

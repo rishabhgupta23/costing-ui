@@ -48,6 +48,10 @@ export interface PartBomData{
     value: number;
 }
 
+export interface GeneralResponseDto{
+    message: string;
+    status: number
+}
 
 export interface PartRow{
     partId: number;

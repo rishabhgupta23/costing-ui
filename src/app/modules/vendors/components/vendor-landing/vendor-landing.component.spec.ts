@@ -1,5 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { VendorLandingComponent } from './vendor-landing.component';
 import { VendorService } from '../../../../data/services/vendor/vendor.service';
 import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
@@ -9,7 +8,7 @@ import { of } from 'rxjs';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-describe('VendorLandingComponent', () => {
+fdescribe('VendorLandingComponent', () => {
   let component: VendorLandingComponent;
   let fixture: ComponentFixture<VendorLandingComponent>;
   let vendorServiceSpy: jasmine.SpyObj<VendorService>;
@@ -43,7 +42,7 @@ describe('VendorLandingComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 

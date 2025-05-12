@@ -52,4 +52,8 @@ export const SVG_ICONS = [
         path: baseIconsPath + '/config_icon.svg',
         name:'config_icon'
     },
+    {
+        path: baseIconsPath + '/setting_icon.svg',
+        name:'setting_icon'
+    },
 ];

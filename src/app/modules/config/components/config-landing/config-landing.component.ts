@@ -7,6 +7,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./config-landing.component.scss']
 })
 export class ConfigLandingComponent {
+tiles = [
+  { label: 'Category', route: 'category' },
+  {label : 'Cost Factors', route: 'cost-factors'}
+];
   constructor(private router:Router){}
   onTileClick(tile: string) {
     if (tile === 'category') {
