@@ -64,7 +64,7 @@ describe('CalculateComponent', () => {
 
   it('should calculate cost when valid form is submitted', () => {
    const selectedPart = mockPartList[0]; 
-    component.calculateform.get('part')?.setValue(selectedPart);
+    component.calculateform.get('partControl')?.setValue(selectedPart);
     component.calculateform.get('pricing')?.setValue( PricingOptions.MIN.value as any);
     mockCostCalculatorService.getCost.and.returnValue(of(mockCostResponse));
     component.getCost();
@@ -78,19 +78,19 @@ describe('CalculateComponent', () => {
     const selectedPart = mockPartList[0]; 
   
     component.calculateform = new FormGroup({
-      part: new FormControl(null),
+      partControl: new FormControl(null),
       pricing: new FormControl(null)
     });
   
     component.onPartSelected(selectedPart);
   
-    expect(component.calculateform.get('part')?.value as any).toEqual(selectedPart);
+    expect(component.calculateform.get('partControl')?.value as any).toEqual(selectedPart);
 
   });
 
   it('should not calculate cost if form is incomplete', () => {
     component.calculateform.setValue({
-      part: null,
+      partControl: null,
       pricing: null
     });
 
@@ -131,7 +131,7 @@ describe('CalculateComponent', () => {
 
     component.onReset();
 
-    expect(component.calculateform.value).toEqual({ part: null, pricing: null });
+    expect(component.calculateform.value).toEqual({ partControl: null, pricing: null });
     expect(component.totalQP).toBeUndefined();
     expect(component.isCalculated).toBeFalse();
   });
@@ -155,7 +155,7 @@ describe('CalculateComponent', () => {
     component.defaultCostingList = [
       { subTotal: 50 }, { subTotal: 30 }
     ] as CostItem[];
-    component.onClick();
+    component.onResetClick();
     expect(component.costingList).toEqual(component.defaultCostingList);
     expect(component.totalQP).toBe(80);
   });

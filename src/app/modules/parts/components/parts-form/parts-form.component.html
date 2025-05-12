@@ -8,9 +8,15 @@
 
             <mat-step [stepControl]="partForm">
                 <ng-template matStepLabel>Part Details</ng-template>
+                <ng-template matStepperIcon="edit"> 
+                    <mat-icon svgIcon="edit"></mat-icon>
+                  </ng-template>
             </mat-step>
             <mat-step [stepControl]="partForm.get('partType')?.value === partTypeEnum.UNIT ? costDetailsForm : bomDetailsForm">
                 <ng-template matStepLabel>Additional Details</ng-template>
+                <ng-template matStepperIcon="edit"> 
+                    <mat-icon svgIcon="edit"></mat-icon>
+                  </ng-template>
             </mat-step>
         </mat-stepper>
     </div>
@@ -117,12 +123,12 @@
             <div class="nav-buttons">
               <button mat-icon-button (click)="stepper.previous(); selectedStepIndex = stepper.selectedIndex" 
                   [disabled]="selectedStepIndex === 0">
-                  <mat-icon>chevron_left</mat-icon>
+                  <mat-icon svgIcon="prev_icon"></mat-icon>
               </button>
           
               <button mat-icon-button (click)="goToNextStep(stepper)" 
                   [disabled]="selectedStepIndex === 1">
-                  <mat-icon>chevron_right</mat-icon>
+                  <mat-icon svgIcon="next_icon" class="next-step"></mat-icon>
               </button>
             </div>
           

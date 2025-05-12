@@ -47,12 +47,12 @@ export class CalculateComponent {
   pricingOptions = Object.values(PricingOptions);
     
   calculateform = new FormGroup({
-    part: new FormControl(null, Validators.required),
+    partControl: new FormControl(null, Validators.required),
     pricing: new FormControl(null, Validators.required)
   });
   
   getCost(): void {
-    const part = this.calculateform.value.part as PartRow | null;
+    const part = this.calculateform.value.partControl as PartRow | null;
     const mode = this.calculateform.value.pricing;
   
     if (part && mode) {
@@ -70,10 +70,10 @@ export class CalculateComponent {
   }
 
   onPartSelected(selectedPart: any) {
-    this.calculateform.get('part')?.setValue(selectedPart);
+    this.calculateform.get('partControl')?.setValue(selectedPart);
   }
 
-  onClick(){
+  onResetClick(){
       this.costingList = JSON.parse(JSON.stringify(this.defaultCostingList));
       this.totalQP = this.costingList.reduce((sum, item) => sum + (item.subTotal ?? 0), 0);
   }

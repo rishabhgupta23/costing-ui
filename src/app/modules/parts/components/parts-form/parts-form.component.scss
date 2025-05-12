@@ -43,7 +43,7 @@ mat-form-field {
     padding-top: 8px;
 }
 .custom-textfield {
-    --mdc-outlined-text-field-container-shape: 12px; /* Example for rounded corners */
+    border-radius: 12px; /* Example for rounded corners */
 }
 
 .custom-vendor-textfield{
@@ -131,7 +131,7 @@ mat-panel-description{
         background-color: gray;
     }
 
-button[mat-icon-button] {
+button[mat-icon-button]{
     background-color: transparent;
     border: none;
     cursor: pointer;
