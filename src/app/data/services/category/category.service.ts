@@ -5,7 +5,7 @@ import { ApiUtil } from '../../../shared/utils/api.util';
 import { API_END_POINTS } from '../../../config/api.config';
 import { SortState } from '../../models/part';
 import { SortIcons } from '../../../shared/constants/table.constants';
-import { ListItems } from '../../models/list-items';
+import { ListItem } from '../../models/list-items';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,7 @@ import { ListItems } from '../../models/list-items';
 export class CategoryService {
   constructor(private http: HttpClient) {}
 
-  createCategory(category: ListItems): Observable<any> {
+  createCategory(category: { name: string }): Observable<any> {
     return this.http.post<any>(ApiUtil.getApiUrl(API_END_POINTS.CATEGORIES), category);
   }
 
@@ -39,10 +39,10 @@ export class CategoryService {
     return this.http.get<any>(url, { params });
   }
 
-  updateCategory(categoryId: number, category: ListItems): Observable<ListItems> {
+  updateCategory(categoryId: number, category: ListItem): Observable<ListItem> {
     const pathParams = new Map<string, string>();
     pathParams.set('categoryId', categoryId.toString());
-    return this.http.put<ListItems>(ApiUtil.getPreparedUrl(API_END_POINTS.CATEGORIES_DETAILS, pathParams), category);
+    return this.http.put<ListItem>(ApiUtil.getPreparedUrl(API_END_POINTS.CATEGORIES_DETAILS, pathParams), category);
   }
 
   deleteCategory(categoryId: string): Observable<any> {
