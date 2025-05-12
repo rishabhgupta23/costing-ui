@@ -4,11 +4,13 @@ import { CostFactorService } from 'src/app/data/services/cost-factor/cost-factor
 import { SnackbarService } from 'src/app/data/services/snackbar/snackbar.service';
 import { MatDialog } from '@angular/material/dialog';
 import { of, Subject } from 'rxjs';
+import { fakeAsync, tick } from '@angular/core/testing';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { COSTFACTOR_TABLE_COLUMNS } from 'src/app/data/constants/list-items.constant';
 import { DialogCloseResponse } from 'src/app/shared/constants/dialog.constants';
-import { SortIcons } from 'src/app/shared/constants/table.constants';
+import { SortIcons, TableActions } from 'src/app/shared/constants/table.constants';
+import { FormsModule } from '@angular/forms';
 
 class MockCostFactorService {
   getCostFactorList() {
@@ -47,17 +49,18 @@ class MockMatDialog {
   }
 }
 
-fdescribe('CostFactorComponent', () => {
+describe('CostFactorComponent', () => {
   let component: CostFactorComponent;
   let fixture: ComponentFixture<CostFactorComponent>;
   let costFactorService: CostFactorService;
+  let mockCategoryService: any;
   let snackbarService: SnackbarService;
   let dialog: MatDialog;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [CostFactorComponent],
-      imports: [MatPaginatorModule],
+      imports: [MatPaginatorModule, FormsModule],
       providers: [
         { provide: CostFactorService, useClass: MockCostFactorService },
         { provide: SnackbarService, useClass: MockSnackbarService },
@@ -105,7 +108,7 @@ fdescribe('CostFactorComponent', () => {
     component.openEditDialog(row);
 
     expect(dialog.open).toHaveBeenCalled();
-    expect(costFactorService.updateCostFactor).toHaveBeenCalledWith(1, { factorName: 'Updated Factor' });
+    expect(costFactorService.updateCostFactor).toHaveBeenCalledWith(1,'Updated Factor' );
     expect(snackbarService.success).toHaveBeenCalledWith('Cost Factor updated successfully!');
   });
 
@@ -116,13 +119,34 @@ fdescribe('CostFactorComponent', () => {
     spyOn(costFactorService, 'deleteCostFactor').and.callThrough();
     spyOn(snackbarService, 'success');
 
-    const row = { id: 1 };
+    const row = { id: '1' };
     component.openDeleteDialog(row);
 
     expect(dialog.open).toHaveBeenCalled();
     expect(costFactorService.deleteCostFactor).toHaveBeenCalledWith('1');
     expect(snackbarService.success).toHaveBeenCalledWith('Cost Factor deleted successfully!');
   });
+
+  it('should listen to filter changes and trigger category list fetch', fakeAsync(() => {
+  component['searchSubject'].next({ key: 'name', value: 'test' });
+  tick(400);
+  expect(mockCategoryService.getCategoryList).toHaveBeenCalledTimes(2);
+}));
+
+it('should not trigger API call if filter value has not changed (distinctUntilChanged)', fakeAsync(() => {
+  component.applyFilter({ key: 'name', value: 'sameValue' });
+  tick(400);
+  fixture.detectChanges();
+
+  expect(mockCategoryService.getCategoryList).toHaveBeenCalledTimes(2);
+
+  component.applyFilter({ key: 'name', value: 'sameValue' });
+  tick(400);
+  fixture.detectChanges();
+
+  expect(mockCategoryService.getCategoryList).toHaveBeenCalledTimes(2);
+}));
+
 
   it('should handle filter changes', () => {
     spyOn(component, 'getCostFactorList');
@@ -141,4 +165,20 @@ fdescribe('CostFactorComponent', () => {
     component.onPageChange({ pageIndex: 1, pageSize: 50, length: 100 } as any);
     expect(component.getCostFactorList).toHaveBeenCalled();
   });
+
+  it('should call openEditDialog on EDIT action', () => {
+  spyOn(component, 'openEditDialog');
+  const row = { id: '1', factorName: 'Test' };
+  component.handleAction({ action: TableActions.EDIT, row });
+  expect(component.openEditDialog).toHaveBeenCalledWith(row);
+});
+
+it('should handle delete action', () => {
+  const row = { categoryId: 2, name: 'Row2' };
+  spyOn(component, 'openDeleteDialog');
+  component.handleAction({ action: TableActions.DELETE, row });
+  expect(component.openDeleteDialog).toHaveBeenCalledWith(row);
+});
+
+
 });

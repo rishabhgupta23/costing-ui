@@ -41,7 +41,7 @@ export class CostFactorService {
     return this.http.get<any>(url, { params });
   }
 
-  updateCostFactor(id: number, factorName: CostFactorItems): Observable<CostFactorItems> {
+  updateCostFactor(id: number, factorName: string): Observable<CostFactorItems> {
     const pathParams = new Map<string, string>();
     pathParams.set('id', id.toString());
   
