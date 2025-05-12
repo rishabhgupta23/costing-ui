@@ -9,13 +9,13 @@
             <mat-step [stepControl]="partForm">
                 <ng-template matStepLabel>Part Details</ng-template>
                 <ng-template matStepperIcon="edit"> 
-                    <mat-icon svgIcon="edit"></mat-icon>
-                  </ng-template>
+                    <mat-icon svgIcon="tick_icon"></mat-icon>
+                </ng-template>
             </mat-step>
             <mat-step [stepControl]="partForm.get('partType')?.value === partTypeEnum.UNIT ? costDetailsForm : bomDetailsForm">
                 <ng-template matStepLabel>Additional Details</ng-template>
                 <ng-template matStepperIcon="edit"> 
-                    <mat-icon svgIcon="edit"></mat-icon>
+                    <mat-icon svgIcon="tick_icon"></mat-icon>
                   </ng-template>
             </mat-step>
         </mat-stepper>

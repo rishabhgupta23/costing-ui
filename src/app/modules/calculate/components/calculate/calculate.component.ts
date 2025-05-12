@@ -26,7 +26,6 @@ export class CalculateComponent {
   totalRecords:number=0;
   toggleControl = new FormControl(false);
 
-  partControl = new FormControl('');
   filteredParts: Observable<PartRow[]> | undefined;
 
   constructor(private partService: PartService, private costCalculatorService: CostCalculatorService) {
@@ -76,6 +75,9 @@ export class CalculateComponent {
   onResetClick(){
       this.costingList = JSON.parse(JSON.stringify(this.defaultCostingList));
       this.totalQP = this.costingList.reduce((sum, item) => sum + (item.subTotal ?? 0), 0);
+  }
+  get partControl(): FormControl {
+    return this.calculateform.get('partControl') as FormControl;
   }
   
 

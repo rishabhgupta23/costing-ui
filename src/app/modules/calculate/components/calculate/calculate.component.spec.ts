@@ -54,7 +54,11 @@ describe('CalculateComponent', () => {
 
     fixture = TestBed.createComponent(CalculateComponent);
     component = fixture.componentInstance;
-    component.partControl = new FormControl();
+    component.calculateform = new FormGroup({
+      partControl: new FormControl(),
+      pricing: new FormControl()
+    });
+    
     fixture.detectChanges();
   });
 
@@ -179,7 +183,11 @@ describe('CalculateComponent', () => {
     fixture.destroy();
     fixture = TestBed.createComponent(CalculateComponent);
     component = fixture.componentInstance;
-    component.partControl = new FormControl();
+    component.calculateform = new FormGroup({
+      partControl: new FormControl(),
+      pricing: new FormControl()
+    });
+    
     component.filterCriteria = new Map<string, string>();
     const getPartListSpy = spyOn(component, 'getPartList');
   

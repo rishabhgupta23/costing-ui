@@ -60,4 +60,8 @@ export const SVG_ICONS = [
         path: baseIconsPath + '/prev_icon.svg',
         name:'prev_icon'
     },
+    {
+        path: baseIconsPath + '/tick_icon.svg',
+        name:'tick_icon'
+    },
 ];
