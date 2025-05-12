@@ -14,9 +14,8 @@ export class CostFactorService {
   constructor(private http: HttpClient) {}
 
   createCostFactor(factorName: string): Observable<any> {
-    const params = new HttpParams().set('factorName', factorName);
     const url = ApiUtil.getApiUrl(API_END_POINTS.COST_FACTORS_TOOL);
-    return this.http.post<any>(url, null, { params });
+    return this.http.post<any>(url, factorName);
   }
 
   getCostFactorList(
@@ -44,11 +43,10 @@ export class CostFactorService {
   updateCostFactor(id: number, factorName: string): Observable<CostFactorItems> {
     const pathParams = new Map<string, string>();
     pathParams.set('id', id.toString());
-  
     const url = ApiUtil.getPreparedUrl(API_END_POINTS.COST_FACTORS_DETAILS, pathParams);
-    const params = new HttpParams().set('factorName', factorName.toString());
+
   
-    return this.http.put<CostFactorItems>(url,factorName, { params });
+    return this.http.put<CostFactorItems>(url,factorName);
   }
 
   deleteCostFactor(costFactorId: string): Observable<any> {
