@@ -1,13 +1,87 @@
 .login-container {
-    height: 100vh;
-    width: 100vw;
     display: flex;
+    height: 100vh;
+    width: 100%;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-image: linear-gradient(to right, rgb(235, 239, 250), #cfdef3);
+}
 
+.login-body{
+    display:flex ;
+    flex-direction: row;
+    height: 82vh;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
     .login-form {
+        width: 40%;
         display: flex;
         flex-direction: column;
         justify-content: center;
+
+        .form-text{
+             box-shadow: inset 0px 5px 10px rgba(0, 0, 0, 0.3);
+                border-radius: 5px;
+            height: 55px;
+            width: 70%;
+            border: none;
+            background-color: white;
+        }
+        .login-btn {
+            width: 70%;
+            align-items: center;
+            justify-content: center;
+            padding: 0.6rem 1.6rem;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: medium;
+            border-radius: 10px;
+            min-width: 5rem;
+            background-color:rgb(58, 119, 252);
+            color: white;
+            border: none;
+            &:hover {
+                background-color: darken(rgb(58, 119, 252) , 10%);
+            }
+        }
+        .contact-us{
+            margin-top: 10px; /* Adds some space above */
+            font-size: 14px;
+            margin-left: 70px;
+        }
+    }
+
+    .login-image{
+        display: flex;
+        width:60%;
+        height:80%; 
+        justify-content: center;
     }
 }
+
+.forgot-password {
+    width: 70%; /* Matches the width of form fields */
+    display: flex;
+    justify-content: flex-end; /* Aligns the link to the right */
+    margin-bottom: 10px; /* Adds space below */
+}
+
+.forgot-password a {
+    text-decoration: none;
+    color: #007BFF; /* Bootstrap blue color */
+    font-size: 14px;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+    color:rgb(57, 57, 146)
+}
+
+
+
+
+
+
+

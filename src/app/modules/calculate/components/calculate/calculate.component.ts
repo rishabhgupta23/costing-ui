@@ -14,18 +14,18 @@ import { PricingOptions } from '../../../../shared/constants/pricingoptions.cons
   styleUrl: './calculate.component.scss'
 })
 export class CalculateComponent {
-  COST_CALCULATOR_COLUMNS = COST_CALCULATOR_COLUMNS;
+  costCalculatorColumn: any[] = COST_CALCULATOR_COLUMNS(false); 
   isCalculated: boolean | undefined;
   totalQP: number | undefined;
   partList: PartRow[] = [];
   currentPage=0;
   pageSize=100;
   costingList: CostItem[]=[];
+  defaultCostingList: CostItem[] = [];
   filterCriteria:  Map<string, string> = new Map();
   totalRecords:number=0;
-  private searchSubject = new Subject<{ key: string; value: string }>(); 
+  toggleControl = new FormControl(false);
 
-  partControl = new FormControl('');
   filteredParts: Observable<PartRow[]> | undefined;
 
   constructor(private partService: PartService, private costCalculatorService: CostCalculatorService) {
@@ -43,26 +43,22 @@ export class CalculateComponent {
       }
     );
   }
-  applyFilter(filter: { key: string; value: string }): void {
-    this.filterCriteria.set(filter.key, filter.value);
-    this.searchSubject.next(filter);
-  }
-  
   pricingOptions = Object.values(PricingOptions);
     
   calculateform = new FormGroup({
-    part: new FormControl(null, Validators.required),
+    partControl: new FormControl(null, Validators.required),
     pricing: new FormControl(null, Validators.required)
   });
   
   getCost(): void {
-    const part = this.calculateform.value.part as PartRow | null;
+    const part = this.calculateform.value.partControl as PartRow | null;
     const mode = this.calculateform.value.pricing;
   
     if (part && mode) {
       this.costCalculatorService.getCost(part.partId, mode).subscribe(
         (response) => {
           this.costingList = response.costCalcDtoList || [];
+          this.defaultCostingList = JSON.parse(JSON.stringify(this.costingList));
           this.totalQP = response.totalCost || 0;
           this.isCalculated = true;
         }
@@ -73,7 +69,15 @@ export class CalculateComponent {
   }
 
   onPartSelected(selectedPart: any) {
-    this.calculateform.get('part')?.setValue(selectedPart);
+    this.calculateform.get('partControl')?.setValue(selectedPart);
+  }
+
+  onResetClick(){
+      this.costingList = JSON.parse(JSON.stringify(this.defaultCostingList));
+      this.totalQP = this.costingList.reduce((sum, item) => sum + (item.subTotal ?? 0), 0);
+  }
+  get partControl(): FormControl {
+    return this.calculateform.get('partControl') as FormControl;
   }
   
 
@@ -86,17 +90,20 @@ export class CalculateComponent {
       switchMap((value) => {
         const filterValue = value ?? '';
         this.filterCriteria.set('partName', filterValue);
-        this.filterCriteria.set('partNumber', filterValue)
         return this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria);
       }),
       map((response) => {
         this.partList = response.data?.partsList || [];
-        return this.partList.filter(part => 
-          part.partName?.toLowerCase().includes(this.filterCriteria.get('partName')?.toLowerCase() || '') || 
-          part.partNumber?.toLowerCase().includes(this.filterCriteria.get('partNumber')?.toLowerCase() || '')
-        );
+        return this.partList;
       })
     );
+    this.toggleControl.valueChanges.subscribe((value) => {
+      this.costCalculatorColumn = COST_CALCULATOR_COLUMNS(value ?? false);
+      if (!value) {
+        this.costingList = JSON.parse(JSON.stringify(this.defaultCostingList));
+        this.totalQP = this.costingList.reduce((sum, item) => sum + (item.subTotal ?? 0), 0);
+      }
+    });
   }
   
   
@@ -106,6 +113,15 @@ export class CalculateComponent {
     this.isCalculated = false;
     this.totalQP = undefined;
   }
+  onCellEdit(row: CostItem, changedKey: string): void {
+    if (this.toggleControl.value) {
+      const quantity = row.quantity ?? 0;
+      const rate = row.rate ?? 0;
+      row.subTotal = quantity * rate;
+      this.totalQP = this.costingList.reduce((sum, item) => sum + (item.subTotal ?? 0), 0);
+    }
+  }
+  
   
 
 displayFn(part: any): string {

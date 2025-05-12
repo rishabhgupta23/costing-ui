@@ -11,7 +11,7 @@
                     <input type="text" 
                            placeholder="Select Part" 
                            matInput 
-                           [formControl]="partControl" 
+                           formControlName="partControl" 
                            [matAutocomplete]="auto">
                     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" 
                                       (optionSelected)="onPartSelected($event.option.value)">
@@ -41,7 +41,13 @@
             <br>
             <br>
             <div class="sub-heading" *ngIf="isCalculated">COSTING</div>
-            <app-table [data]="costingList" [config]="COST_CALCULATOR_COLUMNS" *ngIf="isCalculated">
+            <div *ngIf="isCalculated" class="slide-toggle-container">
+              <button class="primary-btn" (click)="onResetClick()">Reset</button>
+              <mat-slide-toggle [formControl]="toggleControl">Enable Simulation</mat-slide-toggle>
+            </div>
+            <app-table [data]="costingList" [config]="costCalculatorColumn" *ngIf="isCalculated" 
+            (cellEdit)="onCellEdit($event.row, $event.key)"
+            [editable]="toggleControl.value ?? false">
               <tr table-footer>
                 <td colspan="4" class="footer-data"><strong>Total Cost:</strong></td>
                 <td colspan="1" class="footer-cell">{{ totalQP }}</td>
