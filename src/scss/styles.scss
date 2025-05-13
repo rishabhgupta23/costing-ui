@@ -159,6 +159,14 @@ $costing-ui-theme: mat.define-theme((
   --mdc-dialog-container-color: #ffffff;
 }
 
+.custom-snackbar.mat-mdc-snack-bar-container .mat-mdc-snackbar-surface {
+  top: 25px;
+  .mat-mdc-snack-bar-label {
+    background: #323232;
+    color: white;
+  }
+} 
+
 .mat-step-text-label{
   font-size: 1rem;
   font-family:Poppins, Roboto, sans-serif;

@@ -1,0 +1,49 @@
+<div class="app-page">
+  <div class="back-button-container">
+    <button mat-icon-button class="back-button" (click)="goBack()">
+      <mat-icon svgIcon="prev_icon"></mat-icon>
+    </button>
+  </div>
+    <div class="page-header">
+      <span class="page-title">Contact Us</span>
+    </div>
+  
+    <div class="page-content">
+      <div class="contactus-wrapper">
+        <!-- Call for Support Card -->
+        <div class="contact-card">
+          <div class="contact-card-header">
+            <mat-icon svgIcon="support_icon"></mat-icon>
+            <h3>Call for Support</h3>
+          </div>
+          <div class="contact-card-body">
+            <p>You can reach our support team at:</p>
+            <h3>
+                +91 99975 92808
+                <mat-icon class="copy-icon" svgIcon="copy_icon" (click)="copyToClipboard('+91 99975 92808')"></mat-icon>
+              </h3>
+              
+            <p>Available: Mon - Fri, 10:00 AM - 6:00 PM</p>
+          </div>
+        </div>
+  
+        <!-- Email Contact Card -->
+        <div class="card-nc contact-card">
+          <div class="contact-card-header">
+            <mat-icon svgIcon="mail_icon"></mat-icon>
+            <h3>Contact via Email</h3>
+          </div>
+          <div class="contact-card-body">
+            <p>Send us your queries or feedback at:</p>
+            <h3>
+                contact&#64;impat.co.in
+                <mat-icon class="copy-icon" svgIcon="copy_icon" (click)="copyToClipboard('contact@impat.co.in')"></mat-icon>
+              </h3>
+              
+            <p>We usually respond within 24 hours.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
