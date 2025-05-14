@@ -5,7 +5,7 @@ import { ApiUtil } from '../../../shared/utils/api.util';
 import { API_END_POINTS } from '../../../config/api.config';
 import { SortState } from '../../models/part';
 import { SortIcons } from '../../../shared/constants/table.constants';
-import { ListItems } from '../../models/list-items';
+import { ListItem } from '../../models/list-items';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,7 @@ import { ListItems } from '../../models/list-items';
 export class PartAttributeService {
   constructor(private http: HttpClient) {}
 
-  createPartAttribute(attribute: ListItems): Observable<any> {
+  createPartAttribute(attribute:{ name: string }): Observable<any> {
     return this.http.post<any>(ApiUtil.getApiUrl(API_END_POINTS.PART_ATTRIBUTE), attribute);
   }
 
@@ -39,10 +39,10 @@ export class PartAttributeService {
     return this.http.get<any>(url, { params });
   }
 
-  updatePartAttribute(attributeId: number, attribute: ListItems): Observable<ListItems> {
+  updatePartAttribute(attributeId: number, attribute:{ name: string }): Observable<ListItem> {
     const pathParams = new Map<string, string>();
     pathParams.set('attributeId', attributeId.toString());
-    return this.http.put<ListItems>(
+    return this.http.put<ListItem>(
       ApiUtil.getPreparedUrl(API_END_POINTS.PART_ATTRIBUTE_DETAILS, pathParams),
       attribute
     );

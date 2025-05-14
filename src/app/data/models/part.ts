@@ -32,6 +32,7 @@ export interface Part {
     partName: string;
     partNumber: string;
     categoryId: number;
+    categoryName?: string;
     type: string;
     unit: string;
 }
