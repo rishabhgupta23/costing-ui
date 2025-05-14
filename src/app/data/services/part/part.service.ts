@@ -75,7 +75,7 @@ export class PartService {
   }
 
   getCostFactors(): Observable<CostFactor[]> {
-    return this.http.get<CostFactor[]>(ApiUtil.getApiUrl(API_END_POINTS.COST_FACTORS)).pipe(
+    return this.http.get<CostFactor[]>(ApiUtil.getApiUrl(API_END_POINTS.COST_FACTORS_TOOL)).pipe(
       map((res:any) => res.data)
     );
   }

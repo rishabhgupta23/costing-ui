@@ -11,6 +11,8 @@ export const API_END_POINTS = {
     CATEGORIES: '/categories',
     CATEGORIES_DETAILS: '/categories/{categoryId}',
     COST_FACTORS: '/parts/cost-factors',
+    COST_FACTORS_TOOL: '/cost-factors',
+    COST_FACTORS_DETAILS: '/cost-factors/{id}',
     VENDOR_DOWNLOAD: '/vendors/download',
     PART_HISTORY:'/parts/cost-history',
     COST_CALCULATE: '/cost/calculate/{partId}',

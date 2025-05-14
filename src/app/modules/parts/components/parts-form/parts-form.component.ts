@@ -1,4 +1,5 @@
-import { Component, OnDestroy} from '@angular/core';
+import { Component, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { PartService } from '../../../../data/services/part/part.service';
 import { map, Subscription } from 'rxjs';
 import { COST_FACTOR_TABLE_COLUMNS } from '../../../../data/constants/part.constants';
@@ -16,6 +17,10 @@ import { TableActions } from '../../../../shared/constants/table.constants';
 import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
 import { getValueOrNull } from '../../../../shared/utils/string.util';
 import { ListItem } from 'src/app/data/models/list-items';
+import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
+
+GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
 
 @Component({
   selector: 'app-parts-form',
@@ -36,7 +41,7 @@ export class PartsFormComponent implements OnDestroy {
   bomPartList: PartBomData[] =[]; 
   pageSize: number = 100 // Default items per page
   partTypeEnum= PartType;
-  
+  attachedFiles: any[] = [];
   
 
   partForm = new FormGroup({
@@ -58,10 +63,11 @@ export class PartsFormComponent implements OnDestroy {
 
   PartCreateRequest: any;
   partId: string | null = null;
+  @ViewChild('previewDialog') previewDialog!: TemplateRef<any>;
 
 
   constructor(private partService: PartService, private vendorService: VendorService,     private route: ActivatedRoute,
-    private router: Router, private dialog: MatDialog, private snackbarService: SnackbarService) {
+    private router: Router, private dialog: MatDialog, private snackbarService: SnackbarService, private sanitizer: DomSanitizer) {
       
     }
 
@@ -83,6 +89,69 @@ export class PartsFormComponent implements OnDestroy {
         }
       });
       }
+      
+
+onFileSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (input.files) {
+    this.processFiles(Array.from(input.files));
+  }
+}
+
+handleDrop(event: DragEvent) {
+  event.preventDefault();
+  if (event.dataTransfer?.files) {
+    this.processFiles(Array.from(event.dataTransfer.files));
+  }
+}
+
+allowDrop(event: DragEvent) {
+  event.preventDefault();
+}
+
+processFiles(files: File[]) {
+  files.forEach(file => {
+    const fileType = file.type;
+    if (fileType.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.attachedFiles.push({
+          file,
+          name: file.name,
+          type: fileType,
+          previewUrl: e.target.result
+        });
+      };
+      reader.readAsDataURL(file);
+    } else {
+      this.attachedFiles.push({
+        file,
+        name: file.name,
+        type: fileType,
+        previewUrl: null
+      });
+    }
+  });
+}
+
+removeFile(index: number) {
+  this.attachedFiles.splice(index, 1);
+}
+
+getFileType(file: any): string {
+  const type = file.type.toLowerCase();
+  if (type.startsWith('image/')) return 'image';
+  if (type === 'application/pdf') return 'pdf';
+  if (
+    type === 'application/msword' ||
+    type.includes('wordprocessingml')
+  ) return 'word';
+  if (
+    type === 'application/vnd.ms-excel' ||
+    type.includes('spreadsheetml')
+  ) return 'excel';
+  return 'other';
+}
 
       getPartData(id: string): void {
         this.partService.getPartById(id).subscribe((part) => {
