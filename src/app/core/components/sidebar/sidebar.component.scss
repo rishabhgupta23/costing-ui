@@ -1,13 +1,28 @@
 @import 'src/scss/_base.scss';
 .sidebar {
+    display:flex;
+    flex-direction: column;
     height: calc(100% - 2rem);
     padding: 1rem 0 1rem 0.5rem;
     width: 5rem;
+    justify-content: space-between;
     background: $c-default-bg;
     color: $c-text-hover;
     border-right: 1px solid $c-border;
 }
 
+.menu-bottom{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: .75rem;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+    transition: background 0.3s, color 0.3s;
+    margin-top: auto;
+    font-size: .75rem;
+
+}
 .menu-container {
     display: flex;
     flex-direction: column;

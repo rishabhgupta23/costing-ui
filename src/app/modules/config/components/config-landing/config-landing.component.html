@@ -1,12 +1,6 @@
 <div class="tiles-container">
-    <div class="tile" (click)="onTileClick('category')">
-      <span>Category</span>
-    </div>
-    <div class="tile" (click)="onTileClick('cost-factor')">
-      <span>Cost Factor</span>
-    </div>
-    <div class="tile" (click)="onTileClick('part-attribute')">
-      <span>Part Attribute</span>
-    </div>
+  <div class="tile" *ngFor="let tile of tiles" (click)="onTileClick(tile.route)">
+    <span>{{ tile.label }}</span>
   </div>
-  
+</div>
+

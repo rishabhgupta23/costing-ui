@@ -17,5 +17,9 @@ export const API_END_POINTS = {
     PART_DOWNLOAD: '/parts/download',
     BOM_DOWNLOAD:'/parts/bom/{partId}/download',
     PART_ATTRIBUTE: '/part-attributes',
-    PART_ATTRIBUTE_DETAILS: '/part-attributes/{attributeId}' 
+    PART_ATTRIBUTE_DETAILS: '/part-attributes/{attributeId}', 
+    USER:'/users',
+    USER_ROLES:'/users/roles',
+    USER_DETAILS:'/users/{userId}',
+
 };

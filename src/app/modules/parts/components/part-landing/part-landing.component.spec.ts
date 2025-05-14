@@ -13,7 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { TableComponent } from '../../../../shared/components/table/table.component';
 import { SnackbarComponent } from '../../../../shared/components/snackbar/snackbar.component';
 
-fdescribe('PartLandingComponent', () => {
+describe('PartLandingComponent', () => {
   let component: PartLandingComponent;
   let fixture: ComponentFixture<PartLandingComponent>;
   let partServiceSpy: jasmine.SpyObj<PartService>;

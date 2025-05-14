@@ -1,16 +1,30 @@
 <div class="login-container">
-    <div>
-        <div class="card login-form">
-            <h2>Login</h2>
-            <mat-form-field appearance="outline">
-                <mat-label>Username</mat-label>
-                <input matInput placeholder="Enter Username" [(ngModel)]="userName">
+
+    
+    <div class="login-logo">
+    <h2>LOGO</h2>
+</div>
+<div class="login-body">
+    <div class="login-image">
+        <img src="assets/images/login-image.png">
+        </div>
+        <div class="login-form">
+            <mat-form-field appearance="outline" class="form-text">
+                <input matInput placeholder="Enter Email Address" [(ngModel)]="userName">
             </mat-form-field>
-            <mat-form-field appearance="outline">
-                <mat-label>Password</mat-label>
+            <br>
+            <mat-form-field appearance="outline" class="form-text">
                 <input matInput placeholder="Enter Password" type="password" [(ngModel)]="password">
             </mat-form-field>
-            <button class="primary-btn" (click)="login()">Login</button>
+            <br>
+            <div class="forgot-password">
+                <a href="/forgot-password">Forgot Password?</a>
+            </div>
+            <button class="login-btn" (click)="login()">Login</button>
+            <br>
+            <div class="contact-us">
+               For a trial or new Registration <a href="/contact-us">Contact Us</a>
+            </div>
         </div>
     </div>
 </div>

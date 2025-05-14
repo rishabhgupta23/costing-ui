@@ -1,6 +1,6 @@
 import { ColumnType } from "../../shared/constants/table.constants";
 
-export const COST_CALCULATOR_COLUMNS = [
+export const COST_CALCULATOR_COLUMNS=(editable = false) => [
     {
         label: 'Part Number',
         key: 'partNumber',
@@ -14,12 +14,12 @@ export const COST_CALCULATOR_COLUMNS = [
     {
         label: 'Rate',
         key: 'rate',
-        columnType: ColumnType.GENERAL,
+        columnType: editable ? ColumnType.INPUT_NUMBER : ColumnType.GENERAL,
     },
     {
         label: 'Quantity',
         key: 'quantity',
-        columnType: ColumnType.GENERAL,
+        columnType: editable ? ColumnType.INPUT_NUMBER : ColumnType.GENERAL,
     },
     {
         label: 'Sub Total',

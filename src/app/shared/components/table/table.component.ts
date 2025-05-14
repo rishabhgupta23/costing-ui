@@ -29,10 +29,12 @@ export class TableComponent {
   @Input() data: any[] = [];
   @Input() config: any[] = [];
   @Input() sort: SortState = { sortColumn: '', sortState: SortIcons.ASC }; 
+  @Input() editable: boolean = false;
   @Output() actionTriggered = new EventEmitter<{ action: TableActions; row: any }>();
   @Output() rowClicked = new EventEmitter<any>();
   @Output() filterChange = new EventEmitter<{ key: string; value: string }>();
   @Output() sortChange = new EventEmitter<SortState>();
+  @Output() cellEdit = new EventEmitter<{ row: any, key: string }>();
  
   TableActions= TableActions;
   ColumnType = ColumnType;

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { CostCalculatorService } from './cost-calculator.service';
 
-fdescribe('CostCalculatorService', () => {
+describe('CostCalculatorService', () => {
   let service: CostCalculatorService;
   let httpMock: HttpTestingController;
 
