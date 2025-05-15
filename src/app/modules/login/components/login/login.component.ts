@@ -31,6 +31,6 @@ export class LoginComponent {
   }
 
   goToContactUs() {
-    this.router.navigateByUrl('/login/contact-us');
+    this.router.navigateByUrl('/contact-us');
   }
 }

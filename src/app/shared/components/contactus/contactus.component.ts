@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @Component({
   selector: 'app-contactus',
   templateUrl: './contactus.component.html',
+  standalone: true,
+  imports: [MatSnackBarModule, MatIconModule],
   styleUrl: './contactus.component.scss'
 })
 export class ContactusComponent implements OnInit {
@@ -15,6 +18,7 @@ export class ContactusComponent implements OnInit {
   ngOnInit(): void{
     console.log('start');
   }
+
   copyToClipboard(text: string): void {
     navigator.clipboard.writeText(text).then(() => {
       this.snackBar.open('Copied to clipboard!', 'Close', {

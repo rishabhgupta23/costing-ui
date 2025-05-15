@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { ContactusComponent } from './shared/components/contactus/contactus.component';
 
 export const routes: Routes = [
     {
@@ -13,5 +14,10 @@ export const routes: Routes = [
     {
         path: "login",
         loadChildren: () => import("./modules/login/login.module").then((module) => module.LoginModule)
+    },
+    {
+        path: "contact-us",
+        component: ContactusComponent
+
     }
 ];
