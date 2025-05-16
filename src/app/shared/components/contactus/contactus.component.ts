@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component} from '@angular/core';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,12 +11,9 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [MatSnackBarModule, MatIconModule],
   styleUrl: './contactus.component.scss'
 })
-export class ContactusComponent implements OnInit {
+export class ContactusComponent {
 
   constructor(private snackBar: MatSnackBar, private location: Location) {}
-
-  ngOnInit(): void{
-  }
 
   copyToClipboard(text: string): void {
     navigator.clipboard.writeText(text).then(() => {

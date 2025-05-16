@@ -71,23 +71,23 @@
 
 .forgot-password a {
     text-decoration: none;
-    color: $c-contactus-btn;
+    color: $c-link;
     font-size: 14px;
 }
 
 .forgot-password a:hover {
     text-decoration: underline;
-    color:$c-contactus-btn-hover;
+    color:$c-link-hover;
 }
 
 .contact-us a {
-    color: $c-contactus-btn;
+    color: $c-link;
     cursor: pointer;
     text-decoration: underline;
   }
   
   .contact-us a:hover {
-    color:$c-contactus-btn-hover;
+    color:$c-link-hover;
   }
 
 
