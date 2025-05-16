@@ -90,8 +90,8 @@
 
 /* Focus effect for better user experience */
 .filter-row input[type="text"]:focus {
-  border-color: $c-background-color;
-  border: 2px solid $c-background-color;
+  border-color: $c-tx-border;
+  border: 2px solid $c-tx-border;
   background-color: $c-default-bg;
   outline: none;
 }

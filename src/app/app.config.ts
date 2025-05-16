@@ -2,7 +2,7 @@ import { ApplicationConfig, importProvidersFrom, Provider, provideZoneChangeDete
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { HTTP_INTERCEPTORS, HttpClientModule, provideHttpClient } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule, provideHttpClient } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { AuthInterceptor } from './core/interceptors/auth/auth-interceptor';
 import { ErrorInterceptor } from './core/interceptors/auth/error-interceptor';
@@ -23,6 +23,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes), 
     provideHttpClient(), 
     provideAnimationsAsync(),
+    importProvidersFrom(HttpClientModule),
     authInterceptorProvider,
     errorInterceptorProvider
   ]

@@ -1,3 +1,4 @@
+@import "src/scss/_base.scss";
 .page-header {
     display: flex;
     justify-content: center;
@@ -7,7 +8,7 @@
   }
   
   .app-page{
-    background-image: linear-gradient(to right, rgb(235, 239, 250), #cfdef3);
+    background-image: linear-gradient(to right, rgb(235, 239, 250),$c-login-bg);
   }
   .contactus-wrapper {
     display: grid;
@@ -26,10 +27,10 @@
     font-size: 18px;
     cursor: pointer;
     margin-left: 12px;
-    color: #555;
+    color: $c-placeholder;
   
     &:hover {
-      color: #000;
+      color: darken($c-placeholder,60%);
     }
   }
   
@@ -45,7 +46,7 @@
     padding: 1.5rem;
   
     border-radius: 12px;
-    background-color: #fff;
+    background-color: $c-default-bg;
 
     box-shadow:
       0 0 0 1px rgba(0, 0, 0, 0.03),

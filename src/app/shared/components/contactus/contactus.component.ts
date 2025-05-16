@@ -16,7 +16,6 @@ export class ContactusComponent implements OnInit {
   constructor(private snackBar: MatSnackBar, private location: Location) {}
 
   ngOnInit(): void{
-    console.log('start');
   }
 
   copyToClipboard(text: string): void {
