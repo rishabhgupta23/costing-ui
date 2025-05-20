@@ -1,3 +1,4 @@
+@import 'src/scss/_base.scss';
 .login-container {
     display: flex;
     height: 100vh;
@@ -5,7 +6,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-image: linear-gradient(to right, rgb(235, 239, 250), #cfdef3);
+    background-image: linear-gradient(to right, rgb(235, 239, 250), $c-login-bg);
 }
 
 .login-body{
@@ -27,7 +28,7 @@
             height: 55px;
             width: 70%;
             border: none;
-            background-color: white;
+            background-color: $c-default-bg;
         }
         .login-btn {
             width: 70%;
@@ -39,15 +40,15 @@
             font-size: medium;
             border-radius: 10px;
             min-width: 5rem;
-            background-color:rgb(58, 119, 252);
-            color: white;
+            background-color:$c-login-btn;
+            color: $c-default-bg;
             border: none;
             &:hover {
-                background-color: darken(rgb(58, 119, 252) , 10%);
+                background-color: darken($c-login-btn , 10%);
             }
         }
         .contact-us{
-            margin-top: 10px; /* Adds some space above */
+            margin-top: 10px;
             font-size: 14px;
             margin-left: 70px;
         }
@@ -62,22 +63,32 @@
 }
 
 .forgot-password {
-    width: 70%; /* Matches the width of form fields */
+    width: 70%;
     display: flex;
-    justify-content: flex-end; /* Aligns the link to the right */
-    margin-bottom: 10px; /* Adds space below */
+    justify-content: flex-end;
+    margin-bottom: 10px;
 }
 
 .forgot-password a {
     text-decoration: none;
-    color: #007BFF; /* Bootstrap blue color */
+    color: $c-link;
     font-size: 14px;
 }
 
 .forgot-password a:hover {
     text-decoration: underline;
-    color:rgb(57, 57, 146)
+    color:$c-link-hover;
 }
+
+.contact-us a {
+    color: $c-link;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  .contact-us a:hover {
+    color:$c-link-hover;
+  }
 
 
 
