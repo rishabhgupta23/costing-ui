@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SortIcons, TableActions } from 'src/app/shared/constants/table.constants';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { EditDialogComponent } from 'src/app/shared/components/edit-dialog/edit-dialog.component';
-import { SortState } from 'src/app/data/models/part';
+import { CostFactor, SortState } from 'src/app/data/models/part';
 import { PageEvent } from '@angular/material/paginator';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { DialogCloseResponse } from 'src/app/shared/constants/dialog.constants';
@@ -18,7 +18,7 @@ import { COSTFACTOR_TABLE_COLUMNS } from 'src/app/data/constants/list-items.cons
 })
 export class CostFactorComponent {
   columns = COSTFACTOR_TABLE_COLUMNS;
-  dataSource: any[] = [];
+  dataSource: CostFactor[] = [];
   factorName: string = '';
   pageSize = 100;
   currentPage = 0;
@@ -28,9 +28,9 @@ export class CostFactorComponent {
   sortState: SortState = { sortColumn: 'factorName', sortState: SortIcons.ASC };
   private searchSubject = new Subject<{ key: string; value: string }>();
 
-  private dialog = inject(MatDialog);
 
   constructor(
+    private dialog : MatDialog,
     private costFactorService: CostFactorService,
     private snackbarService: SnackbarService
   ) {
@@ -38,23 +38,21 @@ export class CostFactorComponent {
     this.getCostFactorList();
   }
 
-  getCostFactorList(): void {
-    this.costFactorService.getCostFactorList(
-      this.currentPage,
-      this.pageSize,
-      this.filterCriteria,
-      this.sortState
-    ).subscribe({
-      next: (res) => {
-        this.dataSource = res.data.map((item: any) => ({
-          ...item,
-          factorName: item.name
-        }));
+getCostFactorList(): void {
+  this.costFactorService.getCostFactorList(
+    this.currentPage,
+    this.pageSize,
+    this.filterCriteria,
+    this.sortState
+  ).subscribe({
+    next: (res) => {
+      console.log('Cost Factor List:', res);
+      this.dataSource = res.data;
+      this.totalRecords = res.pageInfo?.totalRecords || 0;
+    }
+  });
+}
 
-        this.totalRecords = res.pageInfo?.totalRecords || 0;
-      }
-    });
-  }
 
   submitCostFactorForm(): void {
     if (this.factorName) {
@@ -64,9 +62,6 @@ export class CostFactorComponent {
           this.factorName = '';
           this.getCostFactorList();
         },
-        error: () => {
-          this.snackbarService.error('Failed to create Cost Factor. Please try again.');
-        }
       });
     }
   }
@@ -90,7 +85,7 @@ export class CostFactorComponent {
       data: {
         labelName: 'Cost Factor Name',
         dialogTitle: 'Edit Cost Factor',
-        name: row.factorName
+        name: row.name
       }
     });
   
@@ -99,7 +94,6 @@ export class CostFactorComponent {
         this.costFactorService.updateCostFactor(row.id, res).subscribe(() => {
           this.snackbarService.success('Cost Factor updated successfully!');
           this.getCostFactorList();
-          row.factorName = res;
         });
       }
     });
@@ -122,9 +116,6 @@ export class CostFactorComponent {
             this.snackbarService.success('Cost Factor deleted successfully!');
             this.getCostFactorList();
           },
-          error: () => {
-            this.snackbarService.error('Failed to delete Cost Factor. Please try again.');
-          }
         });
       }
     });

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-config-landing',
@@ -9,16 +9,14 @@ import { Router } from '@angular/router';
 export class ConfigLandingComponent {
 tiles = [
   { label: 'Category', route: 'category' },
-  {label : 'Cost Factors', route: 'cost-factors'}
+  {label : 'Cost Factors', route: 'cost-factor'}
 ];
-  constructor(private router:Router){}
-  onTileClick(tile: string) {
-    if (tile === 'category') {
-      this.router.navigateByUrl("/app/config/category");
-    } else if(tile === 'cost-factor'){
-      this.router.navigateByUrl("/app/config/cost-factor");
-    }else{
-      alert('This feature is coming soon..')
+  constructor(private router:Router, private route: ActivatedRoute){}
+  onTileClick(route: string) {
+    if (route) {
+      this.router.navigate([route], { relativeTo: this.route });
+    } else {
+      alert('This feature is coming soon..');
     }
   }
 }

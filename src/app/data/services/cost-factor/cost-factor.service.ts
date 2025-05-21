@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 import { API_END_POINTS } from '../../../config/api.config';
 import { ApiUtil } from '../../../shared/utils/api.util';
 import { SortIcons } from '../../../shared/constants/table.constants';
-import { SortState } from '../../models/part';
-import { CostFactorItems } from '../../models/list-items';
+import { CostFactor, SortState } from '../../models/part';
+
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ export class CostFactorService {
 
   createCostFactor(factorName: string): Observable<any> {
     const params = new HttpParams().set('factorName', factorName);
-    const url = ApiUtil.getApiUrl(API_END_POINTS.COST_FACTORS_TOOL);
+    const url = ApiUtil.getApiUrl(API_END_POINTS.COST_FACTORS);
     return this.http.post<any>(url, null, { params });
   }
 
@@ -37,18 +37,18 @@ export class CostFactorService {
       }
     });
 
-    const url = ApiUtil.getApiUrl(API_END_POINTS.COST_FACTORS_TOOL);
+    const url = ApiUtil.getApiUrl(API_END_POINTS.COST_FACTORS);
     return this.http.get<any>(url, { params });
   }
 
-  updateCostFactor(id: number, factorName: CostFactorItems): Observable<CostFactorItems> {
+  updateCostFactor(id: number, factorName: CostFactor): Observable<CostFactor> {
     const pathParams = new Map<string, string>();
     pathParams.set('id', id.toString());
   
     const url = ApiUtil.getPreparedUrl(API_END_POINTS.COST_FACTORS_DETAILS, pathParams);
     const params = new HttpParams().set('factorName', factorName.toString());
   
-    return this.http.put<CostFactorItems>(url,factorName, { params });
+    return this.http.put<CostFactor>(url,factorName, { params });
   }
 
   deleteCostFactor(costFactorId: string): Observable<any> {
