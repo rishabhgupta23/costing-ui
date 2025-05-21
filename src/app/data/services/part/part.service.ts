@@ -75,11 +75,6 @@ export class PartService {
     );
   }
 
-  getCostFactors(): Observable<CostFactor[]> {
-    return this.costFactorService.getCostFactorList().pipe(
-      map(res => res.data)
-    );
-  }
 
   createPart(body: PartCreateRequest) {
     console.log(body);

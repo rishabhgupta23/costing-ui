@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CATEGORY_TABLE_COLUMNS } from 'src/app/data/constants/list-items.constant';
+import { CATEGORY_TABLE_COLUMNS } from 'src/app/data/constants/config-table.constant';
 import { CategoryService } from 'src/app/data/services/category/category.service';
 import { PageEvent } from '@angular/material/paginator';
 import { SortState } from 'src/app/data/models/part'; // Import SortState if you need sorting

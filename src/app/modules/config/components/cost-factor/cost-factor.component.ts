@@ -9,7 +9,7 @@ import { CostFactor, SortState } from 'src/app/data/models/part';
 import { PageEvent } from '@angular/material/paginator';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { DialogCloseResponse } from 'src/app/shared/constants/dialog.constants';
-import { COSTFACTOR_TABLE_COLUMNS } from 'src/app/data/constants/list-items.constant';
+import { COSTFACTOR_TABLE_COLUMNS } from 'src/app/data/constants/config-table.constant';
 
 @Component({
   selector: 'app-cost-factor',
