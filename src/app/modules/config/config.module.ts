@@ -10,10 +10,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { PartAttributeComponent } from './components/part-attribute/part-attribute.component';
+import { PartTemplateComponent } from './components/part-template/part-template.component';
+import { TemplatedialogComponent } from './components/templatedialog/templatedialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
-  declarations: [CategoryComponent, ConfigLandingComponent, PartAttributeComponent],
+  declarations: [CategoryComponent, ConfigLandingComponent, PartAttributeComponent, PartTemplateComponent, TemplatedialogComponent],
   imports: [
     CommonModule,
     ConfigRoutingModule,
@@ -22,7 +28,11 @@ import { PartAttributeComponent } from './components/part-attribute/part-attribu
     ReactiveFormsModule,
     MatInputModule,
     MatPaginatorModule,
-    FormsModule
+    FormsModule,
+    MatDialogModule,
+    MatCheckboxModule,
+    MatTableModule,
+    MatIconModule
   ]
 })
 export class ConfigModule { }

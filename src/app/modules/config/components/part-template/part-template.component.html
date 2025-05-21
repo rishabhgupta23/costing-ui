@@ -1,0 +1,96 @@
+<div class="app-page">
+    <div class="page-header">
+      <span class="page-title">Part Template</span>
+    </div>
+    <div class="form-field">
+      <label>Part Template</label>
+      <mat-form-field appearance="outline" class="custom-textfield">
+        <input matInput  class="input-field"
+          type="text" [(ngModel)]="partTemplateName" 
+          name="partTemplateName" 
+          placeholder="Enter Part Template" />
+      </mat-form-field>
+      <button class="primary-btn" (click)="openAttributeDialog()">Add Attribute</button>
+    </div>
+    <div class="container">
+      <div class="table-container">
+        <table class="template-table">
+          <!-- Table Header -->
+          <thead>
+            <tr class="header-row">
+              <th>
+                <div class="header-cell">
+                  <span>Template Name</span>
+                  <mat-icon [svgIcon]="getSortIcon('name')" (click)="toggleSort('name')" class="sort-icon"></mat-icon>
+                </div>
+              </th>
+              <th>
+                <div class="header-cell">
+                  <span>Actions</span>
+                </div>
+              </th>
+            </tr>
+      
+            <tr class="filter-row">
+              <th>
+                <div class="filter-input-wrapper">
+                  <input
+                    type="text"
+                    placeholder="Enter your text"
+                    [(ngModel)]="searchTermName"
+                    (input)="applyFilter()" />
+                  <mat-icon
+                    class="clear-filter-btn"
+                    *ngIf="searchTermName"
+                    svgIcon="close"
+                    (click)="clearFilter()"></mat-icon>
+                </div>
+              </th>
+              <th></th>
+            </tr>
+          </thead>
+      
+          <!-- Table Body -->
+          <tbody>
+            <ng-container *ngFor="let template of filteredTemplates">
+              <tr class="data-row" (click)="toggleExpand(template.templateId)">
+                <td>{{ template.name }}</td>
+                <td>
+                  <mat-icon
+                    svgIcon="edit"
+                    class="icon-btn"
+                    (click)="editTemplate(template); $event.stopPropagation()"></mat-icon>
+                  <mat-icon
+                    svgIcon="delete"
+                    class="icon-btn"
+                    (click)="deleteTemplate(template); $event.stopPropagation()"></mat-icon>
+                </td>
+              </tr>
+      
+              <!-- Expanded Row -->
+              <tr *ngIf="isExpanded(template.templateId)" class="expanded-row">
+                <td colspan="2">
+                  <table class="template-table attribute-table">
+                    <thead>
+                      <tr><th>Attribute Name</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let attr of expandedTemplateMap.get(template.templateId)?.partAttributes">
+                        <td>{{ attr.name }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+        <mat-paginator 
+        [length]="totalRecords" 
+        [pageSize]="pageSize" 
+        (page)="onPageChange($event)">
+        </mat-paginator>
+
+    </div>
+    

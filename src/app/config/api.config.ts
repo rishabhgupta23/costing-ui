@@ -21,5 +21,6 @@ export const API_END_POINTS = {
     USER:'/users',
     USER_ROLES:'/users/roles',
     USER_DETAILS:'/users/{userId}',
-
+      TEMPLATE: '/templates',
+  TEMPLATE_DETAILS: '/templates/{templateId}'
 };

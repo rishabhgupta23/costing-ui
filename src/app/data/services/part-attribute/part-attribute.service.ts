@@ -26,8 +26,8 @@ export class PartAttributeService {
     let params = new HttpParams()
       .set('pageNo', page.toString())
       .set('pageSize', size.toString())
-      .set('sortColumn', sortState.sortColumn)
-      .set('sortMode', sortState.sortState);
+      .set('sortColumn', sortState?.sortColumn)
+      .set('sortMode', sortState?.sortState);
 
     filterCriteria.forEach((value, key) => {
       if (value) {
