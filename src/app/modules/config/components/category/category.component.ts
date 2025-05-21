@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CATEGORY_TABLE_COLUMNS } from 'src/app/data/constants/config-columns.constant';
+import { CATEGORY_TABLE_COLUMNS } from 'src/app/data/constants/config-table.constant';
 import { CategoryService } from 'src/app/data/services/category/category.service';
 import { PageEvent } from '@angular/material/paginator';
 import { SortState } from 'src/app/data/models/part'; // Import SortState if you need sorting
@@ -7,7 +7,6 @@ import { SortIcons, TableActions } from 'src/app/shared/constants/table.constant
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { DialogCloseResponse } from 'src/app/shared/constants/dialog.constants';
 import { MatDialog } from '@angular/material/dialog';
-import { DiscardDialogComponent } from 'src/app/shared/components/discard-dialog/discard-dialog.component';
 import { SnackbarService } from 'src/app/data/services/snackbar/snackbar.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { EditDialogComponent } from 'src/app/shared/components/edit-dialog/edit-dialog.component';

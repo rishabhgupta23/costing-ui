@@ -13,12 +13,16 @@ import { MatInputModule } from '@angular/material/input';
 })
 export class EditDialogComponent {
   updatedName: string;
+  labelName: string;
+  dialogTitle: string;
 
   constructor(
     public dialogRef: MatDialogRef<EditDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { name: string }
+    @Inject(MAT_DIALOG_DATA) public data: { labelName: string, dialogTitle: string, name: string }
   ) {
     this.updatedName = data.name;
+    this.labelName = data.labelName;
+    this.dialogTitle = data.dialogTitle;
   }
 
   onUpdate(): void {

@@ -17,6 +17,7 @@ import { SnackbarService } from '../../../../data/services/snackbar/snackbar.ser
 import { MatStepper } from '@angular/material/stepper';
 import { getValueOrNull } from '../../../../shared/utils/string.util';
 import { ListItem } from 'src/app/data/models/list-items';
+import { CostFactorService } from 'src/app/data/services/cost-factor/cost-factor.service';
 
 @Component({
   selector: 'app-parts-form',
@@ -61,7 +62,7 @@ export class PartsFormComponent implements OnDestroy {
   partId: string | null = null;
 
 
-  constructor(private partService: PartService, private vendorService: VendorService,     private route: ActivatedRoute,
+  constructor(private partService: PartService, private vendorService: VendorService, private costFactorService: CostFactorService,     private route: ActivatedRoute,
     private router: Router, private dialog: MatDialog, private snackbarService: SnackbarService) {
       
     }
@@ -222,8 +223,8 @@ export class PartsFormComponent implements OnDestroy {
 
   getCostFactors() {
     this.subscriptions.push(
-      this.partService.getCostFactors().subscribe((res) => {
-        this.costFactorList = res;
+      this.costFactorService.getCostFactorList().subscribe((res) => {
+        this.costFactorList = res?.data || res;
       })
     );
   }
