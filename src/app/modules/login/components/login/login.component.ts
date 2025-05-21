@@ -29,4 +29,8 @@ export class LoginComponent {
       });
     }
   }
+
+  goToContactUs() {
+    this.router.navigateByUrl('/contact-us');
+  }
 }
