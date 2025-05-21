@@ -6,7 +6,7 @@ import { ApiUtil } from '../../../shared/utils/api.util';
 import { SortIcons } from '../../../shared/constants/table.constants';
 import { ListItem } from '../../models/list-items';
 
-fdescribe('CategoryService', () => {
+describe('CategoryService', () => {
   let service: CategoryService;
   let httpMock: HttpTestingController;
 

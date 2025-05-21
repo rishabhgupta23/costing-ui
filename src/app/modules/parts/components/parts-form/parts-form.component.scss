@@ -1,13 +1,67 @@
-@import "src/scss/_base.scss";
-.part-form {
-    display: grid;
-    grid-template-columns: auto auto;
-    width: 50%;
+.stepper-container {
+    background: #f9f9f9;
+    border-radius: 10px;
 }
 
-.sub-heading {
+.page-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-bottom: 50px; /* Ensure fixed action buttons don't overlap */
+    margin-bottom: 40px;
+    padding-left: 1rem;
+}
+
+.page-content::-webkit-scrollbar {
+    width:4px;
+    // display: none;
+  }
+
+  .page-content::-webkit-scrollbar-thumb {
+    background-color: rgb(140, 140, 141);    /* color of the scroll thumb */
+    border-radius: 20px;       /* roundness of the scroll thumb */
+  }
+.part-form {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+    align-items: center;
+    column-gap: 2rem;
+}
+
+.form-detail{
+    width:100%
+}
+
+.part-form > div {
+    display: flex;
+    flex-direction: column;
+    font-size: 1rem;
+
+}
+
+mat-form-field {
+    padding-top: 8px;
+}
+.custom-textfield {
+    border-radius: 12px; /* Example for rounded corners */
+}
+
+.custom-vendor-textfield{
+    --mdc-outlined-text-field-container-shape: 12px;
+    width: 85%;
+    margin-top: 8px;
+}
+
+.custom-cost-textfield{
+    --mdc-outlined-text-field-container-shape: 12px;
+    width: 75%;
+    margin-top: 8px;
+}
+
+.page-title{
+    padding-left: 1rem;
     font-weight: bold;
-    margin-bottom: 1rem;
+    font-size: larger;
 }
 
 .vendor-panel-content {
@@ -16,21 +70,16 @@
 
 
 .cost-form {
-    display: grid;
-    grid-template-columns: auto auto auto;
-    width: 50%;
-    align-items: baseline;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
     column-gap: 1rem;
+    justify-self: center;
 
     button {
         height: fit-content;
         width: fit-content;
-    }
-}
-
-.part-form-container {
-    .action-section {
-        position: absolute;
     }
 }
 
@@ -50,4 +99,45 @@
 
 mat-panel-description{
     justify-content: right;
+}
+
+.fixed-actions {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between; /* Spread to left and right */
+    align-items: center;
+    padding: 10px 20px;
+    background: #fff; /* Optional: gives it a solid background */
+    z-index: 10;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.submit-button {
+    display: flex;
+    align-items: center;
+}
+
+
+.primary-btn {
+    width: 150px;
+}
+    .primary-btn:disabled{
+        background-color: gray;
+    }
+
+button[mat-icon-button]{
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: #0a0a0a;
+}
+
+button[mat-icon-button]:disabled {
+    color: #d6d6d6;
 }
