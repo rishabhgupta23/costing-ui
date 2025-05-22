@@ -14,8 +14,8 @@ export class PartAttributeService {
   constructor(private http: HttpClient) {}
 
   createPartAttribute(attributeName: string): Observable<any> {
-    const params = {attributeName};
-    return this.http.post<any>(ApiUtil.getApiUrl(API_END_POINTS.PART_ATTRIBUTE), params);
+    const body = {attributeName};
+    return this.http.post<any>(ApiUtil.getApiUrl(API_END_POINTS.PART_ATTRIBUTE), body);
   }
 
   getPartAttributeList(

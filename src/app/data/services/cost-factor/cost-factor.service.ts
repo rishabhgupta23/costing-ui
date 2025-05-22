@@ -41,14 +41,14 @@ export class CostFactorService {
     return this.http.get<any>(url, { params });
   }
 
-  updateCostFactor(id: number, factorName: CostFactor): Observable<CostFactor> {
+  updateCostFactor(id: number, factorName: string): Observable<CostFactor> {
     const pathParams = new Map<string, string>();
     pathParams.set('id', id.toString());
   
     const url = ApiUtil.getPreparedUrl(API_END_POINTS.COST_FACTORS_DETAILS, pathParams);
-    const params = new HttpParams().set('factorName', factorName.toString());
+    const params = new HttpParams().set('factorName', factorName);
   
-    return this.http.put<CostFactor>(url,factorName, { params });
+    return this.http.put<CostFactor>(url,null, { params });
   }
 
   deleteCostFactor(costFactorId: string): Observable<any> {

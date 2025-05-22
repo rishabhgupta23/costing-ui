@@ -23,12 +23,12 @@ export class PartAttributeComponent {
   pageSize: number = 100;
   currentPage: number = 0;
   totalRecords: number = 0;
-  readonly dialog = inject(MatDialog);
   filterCriteria: Map<string, string> = new Map();
   sortState: SortState = { sortColumn: 'attributeName', sortState: SortIcons.ASC };
   private searchSubject = new Subject<{ key: string; value: string }>();
 
   constructor(
+    private dialog: MatDialog,
     private snackbarService: SnackbarService,
     private partAttributeService: PartAttributeService
   ) {

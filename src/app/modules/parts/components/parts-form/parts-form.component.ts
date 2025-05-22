@@ -75,9 +75,6 @@ export class PartsFormComponent implements OnDestroy {
     this.getVendorList();
     this.getCostFactors();
 
-    this.partForm.get('categoryId')?.valueChanges.subscribe((value) => {
-        console.log(value);
-      });
 
       if (this.partId){
         this.getPartData(this.partId);
@@ -91,12 +88,10 @@ export class PartsFormComponent implements OnDestroy {
 
       getPartData(id: string): void {
         this.partService.getPartById(id).subscribe((part) => {
-          console.log('Part Data:', part); // Debug: Check the part structure
-          console.log('Category Name:', part.categoryName);
           this.partForm.patchValue({
             partNumber: getValueOrNull(part.partNumber),
             partName: getValueOrNull(part.partName),
-  // categoryId: part.categoryName,
+            categoryId: part.categoryName,
             partType: getValueOrNull(part.type),
             partUnit: getValueOrNull(part.unit)
           });
