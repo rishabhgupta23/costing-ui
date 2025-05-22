@@ -4,9 +4,9 @@ import { CategoryService } from './category.service';
 import { API_END_POINTS } from '../../../config/api.config';
 import { ApiUtil } from '../../../shared/utils/api.util';
 import { SortIcons } from '../../../shared/constants/table.constants';
-import { Category } from '../../models/category';
+import { ListItem } from '../../models/list-items';
 
-fdescribe('CategoryService', () => {
+describe('CategoryService', () => {
   let service: CategoryService;
   let httpMock: HttpTestingController;
 
@@ -28,7 +28,7 @@ fdescribe('CategoryService', () => {
   });
 
   it('should create category', () => {
-    const mockCategory: Category = { categoryId: 1, name: 'Category A' };
+    const mockCategory: ListItem = { id: 1, name: 'Category A' };
 
     service.createCategory(mockCategory).subscribe(res => {
       expect(res).toEqual(mockCategory);
@@ -72,7 +72,7 @@ fdescribe('CategoryService', () => {
   });
 
   it('should update category', () => {
-    const mockCategory: Category = { categoryId: 1, name: 'Updated Category' };
+    const mockCategory: ListItem = { id: 1, name: 'Updated Category' };
 
     service.updateCategory(1, mockCategory).subscribe(res => {
       expect(res).toEqual(mockCategory);

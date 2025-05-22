@@ -26,7 +26,7 @@
               type="text" 
               #filterInput
               (input)="onFilterChange($event, col.key)" 
-              placeholder="Enter your text" />
+              placeholder="Search {{col.label}}" />
               <mat-icon class="clear-filter-btn" *ngIf="filterInput.value" (click)="clearFilter(filterInput, col.key)" svgIcon="close"></mat-icon>
           </div>
         </ng-container>
