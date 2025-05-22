@@ -26,6 +26,7 @@ const routes: Routes = [
   {
     path: 'cost-factor',
     component: CostFactorComponent
+
   }
 ];
 

@@ -6,6 +6,11 @@ export interface CostFactor {
     name: string;
 }
 
+export interface PartAttribute {
+    attributeId: number;
+    attributeName: string;
+}
+
 export interface CostFactorData {
     id: number;
     name?: string;
