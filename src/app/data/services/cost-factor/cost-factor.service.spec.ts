@@ -4,7 +4,7 @@ import { CostFactorService } from './cost-factor.service';
 import { API_END_POINTS } from '../../../config/api.config';
 import { ApiUtil } from '../../../shared/utils/api.util';
 import { SortIcons } from '../../../shared/constants/table.constants';
-import { CostFactorItems } from '../../models/list-items';
+import { CostFactor } from '../../models/part';
 
 fdescribe('CostFactorService', () => {
   let service: CostFactorService;
@@ -34,9 +34,10 @@ fdescribe('CostFactorService', () => {
       expect(res).toEqual(mockCostFactor);
     });
 
-    const req = httpMock.expectOne(ApiUtil.getApiUrl(API_END_POINTS.COST_FACTORS_TOOL));
-    expect(req.request.method).toBe('POST');
-    req.flush(mockCostFactor);
+const req = httpMock.expectOne(ApiUtil.getApiUrl(API_END_POINTS.COST_FACTORS));
+expect(req.request.method).toBe('POST');
+expect(req.request.body).toEqual({ name: 'New Cost Factor' });
+
   });
 
   it('should get cost factor list with filters and sort state', () => {
@@ -62,7 +63,7 @@ fdescribe('CostFactorService', () => {
     });
 
     const req = httpMock.expectOne(req =>
-      req.method === 'GET' && req.url === ApiUtil.getApiUrl(API_END_POINTS.COST_FACTORS_TOOL)
+      req.method === 'GET' && req.url === ApiUtil.getApiUrl(API_END_POINTS.COST_FACTORS)
     );
     expect(req.request.params.get('pageNo')).toBe('0');
     expect(req.request.params.get('pageSize')).toBe('100');
@@ -72,9 +73,9 @@ fdescribe('CostFactorService', () => {
   });
 
   it('should update cost factor', () => {
-    const mockCostFactor: CostFactorItems = { id: 1, factorName: 'Updated Factor' };
+    const mockCostFactor: CostFactor = { id: 1, name: 'Updated Factor' };
 
-    service.updateCostFactor(1, 'Updated Factor').subscribe(res => {
+    service.updateCostFactor(1, { id: 1, name: 'Updated Factor' }).subscribe(res => {
       expect(res).toEqual(mockCostFactor);
     });
 

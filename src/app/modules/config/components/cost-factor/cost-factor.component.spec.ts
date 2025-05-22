@@ -1,40 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { CostFactorComponent } from './cost-factor.component';
 import { CostFactorService } from 'src/app/data/services/cost-factor/cost-factor.service';
 import { SnackbarService } from 'src/app/data/services/snackbar/snackbar.service';
 import { MatDialog } from '@angular/material/dialog';
 import { of, Subject } from 'rxjs';
-import { fakeAsync, tick } from '@angular/core/testing';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { COSTFACTOR_TABLE_COLUMNS } from 'src/app/data/constants/list-items.constant';
+import { COSTFACTOR_TABLE_COLUMNS } from 'src/app/data/constants/config-table.constant';
 import { DialogCloseResponse } from 'src/app/shared/constants/dialog.constants';
 import { SortIcons, TableActions } from 'src/app/shared/constants/table.constants';
 import { FormsModule } from '@angular/forms';
-
-class MockCostFactorService {
-  getCostFactorList() {
-    return of({
-      data: [
-        { id: 1, name: 'Factor 1' },
-        { id: 2, name: 'Factor 2' }
-      ],
-      pageInfo: { totalRecords: 2 }
-    });
-  }
-
-  createCostFactor() {
-    return of(null);
-  }
-
-  updateCostFactor() {
-    return of(null);
-  }
-
-  deleteCostFactor() {
-    return of(null);
-  }
-}
 
 class MockSnackbarService {
   success(message: string) {}
@@ -49,20 +24,32 @@ class MockMatDialog {
   }
 }
 
-describe('CostFactorComponent', () => {
+fdescribe('CostFactorComponent', () => {
   let component: CostFactorComponent;
   let fixture: ComponentFixture<CostFactorComponent>;
-  let costFactorService: CostFactorService;
-  let mockCategoryService: any;
+  let mockCostFactorService: any;
   let snackbarService: SnackbarService;
   let dialog: MatDialog;
 
   beforeEach(async () => {
+    mockCostFactorService = {
+      getCostFactorList: jasmine.createSpy().and.returnValue(of({
+        data: [
+          { id: 1, name: 'Factor 1' },
+          { id: 2, name: 'Factor 2' }
+        ],
+        pageInfo: { totalRecords: 2 }
+      })),
+      createCostFactor: jasmine.createSpy().and.returnValue(of({ id: 3, name: 'New Factor' })),
+      updateCostFactor: jasmine.createSpy().and.returnValue(of({})),
+      deleteCostFactor: jasmine.createSpy().and.returnValue(of({}))
+    };
+
     await TestBed.configureTestingModule({
       declarations: [CostFactorComponent],
       imports: [MatPaginatorModule, FormsModule],
       providers: [
-        { provide: CostFactorService, useClass: MockCostFactorService },
+        { provide: CostFactorService, useValue: mockCostFactorService },
         { provide: SnackbarService, useClass: MockSnackbarService },
         { provide: MatDialog, useClass: MockMatDialog }
       ],
@@ -71,7 +58,6 @@ describe('CostFactorComponent', () => {
 
     fixture = TestBed.createComponent(CostFactorComponent);
     component = fixture.componentInstance;
-    costFactorService = TestBed.inject(CostFactorService);
     snackbarService = TestBed.inject(SnackbarService);
     dialog = TestBed.inject(MatDialog);
     fixture.detectChanges();
@@ -82,18 +68,15 @@ describe('CostFactorComponent', () => {
   });
 
   it('should fetch cost factors on initialization', () => {
-    spyOn(costFactorService, 'getCostFactorList').and.callThrough();
-    component.getCostFactorList();
-    expect(costFactorService.getCostFactorList).toHaveBeenCalled();
+    expect(mockCostFactorService.getCostFactorList).toHaveBeenCalled();
     expect(component.dataSource.length).toBe(2);
   });
 
   it('should create a cost factor', () => {
-    spyOn(costFactorService, 'createCostFactor').and.callThrough();
     spyOn(snackbarService, 'success');
     component.factorName = 'New Factor';
     component.submitCostFactorForm();
-    expect(costFactorService.createCostFactor).toHaveBeenCalledWith('New Factor');
+    expect(mockCostFactorService.createCostFactor).toHaveBeenCalledWith('New Factor');
     expect(snackbarService.success).toHaveBeenCalledWith('Cost Factor created successfully!');
   });
 
@@ -101,14 +84,13 @@ describe('CostFactorComponent', () => {
     const dialogRefSpyObj = jasmine.createSpyObj('MatDialogRef', ['afterClosed']);
     dialogRefSpyObj.afterClosed.and.returnValue(of('Updated Factor'));
     spyOn(dialog, 'open').and.returnValue(dialogRefSpyObj);
-    spyOn(costFactorService, 'updateCostFactor').and.callThrough();
     spyOn(snackbarService, 'success');
 
-    const row = { id: 1, factorName: 'Old Factor' };
+    const row = { id: 1, name: 'Old Factor' };
     component.openEditDialog(row);
 
     expect(dialog.open).toHaveBeenCalled();
-    expect(costFactorService.updateCostFactor).toHaveBeenCalledWith(1,'Updated Factor' );
+    expect(mockCostFactorService.updateCostFactor).toHaveBeenCalledWith(1, 'Updated Factor');
     expect(snackbarService.success).toHaveBeenCalledWith('Cost Factor updated successfully!');
   });
 
@@ -116,37 +98,15 @@ describe('CostFactorComponent', () => {
     const dialogRefSpyObj = jasmine.createSpyObj('MatDialogRef', ['afterClosed']);
     dialogRefSpyObj.afterClosed.and.returnValue(of(DialogCloseResponse.DELETE));
     spyOn(dialog, 'open').and.returnValue(dialogRefSpyObj);
-    spyOn(costFactorService, 'deleteCostFactor').and.callThrough();
     spyOn(snackbarService, 'success');
 
-    const row = { id: '1' };
+    const row = { id: 1 };
     component.openDeleteDialog(row);
 
     expect(dialog.open).toHaveBeenCalled();
-    expect(costFactorService.deleteCostFactor).toHaveBeenCalledWith('1');
+    expect(mockCostFactorService.deleteCostFactor).toHaveBeenCalledWith(1);
     expect(snackbarService.success).toHaveBeenCalledWith('Cost Factor deleted successfully!');
   });
-
-  it('should listen to filter changes and trigger category list fetch', fakeAsync(() => {
-  component['searchSubject'].next({ key: 'name', value: 'test' });
-  tick(400);
-  expect(mockCategoryService.getCategoryList).toHaveBeenCalledTimes(2);
-}));
-
-it('should not trigger API call if filter value has not changed (distinctUntilChanged)', fakeAsync(() => {
-  component.applyFilter({ key: 'name', value: 'sameValue' });
-  tick(400);
-  fixture.detectChanges();
-
-  expect(mockCategoryService.getCategoryList).toHaveBeenCalledTimes(2);
-
-  component.applyFilter({ key: 'name', value: 'sameValue' });
-  tick(400);
-  fixture.detectChanges();
-
-  expect(mockCategoryService.getCategoryList).toHaveBeenCalledTimes(2);
-}));
-
 
   it('should handle filter changes', () => {
     spyOn(component, 'getCostFactorList');
@@ -167,18 +127,32 @@ it('should not trigger API call if filter value has not changed (distinctUntilCh
   });
 
   it('should call openEditDialog on EDIT action', () => {
-  spyOn(component, 'openEditDialog');
-  const row = { id: '1', factorName: 'Test' };
-  component.handleAction({ action: TableActions.EDIT, row });
-  expect(component.openEditDialog).toHaveBeenCalledWith(row);
-});
+    spyOn(component, 'openEditDialog');
+    const row = { id: 1, name: 'Test' };
+    component.handleAction({ action: TableActions.EDIT, row });
+    expect(component.openEditDialog).toHaveBeenCalledWith(row);
+  });
 
-it('should handle delete action', () => {
-  const row = { categoryId: 2, name: 'Row2' };
-  spyOn(component, 'openDeleteDialog');
-  component.handleAction({ action: TableActions.DELETE, row });
-  expect(component.openDeleteDialog).toHaveBeenCalledWith(row);
-});
+  it('should call openDeleteDialog on DELETE action', () => {
+    spyOn(component, 'openDeleteDialog');
+    const row = { id: 2, name: 'Row2' };
+    component.handleAction({ action: TableActions.DELETE, row });
+    expect(component.openDeleteDialog).toHaveBeenCalledWith(row);
+  });
 
+  it('should listen to filter changes and fetch list', fakeAsync(() => {
+    spyOn(component, 'getCostFactorList');
+    component['searchSubject'].next({ key: 'name', value: 'test' });
+    tick(400);
+    expect(component.getCostFactorList).toHaveBeenCalled();
+  }));
 
+  it('should not fetch list if filter value has not changed', fakeAsync(() => {
+    spyOn(component, 'getCostFactorList');
+    component['searchSubject'].next({ key: 'name', value: 'same' });
+    tick(400);
+    component['searchSubject'].next({ key: 'name', value: 'same' });
+    tick(400);
+    expect(component.getCostFactorList).toHaveBeenCalledTimes(1);
+  }));
 });

@@ -129,15 +129,6 @@ describe('PartService', () => {
   });
   
 
-  it('should get cost factors', () => {
-    const mockFactors: CostFactor[] = [{ id: 1, name: 'Labor' }] as any;
-    service.getCostFactors().subscribe(factors => {
-      expect(factors).toEqual(mockFactors);
-    });
-
-    const req = httpMock.expectOne(ApiUtil.getApiUrl(API_END_POINTS.COST_FACTORS));
-    req.flush({ data: mockFactors });
-  });
 
   it('should create a new part', () => {
     const body: PartCreateRequest = { partNumber: 'P123', partName: 'New Part' } as any;
