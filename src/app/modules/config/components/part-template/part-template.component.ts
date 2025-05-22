@@ -10,6 +10,7 @@ import { Subject } from 'rxjs';
 import { SortIcons } from 'src/app/shared/constants/table.constants';
 import { SortState } from 'src/app/data/models/part';
 import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
+import { SnackbarService } from 'src/app/data/services/snackbar/snackbar.service';
 
 @Component({
   selector: 'app-part-template',
@@ -33,7 +34,8 @@ filterCriteria = new Map<string, string>();
 
   constructor(
     private dialog: MatDialog,
-    private templateService: TemplateService
+    private templateService: TemplateService,
+    private snackbarService: SnackbarService
   ) {}
 
   ngOnInit(): void {
@@ -58,8 +60,8 @@ filterCriteria = new Map<string, string>();
     const dialogRef = this.dialog.open(TemplatedialogComponent, {
       width: '600px',
       data: { existingAttributes: new Set(),
-        templateName: '', // no name
-        isEditMode: false // hide input
+        templateName: '', 
+        isEditMode: false 
        }
     });
 
@@ -77,6 +79,7 @@ filterCriteria = new Map<string, string>();
           next: () => {
             this.partTemplateName = '';
             this.getTemplates();
+            this.snackbarService.success('Template created successfully!');
           }
         });
       }
@@ -167,21 +170,17 @@ filterCriteria = new Map<string, string>();
             this.templateService.updateTemplate(templateId, request).subscribe({
               next: () => {
                 this.getTemplates();
+                this.snackbarService.success('Template updated successfully!');
     
-                // Immediately update the expandedTemplateMap to avoid blank accordion
                 this.expandedTemplateMap.set(templateId, {
                   templateId,
                   templateName: updatedName,
                   partAttributes: selectedAttributes
                 });
     
-                // If this template is expanded, force reload details
                 if (this.expandedTemplateId === templateId) {
                   this.getTemplateDetails(templateId);
                 }
-              },
-              error: () => {
-                alert('Error updating template');
               }
             });
           }
@@ -205,15 +204,12 @@ filterCriteria = new Map<string, string>();
           this.templateService.deleteTemplate(template.templateId).subscribe({
             next: () => {
               this.getTemplates();
+              this.snackbarService.success('Template deleted successfully!');
     
-              // Clean up expanded map if deleted template was expanded
               if (this.expandedTemplateId === template.templateId) {
                 this.expandedTemplateId = null;
                 this.expandedTemplateMap.delete(template.templateId);
               }
-            },
-            error: () => {
-              alert('Error deleting template');
             }
           });
         }

@@ -10,7 +10,7 @@
           name="partTemplateName" 
           placeholder="Enter Part Template" />
       </mat-form-field>
-      <button class="primary-btn" (click)="openAttributeDialog()">Add Attribute</button>
+      <button class="primary-btn" (click)="openAttributeDialog()"  [disabled]="!partTemplateName || partTemplateName.trim() === ''">Add Attribute</button>
     </div>
     <div class="container">
       <div class="table-container">
