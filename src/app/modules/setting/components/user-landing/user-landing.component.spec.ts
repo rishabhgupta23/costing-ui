@@ -121,7 +121,7 @@ describe('UserLandingComponent', () => {
     const dialogSpy = TestBed.inject(MatDialog) as jasmine.SpyObj<MatDialog>;
     dialogSpy.open.and.returnValue(dialogRefSpy);
   
-    userServiceSpy.deleteUser.and.returnValue(of(void 0));
+    userServiceSpy.deleteUser.and.returnValue(of({ message: 'User deleted successfully', status: 200 }));
     userServiceSpy.getUserList.and.returnValue(of(MOCK_USER_PAGINATION_RESPONSE));
   
     component.handleAction({ action: TableActions.DELETE, row: user });

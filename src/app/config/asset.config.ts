@@ -68,4 +68,16 @@ export const SVG_ICONS = [
         path: baseIconsPath + '/tick_icon.svg',
         name:'tick_icon'
     },
+    {
+        path: baseIconsPath + '/mail_icon.svg',
+        name:'mail_icon'
+    },
+    {
+        path: baseIconsPath + '/support_icon.svg',
+        name:'support_icon'
+    },
+    {
+        path: baseIconsPath + '/copy_icon.svg',
+        name:'copy_icon'
+    },
 ];

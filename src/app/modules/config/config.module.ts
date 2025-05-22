@@ -9,11 +9,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { CostFactorComponent } from './components/cost-factor/cost-factor.component';
 import { PartAttributeComponent } from './components/part-attribute/part-attribute.component';
 
 
 @NgModule({
-  declarations: [CategoryComponent, ConfigLandingComponent, PartAttributeComponent],
+  declarations: [CategoryComponent, ConfigLandingComponent, CostFactorComponent, PartAttributeComponent],
   imports: [
     CommonModule,
     ConfigRoutingModule,
