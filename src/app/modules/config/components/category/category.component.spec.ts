@@ -99,7 +99,7 @@ fdescribe('CategoryComponent', () => {
     const row = { categoryId: 1, name: 'Old Name' };
     component.openEditDialog(row);
     expect(mockDialog.open).toHaveBeenCalled();
-    expect(mockCategoryService.updateCategory).toHaveBeenCalledWith(1, { name: 'Edited Category' });
+    expect(mockCategoryService.updateCategory).toHaveBeenCalledWith(1, {id:1, name: 'Edited Category' });
   });
 
   it('should handle delete dialog and delete category', () => {
