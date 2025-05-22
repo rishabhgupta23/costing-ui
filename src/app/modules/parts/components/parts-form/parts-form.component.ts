@@ -28,7 +28,7 @@ export class PartsFormComponent implements OnDestroy {
   partNames: string[] =[];
   partTypes: string[] = [];
   partUnits: string[] = [];
-  partCategories: ListItem[] = [];
+  partCategories: {categoryId: number, name: string}[] = [];
   vendorList: Vendor[] = [];
   costFactorList: CostFactor[] = [];
   subscriptions: Subscription[] = [];
@@ -75,6 +75,7 @@ export class PartsFormComponent implements OnDestroy {
     this.getVendorList();
     this.getCostFactors();
 
+
       if (this.partId){
         this.getPartData(this.partId);
       }
@@ -87,14 +88,18 @@ export class PartsFormComponent implements OnDestroy {
 
       getPartData(id: string): void {
         this.partService.getPartById(id).subscribe((part) => {
-          console.log('Part Data:', part); // Debug: Check the part structure
           this.partForm.patchValue({
             partNumber: getValueOrNull(part.partNumber),
             partName: getValueOrNull(part.partName),
-            // categoryId: part.categoryName ?? '',
+            categoryId: part.categoryName,
             partType: getValueOrNull(part.type),
             partUnit: getValueOrNull(part.unit)
           });
+
+              if (part.categoryName) {
+      this.partForm.get('categoryId')?.setValue(part.categoryName);
+    }
+
           this.vendorCostListToMap(part.vendorCostList);
           
           this.bomPartList = part.bom?.map(bomPart => ({
@@ -307,7 +312,7 @@ export class PartsFormComponent implements OnDestroy {
       type: this.partForm.get('partType')?.value || '',
       unit: this.partForm.get('partUnit')?.value || '',
       vendorCostList: this.generateVendorCostMapBody(),
-      categoryId: categoryIdValue,
+      categoryId: this.partForm.get('categoryId')?.value.categoryId || null,
       bom: this.generateBomDetailsBody()
     };
 

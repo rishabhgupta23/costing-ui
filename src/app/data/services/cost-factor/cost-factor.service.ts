@@ -13,11 +13,11 @@ import { CostFactor, SortState } from '../../models/part';
 export class CostFactorService {
   constructor(private http: HttpClient) {}
 
-createCostFactor(factorName: string): Observable<any> {
-  const url = ApiUtil.getApiUrl(API_END_POINTS.COST_FACTORS);
-  return this.http.post<any>(url, { name: factorName });
-}
-
+  createCostFactor(factorName: string): Observable<any> {
+    const params = new HttpParams().set('factorName', factorName);
+    const url = ApiUtil.getApiUrl(API_END_POINTS.COST_FACTORS);
+    return this.http.post<any>(url, null, { params });
+  }
 
   getCostFactorList(
     page: number = 0,
@@ -41,11 +41,14 @@ createCostFactor(factorName: string): Observable<any> {
     return this.http.get<any>(url, { params });
   }
 
-  updateCostFactor(id: number, factorName: CostFactor): Observable<CostFactor> {
+  updateCostFactor(id: number, factorName: string): Observable<CostFactor> {
     const pathParams = new Map<string, string>();
     pathParams.set('id', id.toString());
+  
     const url = ApiUtil.getPreparedUrl(API_END_POINTS.COST_FACTORS_DETAILS, pathParams);
-    return this.http.put<CostFactor>(url,factorName);
+    const params = new HttpParams().set('factorName', factorName);
+  
+    return this.http.put<CostFactor>(url,null, { params });
   }
 
   deleteCostFactor(costFactorId: string): Observable<any> {

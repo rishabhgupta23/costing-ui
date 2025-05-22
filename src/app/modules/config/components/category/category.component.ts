@@ -72,7 +72,11 @@ export class CategoryComponent {
     const dialogRef = this.dialog.open(EditDialogComponent, {
       width: '30rem',
       height: '16rem',
-      data: { name: row.name }
+      data: { 
+        labelName: 'Category Name',
+        dialogTitle: 'Edit Category Name',
+        name: row.name 
+      }
     });
   
     dialogRef.afterClosed().subscribe(res => {

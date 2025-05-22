@@ -17,6 +17,7 @@ export const CATEGORY_TABLE_COLUMNS = [
     }
 ]
 
+
 export const COSTFACTOR_TABLE_COLUMNS = [
     {
         label: 'Cost Factor',
@@ -33,3 +34,20 @@ export const COSTFACTOR_TABLE_COLUMNS = [
         ]
     }
 ]
+
+export const PART_ATTRIBUTE_TABLE_COLUMNS = [
+    {
+        label: 'Part Attributes',
+        key: 'attributeName',
+        columnType: ColumnType.GENERAL,
+        filterable: true,
+        sortable: true
+    },
+    {
+        label: 'Actions',
+        columnType: ColumnType.ACTION,
+        actions: [
+            TableActions.EDIT,TableActions.DELETE
+        ]
+    }
+]    

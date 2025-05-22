@@ -17,6 +17,8 @@ export const API_END_POINTS = {
     COST_CALCULATE: '/cost/calculate/{partId}',
     PART_DOWNLOAD: '/parts/download',
     BOM_DOWNLOAD:'/parts/bom/{partId}/download',
+    PART_ATTRIBUTE: '/part-attributes',
+    PART_ATTRIBUTE_DETAILS: '/part-attributes/{attributeId}', 
     USER:'/users',
     USER_ROLES:'/users/roles',
     USER_DETAILS:'/users/{userId}',
