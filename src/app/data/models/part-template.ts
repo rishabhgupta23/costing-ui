@@ -1,23 +1,23 @@
 export interface TemplateRequest {
-    name: string;
+    templateName: string;
     partAttributes: number[];
   }
   
   export interface TemplateResponse {
     templateId: number;
-    name: string;
+    templateName: string;
     partAttributes: {
       attributeId: number;
-      name: string;
+      attributeName: string;
     }[];
   }
   
   export interface TemplateListItem {
     templateId: number;
-    name: string;
+  templateName: string;
   }
   
   export interface AttributeRow{
     attributeId: number;
-    name: string;
+    attributeName: string;
   }

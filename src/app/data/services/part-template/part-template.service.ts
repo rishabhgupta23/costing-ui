@@ -21,7 +21,7 @@ export class TemplateService {
     page: number = 0,
     size: number = 10,
     filterCriteria: Map<string, string> = new Map(),
-    sortState: SortState = { sortColumn: 'name', sortState: SortIcons.ASC }
+    sortState: SortState = { sortColumn: 'templateName', sortState: SortIcons.ASC }
   ): Observable<any> {
     let params = new HttpParams()
       .set('pageNo', page.toString())

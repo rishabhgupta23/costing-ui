@@ -31,7 +31,7 @@
           <th mat-header-cell *matHeaderCellDef>
             <div class="header-det">
               Attribute Name
-              <mat-icon [svgIcon]="getSortIcon('name')" class="sort-icon" (click)="toggleSort('name')"></mat-icon>
+              <mat-icon [svgIcon]="getSortIcon('attributeName')" class="sort-icon" (click)="toggleSort('attributeName')"></mat-icon>
 
             </div>
             <div class="filter-row">
@@ -40,7 +40,7 @@
               </div>
             </div>
           </th>
-          <td mat-cell *matCellDef="let attr">{{ attr.name }}</td>
+          <td mat-cell *matCellDef="let attr">{{ attr.attributeName }}</td>
         </ng-container>
   
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

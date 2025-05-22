@@ -29,7 +29,7 @@ pageInfo: any;
 searchTermName: string = ''; 
 filterCriteria = new Map<string, string>();
   sortAsc: boolean = true;
-  sortState: SortState={sortColumn:'name',sortState:SortIcons.ASC}
+  sortState: SortState={sortColumn:'templateName',sortState:SortIcons.ASC}
 
   constructor(
     private dialog: MatDialog,
@@ -69,7 +69,7 @@ filterCriteria = new Map<string, string>();
         const selectedAttributeIds = selectedAttributes.map(attr => attr.attributeId);
 
         const request = {
-          name: this.partTemplateName,
+          templateName: this.partTemplateName,
           partAttributes: selectedAttributeIds
         };
 
@@ -106,16 +106,16 @@ filterCriteria = new Map<string, string>();
 
   applyFilter(): void {
     if (this.searchTermName) {
-      this.filterCriteria.set('name', this.searchTermName.trim());
+      this.filterCriteria.set('templateName', this.searchTermName.trim());
     } else {
-      this.filterCriteria.delete('name');
+      this.filterCriteria.delete('templateName');
     }
     this.getTemplates();
   }
 
   clearFilter(): void {
     this.searchTermName = '';
-    this.filterCriteria.delete('name');
+    this.filterCriteria.delete('templateName');
     this.getTemplates();
   }
   
@@ -149,7 +149,7 @@ filterCriteria = new Map<string, string>();
           data: {
             existingAttributes,
             isEditMode: true,
-            templateName: res.name
+            templateName: res.templateName
           }
         });
     
@@ -157,10 +157,10 @@ filterCriteria = new Map<string, string>();
           if (result?.action === DialogCloseResponse.UPDATE) {
             const selectedAttributes = result.data as AttributeRow[];
             const selectedAttributeIds = selectedAttributes.map(attr => attr.attributeId);
-            const updatedName = result.name;
+            const updatedName = result.templateName;
     
             const request = {
-              name: updatedName,
+              templateName: updatedName,
               partAttributes: selectedAttributeIds
             };
     
@@ -171,7 +171,7 @@ filterCriteria = new Map<string, string>();
                 // Immediately update the expandedTemplateMap to avoid blank accordion
                 this.expandedTemplateMap.set(templateId, {
                   templateId,
-                  name: updatedName,
+                  templateName: updatedName,
                   partAttributes: selectedAttributes
                 });
     
@@ -196,7 +196,7 @@ filterCriteria = new Map<string, string>();
         width: '400px',
         data: {
           title: 'Delete Template',
-          message: `Are you sure you want to delete the template "${template.name}"?`
+          message: `Are you sure you want to delete the template "${template.templateName}"?`
         }
       });
     

@@ -21,7 +21,7 @@
               <th>
                 <div class="header-cell">
                   <span>Template Name</span>
-                  <mat-icon [svgIcon]="getSortIcon('name')" (click)="toggleSort('name')" class="sort-icon"></mat-icon>
+                  <mat-icon [svgIcon]="getSortIcon('templateName')" (click)="toggleSort('templateName')" class="sort-icon"></mat-icon>
                 </div>
               </th>
               <th>
@@ -54,7 +54,7 @@
           <tbody>
             <ng-container *ngFor="let template of filteredTemplates">
               <tr class="data-row" (click)="toggleExpand(template.templateId)">
-                <td>{{ template.name }}</td>
+                <td>{{ template.templateName }}</td>
                 <td>
                   <mat-icon
                     svgIcon="edit"
@@ -76,7 +76,7 @@
                     </thead>
                     <tbody>
                       <tr *ngFor="let attr of expandedTemplateMap.get(template.templateId)?.partAttributes">
-                        <td>{{ attr.name }}</td>
+                        <td>{{ attr.attributeName }}</td>
                       </tr>
                     </tbody>
                   </table>

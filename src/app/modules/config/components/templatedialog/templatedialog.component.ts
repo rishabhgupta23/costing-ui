@@ -29,7 +29,7 @@ export class TemplatedialogComponent implements OnInit {
   searchTerm: string = '';
   filterCriteria: Map<string, string> = new Map();
 
-  sortState: SortState = { sortColumn: 'name', sortState: SortIcons.ASC };
+  sortState: SortState = { sortColumn: 'attributeName', sortState: SortIcons.ASC };
   private searchSubject = new Subject<{ key: string; value: string }>();
 
   constructor(
@@ -62,11 +62,11 @@ export class TemplatedialogComponent implements OnInit {
 
   applyFilter(): void {
     if (this.searchTerm) {
-      this.filterCriteria.set('name', this.searchTerm);
+      this.filterCriteria.set('attributeName', this.searchTerm);
     } else {
-      this.filterCriteria.delete('name');
+      this.filterCriteria.delete('attributeName');
     }
-    this.searchSubject.next({ key: 'name', value: this.searchTerm });
+    this.searchSubject.next({ key: 'attributeName', value: this.searchTerm });
   }
 
   getSortIcon(key: string): string {
@@ -138,7 +138,7 @@ export class TemplatedialogComponent implements OnInit {
   
     this.dialogRef.close({
       data: selected,
-      name: this.templateName,
+      templateName: this.templateName,
       action: DialogCloseResponse.UPDATE
     });
   }
