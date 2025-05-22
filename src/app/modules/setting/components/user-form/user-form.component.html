@@ -1,0 +1,58 @@
+<div class="app-page">
+  <div class="page-header">
+    <span class="page-title">
+      Create User
+    </span>
+  </div>
+  <div class="page-content">
+    <div class="card">
+      <form class="user-form" [formGroup]="userForm" >
+        <div>Name
+        <mat-form-field appearance="outline" class="custom-textfield">
+          <input
+            matInput
+            placeholder="Enter User Name"
+            formControlName="displayName"
+          />
+        </mat-form-field>
+      </div>
+
+        <div>Email Id
+        <mat-form-field appearance="outline" class="custom-textfield">   
+          <input
+            matInput
+            placeholder="Enter Email ID"
+            formControlName="emailId"
+          />
+        </mat-form-field>
+      </div>
+        <div>Password
+        <mat-form-field appearance="outline" class="custom-textfield">   
+          <input
+            matInput
+            placeholder="Enter Password"
+            formControlName="password"
+          />
+        </mat-form-field>
+      </div>
+
+        <div>Role
+            <mat-form-field appearance="outline" class="custom-textfield">
+                <mat-select placeholder="Select User Role" formControlName="role">
+                    <mat-option *ngFor="let item of userRoles" [value]="item.roleId">
+                        {{ item.roleName }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+      </form>
+
+      <div class="dialog-action">
+        <button class="secondary-btn" (click)="onCancel()">Cancel</button>
+        <button class="primary-btn" (click)="onSubmit()">
+          {{ userId ? 'Update' : 'Create' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

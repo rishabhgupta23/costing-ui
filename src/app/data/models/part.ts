@@ -6,6 +6,11 @@ export interface CostFactor {
     name: string;
 }
 
+export interface PartAttribute {
+    attributeId: number;
+    attributeName: string;
+}
+
 export interface CostFactorData {
     id: number;
     name?: string;
@@ -32,6 +37,7 @@ export interface Part {
     partName: string;
     partNumber: string;
     categoryId: number;
+    categoryName?: string;
     type: string;
     unit: string;
 }
@@ -48,6 +54,10 @@ export interface PartBomData{
     value: number;
 }
 
+export interface GeneralResponseDto{
+    message: string;
+    status: number
+}
 
 export interface PartRow{
     partId: number;

@@ -5,14 +5,15 @@ import { CostFactor, CostHistoryResponse, PartCreateRequest, PartDetails, PartRo
 import { ApiUtil } from '../../../shared/utils/api.util';
 import { API_END_POINTS } from '../../../config/api.config';
 import { SortIcons } from '../../../shared/constants/table.constants';
-import { ListItems } from '../../models/list-items';
+import { ListItem } from '../../models/list-items';
+import { CostFactorService } from '../cost-factor/cost-factor.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PartService {
 
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient, private readonly costFactorService: CostFactorService) { }
 
   updatePart(partId: string, PartCreateRequest: PartCreateRequest): Observable<PartCreateRequest> {
     const params = new Map<string, string>();
@@ -68,17 +69,12 @@ export class PartService {
         { params }
     );
 }
-   getPartCategories(): Observable<ListItems[]> {
+   getPartCategories(): Observable<{categoryId: number; name: string}[]> {
     return this.http.get<any>(ApiUtil.getApiUrl(API_END_POINTS.CATEGORIES)).pipe(
       map((res:any) => res.data)
     );
   }
 
-  getCostFactors(): Observable<CostFactor[]> {
-    return this.http.get<CostFactor[]>(ApiUtil.getApiUrl(API_END_POINTS.COST_FACTORS)).pipe(
-      map((res:any) => res.data)
-    );
-  }
 
   createPart(body: PartCreateRequest) {
     console.log(body);

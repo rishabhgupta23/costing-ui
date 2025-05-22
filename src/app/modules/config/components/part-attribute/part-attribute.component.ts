@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { PART_ATTRIBUTE_TABLE_COLUMNS } from 'src/app/data/constants/config-columns.constant';
+import { PART_ATTRIBUTE_TABLE_COLUMNS } from 'src/app/data/constants/config-table.constant';
 import { PageEvent } from '@angular/material/paginator';
-import { SortState } from 'src/app/data/models/part';
+import { PartAttribute, SortState } from 'src/app/data/models/part';
 import { SortIcons, TableActions } from 'src/app/shared/constants/table.constants';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { DialogCloseResponse } from 'src/app/shared/constants/dialog.constants';
@@ -18,17 +18,17 @@ import { PartAttributeService } from 'src/app/data/services/part-attribute/part-
 })
 export class PartAttributeComponent {
   columns = PART_ATTRIBUTE_TABLE_COLUMNS;
-  dataSource: any[] = [];
-  partAttributeName: string = '';
+  dataSource: PartAttribute[] = [];
+  attributeName: string = '';
   pageSize: number = 100;
   currentPage: number = 0;
   totalRecords: number = 0;
-  readonly dialog = inject(MatDialog);
   filterCriteria: Map<string, string> = new Map();
-  sortState: SortState = { sortColumn: 'name', sortState: SortIcons.ASC };
+  sortState: SortState = { sortColumn: 'attributeName', sortState: SortIcons.ASC };
   private searchSubject = new Subject<{ key: string; value: string }>();
 
   constructor(
+    private dialog: MatDialog,
     private snackbarService: SnackbarService,
     private partAttributeService: PartAttributeService
   ) {
@@ -73,12 +73,10 @@ export class PartAttributeComponent {
   }
 
   submitAttributeForm() {
-    if (this.partAttributeName) {
-      const payload = { name: this.partAttributeName };
-      this.partAttributeService.createPartAttribute(payload).subscribe({
-        next: (res) => {
-          this.dataSource = [...this.dataSource, res];
-          this.partAttributeName = '';
+    if (this.attributeName) {
+      this.partAttributeService.createPartAttribute(this.attributeName).subscribe({
+        next: () => {
+          this.attributeName = '';
           this.getPartAttributeList();
           this.snackbarService.success('Part attribute created successfully!');
         }
@@ -94,13 +92,16 @@ export class PartAttributeComponent {
       data: { 
         labelName: 'Part Attribute Name',
         dialogTitle: 'Edit Part Attribute',
-        name: row.name 
+        name: row.attributeName,
       }
     });
 
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        const updatedAttribute = { name: res };
+        const updatedAttribute = {
+      attributeId: row.attributeId,
+      attributeName: res
+    };
         this.partAttributeService.updatePartAttribute(row.attributeId, updatedAttribute).subscribe({
           next: () => {
             this.snackbarService.success('Attribute updated successfully!');

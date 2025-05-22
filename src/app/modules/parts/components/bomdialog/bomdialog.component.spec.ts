@@ -13,7 +13,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { FormsModule } from "@angular/forms";
 
-fdescribe('BomdialogComponent', () => {
+describe('BomdialogComponent', () => {
   let component: BomdialogComponent;
   let fixture: ComponentFixture<BomdialogComponent>;
   let mockDialogRef: jasmine.SpyObj<MatDialogRef<BomdialogComponent>>;

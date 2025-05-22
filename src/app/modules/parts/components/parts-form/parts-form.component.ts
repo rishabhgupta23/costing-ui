@@ -14,8 +14,10 @@ import { PartType } from '../../../../shared/constants/part.constants';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 import { TableActions } from '../../../../shared/constants/table.constants';
 import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
+import { MatStepper } from '@angular/material/stepper';
 import { getValueOrNull } from '../../../../shared/utils/string.util';
-import { ListItems } from 'src/app/data/models/list-items';
+import { ListItem } from 'src/app/data/models/list-items';
+import { CostFactorService } from 'src/app/data/services/cost-factor/cost-factor.service';
 
 @Component({
   selector: 'app-parts-form',
@@ -26,7 +28,7 @@ export class PartsFormComponent implements OnDestroy {
   partNames: string[] =[];
   partTypes: string[] = [];
   partUnits: string[] = [];
-  partCategories: ListItems[] = [];
+  partCategories: {categoryId: number, name: string}[] = [];
   vendorList: Vendor[] = [];
   costFactorList: CostFactor[] = [];
   subscriptions: Subscription[] = [];
@@ -36,7 +38,7 @@ export class PartsFormComponent implements OnDestroy {
   bomPartList: PartBomData[] =[]; 
   pageSize: number = 100 // Default items per page
   partTypeEnum= PartType;
-  
+  selectedStepIndex: number = 0;
   
 
   partForm = new FormGroup({
@@ -60,7 +62,7 @@ export class PartsFormComponent implements OnDestroy {
   partId: string | null = null;
 
 
-  constructor(private partService: PartService, private vendorService: VendorService,     private route: ActivatedRoute,
+  constructor(private partService: PartService, private vendorService: VendorService, private costFactorService: CostFactorService,     private route: ActivatedRoute,
     private router: Router, private dialog: MatDialog, private snackbarService: SnackbarService) {
       
     }
@@ -73,12 +75,12 @@ export class PartsFormComponent implements OnDestroy {
     this.getVendorList();
     this.getCostFactors();
 
+
       if (this.partId){
         this.getPartData(this.partId);
       }
       this.partForm.get('partType')?.valueChanges.subscribe((value) => {
         if (value === this.partTypeEnum.MASTER) {
-          this.vendorList = [];
           this.clearVendorCostData();
         }
       });
@@ -86,14 +88,18 @@ export class PartsFormComponent implements OnDestroy {
 
       getPartData(id: string): void {
         this.partService.getPartById(id).subscribe((part) => {
-          console.log('Part Data:', part); // Debug: Check the part structure
           this.partForm.patchValue({
             partNumber: getValueOrNull(part.partNumber),
             partName: getValueOrNull(part.partName),
-            // categoryId: part.categoryName ?? '',
+            categoryId: part.categoryName,
             partType: getValueOrNull(part.type),
             partUnit: getValueOrNull(part.unit)
           });
+
+              if (part.categoryName) {
+      this.partForm.get('categoryId')?.setValue(part.categoryName);
+    }
+
           this.vendorCostListToMap(part.vendorCostList);
           
           this.bomPartList = part.bom?.map(bomPart => ({
@@ -113,6 +119,14 @@ export class PartsFormComponent implements OnDestroy {
       })
     });
   }
+
+  isFormValidForSubmit(): boolean {
+    return this.partForm.valid;
+  }
+  
+  onStepChange(event: any) {
+    this.selectedStepIndex = event.selectedIndex;
+}
 
   clearVendorCostData(): void {
     this.vendorCostMap.clear();
@@ -134,7 +148,8 @@ export class PartsFormComponent implements OnDestroy {
       width: '600px',
       data: { 
         existingParts: new Set(this.bomPartList.map(part => part.id) || [])
-      }
+      },
+      autoFocus:false
     });
   
     dialogRef.afterClosed().subscribe((res: {data: any, action: DialogCloseResponse}) => {
@@ -213,8 +228,8 @@ export class PartsFormComponent implements OnDestroy {
 
   getCostFactors() {
     this.subscriptions.push(
-      this.partService.getCostFactors().subscribe((res) => {
-        this.costFactorList = res;
+      this.costFactorService.getCostFactorList().subscribe((res) => {
+        this.costFactorList = res?.data || res;
       })
     );
   }
@@ -278,6 +293,15 @@ export class PartsFormComponent implements OnDestroy {
       }
     }
   }
+  goToNextStep(stepper: MatStepper): void {
+    if (this.partForm.invalid) {
+      this.snackbarService.error('Please fill all required fields!');
+      return;
+    }
+  
+    stepper.next();
+    this.selectedStepIndex = stepper.selectedIndex;
+  }
   
 
   onSubmit(): void {
@@ -288,13 +312,30 @@ export class PartsFormComponent implements OnDestroy {
       type: this.partForm.get('partType')?.value || '',
       unit: this.partForm.get('partUnit')?.value || '',
       vendorCostList: this.generateVendorCostMapBody(),
-      categoryId: categoryIdValue,
+      categoryId: this.partForm.get('categoryId')?.value.categoryId || null,
       bom: this.generateBomDetailsBody()
     };
 
     if (this.partForm.invalid) {
       this.snackbarService.error('Please fill all required fields!');
       return;
+    }
+
+    for (const [vendorId, costFactors] of this.vendorCostMap) {
+      for (const costFactor of costFactors) {
+        if (!costFactor.value || costFactor.value === 0) {
+          this.snackbarService.error('Cost Factor value cannot be 0');
+          return;
+        }
+      }
+    }
+    
+
+    for (const part of this.bomPartList) {
+      if (!part.value || Number(part.value) === 0) {
+        this.snackbarService.error('Quantity of the child parts cannot be 0');
+        return;
+      }
     }
     if (this.partId) {
       this.partService.updatePart(this.partId, body).subscribe({
@@ -315,7 +356,7 @@ export class PartsFormComponent implements OnDestroy {
   generateBomDetailsBody() {
     return this.bomPartList.map(part => ({
       childPartId: part.id,
-      quantity: Number(part.value) || 1,  // Ensure quantity is not undefined
+      quantity: Number(part.value),
     }));
   }
 
