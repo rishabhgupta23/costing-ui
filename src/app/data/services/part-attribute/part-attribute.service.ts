@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { ApiUtil } from '../../../shared/utils/api.util';
 import { API_END_POINTS } from '../../../config/api.config';
-import { SortState } from '../../models/part';
+import { PartAttribute, SortState } from '../../models/part';
 import { SortIcons } from '../../../shared/constants/table.constants';
 import { ListItem } from '../../models/list-items';
 
@@ -13,15 +13,16 @@ import { ListItem } from '../../models/list-items';
 export class PartAttributeService {
   constructor(private http: HttpClient) {}
 
-  createPartAttribute(attribute:{ name: string }): Observable<any> {
-    return this.http.post<any>(ApiUtil.getApiUrl(API_END_POINTS.PART_ATTRIBUTE), attribute);
+  createPartAttribute(attributeName: string): Observable<any> {
+    const params = {attributeName};
+    return this.http.post<any>(ApiUtil.getApiUrl(API_END_POINTS.PART_ATTRIBUTE), params);
   }
 
   getPartAttributeList(
     page: number = 0,
     size: number = 100,
     filterCriteria: Map<string, string> = new Map(),
-    sortState: SortState = { sortColumn: 'name', sortState: SortIcons.ASC }
+    sortState: SortState = { sortColumn: 'attributeName', sortState: SortIcons.ASC }
   ): Observable<any> {
     let params = new HttpParams()
       .set('pageNo', page.toString())
@@ -39,12 +40,12 @@ export class PartAttributeService {
     return this.http.get<any>(url, { params });
   }
 
-  updatePartAttribute(attributeId: number, attribute:{ name: string }): Observable<ListItem> {
+  updatePartAttribute(attributeId: number, attributeName: PartAttribute): Observable<PartAttribute> {
     const pathParams = new Map<string, string>();
     pathParams.set('attributeId', attributeId.toString());
-    return this.http.put<ListItem>(
+    return this.http.put<PartAttribute>(
       ApiUtil.getPreparedUrl(API_END_POINTS.PART_ATTRIBUTE_DETAILS, pathParams),
-      attribute
+      attributeName
     );
   }
 

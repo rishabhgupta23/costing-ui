@@ -6,8 +6,8 @@
       <label>Part Attribute</label>
       <mat-form-field appearance="outline" class="custom-textfield">
         <input matInput  class="input-field"
-          type="text" [(ngModel)]="partAttributeName" 
-          name="partAttributeName" 
+          type="text" [(ngModel)]="attributeName" 
+          name="attributeName" 
           placeholder="Enter Part Attribute" />
       </mat-form-field>
       <button class="primary-btn" (click)="submitAttributeForm()">
@@ -16,7 +16,7 @@
     </div>
     
     <div class="page-content">
-      <div class="card-nc" *ngIf="dataSource.length > 0">
+      <div class="card-nc">
         <app-table
         [config]="columns"
         [data]="dataSource"

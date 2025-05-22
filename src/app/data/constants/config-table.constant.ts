@@ -38,7 +38,7 @@ export const COSTFACTOR_TABLE_COLUMNS = [
 export const PART_ATTRIBUTE_TABLE_COLUMNS = [
     {
         label: 'Part Attributes',
-        key: 'name',
+        key: 'attributeName',
         columnType: ColumnType.GENERAL,
         filterable: true,
         sortable: true
