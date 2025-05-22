@@ -20,7 +20,7 @@ import { CostFactorComponent } from './components/cost-factor/cost-factor.compon
 
 
 @NgModule({
-  declarations: [CategoryComponent, ConfigLandingComponent, PartAttributeComponent, PartTemplateComponent, TemplatedialogComponent],
+  declarations: [CategoryComponent, ConfigLandingComponent, PartAttributeComponent, PartTemplateComponent, TemplatedialogComponent,CostFactorComponent],
   imports: [
     CommonModule,
     ConfigRoutingModule,

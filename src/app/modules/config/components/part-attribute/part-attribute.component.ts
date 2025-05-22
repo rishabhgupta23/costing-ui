@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { PART_ATTRIBUTE_TABLE_COLUMNS } from 'src/app/data/constants/config-columns.constant';
+import { PART_ATTRIBUTE_TABLE_COLUMNS } from 'src/app/data/constants/config-table.constant';
 import { PageEvent } from '@angular/material/paginator';
 import { SortState } from 'src/app/data/models/part';
 import { SortIcons, TableActions } from 'src/app/shared/constants/table.constants';
