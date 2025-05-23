@@ -65,17 +65,17 @@ fdescribe('PartAttributeComponent', () => {
   });
 
   it('should create attribute and reset input', () => {
-    component.partAttributeName = 'New Attribute';
+    component.attributeName = 'New Attribute';
     component.submitAttributeForm();
-    expect(mockService.createPartAttribute).toHaveBeenCalledWith({ name: 'New Attribute' });
+    expect(mockService.createPartAttribute).toHaveBeenCalledWith('New Attribute');
     expect(mockSnackbar.success).toHaveBeenCalledWith('Part attribute created successfully!');
   });
 
   it('should handle edit dialog and update attribute', () => {
-    const row = { attributeId: 1, name: 'Old Name' };
+    const row = { attributeId: 1, attributeName: 'Old Name' };
     component.openEditDialog(row);
     expect(mockDialog.open).toHaveBeenCalled();
-    expect(mockService.updatePartAttribute).toHaveBeenCalledWith(1, { name: 'Updated Name' });
+    expect(mockService.updatePartAttribute).toHaveBeenCalledWith(1, {attributeId: 1, attributeName: 'Updated Name' });
     expect(mockSnackbar.success).toHaveBeenCalledWith('Attribute updated successfully!');
   });
 
