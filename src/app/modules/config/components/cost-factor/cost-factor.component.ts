@@ -25,7 +25,7 @@ export class CostFactorComponent {
   totalRecords = 0;
 
   filterCriteria: Map<string, string> = new Map();
-  sortState: SortState = { sortColumn: 'factorName', sortState: SortIcons.ASC };
+  sortState: SortState = { sortColumn: 'name', sortState: SortIcons.ASC };
   private searchSubject = new Subject<{ key: string; value: string }>();
 
 
@@ -46,7 +46,6 @@ getCostFactorList(): void {
     this.sortState
   ).subscribe({
     next: (res) => {
-      console.log('Cost Factor List:', res);
       this.dataSource = res.data;
       this.totalRecords = res.pageInfo?.totalRecords || 0;
     }
