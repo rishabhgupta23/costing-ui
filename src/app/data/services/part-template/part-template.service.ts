@@ -19,7 +19,7 @@ export class TemplateService {
 
   getTemplateList(
     page: number = 0,
-    size: number = 10,
+    size: number = 100,
     filterCriteria: Map<string, string> = new Map(),
     sortState: SortState = { sortColumn: 'templateName', sortState: SortIcons.ASC }
   ): Observable<any> {

@@ -6,32 +6,19 @@
   flex-direction: column;
 }
 
-.page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 
-  .page-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: $c-default-text;
-  }
-}
-
-.form-field {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-
-  label {
+.form-field{
+    display: flex;
+    width: 100%;
+    align-items: baseline;
+    column-gap: 1rem;
+      label {
     font-weight: 500;
     margin-right: 0.5rem;
   }
-
-  .custom-textfield {
-    width: 300px;
-    border-color: $c-tx-border;
-  }
+.custom-textfield{
+    width: 50%;
+}
 
   .primary-btn {
     padding: 0.6rem 1.2rem;
@@ -103,7 +90,7 @@
 
     th,
     td {
-      background-color:rgb(229, 228, 228);
+      background-color:#e5e4e4;
       padding: 0.75rem;
     }
   }
@@ -136,7 +123,7 @@
   display: flex;
   align-items: center;
 
-  input[type="text"] {
+  .filter-input {
     width: 100%;
     padding: 0.5rem 2rem 0.5rem 0.75rem;
     font-size: 0.85rem;
@@ -183,20 +170,20 @@
 
 .expanded-row{
   box-shadow: inset 0px 0px 20px 1px rgba(0, 0, 0, 0.1);
-  background-color:rgb(229, 228, 228);
+  background-color:#e5e4e4;
    td {
   position: relative;
   z-index: 0;
 }
 }
 
-mat-paginator {
+.paginator {
   width: 100%;
-  background: #ffffff;
+  background: $c-default-bg;
   box-shadow: 0 -6px 6px rgba(0, 0, 0, 0.1);
 }
 
     .primary-btn:disabled{
-        background-color: gray;
+        background-color: $c-disable-btn;
     }
 

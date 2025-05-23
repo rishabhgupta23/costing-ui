@@ -38,7 +38,8 @@
                     type="text"
                     placeholder="Enter your text"
                     [(ngModel)]="searchTermName"
-                    (input)="applyFilter()" />
+                    (input)="applyFilter()"
+                    class="filter-input" />
                   <mat-icon
                     class="clear-filter-btn"
                     *ngIf="searchTermName"
@@ -89,7 +90,8 @@
         <mat-paginator 
         [length]="totalRecords" 
         [pageSize]="pageSize" 
-        (page)="onPageChange($event)">
+        (page)="onPageChange($event)"
+        class="paginator">
         </mat-paginator>
 
     </div>

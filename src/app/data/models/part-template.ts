@@ -6,10 +6,7 @@ export interface TemplateRequest {
   export interface TemplateResponse {
     templateId: number;
     templateName: string;
-    partAttributes: {
-      attributeId: number;
-      attributeName: string;
-    }[];
+    partAttributes: AttributeRow[];
   }
   
   export interface TemplateListItem {
