@@ -1,3 +1,5 @@
+@import "src/scss/_base.scss";
+
 .stepper-container {
     background: #f9f9f9;
     border-radius: 10px;
@@ -128,7 +130,7 @@ mat-panel-description{
     width: 150px;
 }
     .primary-btn:disabled{
-        background-color: gray;
+        background-color: $c-disable-btn;
     }
 
 button[mat-icon-button]{

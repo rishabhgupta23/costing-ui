@@ -1,0 +1,65 @@
+<div class="dialog-box">
+  <mat-form-field *ngIf="isEditMode" appearance="fill" class="w-full">
+    <mat-label>Template Name</mat-label>
+    <input matInput [(ngModel)]="templateName">
+  </mat-form-field>
+  
+  
+    <h2 class="attribute-header" mat-dialog-title>Select Attributes</h2>
+    <mat-dialog-content>
+      <table mat-table [dataSource]="attributeList" class="attribute-table">
+  
+        <!-- Select Checkbox Column -->
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox 
+              (change)="selectAll($event)" 
+              [checked]="isAllSelected()" 
+              [indeterminate]="isIndeterminate()">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let attr">
+            <mat-checkbox 
+              [checked]="checkIfSelected(attr)" 
+              (change)="toggleAttributeSelection(attr, $event)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+  
+        <!-- Attribute Name Column -->
+        <ng-container matColumnDef="attributeName">
+          <th mat-header-cell *matHeaderCellDef>
+            <div class="header-det">
+              Attribute Name
+              <mat-icon [svgIcon]="getSortIcon('attributeName')" class="sort-icon" (click)="toggleSort('attributeName')"></mat-icon>
+
+            </div>
+            <div class="filter-row">
+              <div class="filter-input-wrapper">
+                <input matInput [(ngModel)]="searchTerm" (input)="applyFilter()" placeholder="Search Attribute">
+              </div>
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let attr">{{ attr.attributeName }}</td>
+        </ng-container>
+  
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </mat-dialog-content>
+  
+    <mat-paginator 
+      [length]="totalRecords" 
+      [pageSize]="pageSize" 
+      (page)="onPageChange($event)">
+    </mat-paginator>
+  
+    <mat-dialog-actions>
+      <button class="primary-btn" (click)="closeDialog()">Cancel</button>
+      <button class="primary-btn" (click)="confirmSelection()">
+        {{ isEditMode ? 'Update Template' : 'Create Template' }}
+      </button>
+      
+    </mat-dialog-actions>
+  </div>
+  
