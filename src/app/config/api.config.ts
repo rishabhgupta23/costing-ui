@@ -21,5 +21,7 @@ export const API_END_POINTS = {
     USER:'/users',
     USER_ROLES:'/users/roles',
     USER_DETAILS:'/users/{userId}',
-
+    PART_FILE_UPLOAD: '/parts/upload-image',
+    PART_FILES: '/parts/part-files',
+    PART_FILE_DOWNLOAD: '/parts/download-image',
 };

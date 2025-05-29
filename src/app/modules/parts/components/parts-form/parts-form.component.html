@@ -119,22 +119,25 @@
                     </div>
             </div>
 <div class="file-upload p-4 border rounded">
-  <label class="block mb-2 text-sm font-medium">Attach Files</label>
-  <input type="file" (change)="onFileSelected($event)" multiple accept="*/*">
 
 <div class="upload-dropzone"
+     [class.dragover]="isDragOver"
      (drop)="handleDrop($event)"
-     (dragover)="allowDrop($event)">
+     (dragover)="allowDrop($event)"
+     (dragleave)="dragLeave($event)">
   Drag & drop files here or 
-  <input type="file" multiple (change)="onFileSelected($event)" />
+  <label class="primary-btn" style="margin-bottom:0; cursor:pointer;">
+    Choose Files
+    <input type="file" multiple (change)="onFilesSelected($event)" style="display:none;" />
+  </label>
 </div>
 
 <div class="file-preview-list">
-  <div *ngFor="let file of attachedFiles; let i = index" class="file-preview">
+  <div *ngFor="let file of selectedFiles; let i = index" class="file-preview">
     <ng-container [ngSwitch]="getFileType(file)">
       
       <!-- Image Preview -->
-      <img *ngSwitchCase="'image'" [src]="file.previewUrl" class="thumb-img" />
+      <img *ngSwitchCase="'image'" class="thumb-img" />
 
       <!-- PDF Icon -->
       <img *ngSwitchCase="'pdf'" src="assets\icons\pdf-icon.png" class="file-icon" />

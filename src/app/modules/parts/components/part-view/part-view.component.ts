@@ -13,7 +13,7 @@ import { BOM_TABLE_COLUMNS } from '../../../../data/constants/bom-table.constant
 import { PartType } from '../../../../shared/constants/part.constants';
 import { ColumnType} from '../../../../shared/constants/table.constants';
 import { HistorydialogComponent } from '../historydialog/historydialog.component';
-import { downloadFile } from '../../../../shared/utils/file-download.util';
+import { base64ToFile, downloadFile } from '../../../../shared/utils/file-download.util';
 import { getValueOrNull } from '../../../../shared/utils/string.util';
 
 @Component({
@@ -59,6 +59,8 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
  
    partId: string | null = null;
   part: any;
+  partFileUrls: string[] = [];
+  selectedFiles: File[] = [];
  
  
    constructor(private partService: PartService, private route: ActivatedRoute,
@@ -71,7 +73,7 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
        if (this.partId){      
          this.getPartData(this.partId);
        }
-       
+       this.getPartFiles(this.partId || '');
        }
  
        getPartData(id: string): void {
@@ -96,7 +98,44 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
           }));
         });
       }
-      
+ 
+    getPartFiles(partId: string): void {
+  this.partService.getPartFiles(partId).subscribe({
+    next: (urls) => {
+      console.log('Part file URLs:', urls);
+      this.partFileUrls = urls;
+    },
+    error: (err) => {
+      console.error('Error fetching part files:', err);
+    }
+  });
+}
+
+getFileTypeFromUrl(url: string): string {
+  const extension = url.split('.').pop()?.toLowerCase();
+  switch (extension) {
+    case 'jpg':
+    case 'jpeg':
+    case 'png':
+      return 'image';
+    case 'pdf':
+      return 'pdf';
+    case 'doc':
+    case 'docx':
+      return 'word';
+    case 'xls':
+    case 'xlsx':
+      return 'excel';
+    default:
+      return 'other';
+  }
+}
+
+downloadPartFile(fileUrl: string): void {
+  base64ToFile(this.partService, fileUrl);
+}
+
+
  
        vendorCostListToMap(vendorCostList: VendorCost[]) {
         vendorCostList.forEach((vc) => {

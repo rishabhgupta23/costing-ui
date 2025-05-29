@@ -49,6 +49,38 @@
                     </div>
                 </div>  
             </div>
+
+
+<div *ngIf="partFileUrls.length > 0">
+  <h4 class="mt-4">Associated Files</h4>
+  <div class="file-preview-container">
+    <div class="file-card" *ngFor="let url of partFileUrls">
+      <ng-container [ngSwitch]="getFileTypeFromUrl(url)">
+        <!-- Image Preview -->
+        <img *ngSwitchCase="'image'" [src]="url" class="thumbnail" />
+
+        <!-- Excel Icon -->
+        <img *ngSwitchCase="'excel'" src="assets/icons/excel-icon.png" class="icon" />
+
+        <!-- Word Icon -->
+        <img *ngSwitchCase="'word'" src="assets/icons/word-icon.png" class="icon" />
+
+        <!-- PDF Icon -->
+        <img *ngSwitchCase="'pdf'" src="assets/icons/pdf-icon.png" class="icon" />
+
+        <!-- Default Icon -->
+        <img *ngSwitchDefault src="assets/icons/file-icon.png" class="icon" />
+      </ng-container>
+
+      <div class="filename">{{ url.split('/').pop() }}</div>
+
+      <!-- Download Button -->
+      <button class="download-btn" (click)="downloadPartFile(url)">Download</button>
+    </div>
+  </div>
+</div>
+
+
             <div *ngIf="partForm.get('partType')?.value === partTypeEnum.UNIT">
                 <hr>
                 <div class="sub-heading">Vendor Cost Details</div>

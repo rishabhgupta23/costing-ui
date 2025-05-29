@@ -107,3 +107,22 @@ mat-panel-description{
   font-size: 12px;
   cursor: pointer;
 }
+
+.upload-dropzone {
+  border: 2px dashed #aaa;
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.upload-dropzone.file-over {
+  background-color: #f0f8ff;
+}
+
+.upload-dropzone.dragover {
+  border: 2px dashed #007bff;
+  background: #e6f7ff;
+}

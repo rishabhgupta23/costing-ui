@@ -89,6 +89,28 @@ export class PartService {
     return this.http.get<any>(ApiUtil.getApiUrl(API_END_POINTS.PART_DOWNLOAD));
   }
 
+uploadPartImage(partId: number, file: File, base64Image: string) {
+  const body = {
+    fileName: file.name,
+    fileData: base64Image
+  };
+
+  const params = new HttpParams().set('partId', partId);
+  return this.http.post(ApiUtil.getApiUrl(API_END_POINTS.PART_FILE_UPLOAD), body, { params });
+}
+
+
+  getPartFiles(partId: string): Observable<string[]> {
+  const params = new HttpParams().set('partId', partId);
+  return this.http.get<string[]>(ApiUtil.getApiUrl(API_END_POINTS.PART_FILES), { params });
+}
+
+  downloadPartFile(fileUrl: string) {
+  const params = new HttpParams().set('fileUrl', fileUrl);
+  return this.http.get<any>(ApiUtil.getApiUrl(API_END_POINTS.PART_FILE_DOWNLOAD), { params });
+}
+
+
   downloadBomExcel(partId:string){
     const params = new Map<string, string>();
   params.set('partId', partId);

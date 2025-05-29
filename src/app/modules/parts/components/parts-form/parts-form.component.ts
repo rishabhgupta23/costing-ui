@@ -1,7 +1,7 @@
 import { Component, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { PartService } from '../../../../data/services/part/part.service';
-import { map, Subscription } from 'rxjs';
+import { concat, concatMap, from, map, of, Subscription } from 'rxjs';
 import { COST_FACTOR_TABLE_COLUMNS } from '../../../../data/constants/part.constants';
 import { VendorService } from '../../../../data/services/vendor/vendor.service';
 import { Vendor } from '../../../../data/models/vendor';
@@ -17,9 +17,7 @@ import { TableActions } from '../../../../shared/constants/table.constants';
 import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
 import { getValueOrNull } from '../../../../shared/utils/string.util';
 import { ListItem } from 'src/app/data/models/list-items';
-import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
-
-GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+import { base64ToFile, downloadFile, fileToBase64 } from 'src/app/shared/utils/file-download.util';
 
 
 @Component({
@@ -41,8 +39,15 @@ export class PartsFormComponent implements OnDestroy {
   bomPartList: PartBomData[] =[]; 
   pageSize: number = 100 // Default items per page
   partTypeEnum= PartType;
-  attachedFiles: any[] = [];
-  
+  selectedFiles: File[] = [];
+  maxFiles = 3;
+  isDragOver = false;
+  readonly allowedFileTypes = [
+    'image/png', 'image/jpeg', 'image/jpg', 'image/gif',
+    'application/pdf', 'text/csv', 'application/vnd.ms-powerpoint', 'text/plain',
+    'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  ];
 
   partForm = new FormGroup({
     partNumber: new FormControl('', Validators.required),
@@ -91,52 +96,66 @@ export class PartsFormComponent implements OnDestroy {
       }
       
 
-onFileSelected(event: Event): void {
-  const input = event.target as HTMLInputElement;
-  if (input.files) {
-    this.processFiles(Array.from(input.files));
-  }
-}
-
-handleDrop(event: DragEvent) {
-  event.preventDefault();
-  if (event.dataTransfer?.files) {
-    this.processFiles(Array.from(event.dataTransfer.files));
-  }
-}
-
-allowDrop(event: DragEvent) {
-  event.preventDefault();
-}
-
-processFiles(files: File[]) {
-  files.forEach(file => {
-    const fileType = file.type;
-    if (fileType.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.attachedFiles.push({
-          file,
-          name: file.name,
-          type: fileType,
-          previewUrl: e.target.result
-        });
-      };
-      reader.readAsDataURL(file);
-    } else {
-      this.attachedFiles.push({
-        file,
-        name: file.name,
-        type: fileType,
-        previewUrl: null
-      });
+onFilesSelected(event: any) {
+  const files: FileList = event.target.files;
+  const validFiles: File[] = [];
+  for (let i = 0; i < files.length; i++) {
+    const file = files.item(i)!;
+    if (!this.allowedFileTypes.includes(file.type)) {
+      this.snackbarService.error(`File type not allowed: ${file.name}`);
+      continue;
     }
-  });
+    validFiles.push(file);
+  }
+  if (validFiles.length + this.selectedFiles.length > this.maxFiles) {
+    this.snackbarService.error(`You can upload maximum ${this.maxFiles} files.`);
+    return;
+  }
+  for (const file of validFiles) {
+    this.selectedFiles.push(file);
+  }
 }
 
-removeFile(index: number) {
-  this.attachedFiles.splice(index, 1);
+allowDrop(event: DragEvent): void {
+  this.isDragOver = true;
+  event.preventDefault();
+  event.stopPropagation();
 }
+
+handleDrop(event: DragEvent): void {
+  this.isDragOver = false;
+  event.preventDefault();
+  event.stopPropagation();
+  const files = event.dataTransfer?.files;
+  if (files && files.length > 0) {
+    this.processFiles(Array.from(files));
+  }
+}
+
+dragLeave(event: DragEvent): void {
+  this.isDragOver = false;
+  event.preventDefault();
+  event.stopPropagation();
+}
+
+processFiles(files: File[]): void {
+  const validFiles = files.filter(file => this.allowedFileTypes.includes(file.type));
+  if (validFiles.length < files.length) {
+    this.snackbarService.error('Some files were not allowed and have been skipped.');
+  }
+  const remainingSlots = this.maxFiles - this.selectedFiles.length;
+  if (validFiles.length > remainingSlots) {
+    this.snackbarService.error(`You can upload maximum ${this.maxFiles} files.`);
+    return;
+  }
+  for (const file of validFiles) {
+    this.selectedFiles.push(file);
+  }
+}
+removeFile(index: number) {
+  this.selectedFiles.splice(index, 1);
+}
+
 
 getFileType(file: any): string {
   const type = file.type.toLowerCase();
@@ -350,37 +369,61 @@ getFileType(file: any): string {
   
 
   onSubmit(): void {
-    const categoryIdValue = this.partForm.get('categoryId')?.value || null;
-    const body: PartCreateRequest = {
-      partName: this.partForm.get('partName')?.value || '',
-      partNumber: this.partForm.get('partNumber')?.value || '',
-      type: this.partForm.get('partType')?.value || '',
-      unit: this.partForm.get('partUnit')?.value || '',
-      vendorCostList: this.generateVendorCostMapBody(),
-      categoryId: categoryIdValue,
-      bom: this.generateBomDetailsBody()
-    };
+  const categoryIdValue = this.partForm.get('categoryId')?.value || null;
+  const body: PartCreateRequest = {
+    partName: this.partForm.get('partName')?.value || '',
+    partNumber: this.partForm.get('partNumber')?.value || '',
+    type: this.partForm.get('partType')?.value || '',
+    unit: this.partForm.get('partUnit')?.value || '',
+    vendorCostList: this.generateVendorCostMapBody(),
+    categoryId: categoryIdValue,
+    bom: this.generateBomDetailsBody()
+  };
 
-    if (this.partForm.invalid) {
-      this.snackbarService.error('Please fill all required fields!');
-      return;
-    }
-    if (this.partId) {
-      this.partService.updatePart(this.partId, body).subscribe({
-        next: () => {
-            this.snackbarService.success('Part updated successfully!');
-            this.router.navigateByUrl('/app/parts');
-        }
-      });
-    } else {
-      this.partService.createPart(body).subscribe({
-        next:() => {
-            this.snackbarService.success('Part created successfully!');
-            this.router.navigateByUrl('/app/parts');
-        }
-      });
-    }
+  if (this.partForm.invalid) {
+    this.snackbarService.error('Please fill all required fields!');
+    return;
   }
+
+  if (this.partId) {
+    this.partService.updatePart(this.partId, body).subscribe({
+      next: () => {
+        this.snackbarService.success('Part updated successfully!');
+        this.router.navigateByUrl('/app/parts');
+      }
+    });
+  } else {
+    this.partService.createPart(body).pipe(
+      concatMap((res: any) => {
+        const partId = res.partId || res.id;
+        const uploadObservables = this.selectedFiles.map(file =>
+          from(fileToBase64(file)).pipe(
+            concatMap(base64 => this.partService.uploadPartImage(partId, file, base64))
+
+          )
+        );
+        return concat(...uploadObservables);
+      })
+    ).subscribe({
+      next: () => {
+        this.snackbarService.success('Part created successfully!');
+        this.router.navigateByUrl('/app/parts');
+      },
+      error: (err) => {
+        this.snackbarService.error('Failed to upload part or files.');
+        console.error(err);
+      }
+    });
+  }
+}
+
+downloadPartFile(fileUrl: string) {
+  this.partService.downloadPartFile(fileUrl).subscribe(response => {
+    base64ToFile(response.fileData, response.fileName || 'partFile');
+  });
+}
+
+
   generateBomDetailsBody() {
     return this.bomPartList.map(part => ({
       childPartId: part.id,
