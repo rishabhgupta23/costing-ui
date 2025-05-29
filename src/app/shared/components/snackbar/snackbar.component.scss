@@ -2,10 +2,11 @@
     display: flex;
     align-items: center;
     padding: 12px 16px;
-    border-radius: 4px;
+    border-radius: 12px;
     color: white;
     font-size: 14px;
     width: 100%;
+    min-width: 400px;
   }
   
   .success {

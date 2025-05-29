@@ -26,7 +26,7 @@
               type="text" 
               #filterInput
               (input)="onFilterChange($event, col.key)" 
-              placeholder="Enter your text" />
+              placeholder="Search {{col.label}}" />
               <mat-icon class="clear-filter-btn" *ngIf="filterInput.value" (click)="clearFilter(filterInput, col.key)" svgIcon="close"></mat-icon>
           </div>
         </ng-container>
@@ -50,9 +50,12 @@
     </td>
 
     <td *ngIf="col?.columnType === ColumnType.INPUT_NUMBER">
-        <mat-form-field>
-            <input matInput type="number" [(ngModel)]="row[col?.key]">
-        </mat-form-field>
+      <input
+      type="number"
+      class="custom-textfield"
+      [(ngModel)]="row[col?.key]" 
+      (ngModelChange)="cellEdit.emit({ row: row, key: col?.key })" />
+    
     </td>
 
     <!-- Dynamic Action Buttons -->

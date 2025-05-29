@@ -5,6 +5,7 @@ import { SidebarService } from './core/services/sidebar.service';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SVG_ICONS } from './config/asset.config';
+import { CustomIconRegistryService } from './shared/services/custom-icon-registry/custom-icon-registry.service';
 
 @Component({
   selector: 'app-root',

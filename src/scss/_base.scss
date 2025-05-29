@@ -1,7 +1,13 @@
 $base-font-size: 1rem;
 $base-border-radius: 0.5rem;
 
-$c-background-color: #2F4156;
+$c-dialog-header-bg: #2F4156;
+$c-btn-bg: #2F4156;
+$c-tx-border: #2F4156;
+$c-login-bg:#cfdef3;
+$c-login-btn:#3a77fc;
+$c-link:#007BFF;
+$c-link-hover:#393992;
 $c-default-text: #000000;
 $c-text-hover: #00000099;
 $c-default-bg: #ffffff;
@@ -10,6 +16,7 @@ $c-tr-hover: #C8D9E62F;
 $c-placeholder: #888;
 $c-border: #D1D5DB;
 $c-btn-hover: darken(#f3f3f351, 10%);
+$c-disable-btn:gray;
 
 
 
