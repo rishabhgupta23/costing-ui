@@ -69,7 +69,7 @@ export class PartService {
         { params }
     );
 }
-   getPartCategories(): Observable<{categoryId: number; name: string}[]> {
+   getPartCategories(): Observable<{categoryId: number; categoryName: string}[]> {
     return this.http.get<any>(ApiUtil.getApiUrl(API_END_POINTS.CATEGORIES)).pipe(
       map((res:any) => res.data)
     );

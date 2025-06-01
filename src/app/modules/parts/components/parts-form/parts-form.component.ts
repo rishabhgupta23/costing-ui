@@ -28,7 +28,7 @@ export class PartsFormComponent implements OnDestroy {
   partNames: string[] =[];
   partTypes: string[] = [];
   partUnits: string[] = [];
-  partCategories: {categoryId: number, name: string}[] = [];
+  partCategories: {categoryId: number, categoryName: string}[] = [];
   vendorList: Vendor[] = [];
   costFactorList: CostFactor[] = [];
   subscriptions: Subscription[] = [];
@@ -385,4 +385,5 @@ export class PartsFormComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.forEach(s => s.unsubscribe());
   }
+
 }
