@@ -20,6 +20,7 @@ import { getValueOrNull } from '../../../../shared/utils/string.util';
 import { downloadBlobFile, fileToBase64 } from 'src/app/shared/utils/file-download.util';
 
 import { CostFactorService } from 'src/app/data/services/cost-factor/cost-factor.service';
+import { ProgressDialogComponent } from 'src/app/shared/components/progress-dialog/progress-dialog.component';
 
 @Component({
   selector: 'app-parts-form',
@@ -416,6 +417,29 @@ getFileType(file: any): string {
   
 
   onSubmit(): void {
+  if (this.partForm.invalid) {
+    this.snackbarService.error('Please fill all required fields!');
+    return;
+  }
+
+  // Validate vendor cost values
+  for (const [vendorId, costFactors] of this.vendorCostMap) {
+    for (const costFactor of costFactors) {
+      if (!costFactor.value || costFactor.value === 0) {
+        this.snackbarService.error('Cost Factor value cannot be 0');
+        return;
+      }
+    }
+  }
+
+  // Validate BOM part quantities
+  for (const part of this.bomPartList) {
+    if (!part.value || Number(part.value) === 0) {
+      this.snackbarService.error('Quantity of the child parts cannot be 0');
+      return;
+    }
+  }
+
   const categoryIdValue = this.partForm.get('categoryId')?.value || null;
   const body: PartCreateRequest = {
     partName: this.partForm.get('partName')?.value || '',
@@ -427,59 +451,67 @@ getFileType(file: any): string {
     bom: this.generateBomDetailsBody()
   };
 
-  if (this.partForm.invalid) {
-    this.snackbarService.error('Please fill all required fields!');
-    return;
+  let dialogRef: any = null;
+  if (this.selectedFiles.length > 0) {
+    dialogRef = this.dialog.open(ProgressDialogComponent, {
+      disableClose: true,
+      data: { step: 0 }
+    });
   }
-
-      for (const [vendorId, costFactors] of this.vendorCostMap) {
-      for (const costFactor of costFactors) {
-        if (!costFactor.value || costFactor.value === 0) {
-          this.snackbarService.error('Cost Factor value cannot be 0');
-          return;
-        }
-      }
-    }
-    
-
-    for (const part of this.bomPartList) {
-      if (!part.value || Number(part.value) === 0) {
-        this.snackbarService.error('Quantity of the child parts cannot be 0');
-        return;
-      }
-    }
 
   if (this.partId) {
     this.partService.updatePart(this.partId, body).subscribe({
       next: () => {
+        if (dialogRef) {
+          dialogRef.componentInstance.data.step = 1;
+          setTimeout(() => dialogRef.close(), 1500);
+        }
         this.snackbarService.success('Part updated successfully!');
         this.router.navigateByUrl('/app/parts');
+      },
+      error: (err) => {
+        if (dialogRef) dialogRef.close();
+        this.snackbarService.error('Failed to update part.');
+        console.error(err);
       }
     });
   } else {
     this.partService.createPart(body).pipe(
       concatMap((res: any) => {
+        if (this.selectedFiles.length === 0) {
+          this.snackbarService.success('Part created successfully!');
+          this.router.navigateByUrl('/app/parts');
+          return of(null);
+        }
+        if (dialogRef) dialogRef.componentInstance.data.step = 1;
         const partId = res.partId || res.id;
         const uploadObservables = this.selectedFiles.map(file =>
           from(fileToBase64(file)).pipe(
             concatMap(base64 => this.partService.uploadPartImage(partId, file, base64))
-
           )
         );
         return concat(...uploadObservables);
       })
     ).subscribe({
       next: () => {
-        this.snackbarService.success('Part created successfully!');
+        if (dialogRef) {
+          dialogRef.componentInstance.data.step = 2;
+          setTimeout(() => dialogRef.close(), 1500);
+        }
+        if (this.selectedFiles.length > 0) {
+          this.snackbarService.success('Part created successfully!');
+        }
         this.router.navigateByUrl('/app/parts');
       },
       error: (err) => {
+        if (dialogRef) dialogRef.close();
         this.snackbarService.error('Failed to upload part or files.');
         console.error(err);
       }
     });
   }
 }
+
 
 
 
