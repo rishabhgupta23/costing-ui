@@ -7,6 +7,7 @@ import { Part, PartRow } from '../../../../data/models/part';
 import { CostCalculatorService } from '../../../../data/services/cost-calculator/cost-calculator.service';
 import { CostItem } from '../../../../data/models/cost-calculator';
 import { PricingOptions } from '../../../../shared/constants/pricingoptions.constants';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-calculate',
@@ -28,9 +29,16 @@ export class CalculateComponent {
 
   filteredParts: Observable<PartRow[]> | undefined;
 
-  constructor(private partService: PartService, private costCalculatorService: CostCalculatorService) {
+  constructor(private partService: PartService, private costCalculatorService: CostCalculatorService, private overlayContainer:OverlayContainer) {
   }
 
+     onAutocompleteOpened() {
+    this.overlayContainer.getContainerElement().classList.add('autocomplete-open');
+  }
+
+  onAutocompleteClosed() {
+    this.overlayContainer.getContainerElement().classList.remove('autocomplete-open');
+  }
   getPartList(): void {
     this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria).subscribe(
       (response) => {

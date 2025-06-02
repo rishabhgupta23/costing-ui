@@ -49,8 +49,14 @@
                     </div>
                 </div>  
             </div>
-            <div *ngIf="partForm.get('partType')?.value === partTypeEnum.UNIT">
-                <hr>
+            <app-table
+  *ngIf="attributeValueList.length > 0"
+  [data]="attributeValueList"
+  [config]="attributeTableColumns">
+</app-table>
+
+            <div *ngIf="partForm.get('partType')?.value === partTypeEnum.UNIT && vendorCostList.length > 0">
+                <br>
                 <div class="sub-heading">Vendor Cost Details</div>
                 <mat-accordion class="example-headers-align" multi>
                     <mat-expansion-panel *ngFor="let vendor of vendorCostList; let i=index">

@@ -45,6 +45,7 @@ export interface Part {
 export interface PartCreateRequest extends Part {
     vendorCostList: VendorCost[];
     bom:{ childPartId: number; quantity: number }[];
+  attributeValueList?: PartAttributeValue[];
 }
 
 export interface PartBomData{
@@ -72,6 +73,7 @@ export interface PartRow{
 export interface PartDetails extends Part {
     bom: {childPartId: number; quantity: number; childPartName: string; childPartNumber: string}[];
     vendorCostList: VendorCost[];
+     attributes?: PartAttributeValue[];
 }
 
 export interface SortState{
@@ -83,3 +85,9 @@ export interface TableActionEvent {
     action: string;
     row: any;
   }
+
+  export interface PartAttributeValue {
+  attributeId: number;
+  attributeName?:string;
+  value: string;
+}

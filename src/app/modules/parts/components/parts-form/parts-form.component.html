@@ -45,7 +45,7 @@
                         </mat-form-field>
                     </div>
                     <div class="form-detail">Category
-                        <mat-form-field appearance="outline" class="custom-textfield">
+                        <mat-form-field appearance="outline" class="custom-textfield" class="height-subscript">
                             <mat-select placeholder="Select Part Category" formControlName="categoryId">
                                 <ng-container *ngFor="let category of partCategories">
                                     <mat-option [value]="category.categoryId">{{category.name}}</mat-option>
@@ -54,7 +54,7 @@
                         </mat-form-field>
                     </div>
                     <div class="form-detail">Unit
-                        <mat-form-field appearance="outline" class="custom-textfield">
+                        <mat-form-field appearance="outline" class="custom-textfield" class="height-subscript">
                             <mat-select placeholder="Select Part Unit" formControlName="partUnit">
                                 <ng-container *ngFor="let item of partUnits">
                                     <mat-option [value]="item">{{item}}</mat-option>
@@ -63,6 +63,56 @@
                         </mat-form-field>
                     </div>
                 </div>  
+
+                <hr class="hr-tag">
+<!-- ;else other_content -->
+    <div class="template-form">
+<div class="template-detail" *ngIf="!partId"> Select Template
+<mat-form-field    appearance="outline" class="custom-textfield" class="height-subscript">
+  <input
+    type="text"
+    placeholder="Choose template"
+    aria-label="Template"
+    matInput
+    [formControl]="templateControl"
+    [matAutocomplete]="auto"
+  />
+  <mat-autocomplete
+    #auto="matAutocomplete"
+     panelClass="custom-autocomplete-panel"
+  (opened)="onAutocompleteOpened()"
+  (closed)="onAutocompleteClosed()"
+    [displayWith]="displayTemplate"
+    (optionSelected)="onTemplateSelected($event.option.value)"
+  >
+    <mat-option *ngFor="let template of filteredTemplates | async" [value]="template">
+      {{ template.templateName }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>
+</div>
+<!-- <ng-template #other_content>
+    <div></div>
+</ng-template> -->
+<div class="modify-btn"
+     *ngIf="(isEditMode && attributeValueList.length === 0) || (attributeValueList.length > 0)">
+  <a class="modify-link"
+     (click)="onModifyClick()">
+    Add/Update attributes
+  </a>
+</div>
+
+</div>
+<div>
+<app-table
+  *ngIf="attributeValueList.length > 0"
+  [data]="attributeValueList"
+  [config]="attributeTableColumns">
+</app-table>
+  </div>
+
+
+
             </div>
             <div *ngIf="selectedStepIndex === 1">
             <div *ngIf="partForm.get('partType')?.value === partTypeEnum.UNIT" [formGroup]="costDetailsForm">

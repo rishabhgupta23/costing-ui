@@ -21,7 +21,7 @@ export class TemplatedialogComponent implements OnInit {
   existingAttributes: Set<number> = new Set();
   templateName: string = '';
   isEditMode: boolean = false;
-
+  openedFromPartForm: boolean = false;
   pageSize: number = 100;
   currentPage: number = 0;
   totalRecords: number = 0;
@@ -35,6 +35,7 @@ export class TemplatedialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<TemplatedialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
+      openedFromPartForm: boolean;
       templateName: string;existingAttributes: Set<number> 
       isEditMode?: boolean;
 },
@@ -42,6 +43,7 @@ export class TemplatedialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+      this.openedFromPartForm = this.data?.openedFromPartForm ?? false;
     this.existingAttributes = new Set(this.data.existingAttributes);
     this.existingAttributes = new Set(this.data.existingAttributes);
     this.templateName = this.data.templateName || ''; // <-- Add this

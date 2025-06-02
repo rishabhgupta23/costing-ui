@@ -1,7 +1,8 @@
 export enum ColumnType {
     GENERAL,
     INPUT_NUMBER,
-    ACTION = 'ACTION'
+    INPUT_STRING,
+    ACTION = 'ACTION',
 }
 
 export enum TableActions {
