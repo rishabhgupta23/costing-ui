@@ -75,7 +75,10 @@
       <div class="filename">{{ url.split('/').pop() }}</div>
 
       <!-- Download Button -->
-      <button class="download-btn" (click)="downloadPartFile(url)">Download</button>
+      <button class="download-btn" (click)="downloadPartFile(url)">
+        <mat-icon class="btn-icon" svgIcon="download" ></mat-icon>
+        Download
+      </button>
     </div>
   </div>
 </div>

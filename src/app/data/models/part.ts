@@ -3,7 +3,7 @@ import { Vendor } from "./vendor";
 
 export interface CostFactor {
     id:number;
-    name: string;
+    factorName: string;
 }
 
 export interface PartAttribute {

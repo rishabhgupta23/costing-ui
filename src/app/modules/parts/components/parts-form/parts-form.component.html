@@ -48,7 +48,7 @@
                         <mat-form-field appearance="outline" class="custom-textfield">
                             <mat-select placeholder="Select Part Category" formControlName="categoryId">
                                 <ng-container *ngFor="let category of partCategories">
-                                    <mat-option [value]="category.categoryId">{{category.name}}</mat-option>
+                                    <mat-option [value]="category.categoryId">{{category.categoryName}}</mat-option>
                                 </ng-container>
                             </mat-select>
                         </mat-form-field>
@@ -65,7 +65,48 @@
                 </div>  
             </div>
             <div *ngIf="selectedStepIndex === 1">
+                <div class="file-upload p-4 border rounded">
+      <div class="upload-dropzone"
+           [class.dragover]="isDragOver"
+           (drop)="handleDrop($event)"
+           (dragover)="allowDrop($event)"
+           (dragleave)="dragLeave($event)">
+        Drag & drop files here or 
+        <label class="primary-btn" style="margin-bottom:0; cursor:pointer;">
+          Choose Files
+          <input type="file" multiple (change)="onFilesSelected($event)" style="display:none;" />
+        </label>
+      </div>
+      <div class="file-preview-list">
+        <div *ngFor="let file of selectedFiles; let i = index" class="file-preview">
+          <ng-container [ngSwitch]="getFileType(file)">
+            <img *ngSwitchCase="'image'" [src]="getImagePreview(file)" class="thumb-img" />
+            <img *ngSwitchCase="'pdf'" src="assets\icons\pdf-icon.png" class="file-icon" />
+            <img *ngSwitchCase="'word'" src="assets\icons\word-icon.png" class="file-icon" />
+            <img *ngSwitchCase="'excel'" src="assets\icons\excel-icon.png" class="file-icon" />
+            <img *ngSwitchDefault src="assets\icons\file-icon.png" class="file-icon" />
+          </ng-container>
+          <div class="file-name">{{ file.name }}</div>
+          <button class="remove-btn" (click)="removeFile(i)">✕</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Show already uploaded files if any -->
+<div *ngIf="uploadedFiles.length > 0" class="file-preview-list">
+  <div *ngFor="let file of uploadedFiles; let i = index" class="file-preview">
+    <ng-container [ngSwitch]="getFileTypeFromName(file)">
+      <img *ngSwitchCase="'image'" [src]="file" class="thumb-img" />
+      <img *ngSwitchCase="'pdf'" src="assets/icons/pdf-icon.png" class="file-icon" />
+      <img *ngSwitchCase="'word'" src="assets/icons/word-icon.png" class="file-icon" />
+      <img *ngSwitchCase="'excel'" src="assets/icons/excel-icon.png" class="file-icon" />
+      <img *ngSwitchDefault src="assets/icons/file-icon.png" class="file-icon" />
+    </ng-container>
+    <div class="file-name">{{ getFileNameFromUrl(file) }}</div>
+  </div>
+</div>
             <div *ngIf="partForm.get('partType')?.value === partTypeEnum.UNIT" [formGroup]="costDetailsForm">
+                
                 <!-- Cost Section-->
                  <div formArrayName="costFactors">
                     <div class="cost-form">
@@ -93,7 +134,7 @@
                                 <mat-form-field appearance="outline" class="custom-cost-textfield">
                                     <mat-select placeholder="Select Cost Factor" [formControlName]="i">
                                         <ng-container *ngFor="let item of costFactorList">
-                                            <mat-option [value]="item">{{item.name}}</mat-option>
+                                            <mat-option [value]="item">{{item.factorName}}</mat-option>
                                         </ng-container>
                                     </mat-select>
                                 </mat-form-field>
@@ -107,51 +148,6 @@
                     </mat-accordion> 
                     </div>
             </div>
-<div class="file-upload p-4 border rounded">
-
-<div class="upload-dropzone"
-     [class.dragover]="isDragOver"
-     (drop)="handleDrop($event)"
-     (dragover)="allowDrop($event)"
-     (dragleave)="dragLeave($event)">
-  Drag & drop files here or 
-  <label class="primary-btn" style="margin-bottom:0; cursor:pointer;">
-    Choose Files
-    <input type="file" multiple (change)="onFilesSelected($event)" style="display:none;" />
-  </label>
-</div>
-
-<div class="file-preview-list">
-  <div *ngFor="let file of selectedFiles; let i = index" class="file-preview">
-    <ng-container [ngSwitch]="getFileType(file)">
-      
-      <!-- Image Preview -->
-      <img *ngSwitchCase="'image'" class="thumb-img" />
-
-      <!-- PDF Icon -->
-      <img *ngSwitchCase="'pdf'" src="assets\icons\pdf-icon.png" class="file-icon" />
-
-      <!-- Word Icon -->
-      <img *ngSwitchCase="'word'" src="assets\icons\word-icon.png" class="file-icon" />
-
-      <!-- Excel Icon -->
-      <img *ngSwitchCase="'excel'" src="assets\icons\excel-icon.png" class="file-icon" />
-
-      <!-- Default Icon -->
-      <img *ngSwitchDefault src="assets\icons\file-icon.png" class="file-icon" />
-    </ng-container>
-
-    <div class="file-name">{{ file.name }}</div>
-
-    <button class="remove-btn" (click)="removeFile(i)">✕</button>
-  </div>
-</div>
-
-
-  </div>
-</div>
-
-
             <div *ngIf="partForm.get('partType')?.value === partTypeEnum.MASTER" [formGroup]="bomDetailsForm">
                 <button class="primary-btn" (click)="openBomDialog()">Select Parts</button>
                 
@@ -188,5 +184,6 @@
           </div>
           
         
+</div>
 </div>
 </div>

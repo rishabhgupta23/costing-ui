@@ -13,7 +13,7 @@ import { BOM_TABLE_COLUMNS } from '../../../../data/constants/bom-table.constant
 import { PartType } from '../../../../shared/constants/part.constants';
 import { ColumnType} from '../../../../shared/constants/table.constants';
 import { HistorydialogComponent } from '../historydialog/historydialog.component';
-import { base64ToFile, downloadFile } from '../../../../shared/utils/file-download.util';
+import { downloadFile, downloadBlobFile } from '../../../../shared/utils/file-download.util';
 import { getValueOrNull } from '../../../../shared/utils/string.util';
 
 @Component({
@@ -102,7 +102,6 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
     getPartFiles(partId: string): void {
   this.partService.getPartFiles(partId).subscribe({
     next: (urls) => {
-      console.log('Part file URLs:', urls);
       this.partFileUrls = urls;
     },
     error: (err) => {
@@ -132,7 +131,10 @@ getFileTypeFromUrl(url: string): string {
 }
 
 downloadPartFile(fileUrl: string): void {
-  base64ToFile(this.partService, fileUrl);
+  this.partService.downloadPartFile(fileUrl).subscribe((blob: any) => {
+    const fileName = fileUrl.split('/').pop() || 'partFile';
+    downloadBlobFile(blob, fileName);
+  });
 }
 
 

@@ -13,7 +13,7 @@ import { ListItem } from '../../models/list-items';
 export class CategoryService {
   constructor(private http: HttpClient) {}
 
-  createCategory(category: { name: string }): Observable<any> {
+  createCategory(category: { categoryName: string }): Observable<any> {
     return this.http.post<any>(ApiUtil.getApiUrl(API_END_POINTS.CATEGORIES), category);
   }
 
@@ -21,7 +21,7 @@ export class CategoryService {
     page: number = 0,
     size: number = 100,
     filterCriteria: Map<string, string> = new Map(),
-    sortState: SortState = { sortColumn: 'name', sortState: SortIcons.ASC }
+    sortState: SortState = { sortColumn: 'categoryName', sortState: SortIcons.ASC }
   ): Observable<any> {
     let params = new HttpParams()
       .set('pageNo', page.toString())

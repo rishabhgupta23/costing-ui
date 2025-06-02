@@ -17,8 +17,7 @@ import { TableActions } from '../../../../shared/constants/table.constants';
 import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
 import { MatStepper } from '@angular/material/stepper';
 import { getValueOrNull } from '../../../../shared/utils/string.util';
-import { ListItem } from 'src/app/data/models/list-items';
-import { base64ToFile, downloadFile, fileToBase64 } from 'src/app/shared/utils/file-download.util';
+import { downloadBlobFile, fileToBase64 } from 'src/app/shared/utils/file-download.util';
 
 import { CostFactorService } from 'src/app/data/services/cost-factor/cost-factor.service';
 
@@ -31,7 +30,7 @@ export class PartsFormComponent implements OnDestroy {
   partNames: string[] =[];
   partTypes: string[] = [];
   partUnits: string[] = [];
-  partCategories: {categoryId: number, name: string}[] = [];
+  partCategories: {categoryId: number, categoryName: string}[] = [];
   vendorList: Vendor[] = [];
   costFactorList: CostFactor[] = [];
   subscriptions: Subscription[] = [];
@@ -46,12 +45,13 @@ export class PartsFormComponent implements OnDestroy {
   isDragOver = false;
   readonly allowedFileTypes = [
     'image/png', 'image/jpeg', 'image/jpg', 'image/gif',
-    'application/pdf', 'text/csv', 'application/vnd.ms-powerpoint', 'text/plain',
+    'application/pdf', 'text/csv', 'text/plain', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
     'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
   ];
   selectedStepIndex: number = 0;
   
+  uploadedFiles: string[] = [];
 
   partForm = new FormGroup({
     partNumber: new FormControl('', Validators.required),
@@ -91,6 +91,9 @@ export class PartsFormComponent implements OnDestroy {
 
       if (this.partId){
         this.getPartData(this.partId);
+        this.partService.getPartFiles(this.partId).subscribe(files => {
+      this.uploadedFiles = files;
+    });
       }
       this.partForm.get('partType')?.valueChanges.subscribe((value) => {
         if (value === this.partTypeEnum.MASTER) {
@@ -159,6 +162,24 @@ processFiles(files: File[]): void {
 removeFile(index: number) {
   this.selectedFiles.splice(index, 1);
 }
+
+getFileTypeFromName(fileName: string): string {
+    const ext = fileName.split('.').pop()?.toLowerCase();
+    if (!ext) return 'other';
+    if (['png', 'jpg', 'jpeg', 'gif'].includes(ext)) return 'image';
+    if (ext === 'pdf') return 'pdf';
+    if (['doc', 'docx'].includes(ext)) return 'word';
+    if (['xls', 'xlsx', 'csv'].includes(ext)) return 'excel';
+    return 'other';
+  }
+  getFileNameFromUrl(fileUrl: string): string {
+  return fileUrl.split('/').pop() || fileUrl;
+}
+
+getImagePreview(file: File): string {
+  return URL.createObjectURL(file);
+}
+
 
 
 getFileType(file: any): string {
@@ -460,11 +481,6 @@ getFileType(file: any): string {
   }
 }
 
-downloadPartFile(fileUrl: string) {
-  this.partService.downloadPartFile(fileUrl).subscribe(response => {
-    base64ToFile(response.fileData, response.fileName || 'partFile');
-  });
-}
 
 
   generateBomDetailsBody() {
@@ -499,4 +515,5 @@ downloadPartFile(fileUrl: string) {
   ngOnDestroy(): void {
     this.subscriptions.forEach(s => s.unsubscribe());
   }
+
 }

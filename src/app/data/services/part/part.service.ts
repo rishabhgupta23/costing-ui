@@ -69,7 +69,7 @@ export class PartService {
         { params }
     );
 }
-   getPartCategories(): Observable<{categoryId: number; name: string}[]> {
+   getPartCategories(): Observable<{categoryId: number; categoryName: string}[]> {
     return this.http.get<any>(ApiUtil.getApiUrl(API_END_POINTS.CATEGORIES)).pipe(
       map((res:any) => res.data)
     );
@@ -103,7 +103,10 @@ uploadPartImage(partId: number, file: File, base64Image: string) {
 
   downloadPartFile(fileUrl: string) {
   const params = new HttpParams().set('fileUrl', fileUrl);
-  return this.http.get<any>(ApiUtil.getApiUrl(API_END_POINTS.PART_FILE_DOWNLOAD), { params });
+  return this.http.get(ApiUtil.getApiUrl(API_END_POINTS.PART_FILE_DOWNLOAD), {
+    params,
+    responseType: 'blob' as 'json'
+  });
 }
 
 
