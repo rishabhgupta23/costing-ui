@@ -6,7 +6,7 @@ import { ApiUtil } from '../../../shared/utils/api.util';
 import { SortIcons } from '../../../shared/constants/table.constants';
 import { PartAttribute, SortState } from '../../models/part';
 
-fdescribe('PartAttributeService', () => {
+describe('PartAttributeService', () => {
   let service: PartAttributeService;
   let httpMock: HttpTestingController;
 

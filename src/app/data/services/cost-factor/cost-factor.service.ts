@@ -23,26 +23,19 @@ export class CostFactorService {
     page: number = 0,
     size: number = 100,
     filterCriteria: Map<string, string> = new Map(),
-    sortState: SortState = { sortColumn: 'name', sortState: SortIcons.ASC }
+    sortState: SortState = { sortColumn: 'factorName', sortState: SortIcons.ASC }
   ): Observable<any> {
 
-      const frontendToBackendKeyMap: { [key: string]: string } = {
-    name: 'factorName' // both filter and sort map
-  };
-
-  const mappedSortColumn =
-    frontendToBackendKeyMap[sortState.sortColumn] || sortState.sortColumn;
 
     let params = new HttpParams()
       .set('pageNo', page.toString())
       .set('pageSize', size.toString())
-      .set('sortColumn', mappedSortColumn)
+      .set('sortColumn', sortState.sortColumn)
       .set('sortMode', sortState.sortState);
 
     filterCriteria.forEach((value, key) => {
       if (value) {
-        const mappedKey = frontendToBackendKeyMap[key] || key;
-        params = params.set(mappedKey, value);
+        params = params.set(key, value);
       }
     });
 

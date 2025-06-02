@@ -25,7 +25,7 @@ export class CostFactorComponent {
   totalRecords = 0;
 
   filterCriteria: Map<string, string> = new Map();
-  sortState: SortState = { sortColumn: 'name', sortState: SortIcons.ASC };
+  sortState: SortState = { sortColumn: 'factorName', sortState: SortIcons.ASC };
   private searchSubject = new Subject<{ key: string; value: string }>();
 
 
@@ -84,7 +84,7 @@ getCostFactorList(): void {
       data: {
         labelName: 'Cost Factor Name',
         dialogTitle: 'Edit Cost Factor',
-        name: row.name
+        name: row.factorName
       }
     });
   
