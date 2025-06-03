@@ -11,12 +11,6 @@ import { CustomIconRegistryService } from './shared/services/custom-icon-registr
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet],
-  providers: [
-    {
-      provide: MatIconRegistry,
-      useClass: CustomIconRegistryService,
-    },
-  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

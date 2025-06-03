@@ -22,6 +22,13 @@
     align-items: stretch;
   }
 
+  .icon-img {
+    width: 1.5rem;
+    height: 1.5rem;
+    vertical-align: middle;
+  }
+  
+
   .copy-icon {
     margin-top: 5px;
     font-size: 18px;
@@ -102,8 +109,14 @@
   .back-button {
     background: transparent;
     border: none;
+    height: 3rem;
+    width: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
 
-    mat-icon{
+    img{
       height:2.25rem;
       width: 2.25rem;
     }

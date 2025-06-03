@@ -9,8 +9,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class ConfigLandingComponent {
 tiles = [
   { label: 'Category', route: 'category' },
-  {label : 'Cost Factors', route: 'cost-factor'},
-  {label : 'Part Attribute', route: 'part-attribute'}
+  {label : 'Cost Factors', route: 'cost-factors'},
+  {label : 'Part Attribute', route: 'part-attribute'},
+  {label : 'Part Template', route: 'part-template'},  
 ];
   constructor(private router:Router, private route: ActivatedRoute){}
   onTileClick(route: string) {
