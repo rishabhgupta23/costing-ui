@@ -305,14 +305,13 @@ export class PartsFormComponent implements OnDestroy {
   
 
   onSubmit(): void {
-    const categoryIdValue = this.partForm.get('categoryId')?.value || null;
     const body: PartCreateRequest = {
       partName: this.partForm.get('partName')?.value || '',
       partNumber: this.partForm.get('partNumber')?.value || '',
       type: this.partForm.get('partType')?.value || '',
       unit: this.partForm.get('partUnit')?.value || '',
       vendorCostList: this.generateVendorCostMapBody(),
-      categoryId: this.partForm.get('categoryId')?.value.categoryId || null,
+      categoryId: this.partForm.get('categoryId')?.value || null,
       bom: this.generateBomDetailsBody()
     };
 

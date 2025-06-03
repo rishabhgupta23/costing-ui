@@ -9,7 +9,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class ConfigLandingComponent {
 tiles = [
   { label: 'Category', route: 'category' },
-  {label : 'Cost Factors', route: 'cost-factors'},
+  {label : 'Cost Factor', route: 'cost-factor'},
   {label : 'Part Attribute', route: 'part-attribute'},
   {label : 'Part Template', route: 'part-template'},  
 ];
