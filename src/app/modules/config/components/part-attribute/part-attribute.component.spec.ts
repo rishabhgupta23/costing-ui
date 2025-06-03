@@ -10,7 +10,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SortIcons, TableActions } from 'src/app/shared/constants/table.constants';
 
-fdescribe('PartAttributeComponent', () => {
+describe('PartAttributeComponent', () => {
   let component: PartAttributeComponent;
   let fixture: ComponentFixture<PartAttributeComponent>;
   let mockService: any;

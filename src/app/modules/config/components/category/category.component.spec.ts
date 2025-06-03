@@ -12,7 +12,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-fdescribe('CategoryComponent', () => {
+describe('CategoryComponent', () => {
   let component: CategoryComponent;
   let fixture: ComponentFixture<CategoryComponent>;
   let mockCategoryService: any;
@@ -22,7 +22,7 @@ fdescribe('CategoryComponent', () => {
   beforeEach(() => {
     mockCategoryService = {
       getCategoryList: jasmine.createSpy().and.returnValue(of({ data: [], pageInfo: { totalRecords: 0 } })),
-      createCategory: jasmine.createSpy().and.returnValue(of({ categoryId: 1, name: 'New Category' })),
+      createCategory: jasmine.createSpy().and.returnValue(of({ categoryId: 1, categoryName: 'New Category' })),
       updateCategory: jasmine.createSpy().and.returnValue(of({})),
       deleteCategory: jasmine.createSpy().and.returnValue(of({}))
     };
@@ -71,23 +71,23 @@ fdescribe('CategoryComponent', () => {
   it('should create a category and reset the form', () => {
     component.categoryName = 'Test Category';
     component.submitCategoryForm();
-    expect(mockCategoryService.createCategory).toHaveBeenCalledWith({ name: 'Test Category' });
+    expect(mockCategoryService.createCategory).toHaveBeenCalledWith({ categoryName: 'Test Category' });
   });
 
   it('should listen to filter changes and trigger category list fetch', fakeAsync(() => {
-    component['searchSubject'].next({ key: 'name', value: 'test' });
+    component['searchSubject'].next({ key: 'categoryName', value: 'test' });
     tick(400);
     expect(mockCategoryService.getCategoryList).toHaveBeenCalledTimes(2);
   }));
 
   it('should not trigger API call if filter value has not changed (distinctUntilChanged)', fakeAsync(() => {
-  component.applyFilter({ key: 'name', value: 'sameValue' });
+  component.applyFilter({ key: 'categoryName', value: 'sameValue' });
   tick(400);
   fixture.detectChanges();
 
   expect(mockCategoryService.getCategoryList).toHaveBeenCalledTimes(2);
 
-  component.applyFilter({ key: 'name', value: 'sameValue' });
+  component.applyFilter({ key: 'categoryName', value: 'sameValue' });
   tick(400);
   fixture.detectChanges();
 
@@ -96,15 +96,15 @@ fdescribe('CategoryComponent', () => {
 
 
   it('should handle edit dialog and update category', () => {
-    const row = { categoryId: 1, name: 'Old Name' };
+    const row = { categoryId: 1, categoryName: 'Old Name' };
     component.openEditDialog(row);
     expect(mockDialog.open).toHaveBeenCalled();
-    expect(mockCategoryService.updateCategory).toHaveBeenCalledWith(1, {id:1, name: 'Edited Category' });
+    expect(mockCategoryService.updateCategory).toHaveBeenCalledWith(1, {id:1, categoryName: 'Edited Category' });
   });
 
   it('should handle delete dialog and delete category', () => {
     mockDialog.open.and.returnValue({ afterClosed: () => of('DELETE') });
-    const row = { categoryId: 1, name: 'ToDelete' };
+    const row = { categoryId: 1, categoryName: 'ToDelete' };
     component.openDeleteDialog(row);
     expect(mockCategoryService.deleteCategory).toHaveBeenCalledWith(1);
     expect(mockSnackbarService.success).toHaveBeenCalledWith('Category deleted successfully!');
@@ -117,25 +117,25 @@ fdescribe('CategoryComponent', () => {
   });
 
   it('should apply sort and fetch category list', () => {
-    const sort = { sortColumn: 'name', sortState: SortIcons.DESC };
+    const sort = { sortColumn: 'categoryName', sortState: SortIcons.DESC };
     component.applySort(sort);
     expect(mockCategoryService.getCategoryList).toHaveBeenCalled();
   });
 
   it('should apply filter and fetch category list', () => {
-    component.applyFilter({ key: 'name', value: 'FilterVal' });
+    component.applyFilter({ key: 'categoryName', value: 'FilterVal' });
     expect(mockCategoryService.getCategoryList).toHaveBeenCalled();
   });
 
   it('should handle edit action', () => {
-    const row = { categoryId: 1, name: 'Row1' };
+    const row = { categoryId: 1, categoryName: 'Row1' };
     component.handleAction({ action: TableActions.EDIT, row });
     expect(mockDialog.open).toHaveBeenCalled();
   });
 
   it('should handle delete action', () => {
     mockDialog.open.and.returnValue({ afterClosed: () => of('DELETE') });
-    const row = { categoryId: 2, name: 'Row2' };
+    const row = { categoryId: 2, categoryName: 'Row2' };
     component.handleAction({ action: TableActions.DELETE, row });
     expect(mockCategoryService.deleteCategory).toHaveBeenCalledWith(2);
   });

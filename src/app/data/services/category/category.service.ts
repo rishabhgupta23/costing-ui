@@ -39,10 +39,10 @@ export class CategoryService {
     return this.http.get<any>(url, { params });
   }
 
-  updateCategory(categoryId: number, category: ListItem): Observable<ListItem> {
+  updateCategory(categoryId: number, category: { categoryName: string }): Observable<any> {
     const pathParams = new Map<string, string>();
     pathParams.set('categoryId', categoryId.toString());
-    return this.http.put<ListItem>(ApiUtil.getPreparedUrl(API_END_POINTS.CATEGORIES_DETAILS, pathParams), category);
+    return this.http.put<any>(ApiUtil.getPreparedUrl(API_END_POINTS.CATEGORIES_DETAILS, pathParams), category);
   }
 
   deleteCategory(categoryId: string): Observable<any> {

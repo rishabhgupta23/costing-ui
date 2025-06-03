@@ -6,7 +6,7 @@ import { ApiUtil } from '../../../shared/utils/api.util';
 import { SortIcons } from '../../../shared/constants/table.constants';
 import { CostFactor } from '../../models/part';
 
-fdescribe('CostFactorService', () => {
+describe('CostFactorService', () => {
   let service: CostFactorService;
   let httpMock: HttpTestingController;
 
@@ -80,7 +80,7 @@ it('should create a cost factor', () => {
   it('should update cost factor', () => {
   const id = 1;
   const factorName = 'Updated Name';
-  const mockResponse: CostFactor = {id:1, name: factorName };
+  const mockResponse: CostFactor = {id:1, factorName: factorName };
 
   const pathParams = new Map<string, string>();
   pathParams.set('id', id.toString());

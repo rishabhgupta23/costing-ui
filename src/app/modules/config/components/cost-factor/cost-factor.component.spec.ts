@@ -6,7 +6,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { of, Subject } from 'rxjs';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { COSTFACTOR_TABLE_COLUMNS } from 'src/app/data/constants/config-table.constant';
 import { DialogCloseResponse } from 'src/app/shared/constants/dialog.constants';
 import { SortIcons, TableActions } from 'src/app/shared/constants/table.constants';
 import { FormsModule } from '@angular/forms';
@@ -24,7 +23,7 @@ class MockMatDialog {
   }
 }
 
-fdescribe('CostFactorComponent', () => {
+describe('CostFactorComponent', () => {
   let component: CostFactorComponent;
   let fixture: ComponentFixture<CostFactorComponent>;
   let mockCostFactorService: any;
@@ -35,12 +34,12 @@ fdescribe('CostFactorComponent', () => {
     mockCostFactorService = {
       getCostFactorList: jasmine.createSpy().and.returnValue(of({
         data: [
-          { id: 1, name: 'Factor 1' },
-          { id: 2, name: 'Factor 2' }
+          { id: 1, factorName: 'Factor 1' },
+          { id: 2, factorName: 'Factor 2' }
         ],
         pageInfo: { totalRecords: 2 }
       })),
-      createCostFactor: jasmine.createSpy().and.returnValue(of({ id: 3, name: 'New Factor' })),
+      createCostFactor: jasmine.createSpy().and.returnValue(of({ id: 3, factorName: 'New Factor' })),
       updateCostFactor: jasmine.createSpy().and.returnValue(of({})),
       deleteCostFactor: jasmine.createSpy().and.returnValue(of({}))
     };
@@ -86,7 +85,7 @@ fdescribe('CostFactorComponent', () => {
     spyOn(dialog, 'open').and.returnValue(dialogRefSpyObj);
     spyOn(snackbarService, 'success');
 
-    const row = { id: 1, name: 'Old Factor' };
+    const row = { id: 1, factorName: 'Old Factor' };
     component.openEditDialog(row);
 
     expect(dialog.open).toHaveBeenCalled();
@@ -116,7 +115,7 @@ fdescribe('CostFactorComponent', () => {
 
   it('should handle sorting', () => {
     spyOn(component, 'getCostFactorList');
-    component.applySort({ sortColumn: 'factorName', sortState: SortIcons.ASC });
+    component.applySort({ sortColumn: 'factorfactorName', sortState: SortIcons.ASC });
     expect(component.getCostFactorList).toHaveBeenCalled();
   });
 
@@ -128,30 +127,30 @@ fdescribe('CostFactorComponent', () => {
 
   it('should call openEditDialog on EDIT action', () => {
     spyOn(component, 'openEditDialog');
-    const row = { id: 1, name: 'Test' };
+    const row = { id: 1, factorName: 'Test' };
     component.handleAction({ action: TableActions.EDIT, row });
     expect(component.openEditDialog).toHaveBeenCalledWith(row);
   });
 
   it('should call openDeleteDialog on DELETE action', () => {
     spyOn(component, 'openDeleteDialog');
-    const row = { id: 2, name: 'Row2' };
+    const row = { id: 2, factorName: 'Row2' };
     component.handleAction({ action: TableActions.DELETE, row });
     expect(component.openDeleteDialog).toHaveBeenCalledWith(row);
   });
 
   it('should listen to filter changes and fetch list', fakeAsync(() => {
     spyOn(component, 'getCostFactorList');
-    component['searchSubject'].next({ key: 'name', value: 'test' });
+    component['searchSubject'].next({ key: 'factorName', value: 'test' });
     tick(400);
     expect(component.getCostFactorList).toHaveBeenCalled();
   }));
 
   it('should not fetch list if filter value has not changed', fakeAsync(() => {
     spyOn(component, 'getCostFactorList');
-    component['searchSubject'].next({ key: 'name', value: 'same' });
+    component['searchSubject'].next({ key: 'factorName', value: 'same' });
     tick(400);
-    component['searchSubject'].next({ key: 'name', value: 'same' });
+    component['searchSubject'].next({ key: 'factorName', value: 'same' });
     tick(400);
     expect(component.getCostFactorList).toHaveBeenCalledTimes(1);
   }));
