@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PartTemplateComponent } from './part-template.component';
+import { HttpClientModule } from '@angular/common/http';
+import { ConfigModule } from '../../config.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('PartTemplateComponent', () => {
   let component: PartTemplateComponent;
@@ -8,7 +11,7 @@ describe('PartTemplateComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PartTemplateComponent]
+      imports: [HttpClientModule, ConfigModule, BrowserAnimationsModule],
     })
     .compileComponents();
 
