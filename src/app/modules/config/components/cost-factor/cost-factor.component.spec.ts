@@ -115,7 +115,7 @@ describe('CostFactorComponent', () => {
 
   it('should handle sorting', () => {
     spyOn(component, 'getCostFactorList');
-    component.applySort({ sortColumn: 'factorfactorName', sortState: SortIcons.ASC });
+    component.applySort({ sortColumn: 'factorName', sortState: SortIcons.ASC });
     expect(component.getCostFactorList).toHaveBeenCalled();
   });
 
