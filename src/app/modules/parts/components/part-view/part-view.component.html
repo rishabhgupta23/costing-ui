@@ -51,13 +51,15 @@
             </div>
 
 
-<div *ngIf="partFileUrls.length > 0">
+<div *ngIf="partFilePreviews.length > 0">
   <h4 class="mt-4">Associated Files</h4>
   <div class="file-preview-container">
-    <div class="file-card" *ngFor="let url of partFileUrls">
-      <ng-container [ngSwitch]="getFileTypeFromUrl(url)">
+    <div class="file-card" *ngFor="let file of partFilePreviews">
+      <ng-container [ngSwitch]="file.type">
         <!-- Image Preview -->
-        <img *ngSwitchCase="'image'" [src]="url" class="thumbnail" />
+        <ng-container *ngSwitchCase="'image'">
+          <img [src]="file.previewUrl" class="thumbnail" *ngIf="file.previewUrl" />
+        </ng-container>
 
         <!-- Excel Icon -->
         <img *ngSwitchCase="'excel'" src="assets/icons/excel-icon.png" class="icon" />
@@ -72,11 +74,11 @@
         <img *ngSwitchDefault src="assets/icons/file-icon.png" class="icon" />
       </ng-container>
 
-      <div class="filename">{{ url.split('/').pop() }}</div>
+      <div class="filename">{{ file.url.split('/').pop() }}</div>
 
       <!-- Download Button -->
-      <button class="download-btn" (click)="downloadPartFile(url)">
-        <mat-icon class="btn-icon" svgIcon="download" ></mat-icon>
+      <button class="download-btn" (click)="downloadPartFile(file.url)">
+        <mat-icon class="btn-icon" svgIcon="download"></mat-icon>
         Download
       </button>
     </div>

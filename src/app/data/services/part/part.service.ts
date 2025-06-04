@@ -101,12 +101,9 @@ uploadPartImage(partId: number, file: File, base64Image: string) {
   return this.http.get<string[]>(ApiUtil.getApiUrl(API_END_POINTS.PART_FILES), { params });
 }
 
-  downloadPartFile(fileUrl: string) {
-  const params = new HttpParams().set('fileUrl', fileUrl);
-  return this.http.get(ApiUtil.getApiUrl(API_END_POINTS.PART_FILE_DOWNLOAD), {
-    params,
-    responseType: 'blob' as 'json'
-  });
+  downloadPartFile(s3FileKey: string) {
+  const params = new HttpParams().set('s3FileKey', s3FileKey);
+  return this.http.get(ApiUtil.getApiUrl(API_END_POINTS.PART_FILE_DOWNLOAD), {params});
 }
 
 

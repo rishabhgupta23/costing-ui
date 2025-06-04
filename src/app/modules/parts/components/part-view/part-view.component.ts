@@ -61,6 +61,7 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
   part: any;
   partFileUrls: string[] = [];
   selectedFiles: File[] = [];
+  partFilePreviews: { url: string, type: string, previewUrl?: string }[] = [];
  
  
    constructor(private partService: PartService, private route: ActivatedRoute,
@@ -103,6 +104,17 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
   this.partService.getPartFiles(partId).subscribe({
     next: (urls) => {
       this.partFileUrls = urls;
+      this.partFilePreviews = urls.map(url => {
+        const type = this.getFileTypeFromUrl(url);
+        const fileObj: any = { url, type };
+        if (type === 'image') {
+          this.partService.downloadPartFile(url).subscribe((response: any) => {
+            // Assuming response.fileData is base64 string
+            fileObj.previewUrl = 'data:image/png;base64,' + response.fileData;
+          });
+        }
+        return fileObj;
+      });
     },
     error: (err) => {
       console.error('Error fetching part files:', err);
@@ -131,9 +143,9 @@ getFileTypeFromUrl(url: string): string {
 }
 
 downloadPartFile(fileUrl: string): void {
-  this.partService.downloadPartFile(fileUrl).subscribe((blob: any) => {
-    const fileName = fileUrl.split('/').pop() || 'partFile';
-    downloadBlobFile(blob, fileName);
+  this.partService.downloadPartFile(fileUrl).subscribe((response: any) => {
+    const fileName = response.fileName || fileUrl.split('/').pop() || 'partFile';
+    downloadFile(response.fileData, fileName);
   });
 }
 
