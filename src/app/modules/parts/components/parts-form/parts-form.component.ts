@@ -87,18 +87,19 @@ export class PartsFormComponent implements OnDestroy {
       }
 
       getPartData(id: string): void {
-        this.partService.getPartById(id).subscribe((part) => {
+        
+    this.partService.getPartById(id).subscribe((part) => {
+      const matchedCategory = this.partCategories.find(
+        cat => cat.categoryName === part.categoryName
+      );
           this.partForm.patchValue({
             partNumber: getValueOrNull(part.partNumber),
             partName: getValueOrNull(part.partName),
-            categoryId: part.categoryName,
+            categoryId: matchedCategory?.categoryId,
             partType: getValueOrNull(part.type),
             partUnit: getValueOrNull(part.unit)
           });
 
-              if (part.categoryName) {
-      this.partForm.get('categoryId')?.setValue(part.categoryName);
-    }
 
           this.vendorCostListToMap(part.vendorCostList);
           

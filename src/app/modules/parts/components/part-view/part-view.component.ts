@@ -81,7 +81,7 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
           this.partForm.patchValue({
             partNumber: getValueOrNull(part.partNumber),
             partName: getValueOrNull(part.partName),
-            // categoryId: getValueOrNull(part.categoryName),
+            categoryId: getValueOrNull(part.categoryName),
             partType: getValueOrNull(part.type),
             partUnit: getValueOrNull(part.unit)
           });
