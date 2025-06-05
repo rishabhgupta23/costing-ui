@@ -68,7 +68,10 @@ describe('CostFactorComponent', () => {
 
   it('should fetch cost factors on initialization', () => {
     expect(mockCostFactorService.getCostFactorList).toHaveBeenCalled();
-    expect(component.dataSource.length).toBe(2);
+    expect(component.dataSource).toEqual([
+    { id: 1, factorName: 'Factor 1' },
+    { id: 2, factorName: 'Factor 2' }
+    ]);
   });
 
   it('should create a cost factor', () => {
@@ -108,21 +111,39 @@ describe('CostFactorComponent', () => {
   });
 
   it('should handle filter changes', () => {
-    spyOn(component, 'getCostFactorList');
+    spyOn(component, 'getCostFactorList').and.callThrough();
     component.applyFilter({ key: 'factorName', value: 'Test' });
     expect(component.getCostFactorList).toHaveBeenCalled();
+    expect(mockCostFactorService.getCostFactorList).toHaveBeenCalledWith(
+      0,
+      100,
+      new Map([['factorName', 'Test']]),
+      { sortColumn: 'factorName', sortState: SortIcons.ASC }
+    );
   });
 
   it('should handle sorting', () => {
-    spyOn(component, 'getCostFactorList');
+    spyOn(component, 'getCostFactorList').and.callThrough();
     component.applySort({ sortColumn: 'factorName', sortState: SortIcons.ASC });
     expect(component.getCostFactorList).toHaveBeenCalled();
+    expect(mockCostFactorService.getCostFactorList).toHaveBeenCalledWith(
+      0,
+      100,
+      component.filterCriteria,
+      { sortColumn: 'factorName', sortState: SortIcons.ASC }
+    );
   });
 
   it('should handle pagination', () => {
-    spyOn(component, 'getCostFactorList');
+    spyOn(component, 'getCostFactorList').and.callThrough();
     component.onPageChange({ pageIndex: 1, pageSize: 50, length: 100 } as any);
     expect(component.getCostFactorList).toHaveBeenCalled();
+    expect(mockCostFactorService.getCostFactorList).toHaveBeenCalledWith(
+      1,
+      50,
+      component.filterCriteria,
+      component.sortState
+    );
   });
 
   it('should call openEditDialog on EDIT action', () => {
