@@ -84,7 +84,7 @@ getCostFactorList(): void {
       data: {
         labelName: 'Cost Factor Name',
         dialogTitle: 'Edit Cost Factor',
-        name: row.name
+        name: row.factorName
       }
     });
   

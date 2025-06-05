@@ -6,7 +6,7 @@ import { API_END_POINTS } from '../../../config/api.config';
 import { ApiUtil } from '../../../shared/utils/api.util';
 import { SortIcons } from '../../../shared/constants/table.constants';
 
-fdescribe('VendorService', () => {
+describe('VendorService', () => {
   let service: VendorService;
   let httpMock: HttpTestingController;
 

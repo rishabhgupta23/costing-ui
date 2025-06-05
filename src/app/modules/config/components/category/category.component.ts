@@ -75,15 +75,15 @@ export class CategoryComponent {
       data: { 
         labelName: 'Category Name',
         dialogTitle: 'Edit Category Name',
-        name: row.name 
+        name: row.categoryName 
       }
     });
   
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        const updatedCategory = { id: row.categoryId, name: res };
+        const updatedCategory = { id: row.categoryId, categoryName: res };
         this.categoryService.updateCategory(row.categoryId, updatedCategory).subscribe(() => {
-          row.name = res;
+          row.categoryName = res;
         });
       }
     });

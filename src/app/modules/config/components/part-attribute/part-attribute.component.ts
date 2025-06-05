@@ -69,7 +69,7 @@ export class PartAttributeComponent {
 
   applyFilter(filter: { key: string; value: string }) {
     this.filterCriteria.set(filter.key, filter.value);
-    this.getPartAttributeList();
+    this.searchSubject.next(filter);
   }
 
   submitAttributeForm() {
