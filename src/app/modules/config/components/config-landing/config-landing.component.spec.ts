@@ -1,14 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ConfigLandingComponent } from './config-landing.component';
+import { ActivatedRoute } from '@angular/router';
 
-describe('LandingComponent', () => {
+describe('ConfigLandingComponent', () => {
   let component: ConfigLandingComponent;
   let fixture: ComponentFixture<ConfigLandingComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ConfigLandingComponent]
+      declarations: [ConfigLandingComponent],
+      providers: [
+        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: new Map() } } } // <-- Add this line
+      ]
     })
     .compileComponents();
 

@@ -25,6 +25,8 @@ export class CostFactorService {
     filterCriteria: Map<string, string> = new Map(),
     sortState: SortState = { sortColumn: 'factorName', sortState: SortIcons.ASC }
   ): Observable<any> {
+
+
     let params = new HttpParams()
       .set('pageNo', page.toString())
       .set('pageSize', size.toString())
