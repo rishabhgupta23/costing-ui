@@ -8,7 +8,7 @@ import { of } from 'rxjs';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-fdescribe('VendorLandingComponent', () => {
+describe('VendorLandingComponent', () => {
   let component: VendorLandingComponent;
   let fixture: ComponentFixture<VendorLandingComponent>;
   let vendorServiceSpy: jasmine.SpyObj<VendorService>;

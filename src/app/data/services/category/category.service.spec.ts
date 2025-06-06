@@ -28,7 +28,7 @@ describe('CategoryService', () => {
   });
 
   it('should create category', () => {
-    const mockCategory: ListItem = { id: 1, name: 'Category A' };
+    const mockCategory= { categoryName: 'Category A'} ;
 
     service.createCategory(mockCategory).subscribe(res => {
       expect(res).toEqual(mockCategory);
@@ -41,8 +41,8 @@ describe('CategoryService', () => {
 
   it('should get category list with filters and sort state', () => {
     const mockResponse = { data: ['category1', 'category2'] };
-    const filterCriteria = new Map([['name', 'Category']]);
-    const sortState = { sortColumn: 'name', sortState: SortIcons.ASC };
+    const filterCriteria = new Map([['categoryName', 'Category']]);
+    const sortState = { sortColumn: 'categoryName', sortState: SortIcons.ASC };
 
     service.getCategoryList(0, 100, filterCriteria, sortState).subscribe(res => {
       expect(res).toEqual(mockResponse);
@@ -50,8 +50,8 @@ describe('CategoryService', () => {
 
     const req = httpMock.expectOne(request => request.url.includes('categories'));
     expect(req.request.method).toBe('GET');
-    expect(req.request.params.get('name')).toBe('Category');
-    expect(req.request.params.get('sortColumn')).toBe('name');
+    expect(req.request.params.get('categoryName')).toBe('Category');
+    expect(req.request.params.get('sortColumn')).toBe('categoryName');
     expect(req.request.params.get('sortMode')).toBe(SortIcons.ASC);
     req.flush(mockResponse);
   });
@@ -66,16 +66,16 @@ describe('CategoryService', () => {
     );
     expect(req.request.params.get('pageNo')).toBe('0');
     expect(req.request.params.get('pageSize')).toBe('100');
-    expect(req.request.params.get('sortColumn')).toBe('name');
+    expect(req.request.params.get('sortColumn')).toBe('categoryName');
     expect(req.request.params.get('sortMode')).toBe(SortIcons.ASC);
     req.flush({ data: [], pageInfo: { totalRecords: 0 } });
   });
 
   it('should update category', () => {
-    const mockCategory: ListItem = { id: 1, name: 'Updated Category' };
+    const mockCategory = { categoryId: 1, categoryName: 'Updated Category' };
 
     service.updateCategory(1, mockCategory).subscribe(res => {
-      expect(res).toEqual(mockCategory);
+      return expect(res).toEqual(mockCategory);
     });
 
     const req = httpMock.expectOne(ApiUtil.getPreparedUrl(API_END_POINTS.CATEGORIES_DETAILS, new Map([['categoryId', '1']])));

@@ -6,7 +6,7 @@ import { ApiUtil } from '../../../shared/utils/api.util';
 import { SortIcons } from '../../../shared/constants/table.constants';
 import { CostFactor } from '../../models/part';
 
-fdescribe('CostFactorService', () => {
+describe('CostFactorService', () => {
   let service: CostFactorService;
   let httpMock: HttpTestingController;
 
@@ -27,18 +27,23 @@ fdescribe('CostFactorService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should create a cost factor', () => {
-    const mockCostFactor = { id: 1, name: 'New Cost Factor' };
+it('should create a cost factor', () => {
+  const mockCostFactor = { id: 1, name: 'New Cost Factor' };
 
-    service.createCostFactor('New Cost Factor').subscribe(res => {
-      expect(res).toEqual(mockCostFactor);
-    });
-
-const req = httpMock.expectOne(ApiUtil.getApiUrl(API_END_POINTS.COST_FACTORS));
-expect(req.request.method).toBe('POST');
-expect(req.request.body).toEqual({ name: 'New Cost Factor' });
-
+  service.createCostFactor('New Cost Factor').subscribe(res => {
+    expect(res).toEqual(mockCostFactor);
   });
+
+  const req = httpMock.expectOne(request =>
+    request.method === 'POST' &&
+    request.url === ApiUtil.getApiUrl(API_END_POINTS.COST_FACTORS) &&
+    request.params.get('factorName') === 'New Cost Factor'
+  );
+
+  expect(req.request.body).toBeNull();
+  req.flush(mockCostFactor);
+});
+
 
   it('should get cost factor list with filters and sort state', () => {
     const mockResponse = { data: ['factor1', 'factor2'] };
@@ -73,16 +78,30 @@ expect(req.request.body).toEqual({ name: 'New Cost Factor' });
   });
 
   it('should update cost factor', () => {
-    const mockCostFactor: CostFactor = { id: 1, name: 'Updated Factor' };
+  const id = 1;
+  const factorName = 'Updated Name';
+  const mockResponse: CostFactor = {id:1, factorName: factorName };
 
-    service.updateCostFactor(1, { id: 1, name: 'Updated Factor' }).subscribe(res => {
-      expect(res).toEqual(mockCostFactor);
-    });
+  const pathParams = new Map<string, string>();
+  pathParams.set('id', id.toString());
 
-    const req = httpMock.expectOne(ApiUtil.getPreparedUrl(API_END_POINTS.COST_FACTORS_DETAILS, new Map([['id', '1']])));
-    expect(req.request.method).toBe('PUT');
-    req.flush(mockCostFactor);
+  const expectedUrl = ApiUtil.getPreparedUrl(API_END_POINTS.COST_FACTORS_DETAILS, pathParams);
+
+  service.updateCostFactor(id, factorName).subscribe((res) => {
+    expect(res).toEqual(mockResponse);
   });
+
+  const req = httpMock.expectOne(
+    (request) =>
+      request.method === 'PUT' &&
+      request.url === expectedUrl &&
+      request.params.get('factorName') === factorName
+  );
+
+  expect(req.request.body).toBeNull();
+  req.flush(mockResponse);
+});
+
 
   it('should delete cost factor', () => {
     service.deleteCostFactor('1').subscribe(res => {

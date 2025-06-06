@@ -24,7 +24,7 @@ export class CategoryComponent {
   currentPage: number = 0;
   totalRecords: number = 0;
   filterCriteria: Map<string, string> = new Map();
-  sortState: SortState = { sortColumn: 'name', sortState: SortIcons.ASC };
+  sortState: SortState = { sortColumn: 'categoryName', sortState: SortIcons.ASC };
   private searchSubject = new Subject<{ key: string; value: string }>(); 
 
   constructor(private categoryService: CategoryService, private snackbarService: SnackbarService, private dialog: MatDialog) {
@@ -44,7 +44,7 @@ export class CategoryComponent {
 
   submitCategoryForm(): void {
     if (this.categoryName) {
-      const payload = { name: this.categoryName };
+      const payload = { categoryName: this.categoryName };
       this.categoryService.createCategory(payload).subscribe({
         next: () => {
           this.categoryName = '';
@@ -75,15 +75,15 @@ export class CategoryComponent {
       data: { 
         labelName: 'Category Name',
         dialogTitle: 'Edit Category Name',
-        name: row.name 
+        name: row.categoryName 
       }
     });
   
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        const updatedCategory = { id: row.categoryId, name: res };
+        const updatedCategory = { id: row.categoryId, categoryName: res };
         this.categoryService.updateCategory(row.categoryId, updatedCategory).subscribe(() => {
-          row.name = res;
+          row.categoryName = res;
         });
       }
     });

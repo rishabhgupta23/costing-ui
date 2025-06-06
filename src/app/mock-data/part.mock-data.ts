@@ -36,7 +36,7 @@ export const MOCK_PART_LIST_RESPONSE = {
     partId: 1,
     partName: 'UPDATED PART',
     partNumber: '1234',
-    categoryName: null,
+    categoryName: 'Mechanical',
     categoryId: 1,
     type: 'UNIT',
     unit: 'NOS',

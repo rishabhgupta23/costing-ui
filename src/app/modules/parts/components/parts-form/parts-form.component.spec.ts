@@ -14,6 +14,9 @@ import { MatInputModule } from '@angular/material/input';
 import { PartRow } from '../../../../data/models/part';
 import { DialogCloseResponse } from '../../../../shared/constants/dialog.constants';
 import { TableActions } from '../../../../shared/constants/table.constants';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatIconModule } from '@angular/material/icon';
 
 describe('PartsFormComponent', () => {
   let component: PartsFormComponent;
@@ -58,6 +61,9 @@ describe('PartsFormComponent', () => {
         MatFormFieldModule,
         MatSelectModule,
         MatInputModule,
+        HttpClientTestingModule,
+        MatStepperModule,
+        MatIconModule
       ],
       providers: [
         { provide: PartService, useValue: mockPartService },

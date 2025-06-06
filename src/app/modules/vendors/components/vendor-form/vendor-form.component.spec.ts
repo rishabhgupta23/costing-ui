@@ -8,7 +8,7 @@ import { of } from 'rxjs';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Vendor } from '../../../../data/models/vendor';
 
-fdescribe('VendorFormComponent', () => {
+describe('VendorFormComponent', () => {
   let component: VendorFormComponent;
   let fixture: ComponentFixture<VendorFormComponent>;
   let vendorServiceSpy: jasmine.SpyObj<VendorService>;

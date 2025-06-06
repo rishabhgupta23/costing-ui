@@ -3,7 +3,7 @@ import { ColumnType, TableActions } from "src/app/shared/constants/table.constan
 export const CATEGORY_TABLE_COLUMNS = [
     {
         label: 'Category Name',
-        key: 'name',
+        key: 'categoryName',
         columnType: ColumnType.GENERAL,
         filterable: true,
         sortable: true
@@ -20,7 +20,7 @@ export const CATEGORY_TABLE_COLUMNS = [
 export const COSTFACTOR_TABLE_COLUMNS = [
     {
         label: 'Cost Factor',
-        key: 'name',
+        key: 'factorName',
         columnType: ColumnType.GENERAL,
         filterable: true,
         sortable: true

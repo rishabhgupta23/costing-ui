@@ -116,10 +116,10 @@ describe('PartService', () => {
 
 
   it('should get part categories', () => {
-    const mockCategories: ListItem[] = [
-      { id: 1, name: 'Cat1' },
-      { id: 2, name: 'Cat2' }
-    ];
+    const mockCategories = [
+    { categoryId: 1, categoryName: 'Cat1' },
+    { categoryId: 2, categoryName: 'Cat2' }
+  ];
     service.getPartCategories().subscribe(categories => {
       expect(categories).toEqual(mockCategories);
     });

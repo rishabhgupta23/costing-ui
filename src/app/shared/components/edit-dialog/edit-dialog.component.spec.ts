@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EditDialogComponent } from './edit-dialog.component';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('EditDialogComponent', () => {
   let component: EditDialogComponent;
@@ -8,7 +10,11 @@ describe('EditDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [EditDialogComponent]
+      imports: [EditDialogComponent, BrowserAnimationsModule],
+      providers: [
+      { provide: MatDialogRef, useValue: {} },
+      { provide: MAT_DIALOG_DATA, useValue: {} }
+    ]
     })
     .compileComponents();
 

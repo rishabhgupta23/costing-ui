@@ -46,7 +46,6 @@ getCostFactorList(): void {
     this.sortState
   ).subscribe({
     next: (res) => {
-      console.log('Cost Factor List:', res);
       this.dataSource = res.data;
       this.totalRecords = res.pageInfo?.totalRecords || 0;
     }
@@ -85,7 +84,7 @@ getCostFactorList(): void {
       data: {
         labelName: 'Cost Factor Name',
         dialogTitle: 'Edit Cost Factor',
-        name: row.name
+        name: row.factorName
       }
     });
   

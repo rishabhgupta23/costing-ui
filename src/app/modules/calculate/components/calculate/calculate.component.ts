@@ -126,7 +126,7 @@ export class CalculateComponent {
       const quantity = row.quantity ?? 0;
       const rate = row.rate ?? 0;
       row.subTotal = quantity * rate;
-      this.totalQP = this.costingList.reduce((sum, item) => sum + (item.subTotal ?? 0), 0);
+      this.totalQP = this.costingList.reduce((sum, item) => (sum + (item.subTotal == undefined ? 0: item.subTotal)), 0);
     }
   }
   

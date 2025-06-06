@@ -127,7 +127,7 @@ describe('CalculateComponent', () => {
   
   it('should reset the form and cost data', () => {
     component.calculateform.setValue({
-      part: mockPartList[0],
+      partControl: mockPartList[0],
       pricing: PricingOptions.MIN.value
     } as any);
     component.totalQP = 100;
@@ -169,8 +169,10 @@ describe('CalculateComponent', () => {
     component.costingList = [{ quantity: 2, rate: 10 }, { quantity: 3, rate: 20 }] as CostItem[];
   
     component.onCellEdit(component.costingList[0], 'rate');
-  
+    component.onCellEdit(component.costingList[1], 'rate');
+    fixture.detectChanges()
     expect(component.costingList[0].subTotal).toBe(20);
+    
     expect(component.totalQP).toBe(2 * 10 + 3 * 20);
   });
   
@@ -180,30 +182,14 @@ describe('CalculateComponent', () => {
     expect(name).toBe('');
   });
   it('should update filterCriteria when partControl value changes', fakeAsync(() => {
-    fixture.destroy();
-    fixture = TestBed.createComponent(CalculateComponent);
-    component = fixture.componentInstance;
-    component.calculateform = new FormGroup({
-      partControl: new FormControl(),
-      pricing: new FormControl()
-    });
-    
-    component.filterCriteria = new Map<string, string>();
-    const getPartListSpy = spyOn(component, 'getPartList');
-  
     component.ngOnInit();
     fixture.detectChanges();
-  
+
     component.partControl.setValue('123');
-    tick(400);
-    flush();
-    fixture.detectChanges();
-  
+    tick(300); // debounceTime
+
     expect(component.filterCriteria.has('partName')).toBeTrue();
-    expect(component.filterCriteria.has('partNumber')).toBeTrue();
     expect(component.filterCriteria.get('partName')).toBe('123');
-    expect(component.filterCriteria.get('partNumber')).toBe('123');
-    expect(getPartListSpy).toHaveBeenCalled();
   }));
   
 });

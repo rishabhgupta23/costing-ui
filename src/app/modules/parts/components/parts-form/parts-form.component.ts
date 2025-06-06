@@ -74,7 +74,7 @@ if (isDifferent) {
   partNames: string[] =[];
   partTypes: string[] = [];
   partUnits: string[] = [];
-  partCategories: {categoryId: number, name: string}[] = [];
+  partCategories: {categoryId: number, categoryName: string}[] = [];
   vendorList: Vendor[] = [];
   costFactorList: CostFactor[] = [];
   subscriptions: Subscription[] = [];
@@ -168,18 +168,19 @@ setupTemplateFilter() {
 
 
       getPartData(id: string): void {
-        this.partService.getPartById(id).subscribe((part) => {
+        
+    this.partService.getPartById(id).subscribe((part) => {
+      const matchedCategory = this.partCategories.find(
+        cat => cat.categoryName === part.categoryName
+      );
           this.partForm.patchValue({
             partNumber: getValueOrNull(part.partNumber),
             partName: getValueOrNull(part.partName),
-            categoryId: part.categoryName,
+            categoryId: matchedCategory?.categoryId,
             partType: getValueOrNull(part.type),
             partUnit: getValueOrNull(part.unit)
           });
 
-              if (part.categoryName) {
-      this.partForm.get('categoryId')?.setValue(part.categoryName);
-    }
 
           this.vendorCostListToMap(part.vendorCostList);
 
@@ -418,14 +419,13 @@ onTemplateSelected(selectedTemplate: TemplateResponse): void {
   
 
   onSubmit(): void {
-    const categoryIdValue = this.partForm.get('categoryId')?.value || null;
     const body: PartCreateRequest = {
       partName: this.partForm.get('partName')?.value || '',
       partNumber: this.partForm.get('partNumber')?.value || '',
       type: this.partForm.get('partType')?.value || '',
       unit: this.partForm.get('partUnit')?.value || '',
       vendorCostList: this.generateVendorCostMapBody(),
-      categoryId: this.partForm.get('categoryId')?.value.categoryId || null,
+      categoryId: this.partForm.get('categoryId')?.value || null,
       bom: this.generateBomDetailsBody(),
       attributeValueList: this.generateAttributesBody()
     };
@@ -507,4 +507,5 @@ generateAttributesBody() {
   ngOnDestroy(): void {
     this.subscriptions.forEach(s => s.unsubscribe());
   }
+
 }

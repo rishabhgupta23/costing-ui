@@ -36,7 +36,7 @@ export class PartViewComponent {
    partForm = new FormGroup({
     partNumber: new FormControl({ value: '', disabled: true }),
     partName: new FormControl({ value: '', disabled: true }),
-    categoryId: new FormControl({value:'',disabled: true }),
+    categoryName: new FormControl({value:'',disabled: true }),
     partType: new FormControl({ value: '', disabled: true }),
     partUnit: new FormControl({ value: '', disabled: true }),
   });
@@ -83,7 +83,7 @@ attributeTableColumns= ATTRIBUTE_TABLE_COLUMNS(false) ;
           this.partForm.patchValue({
             partNumber: getValueOrNull(part.partNumber),
             partName: getValueOrNull(part.partName),
-            // categoryId: getValueOrNull(part.categoryName),
+            categoryName: getValueOrNull(part.categoryName),
             partType: getValueOrNull(part.type),
             partUnit: getValueOrNull(part.unit)
           });
