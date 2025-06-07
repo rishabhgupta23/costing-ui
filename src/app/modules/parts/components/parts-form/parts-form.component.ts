@@ -17,7 +17,7 @@ import { TableActions } from '../../../../shared/constants/table.constants';
 import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
 import { MatStepper } from '@angular/material/stepper';
 import { getValueOrNull } from '../../../../shared/utils/string.util';
-import { downloadBlobFile, fileToBase64 } from 'src/app/shared/utils/file-download.util';
+import { fileToBase64 } from 'src/app/shared/utils/file-download.util';
 
 import { CostFactorService } from 'src/app/data/services/cost-factor/cost-factor.service';
 import { ProgressDialogComponent } from 'src/app/shared/components/progress-dialog/progress-dialog.component';
