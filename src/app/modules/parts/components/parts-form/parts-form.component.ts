@@ -106,21 +106,8 @@ export class PartsFormComponent implements OnDestroy {
 
 onFilesSelected(event: any) {
   const files: FileList = event.target.files;
-  const validFiles: File[] = [];
-  for (let i = 0; i < files.length; i++) {
-    const file = files.item(i)!;
-    if (!this.allowedFileTypes.includes(file.type)) {
-      this.snackbarService.error(`File type not allowed: ${file.name}`);
-      continue;
-    }
-    validFiles.push(file);
-  }
-  if (validFiles.length + this.selectedFiles.length > this.maxFiles) {
-    this.snackbarService.error(`You can upload maximum ${this.maxFiles} files.`);
-    return;
-  }
-  for (const file of validFiles) {
-    this.selectedFiles.push(file);
+  if (files && files.length > 0) {
+    this.processFiles(Array.from(files));
   }
 }
 
@@ -393,12 +380,12 @@ getFileType(file: any): string {
   addCostFactor(costFactor:CostFactorData, vendorId: number) {
     if (costFactor) {
       const currentList = this.vendorCostMap.get(vendorId) || [];
-      const isPresent = currentList?.some((cf: CostFactorData) => cf?.name === costFactor?.name);
+      const isPresent = currentList?.some((cf: CostFactorData) => cf?.factorName === costFactor?.factorName);
 
       if (!isPresent) { 
         currentList.push({
           id: costFactor.id,
-          name: costFactor.name,
+          factorName: costFactor.factorName,
           value: costFactor.value || 0
         } as CostFactorData);
   
@@ -418,30 +405,54 @@ getFileType(file: any): string {
   
 
   onSubmit(): void {
+  if (!this.isFormValid()) return;
+  if (!this.areVendorCostValuesValid()) return;
+  if (!this.areBomQuantitiesValid()) return;
+
+  const body: PartCreateRequest = this.buildPartCreateRequest();
+  const dialogRef = this.openProgressDialogIfNeeded();
+
+  if (this.partId) {
+    this.updatePart(body, dialogRef);
+  } else {
+    this.createPart(body, dialogRef);
+  }
+}
+
+//Helper Methods
+
+private isFormValid(): boolean {
   if (this.partForm.invalid) {
     this.snackbarService.error('Please fill all required fields!');
-    return;
+    return false;
   }
+  return true;
+}
 
-  // Validate vendor cost values
-  for (const [vendorId, costFactors] of this.vendorCostMap) {
+private areVendorCostValuesValid(): boolean {
+  for (const [, costFactors] of this.vendorCostMap) {
     for (const costFactor of costFactors) {
       if (!costFactor.value || costFactor.value === 0) {
         this.snackbarService.error('Cost Factor value cannot be 0');
-        return;
+        return false;
       }
     }
   }
+  return true;
+}
 
-  // Validate BOM part quantities
+private areBomQuantitiesValid(): boolean {
   for (const part of this.bomPartList) {
     if (!part.value || Number(part.value) === 0) {
       this.snackbarService.error('Quantity of the child parts cannot be 0');
-      return;
+      return false;
     }
   }
+  return true;
+}
 
-  const body: PartCreateRequest = {
+private buildPartCreateRequest(): PartCreateRequest {
+  return {
     partName: this.partForm.get('partName')?.value || '',
     partNumber: this.partForm.get('partNumber')?.value || '',
     type: this.partForm.get('partType')?.value || '',
@@ -450,71 +461,73 @@ getFileType(file: any): string {
     categoryId: this.partForm.get('categoryId')?.value || null,
     bom: this.generateBomDetailsBody()
   };
-
-  let dialogRef: any = null;
-  if (this.selectedFiles.length > 0) {
-    dialogRef = this.dialog.open(ProgressDialogComponent, {
-      disableClose: true,
-      data: { step: 0 }
-    });
-  }
-
-  if (this.partId) {
-    this.partService.updatePart(this.partId, body).subscribe({
-      next: () => {
-        if (dialogRef) {
-          dialogRef.componentInstance.data.step = 1;
-          setTimeout(() => dialogRef.close(), 1500);
-        }
-        this.snackbarService.success('Part updated successfully!');
-        this.router.navigateByUrl('/app/parts');
-      },
-      error: (err) => {
-        if (dialogRef) dialogRef.close();
-        this.snackbarService.error('Failed to update part.');
-        console.error(err);
-      }
-    });
-  } else {
-    this.partService.createPart(body).pipe(
-      concatMap((res: any) => {
-        if (this.selectedFiles.length === 0) {
-          this.snackbarService.success('Part created successfully!');
-          this.router.navigateByUrl('/app/parts');
-          return of(null);
-        }
-        if (dialogRef) dialogRef.componentInstance.data.step = 1;
-        const partId = res.partId || res.id;
-        const uploadObservables = this.selectedFiles.map(file =>
-          from(fileToBase64(file)).pipe(
-            concatMap(base64 => this.partService.uploadPartImage(partId, file, base64))
-          )
-        );
-        return concat(...uploadObservables);
-      })
-    ).subscribe({
-      next: () => {
-        if (dialogRef) {
-          dialogRef.componentInstance.data.step = 2;
-          setTimeout(() => dialogRef.close(), 1500);
-        }
-        if (this.selectedFiles.length > 0) {
-          this.snackbarService.success('Part created successfully!');
-        }
-        this.router.navigateByUrl('/app/parts');
-      },
-      error: (err) => {
-        if (dialogRef) dialogRef.close();
-        this.snackbarService.error('Failed to upload part or files.');
-        console.error(err);
-      }
-    });
-  }
 }
 
+private openProgressDialogIfNeeded(): any {
+  if (this.selectedFiles.length > 0) {
+    return this.dialog.open(ProgressDialogComponent, {
+      disableClose: true,
+      data: { step: 0, uploadProgress: 0, fileName: '', fileSize: 0 }
+    });
+  }
+  return null;
+}
 
+private updatePart(body: PartCreateRequest, dialogRef: any): void {
+  this.partService.updatePart(this.partId!, body).subscribe({
+    next: () => {
+      this.handleDialogStep(dialogRef, 1);
+      setTimeout(() => dialogRef?.close(), 1500);
+      this.snackbarService.success('Part updated successfully!');
+      this.router.navigateByUrl('/app/parts');
+    },
+    error: (err) => {
+      dialogRef?.close();
+      this.snackbarService.error('Failed to update part.');
+      console.error(err);
+    }
+  });
+}
 
+private createPart(body: PartCreateRequest, dialogRef: any): void {
+  this.partService.createPart(body).pipe(
+    concatMap((res: any) => {
+      if (this.selectedFiles.length === 0) {
+        this.snackbarService.success('Part created successfully!');
+        this.router.navigateByUrl('/app/parts');
+        return of(null);
+      }
+      this.handleDialogStep(dialogRef, 1);
+      const partId = res.partId || res.id;
+      const uploadObservables = this.selectedFiles.map(file =>
+        from(fileToBase64(file)).pipe(
+          concatMap(base64 => this.partService.uploadPartImage(partId, file, base64))
+        )
+      );
+      return concat(...uploadObservables);
+    })
+  ).subscribe({
+    next: () => {
+      this.handleDialogStep(dialogRef, 2);
+      setTimeout(() => dialogRef?.close(), 1500);
+      if (this.selectedFiles.length > 0) {
+        this.snackbarService.success('Part created successfully!');
+      }
+      this.router.navigateByUrl('/app/parts');
+    },
+    error: (err) => {
+      dialogRef?.close();
+      this.snackbarService.error('Failed to upload part or files.');
+      console.error(err);
+    }
+  });
+}
 
+private handleDialogStep(dialogRef: any, step: number): void {
+  if (dialogRef) {
+    dialogRef.componentInstance.data.step = step;
+  }
+}
   generateBomDetailsBody() {
     return this.bomPartList.map(part => ({
       childPartId: part.id,

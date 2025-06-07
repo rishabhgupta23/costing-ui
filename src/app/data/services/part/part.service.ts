@@ -85,10 +85,10 @@ export class PartService {
     return this.http.get<any>(ApiUtil.getApiUrl(API_END_POINTS.PART_DOWNLOAD));
   }
 
-uploadPartImage(partId: number, file: File, base64Image: string) {
+uploadPartImage(partId: number, file: File, base64String: string) {
   const body = {
     fileName: file.name,
-    fileData: base64Image
+    fileData: base64String
   };
 
   const params = new HttpParams().set('partId', partId);

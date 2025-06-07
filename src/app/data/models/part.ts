@@ -13,7 +13,7 @@ export interface PartAttribute {
 
 export interface CostFactorData {
     id: number;
-    name?: string;
+    factorName?: string;
     value: number;
 }
 

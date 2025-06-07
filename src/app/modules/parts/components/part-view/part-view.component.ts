@@ -59,8 +59,6 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
  
    partId: string | null = null;
   part: any;
-  partFileUrls: string[] = [];
-  selectedFiles: File[] = [];
   partFilePreviews: { url: string, type: string, previewUrl?: string }[] = [];
  
  
@@ -103,7 +101,6 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
     getPartFiles(partId: string): void {
   this.partService.getPartFiles(partId).subscribe({
     next: (urls) => {
-      this.partFileUrls = urls;
       this.partFilePreviews = urls.map(url => {
         const type = this.getFileTypeFromUrl(url);
         const fileObj: any = { url, type };
@@ -124,21 +121,16 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
 
 getFileTypeFromUrl(url: string): string {
   const extension = url.split('.').pop()?.toLowerCase();
-  switch (extension) {
-    case 'jpg':
-    case 'jpeg':
-    case 'png':
-      return 'image';
-    case 'pdf':
-      return 'pdf';
-    case 'doc':
-    case 'docx':
-      return 'word';
-    case 'xls':
-    case 'xlsx':
-      return 'excel';
-    default:
-      return 'other';
+  if (extension === 'jpg' || extension === 'jpeg' || extension === 'png') {
+    return 'image';
+  } else if (extension === 'pdf') {
+    return 'pdf';
+  } else if (extension === 'doc' || extension === 'docx') {
+    return 'word';
+  } else if (extension === 'xls' || extension === 'xlsx') {
+    return 'excel';
+  } else {
+    return 'other';
   }
 }
 
@@ -155,7 +147,7 @@ downloadPartFile(fileUrl: string): void {
         vendorCostList.forEach((vc) => {
           vc.costFactorValues.forEach(cf => {
             const currentList = this.vendorCostMap.get(vc.id) || [];
-            currentList.push({ id: cf.id, name: cf.name, value: getValueOrNull(cf.value)});
+            currentList.push({ id: cf.id, factorName: cf.factorName, value: getValueOrNull(cf.value)});
             this.vendorCostMap.set(vc.id, currentList);
           });
         });
@@ -170,7 +162,7 @@ downloadPartFile(fileUrl: string): void {
           costFactors.forEach(costFactor => {
             tableData.push({
               vendorName: vendorName,
-              costFactor: costFactor.name,
+              costFactor: costFactor.factorName,
               value: costFactor.value
             });
           });
