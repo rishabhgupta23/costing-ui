@@ -23,11 +23,3 @@ export function fileToBase64(file: File): Promise<string> {
   });
 }
 
-export function downloadBlobFile(blob: Blob, fileName: string) {
-  const a = document.createElement('a');
-  const url = window.URL.createObjectURL(blob);
-  a.href = url;
-  a.download = fileName;
-  a.click();
-  window.URL.revokeObjectURL(url);
-}
