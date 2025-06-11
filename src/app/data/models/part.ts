@@ -73,7 +73,7 @@ export interface PartRow{
 export interface PartDetails extends Part {
     bom: {childPartId: number; quantity: number; childPartName: string; childPartNumber: string}[];
     vendorCostList: VendorCost[];
-     attributes?: PartAttributeValue[];
+     attributeValueList?: PartAttributeValue[];
 }
 
 export interface SortState{

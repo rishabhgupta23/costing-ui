@@ -1,6 +1,6 @@
 import { ColumnType } from "../../shared/constants/table.constants";
 
-export const ATTRIBUTE_TABLE_COLUMNS=(editable = false) => [
+export const PART_ATTRIBUTE_TABLE=(editable = false) => [
     {
         label: 'Attribute Name',
         key: 'attributeName',

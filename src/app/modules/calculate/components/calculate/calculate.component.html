@@ -15,7 +15,6 @@
                            [matAutocomplete]="auto">
                     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" 
                                       (optionSelected)="onPartSelected($event.option.value)"
-                                           panelClass="custom-autocomplete-panel"
   (opened)="onAutocompleteOpened()"
   (closed)="onAutocompleteClosed()">
                         <mat-option *ngFor="let item of filteredParts | async" [value]="item">

@@ -20,8 +20,8 @@ import { ListItem } from 'src/app/data/models/list-items';
 import { CostFactorService } from 'src/app/data/services/cost-factor/cost-factor.service';
 import { AttributeRow, TemplateResponse } from 'src/app/data/models/part-template';
 import { TemplateService } from 'src/app/data/services/part-template/part-template.service';
-import { ATTRIBUTE_TABLE_COLUMNS } from 'src/app/data/constants/attribute-table.constants';
-import { TemplatedialogComponent } from 'src/app/modules/config/components/templatedialog/templatedialog.component';
+import { PART_ATTRIBUTE_TABLE} from 'src/app/data/constants/part-attribute-table.constants';
+import { TemplateDialogComponent } from 'src/app/modules/config/components/template-dialog/template-dialog.component';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
 
@@ -31,46 +31,6 @@ import { OverlayContainer } from '@angular/cdk/overlay';
   styleUrls : ['./parts-form.component.scss']
 })
 export class PartsFormComponent implements OnDestroy {
-onModifyClick(): void {
-  const currentAttributeIds = new Set(this.attributeValueList.map(attr => attr.attributeId));
-
-  const dialogRef = this.dialog.open(TemplatedialogComponent, {
-    width: '600px',
-    data: {
-          openedFromPartForm: true,
-      existingAttributes: currentAttributeIds,
-      isEditMode: false
-    }
-  });
-
-  dialogRef.afterClosed().subscribe(result => {
-    if (result?.action === DialogCloseResponse.UPDATE && result?.data) {
-      const updatedAttributes = result.data as AttributeRow[];
-
-const currentIds = this.attributeValueList.map(a => a.attributeId).sort();
-const updatedIds = updatedAttributes.map(a => a.attributeId).sort();
-
-const isDifferent =
-  currentIds.length !== updatedIds.length ||
-  currentIds.some((id, idx) => id !== updatedIds[idx]);
-
-
-      this.attributeValueList = updatedAttributes.map(newAttr => {
-        const existing = this.attributeValueList.find(a => a.attributeId === newAttr.attributeId);
-        return {
-          attributeId: newAttr.attributeId,
-          attributeName: newAttr.attributeName,
-          value: existing?.value || ''
-        };
-      });
-
-if (isDifferent) {
-    this.templateControl.setValue("");
-}
-    }
-  });
-}
-
   partNames: string[] =[];
   partTypes: string[] = [];
   partUnits: string[] = [];
@@ -85,7 +45,6 @@ if (isDifferent) {
   pageSize: number = 100 // Default items per page
   partTypeEnum= PartType;
   selectedStepIndex: number = 0;
-  templates: TemplateResponse[] = [];
   attributeValueList:PartAttributeValue[]=[]
   isEditMode = false;
   
@@ -105,7 +64,7 @@ if (isDifferent) {
 templateControl = new FormControl();
 filteredTemplates!: Observable<TemplateResponse[]>;
 selectedTemplateAttributes: AttributeRow[] = [];
-attributeTableColumns= ATTRIBUTE_TABLE_COLUMNS (true);
+attributeTableColumns= PART_ATTRIBUTE_TABLE(true);
   selectedVendor: Vendor = undefined as any;
 
   // selectedPart: PartRow | null = null;
@@ -156,7 +115,7 @@ setupTemplateFilter() {
     debounceTime(300),
     distinctUntilChanged(),
     switchMap(value => {
-      const filterValue = (typeof value === 'string' ? value : value?.templateName) || '';
+        const filterValue = value ?? '';
       const filterCriteria = new Map<string, string>();
       filterCriteria.set('templateName', filterValue);
 
@@ -191,7 +150,7 @@ setupTemplateFilter() {
             value: getValueOrNull(bomPart.quantity)
           })) || [];
 
-          this.attributeValueList= part.attributes?.map(attr=>({
+          this.attributeValueList= part.attributeValueList?.map(attr=>({
             attributeId:attr.attributeId,
             attributeName: attr.attributeName,
             value:attr.value
@@ -225,6 +184,49 @@ setupTemplateFilter() {
   }
   
 
+  onModifyClick(): void {
+  const currentAttributeIds = new Set(this.attributeValueList.map(attr => attr.attributeId));
+
+  const dialogRef = this.dialog.open(TemplateDialogComponent, {
+    width: '37.5rem',
+    data: {
+      existingAttributes: currentAttributeIds,
+      buttonLabel: 'Add/Update Attribute'
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+
+    if (result?.action === DialogCloseResponse.UPDATE && result?.data) {
+      const updatedAttributes = result.data as AttributeRow[];
+
+      let isDifferent = false;
+
+        const existingMap = new Map(this.attributeValueList.map(attr => [attr.attributeId, attr]));
+        const newAttributeValueList = updatedAttributes.map(newAttr => {
+        const existing = existingMap.get(newAttr.attributeId);
+        if (!existing) {
+          isDifferent = true;
+        }
+
+        return {
+          attributeId: newAttr.attributeId,
+          attributeName: newAttr.attributeName,
+          value: existing?.value || ''
+        };
+        });
+        if (updatedAttributes.length !== this.attributeValueList.length) {
+        isDifferent = true;
+      }
+      this.attributeValueList = newAttributeValueList;
+
+    if (isDifferent) {
+      this.templateControl.setValue("");
+    }
+  }
+});
+}
+
           
   getPartTypes() {
     this.subscriptions.push(
@@ -236,7 +238,7 @@ setupTemplateFilter() {
 
   openBomDialog(): void {
     const dialogRef = this.dialog.open(BomdialogComponent, {
-      width: '600px',
+      width: '37.5rem',
       data: { 
         existingParts: new Set(this.bomPartList.map(part => part.id) || [])
       },

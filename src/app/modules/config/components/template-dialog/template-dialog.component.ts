@@ -11,21 +11,20 @@ import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-templatedialog',
-  templateUrl: './templatedialog.component.html',
-  styleUrl: './templatedialog.component.scss'
+  templateUrl: './template-dialog.component.html',
+  styleUrl: './template-dialog.component.scss'
 })
-export class TemplatedialogComponent implements OnInit {
+export class TemplateDialogComponent implements OnInit {
   displayedColumns: string[] = ['select', 'attributeName'];
   attributeList: AttributeRow[] = [];
   allAttributes: AttributeRow[] = [];
   existingAttributes: Set<number> = new Set();
   templateName: string = '';
   isEditMode: boolean = false;
-  openedFromPartForm: boolean = false;
   pageSize: number = 100;
   currentPage: number = 0;
   totalRecords: number = 0;
-
+  buttonLabel: string = '';
   searchTerm: string = '';
   filterCriteria: Map<string, string> = new Map();
 
@@ -33,9 +32,9 @@ export class TemplatedialogComponent implements OnInit {
   private searchSubject = new Subject<{ key: string; value: string }>();
 
   constructor(
-    public dialogRef: MatDialogRef<TemplatedialogComponent>,
+    public dialogRef: MatDialogRef<TemplateDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
-      openedFromPartForm: boolean;
+      buttonLabel: string;
       templateName: string;existingAttributes: Set<number> 
       isEditMode?: boolean;
 },
@@ -43,13 +42,13 @@ export class TemplatedialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-      this.openedFromPartForm = this.data?.openedFromPartForm ?? false;
     this.existingAttributes = new Set(this.data.existingAttributes);
     this.existingAttributes = new Set(this.data.existingAttributes);
     this.templateName = this.data.templateName || ''; // <-- Add this
     this.isEditMode = !!this.data.isEditMode;
     this.getAttributeList();
     this.listenToFilterChanges();
+      this.buttonLabel = this.data.buttonLabel || 'Default Label';
   }
 
   listenToFilterChanges(): void {

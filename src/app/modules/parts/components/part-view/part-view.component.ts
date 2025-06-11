@@ -15,7 +15,7 @@ import { ColumnType} from '../../../../shared/constants/table.constants';
 import { HistorydialogComponent } from '../historydialog/historydialog.component';
 import { downloadFile } from '../../../../shared/utils/file-download.util';
 import { getValueOrNull } from '../../../../shared/utils/string.util';
-import { ATTRIBUTE_TABLE_COLUMNS } from 'src/app/data/constants/attribute-table.constants';
+import { PART_ATTRIBUTE_TABLE } from 'src/app/data/constants/part-attribute-table.constants';
 
 @Component({
   selector: 'app-part-view',
@@ -60,7 +60,7 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
  
    partId: string | null = null;
   part: any;
-attributeTableColumns= ATTRIBUTE_TABLE_COLUMNS(false) ;
+attributeTableColumns= PART_ATTRIBUTE_TABLE(false) ;
  
  
    constructor(private partService: PartService, private route: ActivatedRoute,
@@ -96,7 +96,7 @@ attributeTableColumns= ATTRIBUTE_TABLE_COLUMNS(false) ;
             partNumber: getValueOrNull(bomPart.childPartNumber),
             value: getValueOrNull(bomPart.quantity)
           }));
-                    this.attributeValueList= part.attributes?.map(attr=>({
+                    this.attributeValueList= part.attributeValueList?.map(attr=>({
                       attributeId:attr.attributeId,
                       attributeName: attr.attributeName,
                       value:attr.value
@@ -140,7 +140,7 @@ attributeTableColumns= ATTRIBUTE_TABLE_COLUMNS(false) ;
 
         this.costHistoryList = res.costHistoryList;
         const dialogRef = this.dialog.open(HistorydialogComponent, {
-          width: '600px',
+          width: '37.5rem',
           data: { costHistoryList: this.costHistoryList },
         });
   

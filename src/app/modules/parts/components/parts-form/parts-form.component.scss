@@ -63,10 +63,9 @@
     color:$c-link-hover;
 }
 
-.hr-tag{
-    background-color: #c6c4c4;
+.horizontal-divider{
+    background-color: $c-border;
     border: 0 none;
-    color: #b0afaf;
     height: 1px;
     margin-top: 1.5rem;
     margin-bottom: 1rem;
