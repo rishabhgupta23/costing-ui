@@ -15,7 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { SortIcons } from 'src/app/shared/constants/table.constants';
 
-fdescribe('PartTemplateComponent', () => {
+describe('PartTemplateComponent', () => {
   let component: PartTemplateComponent;
   let fixture: ComponentFixture<PartTemplateComponent>;
   let mockTemplateService: jasmine.SpyObj<TemplateService>;
@@ -52,7 +52,13 @@ const mockResponse = mockTemplateResponseList;
   it('should load templates on init', () => {
     mockTemplateService.getTemplateList.and.returnValue(of(mockResponse));
     fixture.detectChanges();
-    expect(mockTemplateService.getTemplateList).toHaveBeenCalled();
+expect(mockTemplateService.getTemplateList).toHaveBeenCalledWith(
+  component.currentPage,
+  component.pageSize,
+  component.filterCriteria,
+  component.sortState
+);
+
      expect(component.templateList).toEqual(mockTemplateListItems);
   expect(component.filteredTemplates).toEqual(mockTemplateListItems);
     expect(component.templateList.length).toBe(2);
@@ -63,7 +69,13 @@ const mockResponse = mockTemplateResponseList;
     mockTemplateService.getTemplateList.and.returnValue(of(mockResponse));
     component.applyFilter();
 
-    expect(mockTemplateService.getTemplateList).toHaveBeenCalled();
+expect(mockTemplateService.getTemplateList).toHaveBeenCalledWith(
+  component.currentPage,
+  component.pageSize,
+  component.filterCriteria,
+  component.sortState
+);
+
     expect(component.filterCriteria.has('templateName')).toBeTrue();
      expect(component.filterCriteria.get('templateName')).toBe('Template A');
 
@@ -81,7 +93,13 @@ const mockResponse = mockTemplateResponseList;
 
     expect(component.searchTermName).toBe('');
     expect(component.filterCriteria.has('templateName')).toBeFalse();
-      expect(mockTemplateService.getTemplateList).toHaveBeenCalled();
+expect(mockTemplateService.getTemplateList).toHaveBeenCalledWith(
+  component.currentPage,
+  component.pageSize,
+  component.filterCriteria,
+  component.sortState
+);
+
         expect(component.templateList).toEqual(mockTemplateListItems);
   expect(component.filteredTemplates).toEqual(mockTemplateListItems);
   expect(component.totalRecords).toBe(2);
@@ -95,7 +113,13 @@ const mockResponse = mockTemplateResponseList;
 
     expect(component.sortState.sortColumn).toBe('templateName');
       expect(component.sortState.sortState).toBe(SortIcons.DESC);
-    expect(mockTemplateService.getTemplateList).toHaveBeenCalled();
+expect(mockTemplateService.getTemplateList).toHaveBeenCalledWith(
+  component.currentPage,
+  component.pageSize,
+  component.filterCriteria,
+  component.sortState
+);
+
      expect(component.templateList).toEqual(mockTemplateListItems);
   expect(component.filteredTemplates).toEqual(mockTemplateListItems);
   expect(component.totalRecords).toBe(2);
@@ -141,7 +165,11 @@ const mockResponse = mockTemplateResponseList;
 
     tick();
 
-    expect(mockTemplateService.createTemplate).toHaveBeenCalled();
+expect(mockTemplateService.createTemplate).toHaveBeenCalledWith({
+  templateName: 'New Template',
+  partAttributes: [1]
+});
+
     expect(mockSnackbar.success).toHaveBeenCalledWith('Template created successfully!');
   }));
 
@@ -162,7 +190,14 @@ mockTemplateService.updateTemplate.and.returnValue(of({ templateId: 1, templateN
     component.editTemplate({ templateId: 1, templateName: 'Template A' });
     tick();
 
-    expect(mockTemplateService.updateTemplate).toHaveBeenCalled();
+expect(mockTemplateService.updateTemplate).toHaveBeenCalledWith(
+  1,
+  {
+    templateName: 'Updated Template',
+    partAttributes: [1]
+  }
+);
+
     expect(mockSnackbar.success).toHaveBeenCalledWith('Template updated successfully!');
   }));
 
@@ -186,6 +221,12 @@ mockTemplateService.updateTemplate.and.returnValue(of({ templateId: 1, templateN
 
     expect(component.currentPage).toBe(1);
     expect(component.pageSize).toBe(50);
-    expect(mockTemplateService.getTemplateList).toHaveBeenCalled();
+expect(mockTemplateService.getTemplateList).toHaveBeenCalledWith(
+  component.currentPage,
+  component.pageSize,
+  component.filterCriteria,
+  component.sortState
+);
+
   });
 });

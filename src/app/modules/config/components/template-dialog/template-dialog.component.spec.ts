@@ -15,7 +15,7 @@ import { DialogCloseResponse } from 'src/app/shared/constants/dialog.constants';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { MatTableModule } from '@angular/material/table';
 
-fdescribe('TemplateDialogComponent', () => {
+describe('TemplateDialogComponent', () => {
   let component: TemplateDialogComponent;
   let fixture: ComponentFixture<TemplateDialogComponent>;
   let mockPartAttributeService: jasmine.SpyObj<PartAttributeService>;
@@ -83,7 +83,13 @@ fdescribe('TemplateDialogComponent', () => {
   it('should fetch attribute list', () => {
     mockPartAttributeService.getPartAttributeList.and.returnValue(of({ data: mockAttributeList, pageInfo: { totalRecords: 3 } }));
     component.getAttributeList();
-    expect(mockPartAttributeService.getPartAttributeList).toHaveBeenCalled();
+expect(mockPartAttributeService.getPartAttributeList).toHaveBeenCalledWith(
+  component.currentPage,
+  component.pageSize,
+  component.filterCriteria,
+  component.sortState
+);
+
     expect(component.attributeList.length).toBe(3);
     expect(component.totalRecords).toBe(3);
   });
