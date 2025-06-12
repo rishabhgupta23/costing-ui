@@ -74,7 +74,7 @@
                         <mat-form-field appearance="outline" class="custom-vendor-textfield">
                             <mat-select placeholder="Select vendor" [(value)]="selectedVendor">
                                 <ng-container *ngFor="let item of vendorList">
-                                    <mat-option [value]="item">{{item.name}}</mat-option>
+                                    <mat-option [value]="item">{{item.vendorName}}</mat-option>
                                 </ng-container>
                             </mat-select>
                         </mat-form-field>

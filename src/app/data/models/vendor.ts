@@ -1,6 +1,6 @@
 export interface Vendor {
     id: number;
-    name?: string;
+    vendorName?: string;
     emailId?: string;
     contactNumber?: string;
     address?: string;

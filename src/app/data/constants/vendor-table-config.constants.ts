@@ -4,7 +4,7 @@ export const VENDOR_TABLE_COLUMNS = [
     {
         label: 'Name',
         columnType: ColumnType.GENERAL,
-        key: 'name',
+        key: 'vendorName',
         filterable: true,
         sortable: true
     },

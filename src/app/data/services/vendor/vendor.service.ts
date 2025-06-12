@@ -18,10 +18,10 @@ export class VendorService {
     return this.http.get<Vendor>(ApiUtil.getPreparedUrl(API_END_POINTS.VENDOR_DETAILS, params));
   }
 
-  updateVendor(vendorId: string, vendor: Vendor): Observable<Vendor> {
+  updateVendor(vendorId: string, vendorName: Vendor): Observable<Vendor> {
     const params = new Map<string, string>();
     params.set('vendorId', vendorId);
-    return this.http.put<Vendor>(ApiUtil.getPreparedUrl(API_END_POINTS.VENDOR_DETAILS, params), vendor);
+    return this.http.put<Vendor>(ApiUtil.getPreparedUrl(API_END_POINTS.VENDOR_DETAILS, params), vendorName);
   }
 
   constructor(private http: HttpClient) { }
@@ -37,7 +37,7 @@ export class VendorService {
       map((res:any)=>res.data));
   }
       
-  getVendorList(page: number = 0, size: number = 100, filterCriteria: Map<string, string> = new Map(), sortState: SortState = {sortColumn: 'name', sortState: SortIcons.ASC}): Observable<any> {
+  getVendorList(page: number = 0, size: number = 100, filterCriteria: Map<string, string> = new Map(), sortState: SortState = {sortColumn: 'vendorName', sortState: SortIcons.ASC}): Observable<any> {
     let params = new HttpParams()
       .set('pageNo', page.toString())
       .set('pageSize', size.toString())
@@ -62,8 +62,8 @@ export class VendorService {
   }
   
 
-  createVendor(vendor: Vendor): Observable<any> {
-    return this.http.post<Vendor>(ApiUtil.getApiUrl(API_END_POINTS.VENDORS), vendor);
+  createVendor(vendorName: Vendor): Observable<any> {
+    return this.http.post<Vendor>(ApiUtil.getApiUrl(API_END_POINTS.VENDORS), vendorName);
   }
 
   downloadExcel() {

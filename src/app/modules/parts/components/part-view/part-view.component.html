@@ -55,7 +55,7 @@
                 <mat-accordion class="example-headers-align" multi>
                     <mat-expansion-panel *ngFor="let vendor of vendorCostList; let i=index">
                       <mat-expansion-panel-header>
-                        <mat-panel-title> Vendor {{i+1}}: {{ vendor.name }}  </mat-panel-title>
+                        <mat-panel-title> Vendor {{i+1}}: {{ vendor.vendorName }}  </mat-panel-title>
                       <mat-panel-description>
                         <mat-icon class="icon-btn" svgIcon="history" (click)="openHistoryDialog(partId,vendor.id)"> </mat-icon>
                       </mat-panel-description>
