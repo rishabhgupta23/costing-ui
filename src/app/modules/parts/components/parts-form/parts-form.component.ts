@@ -100,7 +100,7 @@ export class PartsFormComponent implements OnDestroy {
             partUnit: getValueOrNull(part.unit)
           });
 
-
+          this.partForm.get('partNumber')?.disable();
           this.vendorCostListToMap(part.vendorCostList);
           
           this.bomPartList = part.bom?.map(bomPart => ({
