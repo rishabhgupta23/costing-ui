@@ -68,6 +68,17 @@
 
   }
 
+    .data-row input[type="text"]{
+    width: 75%;
+  padding: 6px 10px;
+  font-size: 1rem;
+  border: 1px solid $c-default-text;
+  border-radius: $base-border-radius;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: $c-default-bg;
+
+  }
+
   /* Style for the filter inputs within the filter row */
 .filter-row input[type="text"] {
   width: 75%;

@@ -1,11 +1,11 @@
 import { Component, OnDestroy} from '@angular/core';
 import { PartService } from '../../../../data/services/part/part.service';
-import { map, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, Observable, startWith, Subscription, switchMap } from 'rxjs';
 import { COST_FACTOR_TABLE_COLUMNS } from '../../../../data/constants/part.constants';
 import { VendorService } from '../../../../data/services/vendor/vendor.service';
 import { Vendor } from '../../../../data/models/vendor';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { PartBomData, CostFactor, CostFactorData, PartCreateRequest, PartRow, VendorCost } from '../../../../data/models/part';
+import { PartBomData, CostFactor, CostFactorData, PartCreateRequest, PartRow, VendorCost, PartAttributeValue } from '../../../../data/models/part';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BomdialogComponent } from '../bomdialog/bomdialog.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -18,6 +18,12 @@ import { MatStepper } from '@angular/material/stepper';
 import { getValueOrNull } from '../../../../shared/utils/string.util';
 import { ListItem } from 'src/app/data/models/list-items';
 import { CostFactorService } from 'src/app/data/services/cost-factor/cost-factor.service';
+import { AttributeRow, TemplateResponse } from 'src/app/data/models/part-template';
+import { TemplateService } from 'src/app/data/services/part-template/part-template.service';
+import { PART_ATTRIBUTE_TABLE} from 'src/app/data/constants/part-attribute-table.constants';
+import { TemplateDialogComponent } from 'src/app/modules/config/components/template-dialog/template-dialog.component';
+import { OverlayContainer } from '@angular/cdk/overlay';
+
 
 @Component({
   selector: 'app-parts-form',
@@ -39,6 +45,8 @@ export class PartsFormComponent implements OnDestroy {
   pageSize: number = 100 // Default items per page
   partTypeEnum= PartType;
   selectedStepIndex: number = 0;
+  attributeValueList:PartAttributeValue[]=[]
+  isEditMode = false;
   
 
   partForm = new FormGroup({
@@ -49,11 +57,14 @@ export class PartsFormComponent implements OnDestroy {
     partUnit: new FormControl('', Validators.required),
   });
 
-  
   costDetailsForm = new FormGroup({
     costFactors: new FormArray([])
    });
 
+templateControl = new FormControl();
+filteredTemplates!: Observable<TemplateResponse[]>;
+selectedTemplateAttributes: AttributeRow[] = [];
+attributeTableColumns= PART_ATTRIBUTE_TABLE(true);
   selectedVendor: Vendor = undefined as any;
 
   // selectedPart: PartRow | null = null;
@@ -62,10 +73,22 @@ export class PartsFormComponent implements OnDestroy {
   partId: string | null = null;
 
 
-  constructor(private partService: PartService, private vendorService: VendorService, private costFactorService: CostFactorService,     private route: ActivatedRoute,
-    private router: Router, private dialog: MatDialog, private snackbarService: SnackbarService) {
+  constructor(private partService: PartService, private vendorService: VendorService, private overlayContainer: OverlayContainer, private costFactorService: CostFactorService,     private route: ActivatedRoute,
+    private router: Router, private dialog: MatDialog, private snackbarService: SnackbarService, private templateService: TemplateService) {
       
     }
+
+    displayTemplate(template: TemplateResponse): string {
+    return template ? template.templateName : '';
+  }
+
+   onAutocompleteOpened() {
+    this.overlayContainer.getContainerElement().classList.add('autocomplete-open');
+  }
+
+  onAutocompleteClosed() {
+    this.overlayContainer.getContainerElement().classList.remove('autocomplete-open');
+  }
 
     ngOnInit(): void{
       this.partId = this.route.snapshot.paramMap.get('id');
@@ -74,8 +97,8 @@ export class PartsFormComponent implements OnDestroy {
     this.getPartCategories();
     this.getVendorList();
     this.getCostFactors();
-
-
+    this.setupTemplateFilter();
+      this.isEditMode = !!this.partId;
       if (this.partId){
         this.getPartData(this.partId);
       }
@@ -85,6 +108,23 @@ export class PartsFormComponent implements OnDestroy {
         }
       });
       }
+
+setupTemplateFilter() {
+  this.filteredTemplates = this.templateControl.valueChanges.pipe(
+    startWith(''),
+    debounceTime(300),
+    distinctUntilChanged(),
+    switchMap(value => {
+        const filterValue = value ?? '';
+      const filterCriteria = new Map<string, string>();
+      filterCriteria.set('templateName', filterValue);
+
+      return this.templateService.getTemplateList(0, 10, filterCriteria);
+    }),
+    map(response => response.data || response.templates || [])
+  );
+}
+
 
       getPartData(id: string): void {
         
@@ -102,13 +142,22 @@ export class PartsFormComponent implements OnDestroy {
 
 
           this.vendorCostListToMap(part.vendorCostList);
-          
+
           this.bomPartList = part.bom?.map(bomPart => ({
-            id: bomPart.childPartId, // Ensure correct mapping
-            partName: bomPart.childPartName, // Assuming API returns partName
-            partNumber: bomPart.childPartNumber, // Assuming API returns partNumber
+            id: bomPart.childPartId,
+            partName: bomPart.childPartName,
+            partNumber: bomPart.childPartNumber,
             value: getValueOrNull(bomPart.quantity)
           })) || [];
+
+          this.attributeValueList= part.attributeValueList?.map(attr=>({
+            attributeId:attr.attributeId,
+            attributeName: attr.attributeName,
+            value:attr.value
+          }))|| [];
+
+
+          console.log(part);
         });
       }
 
@@ -135,6 +184,49 @@ export class PartsFormComponent implements OnDestroy {
   }
   
 
+  onModifyClick(): void {
+  const currentAttributeIds = new Set(this.attributeValueList.map(attr => attr.attributeId));
+
+  const dialogRef = this.dialog.open(TemplateDialogComponent, {
+    width: '37.5rem',
+    data: {
+      existingAttributes: currentAttributeIds,
+      buttonLabel: 'Add/Update Attribute'
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+
+    if (result?.action === DialogCloseResponse.UPDATE && result?.data) {
+      const updatedAttributes = result.data as AttributeRow[];
+
+      let isDifferent = false;
+
+        const existingMap = new Map(this.attributeValueList.map(attr => [attr.attributeId, attr]));
+        const newAttributeValueList = updatedAttributes.map(newAttr => {
+        const existing = existingMap.get(newAttr.attributeId);
+        if (!existing) {
+          isDifferent = true;
+        }
+
+        return {
+          attributeId: newAttr.attributeId,
+          attributeName: newAttr.attributeName,
+          value: existing?.value || ''
+        };
+        });
+        if (updatedAttributes.length !== this.attributeValueList.length) {
+        isDifferent = true;
+      }
+      this.attributeValueList = newAttributeValueList;
+
+    if (isDifferent) {
+      this.templateControl.setValue("");
+    }
+  }
+});
+}
+
           
   getPartTypes() {
     this.subscriptions.push(
@@ -146,7 +238,7 @@ export class PartsFormComponent implements OnDestroy {
 
   openBomDialog(): void {
     const dialogRef = this.dialog.open(BomdialogComponent, {
-      width: '600px',
+      width: '37.5rem',
       data: { 
         existingParts: new Set(this.bomPartList.map(part => part.id) || [])
       },
@@ -303,6 +395,29 @@ export class PartsFormComponent implements OnDestroy {
     stepper.next();
     this.selectedStepIndex = stepper.selectedIndex;
   }
+
+onTemplateSelected(selectedTemplate: TemplateResponse): void {
+
+  this.selectedTemplateAttributes = [];
+
+  if (!selectedTemplate?.templateId) return;
+
+  this.templateService.getTemplateById(selectedTemplate.templateId).subscribe({
+    next: (fullTemplate: TemplateResponse) => {
+      const attributes = fullTemplate.partAttributes ?? [];
+
+      this.selectedTemplateAttributes = attributes;
+
+    this.attributeValueList = attributes.map(attr => ({
+      attributeId:attr.attributeId,
+      attributeName: attr.attributeName,
+      value: "",
+    }))
+    }
+  });
+}
+
+
   
 
   onSubmit(): void {
@@ -313,7 +428,8 @@ export class PartsFormComponent implements OnDestroy {
       unit: this.partForm.get('partUnit')?.value || '',
       vendorCostList: this.generateVendorCostMapBody(),
       categoryId: this.partForm.get('categoryId')?.value || null,
-      bom: this.generateBomDetailsBody()
+      bom: this.generateBomDetailsBody(),
+      attributeValueList: this.generateAttributesBody()
     };
 
     if (this.partForm.invalid) {
@@ -353,6 +469,14 @@ export class PartsFormComponent implements OnDestroy {
       });
     }
   }
+
+generateAttributesBody() {
+  return this.attributeValueList.map((attr: any) => ({
+    attributeId: attr.attributeId,
+    value: attr.value
+  }));
+}
+
   generateBomDetailsBody() {
     return this.bomPartList.map(part => ({
       childPartId: part.id,

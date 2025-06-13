@@ -20,7 +20,13 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { PartViewComponent } from './components/part-view/part-view.component';
 import { HistorydialogComponent } from './components/historydialog/historydialog.component';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MAT_AUTOCOMPLETE_DEFAULT_OPTIONS, MAT_AUTOCOMPLETE_SCROLL_STRATEGY, MatAutocompleteDefaultOptions, MatAutocompleteModule } from '@angular/material/autocomplete';
+import { Overlay, OverlayModule, ScrollStrategy } from '@angular/cdk/overlay';
 
+
+const customAutocompleteDefaults: MatAutocompleteDefaultOptions = {
+  overlayPanelClass: 'app-autocomplete-overlay'
+};
 
 @NgModule({
   declarations: [ PartLandingComponent, PartsFormComponent, BomdialogComponent, PartViewComponent, HistorydialogComponent],
@@ -41,7 +47,15 @@ import { MatStepperModule } from '@angular/material/stepper';
     MatIconModule,
     FormsModule,
     MatSnackBarModule,
-    MatStepperModule
+    MatStepperModule,
+    MatAutocompleteModule,
+    OverlayModule
+  ],
+  providers: [
+    {
+      provide: MAT_AUTOCOMPLETE_DEFAULT_OPTIONS,
+      useValue: customAutocompleteDefaults
+    }
   ]
 })
 export class PartsModule { }

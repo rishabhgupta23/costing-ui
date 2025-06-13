@@ -58,6 +58,16 @@
     
     </td>
 
+    
+    <td *ngIf="col?.columnType === ColumnType.INPUT_STRING">
+      <input
+      type="text"
+      class="custom-textfield"
+      [(ngModel)]="row[col?.key]" 
+      (ngModelChange)="cellEdit.emit({ row: row, key: col?.key })" />
+    
+    </td>
+
     <!-- Dynamic Action Buttons -->
 <td *ngIf="col?.columnType === ColumnType.ACTION">
     <ng-container *ngFor="let action of col.actions">

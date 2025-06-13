@@ -11,7 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { PartAttributeComponent } from './components/part-attribute/part-attribute.component';
 import { PartTemplateComponent } from './components/part-template/part-template.component';
-import { TemplatedialogComponent } from './components/templatedialog/templatedialog.component';
+import { TemplateDialogComponent} from './components/template-dialog/template-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableModule } from '@angular/material/table';
@@ -20,7 +20,7 @@ import { CostFactorComponent } from './components/cost-factor/cost-factor.compon
 
 
 @NgModule({
-  declarations: [CategoryComponent, ConfigLandingComponent, PartAttributeComponent, PartTemplateComponent, TemplatedialogComponent,CostFactorComponent],
+  declarations: [CategoryComponent, ConfigLandingComponent, PartAttributeComponent, PartTemplateComponent, TemplateDialogComponent,CostFactorComponent],
   imports: [
     CommonModule,
     ConfigRoutingModule,
