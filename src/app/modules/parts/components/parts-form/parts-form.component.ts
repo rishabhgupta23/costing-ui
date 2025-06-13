@@ -77,6 +77,7 @@ export class PartsFormComponent implements OnDestroy {
 
 
       if (this.partId){
+        this.partForm.get('partNumber')?.disable();
         this.getPartData(this.partId);
       }
       this.partForm.get('partType')?.valueChanges.subscribe((value) => {
@@ -100,7 +101,6 @@ export class PartsFormComponent implements OnDestroy {
             partUnit: getValueOrNull(part.unit)
           });
 
-          this.partForm.get('partNumber')?.disable();
           this.vendorCostListToMap(part.vendorCostList);
           
           this.bomPartList = part.bom?.map(bomPart => ({
