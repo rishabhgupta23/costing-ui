@@ -167,6 +167,25 @@ $costing-ui-theme: mat.define-theme((
   }
 } 
 
+.app-body .app-container .mat-mdc-text-field-wrapper {
+    height: 3rem;
+}
+
+.app-body .app-container .mdc-text-field {
+    align-items: center;
+}
+.app-body .app-container .app-autocomplete-overlay{
+  pointer-events: auto;
+}
+.height-subscript{
+  .mat-mdc-form-field-subscript-wrapper{
+    height:0
+  }
+}
+
+.cdk-overlay-container.autocomplete-open {
+  pointer-events: auto;
+}
 .mat-step-text-label{
   font-size: 1rem;
   font-family:Poppins, Roboto, sans-serif;

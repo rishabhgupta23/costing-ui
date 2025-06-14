@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { TemplatedialogComponent } from '../templatedialog/templatedialog.component';
+import { TemplateDialogComponent } from '../template-dialog/template-dialog.component';
 import { DialogCloseResponse } from 'src/app/shared/constants/dialog.constants';
 import { TemplateService } from 'src/app/data/services/part-template/part-template.service';
 import { AttributeRow, TemplateListItem, TemplateResponse } from 'src/app/data/models/part-template';
 import { PageEvent } from '@angular/material/paginator';
 import { getValueOrNull } from 'src/app/shared/utils/string.util';
-import { Subject } from 'rxjs';
 import { SortIcons } from 'src/app/shared/constants/table.constants';
 import { SortState } from 'src/app/data/models/part';
 import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
@@ -57,11 +56,12 @@ filterCriteria = new Map<string, string>();
   
 
   openAttributeDialog(): void {
-    const dialogRef = this.dialog.open(TemplatedialogComponent, {
-      width: '600px',
+    const dialogRef = this.dialog.open(TemplateDialogComponent, {
+      width: '37.5rem',
       data: { existingAttributes: new Set(),
         templateName: '', 
-        isEditMode: false 
+        buttonLabel:"Create Template",
+                isEditMode: false 
        }
     });
 
@@ -147,12 +147,13 @@ filterCriteria = new Map<string, string>();
       this.templateService.getTemplateById(templateId).subscribe(res => {
         const existingAttributes = new Set(res.partAttributes.map(attr => attr.attributeId));
     
-        const dialogRef = this.dialog.open(TemplatedialogComponent, {
-          width: '600px',
+        const dialogRef = this.dialog.open(TemplateDialogComponent, {
+          width: '37.5rem',
           data: {
             existingAttributes,
-            isEditMode: true,
-            templateName: res.templateName
+            buttonLabel:"Update Template",
+            templateName: res.templateName,
+                        isEditMode: true,
           }
         });
     
