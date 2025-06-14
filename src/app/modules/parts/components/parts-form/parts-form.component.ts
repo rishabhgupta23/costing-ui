@@ -100,6 +100,7 @@ attributeTableColumns= PART_ATTRIBUTE_TABLE(true);
     this.setupTemplateFilter();
       this.isEditMode = !!this.partId;
       if (this.partId){
+        this.partForm.get('partNumber')?.disable();
         this.getPartData(this.partId);
       }
       this.partForm.get('partType')?.valueChanges.subscribe((value) => {
@@ -139,7 +140,6 @@ setupTemplateFilter() {
             partType: getValueOrNull(part.type),
             partUnit: getValueOrNull(part.unit)
           });
-
 
           this.vendorCostListToMap(part.vendorCostList);
 
