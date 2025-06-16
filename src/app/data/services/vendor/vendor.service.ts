@@ -18,10 +18,10 @@ export class VendorService {
     return this.http.get<Vendor>(ApiUtil.getPreparedUrl(API_END_POINTS.VENDOR_DETAILS, params));
   }
 
-  updateVendor(vendorId: string, vendorName: Vendor): Observable<Vendor> {
+  updateVendor(vendorId: string, vendor: Vendor): Observable<Vendor> {
     const params = new Map<string, string>();
     params.set('vendorId', vendorId);
-    return this.http.put<Vendor>(ApiUtil.getPreparedUrl(API_END_POINTS.VENDOR_DETAILS, params), vendorName);
+    return this.http.put<Vendor>(ApiUtil.getPreparedUrl(API_END_POINTS.VENDOR_DETAILS, params), vendor);
   }
 
   constructor(private http: HttpClient) { }
@@ -62,8 +62,8 @@ export class VendorService {
   }
   
 
-  createVendor(vendorName: Vendor): Observable<any> {
-    return this.http.post<Vendor>(ApiUtil.getApiUrl(API_END_POINTS.VENDORS), vendorName);
+  createVendor(vendor: Vendor): Observable<any> {
+    return this.http.post<Vendor>(ApiUtil.getApiUrl(API_END_POINTS.VENDORS), vendor);
   }
 
   downloadExcel() {
