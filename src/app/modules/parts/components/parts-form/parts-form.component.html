@@ -157,6 +157,46 @@
         </div>
       </div>
       <div *ngIf="selectedStepIndex === 1">
+                <div class="file-upload p-4 border rounded">
+      <div class="upload-dropzone"
+           [class.dragover]="isDragOver"
+           (drop)="handleDrop($event)"
+           (dragover)="allowDrop($event)"
+           (dragleave)="dragLeave($event)">
+        Drag & drop files here or 
+        <label class="primary-btn">
+          Choose Files
+          <input type="file" multiple (change)="onFilesSelected($event)" style="display:none;" />
+        </label>
+      </div>
+      <div class="file-preview-list">
+        <div *ngFor="let file of selectedFiles; let i = index" class="file-preview">
+          <ng-container [ngSwitch]="getFileType(file)">
+            <img *ngSwitchCase="'image'" [src]="getImagePreview(file)" class="thumb-img" />
+            <img *ngSwitchCase="'pdf'" src="assets\icons\pdf-icon.png" class="file-icon" />
+            <img *ngSwitchCase="'word'" src="assets\icons\word-icon.png" class="file-icon" />
+            <img *ngSwitchCase="'excel'" src="assets\icons\excel-icon.png" class="file-icon" />
+            <img *ngSwitchDefault src="assets\icons\file-icon.png" class="file-icon" />
+          </ng-container>
+          <div class="file-name">{{ file.name }}</div>
+          <button class="remove-btn" (click)="removeFile(i)">✕</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Show already uploaded files if any -->
+<div *ngIf="uploadedFiles.length > 0" class="file-preview-list">
+  <div *ngFor="let file of uploadedFiles; let i = index" class="file-preview">
+    <ng-container [ngSwitch]="getFileTypeFromName(file)">
+      <img *ngSwitchCase="'image'" [src]="file" class="thumb-img" />
+      <img *ngSwitchCase="'pdf'" src="assets/icons/pdf-icon.png" class="file-icon" />
+      <img *ngSwitchCase="'word'" src="assets/icons/word-icon.png" class="file-icon" />
+      <img *ngSwitchCase="'excel'" src="assets/icons/excel-icon.png" class="file-icon" />
+      <img *ngSwitchDefault src="assets/icons/file-icon.png" class="file-icon" />
+    </ng-container>
+    <div class="file-name">{{ getFileNameFromUrl(file) }}</div>
+  </div>
+</div>
         <div
           *ngIf="partForm.get('partType')?.value === partTypeEnum.UNIT"
           [formGroup]="costDetailsForm"

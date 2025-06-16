@@ -139,6 +139,86 @@ mat-panel-description{
     justify-content: right;
 }
 
+.file-preview-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.file-preview {
+  position: relative;
+  width: 8rem;
+  padding: 0.5rem;
+  background: $c-default-bg;
+  border: $c-tx-border 1px solid;
+  border-radius: 0.5rem;
+  text-align: center;
+  box-shadow: $box-shadow;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 1rem;
+  margin-bottom: 1rem;
+    transition: transform 0.2s ease;
+}
+
+.thumb-img,
+.file-icon {
+  width: 3rem;
+  height: 3rem;
+  object-fit: cover;
+  border-radius: 0.25rem;
+}
+
+.file-name {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  background: $c-error;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 1.25rem;
+  height: 1.25rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-dropzone {
+  border: 2px dashed $c-tx-border;
+  border-radius: 10px;
+  padding: 1.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: $c-default-text;
+  background-color: $c-low-opacity-bg;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.upload-dropzone.file-over {
+  background-color: $c-placeholder;
+}
+
+.upload-dropzone.dragover {
+  border: 2px solid $c-link;
+  background: $c-login-bg;
+}
+
 .fixed-actions {
     position: fixed;
     bottom: 0;

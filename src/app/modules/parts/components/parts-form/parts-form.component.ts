@@ -1,6 +1,7 @@
-import { Component, OnDestroy} from '@angular/core';
+import { Component, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { PartService } from '../../../../data/services/part/part.service';
-import { debounceTime, distinctUntilChanged, map, Observable, startWith, Subscription, switchMap } from 'rxjs';
+import { concat, concatMap, from,of, debounceTime, distinctUntilChanged, map, Observable, startWith, Subscription, switchMap } from 'rxjs';
 import { COST_FACTOR_TABLE_COLUMNS } from '../../../../data/constants/part.constants';
 import { VendorService } from '../../../../data/services/vendor/vendor.service';
 import { Vendor } from '../../../../data/models/vendor';
@@ -16,8 +17,10 @@ import { TableActions } from '../../../../shared/constants/table.constants';
 import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
 import { MatStepper } from '@angular/material/stepper';
 import { getValueOrNull } from '../../../../shared/utils/string.util';
-import { ListItem } from 'src/app/data/models/list-items';
+import { fileToBase64 } from 'src/app/shared/utils/file-download.util';
+
 import { CostFactorService } from 'src/app/data/services/cost-factor/cost-factor.service';
+import { ProgressDialogComponent } from 'src/app/shared/components/progress-dialog/progress-dialog.component';
 import { AttributeRow, TemplateResponse } from 'src/app/data/models/part-template';
 import { TemplateService } from 'src/app/data/services/part-template/part-template.service';
 import { PART_ATTRIBUTE_TABLE} from 'src/app/data/constants/part-attribute-table.constants';
@@ -44,10 +47,20 @@ export class PartsFormComponent implements OnDestroy {
   bomPartList: PartBomData[] =[]; 
   pageSize: number = 100 // Default items per page
   partTypeEnum= PartType;
+  selectedFiles: File[] = [];
+  maxFiles = 3;
+  isDragOver = false;
+  readonly allowedFileTypes = [
+    'image/png', 'image/jpeg', 'image/jpg', 'image/gif',
+    'application/pdf', 'text/csv', 'text/plain', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  ];
   selectedStepIndex: number = 0;
   attributeValueList:PartAttributeValue[]=[]
   isEditMode = false;
   
+  uploadedFiles: string[] = [];
 
   partForm = new FormGroup({
     partNumber: new FormControl('', Validators.required),
@@ -71,6 +84,7 @@ attributeTableColumns= PART_ATTRIBUTE_TABLE(true);
 
   PartCreateRequest: any;
   partId: string | null = null;
+  @ViewChild('previewDialog') previewDialog!: TemplateRef<any>;
 
 
   constructor(private partService: PartService, private vendorService: VendorService, private overlayContainer: OverlayContainer, private costFactorService: CostFactorService,     private route: ActivatedRoute,
@@ -102,6 +116,9 @@ attributeTableColumns= PART_ATTRIBUTE_TABLE(true);
       if (this.partId){
         this.partForm.get('partNumber')?.disable();
         this.getPartData(this.partId);
+        this.partService.getPartFiles(this.partId).subscribe(files => {
+      this.uploadedFiles = files;
+    });
       }
       this.partForm.get('partType')?.valueChanges.subscribe((value) => {
         if (value === this.partTypeEnum.MASTER) {
@@ -109,6 +126,88 @@ attributeTableColumns= PART_ATTRIBUTE_TABLE(true);
         }
       });
       }
+      
+
+onFilesSelected(event: any) {
+  const files: FileList = event.target.files;
+  if (files && files.length > 0) {
+    this.processFiles(Array.from(files));
+  }
+}
+
+allowDrop(event: DragEvent): void {
+  this.isDragOver = true;
+  event.preventDefault();
+  event.stopPropagation();
+}
+
+handleDrop(event: DragEvent): void {
+  this.isDragOver = false;
+  event.preventDefault();
+  event.stopPropagation();
+  const files = event.dataTransfer?.files;
+  if (files && files.length > 0) {
+    this.processFiles(Array.from(files));
+  }
+}
+
+dragLeave(event: DragEvent): void {
+  this.isDragOver = false;
+  event.preventDefault();
+  event.stopPropagation();
+}
+
+processFiles(files: File[]): void {
+  const validFiles = files.filter(file => this.allowedFileTypes.includes(file.type));
+  if (validFiles.length < files.length) {
+    this.snackbarService.error('Some files were not allowed and have been skipped.');
+  }
+  const remainingSlots = this.maxFiles - this.selectedFiles.length;
+  if (validFiles.length > remainingSlots) {
+    this.snackbarService.error(`You can upload maximum ${this.maxFiles} files.`);
+    return;
+  }
+  for (const file of validFiles) {
+    this.selectedFiles.push(file);
+  }
+}
+removeFile(index: number) {
+  this.selectedFiles.splice(index, 1);
+}
+
+getFileTypeFromName(fileName: string): string {
+    const ext = fileName.split('.').pop()?.toLowerCase();
+    if (!ext) return 'other';
+    if (['png', 'jpg', 'jpeg', 'gif'].includes(ext)) return 'image';
+    if (ext === 'pdf') return 'pdf';
+    if (['doc', 'docx'].includes(ext)) return 'word';
+    if (['xls', 'xlsx', 'csv'].includes(ext)) return 'excel';
+    return 'other';
+  }
+  getFileNameFromUrl(fileUrl: string): string {
+  return fileUrl.split('/').pop() || fileUrl;
+}
+
+getImagePreview(file: File): string {
+  return URL.createObjectURL(file);
+}
+
+
+
+getFileType(file: any): string {
+  const type = file.type.toLowerCase();
+  if (type.startsWith('image/')) return 'image';
+  if (type === 'application/pdf') return 'pdf';
+  if (
+    type === 'application/msword' ||
+    type.includes('wordprocessingml')
+  ) return 'word';
+  if (
+    type === 'application/vnd.ms-excel' ||
+    type.includes('spreadsheetml')
+  ) return 'excel';
+  return 'other';
+}
 
 setupTemplateFilter() {
   this.filteredTemplates = this.templateControl.valueChanges.pipe(
@@ -373,12 +472,12 @@ setupTemplateFilter() {
   addCostFactor(costFactor:CostFactorData, vendorId: number) {
     if (costFactor) {
       const currentList = this.vendorCostMap.get(vendorId) || [];
-      const isPresent = currentList?.some((cf: CostFactorData) => cf?.name === costFactor?.name);
+      const isPresent = currentList?.some((cf: CostFactorData) => cf?.factorName === costFactor?.factorName);
 
       if (!isPresent) { 
         currentList.push({
           id: costFactor.id,
-          name: costFactor.name,
+          factorName: costFactor.factorName,
           value: costFactor.value || 0
         } as CostFactorData);
   
@@ -421,54 +520,130 @@ onTemplateSelected(selectedTemplate: TemplateResponse): void {
   
 
   onSubmit(): void {
-    const body: PartCreateRequest = {
-      partName: this.partForm.get('partName')?.value || '',
-      partNumber: this.partForm.get('partNumber')?.value || '',
-      type: this.partForm.get('partType')?.value || '',
-      unit: this.partForm.get('partUnit')?.value || '',
-      vendorCostList: this.generateVendorCostMapBody(),
-      categoryId: this.partForm.get('categoryId')?.value || null,
-      bom: this.generateBomDetailsBody(),
-      attributeValueList: this.generateAttributesBody()
-    };
+  if (!this.isFormValid()) return;
+  if (!this.areVendorCostValuesValid()) return;
+  if (!this.areBomQuantitiesValid()) return;
 
-    if (this.partForm.invalid) {
-      this.snackbarService.error('Please fill all required fields!');
-      return;
-    }
+  const body: PartCreateRequest = this.buildPartCreateRequest();
+  const dialogRef = this.openProgressDialogIfNeeded();
 
-    for (const [vendorId, costFactors] of this.vendorCostMap) {
-      for (const costFactor of costFactors) {
-        if (!costFactor.value || costFactor.value === 0) {
-          this.snackbarService.error('Cost Factor value cannot be 0');
-          return;
-        }
+  if (this.partId) {
+    this.updatePart(body, dialogRef);
+  } else {
+    this.createPart(body, dialogRef);
+  }
+}
+
+//Helper Methods
+
+private isFormValid(): boolean {
+  if (this.partForm.invalid) {
+    this.snackbarService.error('Please fill all required fields!');
+    return false;
+  }
+  return true;
+}
+
+private areVendorCostValuesValid(): boolean {
+  for (const [, costFactors] of this.vendorCostMap) {
+    for (const costFactor of costFactors) {
+      if (!costFactor.value || costFactor.value === 0) {
+        this.snackbarService.error('Cost Factor value cannot be 0');
+        return false;
       }
-    }
-    
-
-    for (const part of this.bomPartList) {
-      if (!part.value || Number(part.value) === 0) {
-        this.snackbarService.error('Quantity of the child parts cannot be 0');
-        return;
-      }
-    }
-    if (this.partId) {
-      this.partService.updatePart(this.partId, body).subscribe({
-        next: () => {
-            this.snackbarService.success('Part updated successfully!');
-            this.router.navigateByUrl('/app/parts');
-        }
-      });
-    } else {
-      this.partService.createPart(body).subscribe({
-        next:() => {
-            this.snackbarService.success('Part created successfully!');
-            this.router.navigateByUrl('/app/parts');
-        }
-      });
     }
   }
+  return true;
+}
+
+private areBomQuantitiesValid(): boolean {
+  for (const part of this.bomPartList) {
+    if (!part.value || Number(part.value) === 0) {
+      this.snackbarService.error('Quantity of the child parts cannot be 0');
+      return false;
+    }
+  }
+  return true;
+}
+
+private buildPartCreateRequest(): PartCreateRequest {
+  return {
+    partName: this.partForm.get('partName')?.value || '',
+    partNumber: this.partForm.get('partNumber')?.value || '',
+    type: this.partForm.get('partType')?.value || '',
+    unit: this.partForm.get('partUnit')?.value || '',
+    vendorCostList: this.generateVendorCostMapBody(),
+    categoryId: this.partForm.get('categoryId')?.value || null,
+    bom: this.generateBomDetailsBody(),
+    attributeValueList: this.generateAttributesBody()
+  };
+}
+
+private openProgressDialogIfNeeded(): any {
+  if (this.selectedFiles.length > 0) {
+    return this.dialog.open(ProgressDialogComponent, {
+      disableClose: true,
+      data: { step: 0, uploadProgress: 0, fileName: '', fileSize: 0 }
+    });
+  }
+  return null;
+}
+
+private updatePart(body: PartCreateRequest, dialogRef: any): void {
+  this.partService.updatePart(this.partId!, body).subscribe({
+    next: () => {
+      this.handleDialogStep(dialogRef, 1);
+      setTimeout(() => dialogRef?.close(), 1500);
+      this.snackbarService.success('Part updated successfully!');
+      this.router.navigateByUrl('/app/parts');
+    },
+    error: (err) => {
+      dialogRef?.close();
+      this.snackbarService.error('Failed to update part.');
+      console.error(err);
+    }
+  });
+}
+
+private createPart(body: PartCreateRequest, dialogRef: any): void {
+  this.partService.createPart(body).pipe(
+    concatMap((res: any) => {
+      if (this.selectedFiles.length === 0) {
+        this.snackbarService.success('Part created successfully!');
+        this.router.navigateByUrl('/app/parts');
+        return of(null);
+      }
+      this.handleDialogStep(dialogRef, 1);
+      const partId = res.partId || res.id;
+      const uploadObservables = this.selectedFiles.map(file =>
+        from(fileToBase64(file)).pipe(
+          concatMap(base64 => this.partService.uploadPartImage(partId, file, base64))
+        )
+      );
+      return concat(...uploadObservables);
+    })
+  ).subscribe({
+    next: () => {
+      this.handleDialogStep(dialogRef, 2);
+      setTimeout(() => dialogRef?.close(), 1500);
+      if (this.selectedFiles.length > 0) {
+        this.snackbarService.success('Part created successfully!');
+      }
+      this.router.navigateByUrl('/app/parts');
+    },
+    error: (err) => {
+      dialogRef?.close();
+      this.snackbarService.error('Failed to upload part or files.');
+      console.error(err);
+    }
+  });
+}
+
+private handleDialogStep(dialogRef: any, step: number): void {
+  if (dialogRef) {
+    dialogRef.componentInstance.data.step = step;
+  }
+}
 
 generateAttributesBody() {
   return this.attributeValueList.map((attr: any) => ({

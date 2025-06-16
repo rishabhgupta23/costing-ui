@@ -8,3 +8,18 @@ export function downloadFile(base64String: string, fileName: string = 'download.
     link.click();
   }
   
+export function fileToBase64(file: File): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = () => {
+      const result = reader.result as string;
+      const base64 = result.split(',')[1]; // ✅ Extract only base64 content
+      resolve(base64);
+    };
+
+    reader.onerror = error => reject(error);
+  });
+}
+

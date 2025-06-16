@@ -22,6 +22,9 @@ export const API_END_POINTS = {
     USER:'/users',
     USER_ROLES:'/users/roles',
     USER_DETAILS:'/users/{userId}',
-      TEMPLATE: '/templates',
-  TEMPLATE_DETAILS: '/templates/{templateId}'
+    PART_FILE_UPLOAD: '/parts/file/upload',
+    PART_FILES: '/parts/files',
+    PART_FILE_DOWNLOAD: '/parts/file/download',
+    TEMPLATE: '/templates',
+    TEMPLATE_DETAILS: '/templates/{templateId}'
 };

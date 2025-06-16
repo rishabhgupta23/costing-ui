@@ -13,7 +13,7 @@ import { BOM_TABLE_COLUMNS } from '../../../../data/constants/bom-table.constant
 import { PartType } from '../../../../shared/constants/part.constants';
 import { ColumnType} from '../../../../shared/constants/table.constants';
 import { HistorydialogComponent } from '../historydialog/historydialog.component';
-import { downloadFile } from '../../../../shared/utils/file-download.util';
+import { downloadFile} from '../../../../shared/utils/file-download.util';
 import { getValueOrNull } from '../../../../shared/utils/string.util';
 import { PART_ATTRIBUTE_TABLE } from 'src/app/data/constants/part-attribute-table.constants';
 
@@ -60,6 +60,7 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
  
    partId: string | null = null;
   part: any;
+  partFilePreviews: { url: string, type: string, previewUrl?: string }[] = [];
 attributeTableColumns= PART_ATTRIBUTE_TABLE(false) ;
  
  
@@ -73,7 +74,7 @@ attributeTableColumns= PART_ATTRIBUTE_TABLE(false) ;
        if (this.partId){      
          this.getPartData(this.partId);
        }
-       
+       this.getPartFiles(this.partId || '');
        }
  
        getPartData(id: string): void {
@@ -105,13 +106,57 @@ attributeTableColumns= PART_ATTRIBUTE_TABLE(false) ;
           
         });
       }
-      
+ 
+    getPartFiles(partId: string): void {
+  this.partService.getPartFiles(partId).subscribe({
+    next: (urls) => {
+      this.partFilePreviews = urls.map(url => {
+        const type = this.getFileTypeFromUrl(url);
+        const fileObj: any = { url, type };
+        if (type === 'image') {
+          this.partService.downloadPartFile(url).subscribe((response: any) => {
+            // Assuming response.fileData is base64 string
+            fileObj.previewUrl = 'data:image/png;base64,' + response.fileData;
+          });
+        }
+        return fileObj;
+      });
+    },
+    error: (err) => {
+      console.error('Error fetching part files:', err);
+    }
+  });
+}
+
+getFileTypeFromUrl(url: string): string {
+  const extension = url.split('.').pop()?.toLowerCase();
+  if (extension === 'jpg' || extension === 'jpeg' || extension === 'png') {
+    return 'image';
+  } else if (extension === 'pdf') {
+    return 'pdf';
+  } else if (extension === 'doc' || extension === 'docx') {
+    return 'word';
+  } else if (extension === 'xls' || extension === 'xlsx') {
+    return 'excel';
+  } else {
+    return 'other';
+  }
+}
+
+downloadPartFile(fileUrl: string): void {
+  this.partService.downloadPartFile(fileUrl).subscribe((response: any) => {
+    const fileName = response.fileName || fileUrl.split('/').pop() || 'partFile';
+    downloadFile(response.fileData, fileName);
+  });
+}
+
+
  
        vendorCostListToMap(vendorCostList: VendorCost[]) {
         vendorCostList.forEach((vc) => {
           vc.costFactorValues.forEach(cf => {
             const currentList = this.vendorCostMap.get(vc.id) || [];
-            currentList.push({ id: cf.id, name: cf.name, value: getValueOrNull(cf.value)});
+            currentList.push({ id: cf.id, factorName: cf.factorName, value: getValueOrNull(cf.value)});
             this.vendorCostMap.set(vc.id, currentList);
           });
         });
@@ -126,7 +171,7 @@ attributeTableColumns= PART_ATTRIBUTE_TABLE(false) ;
           costFactors.forEach(costFactor => {
             tableData.push({
               vendorName: vendorName,
-              costFactor: costFactor.name,
+              costFactor: costFactor.factorName,
               value: costFactor.value
             });
           });

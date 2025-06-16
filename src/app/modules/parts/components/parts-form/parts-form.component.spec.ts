@@ -165,7 +165,7 @@ describe('PartsFormComponent', () => {
   
     expect(component.vendorCostMap.size).toBe(2);
     expect(component.vendorCostMap.get(1)?.length).toBe(2);
-    expect(component.vendorCostMap.get(2)?.[0].name).toBe('Overhead');
+    expect(component.vendorCostMap.get(2)?.[0].factorName).toBe('Overhead');
   });
   
 
