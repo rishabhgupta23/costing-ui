@@ -6,7 +6,7 @@ import { COST_FACTOR_TABLE_COLUMNS } from '../../../../data/constants/part.const
 import { VendorService } from '../../../../data/services/vendor/vendor.service';
 import { Vendor } from '../../../../data/models/vendor';
 import {FormControl, FormGroup} from '@angular/forms';
-import { PartBomData, CostFactorData, VendorCost, CostHistoryResponse } from '../../../../data/models/part';
+import { PartBomData, CostFactorData, VendorCost, CostHistoryResponse, PartAttributeValue } from '../../../../data/models/part';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog} from '@angular/material/dialog';
 import { BOM_TABLE_COLUMNS } from '../../../../data/constants/bom-table.constants';
@@ -15,6 +15,7 @@ import { ColumnType} from '../../../../shared/constants/table.constants';
 import { HistorydialogComponent } from '../historydialog/historydialog.component';
 import { downloadFile } from '../../../../shared/utils/file-download.util';
 import { getValueOrNull } from '../../../../shared/utils/string.util';
+import { PART_ATTRIBUTE_TABLE } from 'src/app/data/constants/part-attribute-table.constants';
 
 @Component({
   selector: 'app-part-view',
@@ -31,7 +32,7 @@ export class PartViewComponent {
    vendorCostMap: Map<number, CostFactorData[]> = new Map();
    bomPartList: PartBomData[] =[]; 
    partTypeEnum= PartType;
-   
+  attributeValueList:PartAttributeValue[]=[]
    partForm = new FormGroup({
     partNumber: new FormControl({ value: '', disabled: true }),
     partName: new FormControl({ value: '', disabled: true }),
@@ -59,6 +60,7 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
  
    partId: string | null = null;
   part: any;
+attributeTableColumns= PART_ATTRIBUTE_TABLE(false) ;
  
  
    constructor(private partService: PartService, private route: ActivatedRoute,
@@ -94,6 +96,13 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
             partNumber: getValueOrNull(bomPart.childPartNumber),
             value: getValueOrNull(bomPart.quantity)
           }));
+                    this.attributeValueList= part.attributeValueList?.map(attr=>({
+                      attributeId:attr.attributeId,
+                      attributeName: attr.attributeName,
+                      value:attr.value
+                    }))|| [];
+          
+          
         });
       }
       
@@ -131,7 +140,7 @@ filteredBomTableColumns = BOM_TABLE_COLUMNS.map(col=>{
 
         this.costHistoryList = res.costHistoryList;
         const dialogRef = this.dialog.open(HistorydialogComponent, {
-          width: '600px',
+          width: '37.5rem',
           data: { costHistoryList: this.costHistoryList },
         });
   

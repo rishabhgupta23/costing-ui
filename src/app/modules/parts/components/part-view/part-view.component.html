@@ -1,10 +1,69 @@
 <div class="app-page">
-    <div class="page-header">
-        <span class="page-title">PART VIEW</span>
-        <div class="dialog-action">
-            <button class="primary-btn" (click)="editPart()">
-              Edit this part
-            </button>
+  <div class="page-header">
+    <span class="page-title">PART VIEW</span>
+    <div class="dialog-action">
+      <button class="primary-btn" (click)="editPart()">Edit this part</button>
+    </div>
+  </div>
+  <div class="page-content">
+    <div class="card part-form-container">
+      <div [formGroup]="partForm">
+        <!-- Part Details Section-->
+        <div class="sub-heading">Part Details</div>
+        <div class="part-form">
+          <div>
+            <label>Part Number</label>
+            <mat-form-field appearance="outline" class="custom-textfield">
+              <input
+                matInput
+                placeholder="Enter Part Number"
+                formControlName="partNumber"
+                readonly
+              />
+            </mat-form-field>
+          </div>
+
+          <div>
+            <label>Part Name</label>
+            <mat-form-field appearance="outline" class="custom-textfield">
+              <input
+                matInput
+                placeholder="Enter Name"
+                formControlName="partName"
+                readonly
+              />
+            </mat-form-field>
+          </div>
+
+          <div>
+            <label>Type</label>
+            <mat-form-field appearance="outline" class="custom-textfield">
+              <input
+                matInput
+                placeholder="Select Part Type"
+                formControlName="partType"
+                readonly
+              />
+            </mat-form-field>
+          </div>
+
+          <div>
+            <label>Category</label>
+            <mat-form-field appearance="outline" class="custom-textfield">
+              <input matInput formControlName="categoryName" readonly />
+            </mat-form-field>
+          </div>
+
+          <div>
+            <label>Unit</label>
+            <mat-form-field appearance="outline" class="custom-textfield">
+              <input
+                matInput
+                placeholder="Select Part Unit"
+                formControlName="partUnit"
+                readonly
+              />
+            </mat-form-field>
           </div>
     </div>
     <div class="page-content">
@@ -84,5 +143,69 @@
               </div>
             </div>  
         </div>
+      </div>
+      <app-table
+        *ngIf="attributeValueList.length > 0"
+        [data]="attributeValueList"
+        [config]="attributeTableColumns"
+      >
+      </app-table>
+
+      <div
+        *ngIf="
+          partForm.get('partType')?.value === partTypeEnum.UNIT &&
+          vendorCostList.length > 0
+        "
+      >
+        <br />
+        <div class="sub-heading">Vendor Cost Details</div>
+        <mat-accordion class="example-headers-align" multi>
+          <mat-expansion-panel
+            *ngFor="let vendor of vendorCostList; let i = index"
+          >
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Vendor {{ i + 1 }}: {{ vendor.vendorName }}
+              </mat-panel-title>
+              <mat-panel-description>
+                <mat-icon
+                  class="icon-btn"
+                  svgIcon="history"
+                  (click)="openHistoryDialog(partId, vendor.id)"
+                >
+                </mat-icon>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <div class="vendor-panel-content">
+              <div>
+                <app-table
+                  *ngIf="(vendorCostMap.get(vendor.id) || []).length > 0"
+                  [data]="vendorCostMap.get(vendor.id) || []"
+                  [config]="filteredCostFactorTableColumns"
+                ></app-table>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+      <div *ngIf="partForm.get('partType')?.value === partTypeEnum.MASTER">
+        <div *ngIf="bomPartList.length > 0">
+          <br />
+          <div class="bom-section">
+            <span class="sub-heading">BOM Parts</span>
+            <span class="button">
+              <button class="primary-btn" (click)="downloadBomExcel()">
+                <mat-icon class="btn-icon" svgIcon="download"></mat-icon>
+                Download
+              </button>
+            </span>
+          </div>
+          <app-table
+            [data]="bomPartList"
+            [config]="filteredBomTableColumns"
+          ></app-table>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

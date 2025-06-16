@@ -56,9 +56,10 @@
   
     <mat-dialog-actions>
       <button class="primary-btn" (click)="closeDialog()">Cancel</button>
-      <button class="primary-btn" (click)="confirmSelection()">
-        {{ isEditMode ? 'Update Template' : 'Create Template' }}
-      </button>
+<button class="primary-btn" (click)="confirmSelection()">
+  {{buttonLabel}}
+</button>
+
       
     </mat-dialog-actions>
   </div>

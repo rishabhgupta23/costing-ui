@@ -81,7 +81,7 @@ listenToFilterChanges(): void {
   
   openDiscardDialog(row: any): void {
     const dialogRef = this.dialog.open(DiscardDialogComponent, {
-      width: '600px',
+      width: '37.5rem',
       data: {
         row
       }

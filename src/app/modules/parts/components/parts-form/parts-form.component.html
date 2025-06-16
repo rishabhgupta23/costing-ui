@@ -1,149 +1,291 @@
 <div class="app-page">
-    <div class="page-header">
-        <span class="page-title">{{ partId ? 'Edit Part' : 'Create Part' }}</span>
-    </div>
+  <div class="page-header">
+    <span class="page-title">{{ partId ? "Edit Part" : "Create Part" }}</span>
+  </div>
 
-    <div class="stepper-container">
-        <mat-stepper linear #stepper (selectionChange)="onStepChange($event)">
-
-            <mat-step [stepControl]="partForm">
-                <ng-template matStepLabel>Part Details</ng-template>
-                <ng-template matStepperIcon="edit"> 
-                    <mat-icon svgIcon="tick_icon"></mat-icon>
-                </ng-template>
-            </mat-step>
-            <mat-step [stepControl]="partForm.get('partType')?.value === partTypeEnum.UNIT ? costDetailsForm : bomDetailsForm">
-                <ng-template matStepLabel>Additional Details</ng-template>
-                <ng-template matStepperIcon="edit"> 
-                    <mat-icon svgIcon="tick_icon"></mat-icon>
-                  </ng-template>
-            </mat-step>
-        </mat-stepper>
-    </div>
-    <div class="page-content">
-        <div class="card-part-form-container">
-            <div *ngIf="selectedStepIndex === 0" [formGroup]="partForm">
-                <!-- Part Details Section-->
-                <div class="part-form">
-                    <div class="form-detail">Part Number
-                        <mat-form-field appearance="outline" class="custom-textfield">
-                            <input matInput placeholder="Enter Part Number" formControlName="partNumber">
-                        </mat-form-field>
-                    </div>
-                    <div class="form-detail">Part Name
-                        <mat-form-field appearance="outline" class="custom-textfield">
-                            <input matInput placeholder="Enter Name" formControlName="partName">
-                        </mat-form-field>
-                    </div>
-                    <div class="form-detail">Type
-                        <mat-form-field appearance="outline" class="custom-textfield">
-                            <mat-select placeholder="Select Part Type" formControlName="partType">
-                                <ng-container *ngFor="let item of partTypes">
-                                    <mat-option [value]="item">{{item}}</mat-option>
-                                </ng-container>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-                    <div class="form-detail">Category
-                        <mat-form-field appearance="outline" class="custom-textfield">
-                            <mat-select placeholder="Select Part Category" formControlName="categoryId">
-                                <ng-container *ngFor="let category of partCategories">
-                                    <mat-option [value]="category.categoryId">{{category.categoryName}}</mat-option>
-                                </ng-container>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-                    <div class="form-detail">Unit
-                        <mat-form-field appearance="outline" class="custom-textfield">
-                            <mat-select placeholder="Select Part Unit" formControlName="partUnit">
-                                <ng-container *ngFor="let item of partUnits">
-                                    <mat-option [value]="item">{{item}}</mat-option>
-                                </ng-container>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-                </div>  
-            </div>
-            <div *ngIf="selectedStepIndex === 1">
-            <div *ngIf="partForm.get('partType')?.value === partTypeEnum.UNIT" [formGroup]="costDetailsForm">
-                
-                <!-- Cost Section-->
-                 <div formArrayName="costFactors">
-                    <div class="cost-form">
-                        Vendor
-                        <mat-form-field appearance="outline" class="custom-vendor-textfield">
-                            <mat-select placeholder="Select vendor" [(value)]="selectedVendor">
-                                <ng-container *ngFor="let item of vendorList">
-                                    <mat-option [value]="item">{{item.vendorName}}</mat-option>
-                                </ng-container>
-                            </mat-select>
-                        </mat-form-field>
-                        <button class="primary-btn" (click)="addVendor(selectedVendor)">Add</button>
-                    </div>
-                    <mat-accordion class="example-headers-align" multi>
-                        <mat-expansion-panel *ngFor="let vendor of vendorCostMap.keys(); let i=index">
-                          <mat-expansion-panel-header>
-                            <mat-panel-title> Vendor {{i+1}}: {{ getVendorName(vendor) }}  </mat-panel-title>
-                            <mat-panel-description>
-                                <mat-icon class="icon-btn" svgIcon="delete" (click)="deleteVendorFromMap(vendor)"> </mat-icon>
-                              </mat-panel-description>
-                          </mat-expansion-panel-header>
-                          <div class="vendor-panel-content">
-                            <div class="cost-form">
-                                <div>Cost Factor</div>
-                                <mat-form-field appearance="outline" class="custom-cost-textfield">
-                                    <mat-select placeholder="Select Cost Factor" [formControlName]="i">
-                                        <ng-container *ngFor="let item of costFactorList">
-                                            <mat-option [value]="item">{{item.factorName}}</mat-option>
-                                        </ng-container>
-                                    </mat-select>
-                                </mat-form-field>
-                                <button class="primary-btn" (click)="addCostFactorFromFieldValue(i,vendor)">Add</button>
-                              </div>
-                              <div>
-                                <app-table *ngIf ="(vendorCostMap.get(vendor) || []).length > 0" [data]="vendorCostMap.get(vendor) || []" [config]="COST_FACTOR_TABLE_COLUMNS" (actionTriggered)="handleAction($event, vendor)"></app-table>
-                              </div>
-                          </div>
-                        </mat-expansion-panel>
-                    </mat-accordion> 
-                    </div>
-            </div>
-            <div *ngIf="partForm.get('partType')?.value === partTypeEnum.MASTER" [formGroup]="bomDetailsForm">
-                <button class="primary-btn" (click)="openBomDialog()">Select Parts</button>
-                
-                
-              <div *ngIf="bomPartList.length > 0">
-                <br>
-                <div class="sub-heading">Added Unit Parts</div>
-                <app-table [data]="bomPartList" [config]="BOM_TABLE_COLUMNS"></app-table>
-              </div>
-              
-        </div>
-        </div>
-        <div class="fixed-actions">
-            <div class="nav-buttons">
-              <button mat-icon-button (click)="stepper.previous(); selectedStepIndex = stepper.selectedIndex" 
-                  [disabled]="selectedStepIndex === 0">
-                  <mat-icon svgIcon="prev_icon"></mat-icon>
-              </button>
-          
-              <button mat-icon-button (click)="goToNextStep(stepper)" 
-                  [disabled]="selectedStepIndex === 1">
-                  <mat-icon svgIcon="next_icon" class="next-step"></mat-icon>
-              </button>
-            </div>
-          
-            <div class="submit-button">
-                <button class="primary-btn" 
-                (click)="onSubmit()" 
-                [disabled]="!isFormValidForSubmit()">
-          {{ partId ? 'Update' : 'Create' }}
-        </button>
-        
-            </div>
+  <div class="stepper-container">
+    <mat-stepper linear #stepper (selectionChange)="onStepChange($event)">
+      <mat-step [stepControl]="partForm">
+        <ng-template matStepLabel>Part Details</ng-template>
+        <ng-template matStepperIcon="edit">
+          <mat-icon svgIcon="tick_icon"></mat-icon>
+        </ng-template>
+      </mat-step>
+      <mat-step
+        [stepControl]="
+          partForm.get('partType')?.value === partTypeEnum.UNIT
+            ? costDetailsForm
+            : bomDetailsForm
+        "
+      >
+        <ng-template matStepLabel>Additional Details</ng-template>
+        <ng-template matStepperIcon="edit">
+          <mat-icon svgIcon="tick_icon"></mat-icon>
+        </ng-template>
+      </mat-step>
+    </mat-stepper>
+  </div>
+  <div class="page-content">
+    <div class="card-part-form-container">
+      <div *ngIf="selectedStepIndex === 0" [formGroup]="partForm">
+        <!-- Part Details Section-->
+        <div class="part-form">
+          <div class="form-detail">
+            Part Number
+            <mat-form-field appearance="outline" class="custom-textfield">
+              <input
+                matInput
+                placeholder="Enter Part Number"
+                formControlName="partNumber"
+              />
+            </mat-form-field>
           </div>
-          
-        
-</div>
-</div>
+          <div class="form-detail">
+            Part Name
+            <mat-form-field appearance="outline" class="custom-textfield">
+              <input
+                matInput
+                placeholder="Enter Name"
+                formControlName="partName"
+              />
+            </mat-form-field>
+          </div>
+          <div class="form-detail">
+            Type
+            <mat-form-field appearance="outline" class="custom-textfield">
+              <mat-select
+                placeholder="Select Part Type"
+                formControlName="partType"
+              >
+                <ng-container *ngFor="let item of partTypes">
+                  <mat-option [value]="item">{{ item }}</mat-option>
+                </ng-container>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="form-detail">
+            Category
+            <mat-form-field
+              appearance="outline"
+              class="custom-textfield"
+              class="height-subscript"
+            >
+              <mat-select
+                placeholder="Select Part Category"
+                formControlName="categoryId"
+              >
+                <ng-container *ngFor="let category of partCategories">
+                  <mat-option [value]="category.categoryId">{{
+                    category.categoryName
+                  }}</mat-option>
+                </ng-container>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="form-detail">
+            Unit
+            <mat-form-field
+              appearance="outline"
+              class="custom-textfield"
+              class="height-subscript"
+            >
+              <mat-select
+                placeholder="Select Part Unit"
+                formControlName="partUnit"
+              >
+                <ng-container *ngFor="let item of partUnits">
+                  <mat-option [value]="item">{{ item }}</mat-option>
+                </ng-container>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <hr class="horizontal-divider" />
+        <div class="template-form">
+          <div class="template-detail" *ngIf="!partId">
+            Select Template
+            <mat-form-field
+              appearance="outline"
+              class="custom-textfield"
+              class="height-subscript"
+            >
+              <input
+                type="text"
+                placeholder="Choose template"
+                aria-label="Template"
+                matInput
+                [formControl]="templateControl"
+                [matAutocomplete]="auto"
+              />
+              <mat-autocomplete
+                #auto="matAutocomplete"
+                panelClass="custom-autocomplete-panel"
+                (opened)="onAutocompleteOpened()"
+                (closed)="onAutocompleteClosed()"
+                [displayWith]="displayTemplate"
+                (optionSelected)="onTemplateSelected($event.option.value)"
+              >
+                <mat-option
+                  *ngFor="let template of filteredTemplates | async"
+                  [value]="template"
+                >
+                  {{ template.templateName }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+          <div
+            class="modify-btn"
+            *ngIf="
+              (isEditMode && attributeValueList.length === 0) ||
+              attributeValueList.length > 0
+            "
+          >
+            <a class="modify-link" (click)="onModifyClick()">
+              Add/Update attributes
+            </a>
+          </div>
+        </div>
+        <div>
+          <app-table
+            *ngIf="attributeValueList.length > 0"
+            [data]="attributeValueList"
+            [config]="attributeTableColumns"
+          >
+          </app-table>
+        </div>
+      </div>
+      <div *ngIf="selectedStepIndex === 1">
+        <div
+          *ngIf="partForm.get('partType')?.value === partTypeEnum.UNIT"
+          [formGroup]="costDetailsForm"
+        >
+          <!-- Cost Section-->
+          <div formArrayName="costFactors">
+            <div class="cost-form">
+              Vendor
+              <mat-form-field
+                appearance="outline"
+                class="custom-vendor-textfield"
+              >
+                <mat-select
+                  placeholder="Select vendor"
+                  [(value)]="selectedVendor"
+                >
+                  <ng-container *ngFor="let item of vendorList">
+                    <mat-option [value]="item">{{ item.vendorName }}</mat-option>
+                  </ng-container>
+                </mat-select>
+              </mat-form-field>
+              <button class="primary-btn" (click)="addVendor(selectedVendor)">
+                Add
+              </button>
+            </div>
+            <mat-accordion class="example-headers-align" multi>
+              <mat-expansion-panel
+                *ngFor="let vendor of vendorCostMap.keys(); let i = index"
+              >
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Vendor {{ i + 1 }}: {{ getVendorName(vendor) }}
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    <mat-icon
+                      class="icon-btn"
+                      svgIcon="delete"
+                      (click)="deleteVendorFromMap(vendor)"
+                    >
+                    </mat-icon>
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                <div class="vendor-panel-content">
+                  <div class="cost-form">
+                    <div>Cost Factor</div>
+                    <mat-form-field
+                      appearance="outline"
+                      class="custom-cost-textfield"
+                    >
+                      <mat-select
+                        placeholder="Select Cost Factor"
+                        [formControlName]="i"
+                      >
+                        <ng-container *ngFor="let item of costFactorList">
+                          <mat-option [value]="item">{{
+                            item.factorName
+                          }}</mat-option>
+                        </ng-container>
+                      </mat-select>
+                    </mat-form-field>
+                    <button
+                      class="primary-btn"
+                      (click)="addCostFactorFromFieldValue(i, vendor)"
+                    >
+                      Add
+                    </button>
+                  </div>
+                  <div>
+                    <app-table
+                      *ngIf="(vendorCostMap.get(vendor) || []).length > 0"
+                      [data]="vendorCostMap.get(vendor) || []"
+                      [config]="COST_FACTOR_TABLE_COLUMNS"
+                      (actionTriggered)="handleAction($event, vendor)"
+                    ></app-table>
+                  </div>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        </div>
+        <div
+          *ngIf="partForm.get('partType')?.value === partTypeEnum.MASTER"
+          [formGroup]="bomDetailsForm"
+        >
+          <button class="primary-btn" (click)="openBomDialog()">
+            Select Parts
+          </button>
+
+          <div *ngIf="bomPartList.length > 0">
+            <br />
+            <div class="sub-heading">Added Unit Parts</div>
+            <app-table
+              [data]="bomPartList"
+              [config]="BOM_TABLE_COLUMNS"
+            ></app-table>
+          </div>
+        </div>
+      </div>
+      <div class="fixed-actions">
+        <div class="nav-buttons">
+          <button
+            mat-icon-button
+            (click)="
+              stepper.previous(); selectedStepIndex = stepper.selectedIndex
+            "
+            [disabled]="selectedStepIndex === 0"
+          >
+            <mat-icon svgIcon="prev_icon"></mat-icon>
+          </button>
+
+          <button
+            mat-icon-button
+            (click)="goToNextStep(stepper)"
+            [disabled]="selectedStepIndex === 1"
+          >
+            <mat-icon svgIcon="next_icon" class="next-step"></mat-icon>
+          </button>
+        </div>
+
+        <div class="submit-button">
+          <button
+            class="primary-btn"
+            (click)="onSubmit()"
+            [disabled]="!isFormValidForSubmit()"
+          >
+            {{ partId ? "Update" : "Create" }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
