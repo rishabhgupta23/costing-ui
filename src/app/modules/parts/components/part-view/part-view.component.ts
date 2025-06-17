@@ -166,7 +166,7 @@ downloadPartFile(fileUrl: string): void {
         let tableData: { vendorName: string; costFactor: string | undefined; value: number }[] = [];
         this.vendorCostMap.forEach((costFactors, vendorId) => {
           const vendor = this.vendorCostList.find((vc: { id: number; }) => vc.id === vendorId);
-          const vendorName = getValueOrNull(vendor?.name);
+          const vendorName = getValueOrNull(vendor?.vendorName);
       
           costFactors.forEach(costFactor => {
             tableData.push({

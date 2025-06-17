@@ -386,7 +386,7 @@ setupTemplateFilter() {
 
   getVendorName(vendorId: number): string {
     const vendor = this.vendorList.find(v => v.id === vendorId);
-    return vendor?.name || 'Unknown Vendor';
+    return vendor?.vendorName || 'Unknown Vendor';
   }
   
   getPartUnits() {

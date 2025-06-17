@@ -37,7 +37,7 @@ export class VendorService {
       map((res:any)=>res.data));
   }
       
-  getVendorList(page: number = 0, size: number = 100, filterCriteria: Map<string, string> = new Map(), sortState: SortState = {sortColumn: 'name', sortState: SortIcons.ASC}): Observable<any> {
+  getVendorList(page: number = 0, size: number = 100, filterCriteria: Map<string, string> = new Map(), sortState: SortState = {sortColumn: 'vendorName', sortState: SortIcons.ASC}): Observable<any> {
     let params = new HttpParams()
       .set('pageNo', page.toString())
       .set('pageSize', size.toString())

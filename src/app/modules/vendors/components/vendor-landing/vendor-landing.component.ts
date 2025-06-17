@@ -31,7 +31,7 @@ export class VendorLandingComponent  {
   pageInfo: any;
   readonly dialog = inject(MatDialog);
   filterCriteria: Map<string, string> = new Map();
-  sortState: SortState = {sortColumn: 'name', sortState: SortIcons.ASC}
+  sortState: SortState = {sortColumn: 'vendorName', sortState: SortIcons.ASC}
   
   private searchSubject = new Subject<{ key: string; value: string }>(); 
   

@@ -13,7 +13,7 @@ import { SnackbarService } from '../../../../data/services/snackbar/snackbar.ser
 export class VendorFormComponent implements OnInit {
   vendorId: string | null = null;
   vendorForm = new FormGroup({
-    name: new FormControl('',[
+    vendorName: new FormControl('',[
       Validators.required,
       Validators.minLength(4),
     ]),
@@ -36,7 +36,7 @@ export class VendorFormComponent implements OnInit {
     this.vendorId = this.route.snapshot.paramMap.get('id'); 
     // Initialize the form with empty values
     this.vendorForm = new FormGroup({
-      name: new FormControl('', [
+      vendorName: new FormControl('', [
         Validators.required,
         Validators.minLength(4),
       ]),
@@ -59,7 +59,7 @@ export class VendorFormComponent implements OnInit {
     this.vendorService.getVendorById(id).subscribe((vendor: Vendor) => {
       // Populate the form fields with the existing vendor data
       this.vendorForm.patchValue({
-        name: vendor.name,
+        vendorName: vendor.vendorName,
         emailId: vendor.emailId,
         contactNumber: vendor.contactNumber,
         address: vendor.address,
@@ -81,8 +81,8 @@ export class VendorFormComponent implements OnInit {
     return '';
   }
 
-  get name() {
-    return this.vendorForm.get('name');
+  get vendorName() {
+    return this.vendorForm.get('vendorName');
   }
 
   onCancel() {
