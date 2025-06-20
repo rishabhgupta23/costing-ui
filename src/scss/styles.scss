@@ -109,6 +109,11 @@ $costing-ui-theme: mat.define-theme((
       width: 1.2rem;
     }
 }
+  .mat-mdc-tab .mdc-tab__content {
+    font-size: 1rem;
+    font-weight: bold;
+    font-family: 'Poppins';
+  }
 
 .secondary-btn {
     padding: 0.6rem 1.6rem;

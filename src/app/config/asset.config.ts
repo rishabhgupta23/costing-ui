@@ -80,4 +80,8 @@ export const SVG_ICONS = [
         path: baseIconsPath + '/copy_icon.svg',
         name:'copy_icon'
     },
+    {
+        path: baseIconsPath + '/tools_icon.svg',
+        name:'tools_icon'
+    }
 ];

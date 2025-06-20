@@ -11,9 +11,9 @@ export class AppConfig {
       icon: 'vendor_icon'
     },
     {
-      label: 'Cost Calculator',
-      route: '/app/calculate',
-      icon: 'calculate_icon'
+      label: 'Tools',
+      route: '/app/tools',
+      icon: 'tools_icon'
     },
     {
       label: 'Config',

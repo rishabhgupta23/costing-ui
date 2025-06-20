@@ -1,0 +1,104 @@
+@import 'src/scss/_base.scss';
+
+.production-part-table {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+// Table header styling
+.production-part-table th,
+.production-part-table .mat-header-cell {
+  background-color: #C8D9E6;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 12px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  color: #2f4156;
+  border-bottom: 1px solid #d1d5d8;
+}
+
+.production-part-table th:first-child,
+.production-part-table .mat-header-cell:first-child {
+  border-top-left-radius: 12px;
+}
+
+.production-part-table th:last-child,
+.production-part-table .mat-header-cell:last-child {
+  border-top-right-radius: 12px;
+}
+
+// Table cell styling
+.production-part-table td,
+.production-part-table .mat-cell {
+  font-size: 1rem;
+  padding: 12px 16px;
+  border-bottom: 1px solid #d1d5d8;
+  color: #2f4156;
+}
+
+// Checkbox column width
+.production-part-table th.mat-column-select,
+.production-part-table td.mat-column-select {
+  width: 48px;
+  text-align: center;
+}
+
+// Header details and sort icon
+.header-det {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.sort-icon {
+  margin-left: 6px;
+  cursor: pointer;
+  color: $c-default-text;
+  font-size: 18px;
+  transition: color 0.2s;
+}
+
+
+// Filter row styling
+.filter-row {
+  display: flex;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.filter-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.filter-input-wrapper input[matInput] {
+  width: 85%;
+  padding: 6px 8px;
+  font-size: 1rem;
+  border: 1px solid #00000055;
+  border-radius: 8px;
+  background-color: #fff;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.filter-input-wrapper input[matInput]:focus {
+  border-color: #2F4156;
+  outline: none;
+}
+
+.filter-input-wrapper input[matInput]::placeholder {
+  color: #a0a0a0;
+  opacity: 0.8;
+}
+
+// Paginator styling
+mat-paginator {
+  margin-top: 10px;
+  padding-top: 10px;
+  background: #f5f7fa;
+  border-radius: 0 0 12px 12px;
+}
