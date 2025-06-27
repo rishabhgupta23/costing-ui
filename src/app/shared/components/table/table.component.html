@@ -44,10 +44,17 @@
 
       <tr class="data-row" (click)="onRowClick(row)">
           <!-- Dynamic Columns -->
-<ng-container *ngFor="let col of config">
-    <td *ngIf="col?.columnType === ColumnType.GENERAL">
-        {{ row[col?.key] }}
-    </td>
+      <ng-container *ngFor="let col of config">
+        <td *ngIf="col?.columnType === ColumnType.GENERAL">
+          <ng-container *ngIf="col.cellTemplate; else defaultCell">
+            <ng-container 
+              *ngTemplateOutlet="col.cellTemplate; context: { $implicit: row[col.key], element: row }">
+            </ng-container>
+          </ng-container>
+          <ng-template #defaultCell>
+            {{ row[col?.key] }}
+          </ng-template>
+        </td>
 
     <td *ngIf="col?.columnType === ColumnType.INPUT_NUMBER">
       <input
