@@ -15,7 +15,7 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler):Observable<HttpEvent<any>> {
     const token = AuthUtil.accessToken;
     console.log('Interceptor');
-    if(token && this.isTokenValid()) {
+    if(token && AuthUtil.isTokenValid()) {
       req = req.clone({
         headers: req.headers.set('Authorization', 'Bearer ' + token)
       });
@@ -25,19 +25,5 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     return next.handle(req);
-  }
-
-  isTokenValid() {
-    const token = AuthUtil.accessToken;
-    const tokenJwtParts: string[] = token.split('.');
-    const payload = JSON.parse(atob(tokenJwtParts[1]));
-    if(payload?.exp) {
-      const exp = new Date(0);
-      exp.setUTCSeconds(payload.exp);
-      const cur = new Date();
-      return cur.getTime() < exp.getTime();
-    } else {
-      return false;
-    }
   }
 }
