@@ -148,16 +148,18 @@
           </div>
         </div>
         <div>
+          <!-- The below ng-template is part of the app-table -->
           <ng-template #attributeNameWithWarning let-value let-element="element">
             <div>
               {{ value }}
               <div *ngIf="element.deleteFlag === 1" class="deleted-msg">
-                This attribute has been deleted.
+                This attribute is no longer available.
                 <a (click)="removeDeletedAttribute(element)">Click here</a>
                  <span  style="color: #1565c0;"> to remove</span>
               </div>
             </div>
           </ng-template>
+          <!-- ------------------------ -->
           <app-table
             *ngIf="attributeValueList.length > 0"
             [data]="attributeValueList"

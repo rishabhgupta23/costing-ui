@@ -313,6 +313,8 @@ setupTemplateFilter() {
 
       let isDifferent = false;
 
+       const deletedAttributes = this.attributeValueList.filter(attr => attr.deleteFlag === 1);
+
         const existingMap = new Map(this.attributeValueList.map(attr => [attr.attributeId, attr]));
         const newAttributeValueList = updatedAttributes.map(newAttr => {
         const existing = existingMap.get(newAttr.attributeId);
@@ -329,7 +331,7 @@ setupTemplateFilter() {
         if (updatedAttributes.length !== this.attributeValueList.length) {
         isDifferent = true;
       }
-      this.attributeValueList = newAttributeValueList;
+    this.attributeValueList = [...newAttributeValueList, ...deletedAttributes];
 
     if (isDifferent) {
       this.templateControl.setValue("");
