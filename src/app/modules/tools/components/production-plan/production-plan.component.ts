@@ -80,12 +80,24 @@ export class ProductionPlanComponent implements OnInit {
       .subscribe((res) => {
         this.partList = getValueOrNull(res.data?.partsList) || [];
         this.totalRecords = getValueOrNull(res.pageInfo?.totalRecords) || 0;
-        this.allParts = [...this.allParts, ...this.partList];
+        
         // Remove duplicates by partId
-        this.allParts = Array.from(
-          new Set(this.allParts.map((part) => part.partId))
-        ).map((id) => this.allParts.find((part) => part.partId === id)!);
+        this.updateAllPartsAndSelections();
       });
+  }
+
+    private updateAllPartsAndSelections(): void {
+    // Add new parts to allParts
+    this.partList.forEach(part => {
+      if (!this.allParts.some(p => p.partId === part.partId)) {
+        this.allParts.push(part);
+      }
+    });
+
+    // Remove parts from allParts that are no longer in any page of partList
+    this.allParts = this.allParts.filter(part => 
+      this.partList.some(p => p.partId === part.partId) || this.selectedPartIds.has(part.partId)
+    );
   }
 
   toggleSort(key: string): void {
@@ -128,11 +140,11 @@ export class ProductionPlanComponent implements OnInit {
     this.getPartList();
   }
 
-  toggleSelection(partId: number, checked: boolean) {
+  toggleSelection(part:PartRow, checked: boolean) {
     if (checked) {
-      this.selectedPartIds.add(partId);
+      this.selectedPartIds.add(part.partId);
     } else {
-      this.selectedPartIds.delete(partId);
+      this.selectedPartIds.delete(part.partId);
     }
   }
 
@@ -140,25 +152,24 @@ export class ProductionPlanComponent implements OnInit {
     return this.selectedPartIds.has(partId);
   }
 
-  selectAll(event: any) {
+  selectAll(event: { checked: boolean }) {
     if (event.checked) {
       this.partList.forEach((part) => this.selectedPartIds.add(part.partId));
     } else {
-      this.partList.forEach((part) => this.selectedPartIds.delete(part.partId));
+      this.selectedPartIds.clear();
     }
   }
 
   isAllSelected(): boolean {
     return (
       this.partList.length > 0 &&
-      this.partList.every((part) => this.selectedPartIds.has(part.partId))
+      this.selectedPartIds.size === this.partList.length
     );
   }
 
   isIndeterminate(): boolean {
     return (
-      this.partList.some((part) => this.selectedPartIds.has(part.partId)) &&
-      !this.isAllSelected()
+      this.selectedPartIds.size > 0 && this.selectedPartIds.size < this.partList.length
     );
   }
 
@@ -187,28 +198,30 @@ preparePlanForm() {
     pricingMode: [this.pricingOptions[0].value, Validators.required],
   });
   this.selectedParts.forEach((part, i) => {
-    this.planForm.addControl('quantity_' + i, this.fb.control(1, [Validators.required, Validators.min(1)]));
-    this.planForm.addControl('pricing_' + i, this.fb.control(0, Validators.required));
+    this.planForm.addControl(`quantity_${i}`, this.fb.control(1, [Validators.required, Validators.min(1)]));
   });
 }
 
-  planProduction(stepper: any) {
-    const request: ProductionPlanRequest = {
-      priceMode: this.planForm.get('pricingMode')?.value,
-      parts: this.selectedParts.map((part, i) => ({
-        partId: part.partId,
-        quantity: this.planForm.get('quantity_' + i)?.value
-      }))
-    };
+planProduction(stepper: MatStepper) {
+  const request: ProductionPlanRequest = {
+    priceMode: this.planForm.get('pricingMode')?.value,
+    parts: this.selectedParts.map((part, i) => ({
+      partId: part.partId,
+      quantity: this.planForm.get(`quantity_${i}`)?.value
+    }))
+  };
 
-    this.productionPlanService.calculateProductionCost(request).subscribe({
-      next: (response: ProductionCostResponse) => {
-        this.productionCostResponse = response;
-        stepper.next();
-      },
-      error: err => console.error('Production plan calculation failed', err)
-    });
-  }
+  console.log('Production Plan Request:', request);
+
+  this.productionPlanService.calculateProductionCost(request).subscribe({
+    next: (response: ProductionCostResponse) => {
+      console.log('Production Cost Response:', response);
+      this.productionCostResponse = response;
+      stepper.next();
+    },
+    error: err => console.error('Production plan calculation failed', err)
+  });
+}
     getTotalQuantity(): number {
     return this.productionCostResponse?.items.reduce((total, item) => total + item.quantity, 0) || 0;
   }

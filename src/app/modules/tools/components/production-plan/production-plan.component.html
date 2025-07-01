@@ -20,19 +20,23 @@
                 class="production-part-table"
               >
                 <!-- Select Checkbox Column -->
+                <!-- In your table -->
                 <ng-container matColumnDef="select">
                   <th mat-header-cell *matHeaderCellDef>
                     <mat-checkbox
-                      (change)="selectAll($event)"
-                      [checked]="isAllSelected()"
-                      [indeterminate]="isIndeterminate()"
-                    ></mat-checkbox>
+                      (change)= "$event ? selectAll($event) : null"
+                      [checked]= "isAllSelected()"
+                      [indeterminate]= "isIndeterminate()"
+                    >
+                    </mat-checkbox>
                   </th>
                   <td mat-cell *matCellDef="let part">
                     <mat-checkbox
-                      [checked]="isSelected(part.partId)"
-                      (change)="toggleSelection(part.partId, $event.checked)"
-                    ></mat-checkbox>
+                      (click)= "$event.stopPropagation()"
+                      (change)= "$event ? toggleSelection(part, $event.checked) : null"
+                      [checked]= "isSelected(part.partId)"
+                    >
+                    </mat-checkbox>
                   </td>
                 </ng-container>
                 <!-- partNumber -->
