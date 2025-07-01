@@ -52,19 +52,19 @@ describe('VendorFormComponent', () => {
 
   it('should initialize form with empty values in create mode', () => {
     expect(component.vendorForm).toBeDefined();
-    expect(component.vendorForm.get('name')?.value).toBe('');
+    expect(component.vendorForm.get('vendorName')?.value).toBe('');
   });
 
-  it('should show error message for required name field', () => {
-    component.vendorForm.get('name')?.setValue('');
-    component.vendorForm.get('name')?.markAsTouched();
-    expect(component.getErrorMessage('name')).toContain('is required');
+  it('should show error message for required vendorName field', () => {
+    component.vendorForm.get('vendorName')?.setValue('');
+    component.vendorForm.get('vendorName')?.markAsTouched();
+    expect(component.getErrorMessage('vendorName')).toContain('is required');
   });
 
   it('should fetch and populate vendor data in edit mode', () => {
     const mockVendor: Vendor = {
       id: 1,
-      name: 'Vendor A',
+      vendorName: 'Vendor A',
       emailId: 'vendor@example.com',
       contactNumber: '1234567890',
       address: 'Test Address'
@@ -82,7 +82,7 @@ describe('VendorFormComponent', () => {
 
   it('should call createVendor on valid form submission in create mode', () => {
     component.vendorForm.setValue({
-      name: 'Vendor A',
+      vendorName: 'Vendor A',
       emailId: 'vendor@example.com',
       contactNumber: '1234567890',
       address: 'Test Address'
@@ -100,7 +100,7 @@ describe('VendorFormComponent', () => {
   it('should call updateVendor on valid form submission in edit mode', () => {
     component.vendorId = '1';
     component.vendorForm.setValue({
-      name: 'Vendor A',
+      vendorName: 'Vendor A',
       emailId: 'vendor@example.com',
       contactNumber: '1234567890',
       address: 'Test Address'
@@ -124,7 +124,7 @@ describe('VendorFormComponent', () => {
 
   it('should mark all fields touched on invalid submit', () => {
     component.vendorForm.setValue({
-      name: '',
+      vendorName: '',
       emailId: '',
       contactNumber: '',
       address: ''
@@ -142,17 +142,17 @@ describe('VendorFormComponent', () => {
   });
 
   it('should return required error message', () => {
-    const control = component.vendorForm.get('name');
+    const control = component.vendorForm.get('vendorName');
     control?.setErrors({ required: true });
-    const msg = component.getErrorMessage('name');
-    expect(msg).toBe('name is required.');
+    const msg = component.getErrorMessage('vendorName');
+    expect(msg).toBe('vendorName is required.');
   });
   
   it('should return minlength error message', () => {
-    const control = component.vendorForm.get('name');
+    const control = component.vendorForm.get('vendorName');
     control?.setErrors({ minlength: { requiredLength: 4, actualLength: 2 } });
-    const msg = component.getErrorMessage('name');
-    expect(msg).toBe('name must be at least 4 characters.');
+    const msg = component.getErrorMessage('vendorName');
+    expect(msg).toBe('vendorName must be at least 4 characters.');
   });
   
   it('should return pattern error message', () => {
@@ -167,9 +167,9 @@ describe('VendorFormComponent', () => {
     expect(msg).toBe('');
   });
   
-  it('should access name getter', () => {
-    const control = component.name;
-    expect(control).toBe(component.vendorForm.get('name'));
+  it('should access vendorName getter', () => {
+    const control = component.vendorName;
+    expect(control).toBe(component.vendorForm.get('vendorName'));
   });
   
 });

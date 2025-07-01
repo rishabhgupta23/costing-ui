@@ -19,7 +19,7 @@ describe('PartViewComponent', () => {
   let dialogSpy: jasmine.SpyObj<MatDialog>;
 
   beforeEach(async () => {
-    partServiceSpy = jasmine.createSpyObj('PartService', ['getPartById', 'getPartCostByPartAndVendor', 'downloadBomExcel']);
+    partServiceSpy = jasmine.createSpyObj('PartService', ['getPartById', 'getPartCostByPartAndVendor', 'downloadBomExcel', 'getPartFiles', 'downloadPartFile']);
     routerSpy = jasmine.createSpyObj('Router', ['navigateByUrl']);
     dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
 
@@ -46,6 +46,8 @@ describe('PartViewComponent', () => {
     fixture = TestBed.createComponent(PartViewComponent);
     component = fixture.componentInstance;
     partServiceSpy = TestBed.inject(PartService) as jasmine.SpyObj<PartService>;
+    partServiceSpy.getPartFiles.and.returnValue(of([]));
+    partServiceSpy.downloadPartFile.and.returnValue(of({ fileData: '', fileName: '' }));
     routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
     dialogSpy = TestBed.inject(MatDialog) as jasmine.SpyObj<MatDialog>;
   });
@@ -93,7 +95,7 @@ describe('PartViewComponent', () => {
         {
           updatedDateTime: '2024-01-01T00:00:00Z',
           costFactorList: [
-            { id: 1, name: 'Labor Cost', value: 100 }
+            { id: 1, factorName: 'Labor Cost', value: 100 }
           ]
         }
       ]
@@ -149,10 +151,10 @@ describe('PartViewComponent', () => {
 
   it('should return formatted vendor cost table data', () => {
     component.vendorCostMap.set(1, [
-      { id: 1, name: 'Labor Cost', value: 100 },
-      { id: 2, name: 'Material Cost', value: 200 }
+      { id: 1, factorName: 'Labor Cost', value: 100 },
+      { id: 2, factorName: 'Material Cost', value: 200 }
     ]);
-    component.vendorCostList = [{ id: 1, name: 'XYZ Vendor', costFactorValues: [] }] as any;
+    component.vendorCostList = [{ id: 1, vendorName: 'XYZ Vendor', costFactorValues: [] }] as any;
 
     const data = component.getVendorCostTableData();
     expect(data.length).toBe(2);

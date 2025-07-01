@@ -18,6 +18,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatStepperModule } from '@angular/material/stepper';
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatCheckboxModule,
     FormsModule,
     MatIconModule,
-    MatPaginatorModule
+    MatPaginatorModule, 
+    MatStepperModule,
   ]
 })
 export class ToolsModule { }
