@@ -90,11 +90,11 @@
         <img *ngSwitchDefault src="assets/icons/file-icon.png" class="icon" />
       </ng-container>
 
-      <div class="filename">{{ file.url.split('/').pop() }}</div>
-      </div>
-  </div>
-</div>
 
+      <div class="filename">{{ file.url.split('/').pop() }}</div>
+            </div>
+  </div>
+  </div>
       <app-table
         *ngIf="attributeValueList.length > 0"
         [data]="attributeValueList"
@@ -157,4 +157,3 @@
           ></app-table>
         </div>
       </div>
-    

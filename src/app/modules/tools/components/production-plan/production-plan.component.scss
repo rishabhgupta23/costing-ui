@@ -1,5 +1,13 @@
 @import 'src/scss/_base.scss';
 
+.page-header{
+  margin-bottom: 0;
+}
+
+.page-content{
+  padding-left: 0;
+}
+
 .table-scroll-wrapper {
   max-height: 23rem; // Adjust as needed
   overflow-y: auto;
@@ -29,11 +37,7 @@
   background-color: #fff;
 
 }
-.page-content {
-  flex-grow: 1;
-  overflow-y: auto;
-  padding-left: 1rem;
-}
+
 .production-part-table {
   width: 100%;
   min-width: 5rem;
