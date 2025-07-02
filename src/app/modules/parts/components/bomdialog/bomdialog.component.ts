@@ -121,10 +121,10 @@ isAllSelected(): boolean {
 getPartList(): void {
   this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortColumn, this.sortState).subscribe(
     (res) => {
-      let parts = getValueOrNull(res.data?.partsList);
+      let parts: PartRow[] = getValueOrNull(res.data?.partsList);
 
-      if (this.data.excludePartId) {
-        parts = parts.filter((part: { partId: any; }) => String(part.partId) !== this.data.excludePartId);
+      if (this.data?.excludePartId) {
+        parts = parts.filter(part => String(part.partId) !== this.data.excludePartId);
       }
 
       this.partList = parts;
