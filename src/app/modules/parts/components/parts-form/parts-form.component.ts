@@ -339,7 +339,8 @@ setupTemplateFilter() {
     const dialogRef = this.dialog.open(BomdialogComponent, {
       width: '37.5rem',
       data: { 
-        existingParts: new Set(this.bomPartList.map(part => part.id) || [])
+        existingParts: new Set(this.bomPartList.map(part => part.id) || []),
+        excludePartId: this.partId 
       },
       autoFocus:false
     });
