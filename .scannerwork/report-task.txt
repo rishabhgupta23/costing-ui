@@ -1,0 +1,6 @@
+projectKey=costing-ui
+serverUrl=http://localhost:9000
+serverVersion=25.6.0.109173
+dashboardUrl=http://localhost:9000/dashboard?id=costing-ui
+ceTaskId=6a50eae8-ccf3-4fc8-889d-9b936a25b7f2
+ceTaskUrl=http://localhost:9000/api/ce/task?id=6a50eae8-ccf3-4fc8-889d-9b936a25b7f2

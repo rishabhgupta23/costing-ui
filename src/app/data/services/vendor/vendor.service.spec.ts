@@ -24,7 +24,7 @@ describe('VendorService', () => {
   });
 
   it('should retrieve vendor by ID', () => {
-    const mockVendor: Vendor = { id: 1, name: 'Vendor A', emailId: '', contactNumber: '', address: '' };
+    const mockVendor: Vendor = { id: 1, vendorName: 'Vendor A', emailId: '', contactNumber: '', address: '' };
     service.getVendorById('1').subscribe(vendor => {
       expect(vendor).toEqual(mockVendor);
     });
@@ -34,7 +34,7 @@ describe('VendorService', () => {
   });
 
   it('should update vendor', () => {
-    const mockVendor: Vendor = { id: 1, name: 'Updated Vendor', emailId: '', contactNumber: '', address: '' };
+    const mockVendor: Vendor = { id: 1, vendorName: 'Updated Vendor', emailId: '', contactNumber: '', address: '' };
     service.updateVendor('1', mockVendor).subscribe(vendor => {
       expect(vendor).toEqual(mockVendor);
     });
@@ -106,7 +106,7 @@ describe('VendorService', () => {
   });
 
   it('should create vendor', () => {
-    const mockVendor: Vendor = { id: 2, name: 'New Vendor', emailId: '', contactNumber: '', address: '' };
+    const mockVendor: Vendor = { id: 2, vendorName: 'New Vendor', emailId: '', contactNumber: '', address: '' };
     service.createVendor(mockVendor).subscribe(res => {
       expect(res).toEqual(mockVendor);
     });
