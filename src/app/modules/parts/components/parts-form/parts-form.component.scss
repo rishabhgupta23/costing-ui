@@ -259,3 +259,15 @@ button[mat-icon-button]{
 button[mat-icon-button]:disabled {
     color: #d6d6d6;
 }
+
+.deleted-msg {
+  font-size: 12px;
+  color: #c62828;
+  margin-top: 2px;
+}
+
+.deleted-msg a {
+  color: #1565c0;
+  cursor: pointer;
+  text-decoration: underline;
+}

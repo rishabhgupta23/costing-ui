@@ -26,6 +26,7 @@ import { TemplateService } from 'src/app/data/services/part-template/part-templa
 import { PART_ATTRIBUTE_TABLE} from 'src/app/data/constants/part-attribute-table.constants';
 import { TemplateDialogComponent } from 'src/app/modules/config/components/template-dialog/template-dialog.component';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { ConfirmDialogComponent, ConfirmDialogData } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
 
 
 @Component({
@@ -50,6 +51,8 @@ export class PartsFormComponent implements OnDestroy {
   selectedFiles: File[] = [];
   maxFiles = 3;
   isDragOver = false;
+  @ViewChild('attributeNameWithWarning', { static: false }) 
+  attributeNameWithWarning!: TemplateRef<any>;
   readonly allowedFileTypes = [
     'image/png', 'image/jpeg', 'image/jpg', 'image/gif',
     'application/pdf', 'text/csv', 'text/plain', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
@@ -77,7 +80,7 @@ export class PartsFormComponent implements OnDestroy {
 templateControl = new FormControl();
 filteredTemplates!: Observable<TemplateResponse[]>;
 selectedTemplateAttributes: AttributeRow[] = [];
-attributeTableColumns= PART_ATTRIBUTE_TABLE(true);
+attributeTableColumns: any[] = [];
   selectedVendor: Vendor = undefined as any;
 
   // selectedPart: PartRow | null = null;
@@ -103,6 +106,14 @@ attributeTableColumns= PART_ATTRIBUTE_TABLE(true);
   onAutocompleteClosed() {
     this.overlayContainer.getContainerElement().classList.remove('autocomplete-open');
   }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.attributeTableColumns = PART_ATTRIBUTE_TABLE(true, this.attributeNameWithWarning);
+    });
+  }
+
+
 
     ngOnInit(): void{
       this.partId = this.route.snapshot.paramMap.get('id');
@@ -252,7 +263,8 @@ setupTemplateFilter() {
           this.attributeValueList= part.attributeValueList?.map(attr=>({
             attributeId:attr.attributeId,
             attributeName: attr.attributeName,
-            value:attr.value
+            value:attr.value,
+            deleteFlag:attr.deleteFlag
           }))|| [];
 
 
@@ -301,6 +313,8 @@ setupTemplateFilter() {
 
       let isDifferent = false;
 
+       const deletedAttributes = this.attributeValueList.filter(attr => attr.deleteFlag === 1);
+
         const existingMap = new Map(this.attributeValueList.map(attr => [attr.attributeId, attr]));
         const newAttributeValueList = updatedAttributes.map(newAttr => {
         const existing = existingMap.get(newAttr.attributeId);
@@ -317,14 +331,32 @@ setupTemplateFilter() {
         if (updatedAttributes.length !== this.attributeValueList.length) {
         isDifferent = true;
       }
-      this.attributeValueList = newAttributeValueList;
+    this.attributeValueList = [...newAttributeValueList, ...deletedAttributes];
 
     if (isDifferent) {
       this.templateControl.setValue("");
     }
+    }
+  });
   }
-});
-}
+
+  removeDeletedAttribute(attrToRemove: PartAttributeValue): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Confirm Deletion',
+        message: `Are you sure you want to remove <strong>${attrToRemove.attributeName}</strong>?`
+      } as ConfirmDialogData
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === DialogCloseResponse.DELETE) {
+        this.attributeValueList = this.attributeValueList.filter(
+          attr => attr.attributeId !== attrToRemove.attributeId
+        );
+      }
+    });
+  }
 
           
   getPartTypes() {
