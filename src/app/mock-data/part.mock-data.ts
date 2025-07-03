@@ -73,13 +73,13 @@ export const MOCK_PART_LIST_RESPONSE = {
     {
       updatedDateTime: '2024-04-01T10:00:00Z',
       costFactorList: [
-        { id: 1, name: 'Labor Cost', value: 100 }
+        { id: 1, factorName: 'Labor Cost', value: 100 }
       ]
     },
     {
       updatedDateTime: '2024-04-02T11:00:00Z',
       costFactorList: [
-        { id: 2, name: 'Cost Price', value: 150 }
+        { id: 2, factorName: 'Cost Price', value: 150 }
       ]
     }
   ];

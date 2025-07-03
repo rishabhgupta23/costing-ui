@@ -93,7 +93,7 @@ describe('PartViewComponent', () => {
         {
           updatedDateTime: '2024-01-01T00:00:00Z',
           costFactorList: [
-            { id: 1, name: 'Labor Cost', value: 100 }
+            { id: 1, factorName: 'Labor Cost', value: 100 }
           ]
         }
       ]
@@ -149,8 +149,8 @@ describe('PartViewComponent', () => {
 
   it('should return formatted vendor cost table data', () => {
     component.vendorCostMap.set(1, [
-      { id: 1, name: 'Labor Cost', value: 100 },
-      { id: 2, name: 'Material Cost', value: 200 }
+      { id: 1, factorName: 'Labor Cost', value: 100 },
+      { id: 2, factorName: 'Material Cost', value: 200 }
     ]);
     component.vendorCostList = [{ id: 1, name: 'XYZ Vendor', costFactorValues: [] }] as any;
 
