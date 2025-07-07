@@ -14,6 +14,7 @@ import { Subject } from 'rxjs';
 import { downloadFile } from '../../../../shared/utils/file-download.util';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
+import { UserService } from 'src/app/data/services/user/user.service';
 
 
 @Component({
@@ -34,13 +35,21 @@ export class PartLandingComponent implements OnInit {
   sortState: SortState = {sortColumn: 'partNumber', sortState: SortIcons.ASC}
   sortColumn: string | undefined;
   sortMode: string | undefined;
+  userRole: string = '';
 
-  constructor(private partService: PartService, private router: Router, private snackbarService: SnackbarService) {}
-  
+  constructor(private partService: PartService, private router: Router, private snackbarService: SnackbarService, private userService: UserService) {}
+
   ngOnInit(): void {
-    this.getPartList();
+        this.userService.whoAmI().subscribe(user => {
+      this.userRole = user.roleName?.toLowerCase() || '';
+      this.getPartList();
+    });
     this.listenToFilterChanges();
   }
+
+  get filteredColumns() {
+  return this.columns?.filter(col => col.columnType !== 'ACTION' || this.userRole !== 'guest');
+}
 
   onRowClicked(rowData: any) {
     this.router.navigateByUrl(`/app/parts/view/${rowData.partId}`);

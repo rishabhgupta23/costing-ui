@@ -42,6 +42,9 @@ export class SidebarComponent {
     return this.userRole === UserRole.ADMIN || this.userRole === UserRole.SUPERADMIN;
   }
   
+  isConfigVisible(item: any): boolean {
+    return this.userRole === UserRole.ADMIN || this.userRole === UserRole.SUPERADMIN;
+  }
 
   menuClicked(item: any) {
     this.router.navigateByUrl(item?.route);

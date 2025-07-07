@@ -14,6 +14,7 @@ import { downloadFile } from '../../../../shared/utils/file-download.util';
 import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
 import { SortState } from '../../../../data/models/part';
 import { getValueOrNull } from '../../../../shared/utils/string.util';
+import { UserService } from 'src/app/data/services/user/user.service';
 
 @Component({
   selector: 'app-vendor-landing',
@@ -34,11 +35,20 @@ export class VendorLandingComponent  {
   sortState: SortState = {sortColumn: 'vendorName', sortState: SortIcons.ASC}
   
   private searchSubject = new Subject<{ key: string; value: string }>(); 
+  userRole: string = '';
   
   
-  constructor(private vendorService: VendorService, private router: Router, private snackbarService:SnackbarService) {
-    this.getVendorList();
-    this.listenToFilterChanges(); 
+  constructor(private vendorService: VendorService, private router: Router, private snackbarService:SnackbarService, private userService: UserService) {}
+  ngOnInit(): void {
+    this.userService.whoAmI().subscribe(user => {
+      this.userRole = user.roleName?.toLowerCase() || '';
+      this.getVendorList();
+    });
+    this.listenToFilterChanges();
+  }
+  
+  get filteredColumns() {
+    return this.columns.filter(col => col.columnType !== 'ACTION' || this.userRole !== 'guest');
   }
 
   getVendorList(): void {

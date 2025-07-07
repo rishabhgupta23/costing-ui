@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { VendorLandingComponent } from './components/vendor-landing/vendor-landing.component';
 import { VendorFormComponent } from './components/vendor-form/vendor-form.component';
+import { AuthGuard } from 'src/app/core/guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -10,10 +11,14 @@ const routes: Routes = [
   },
   {
     path: ":mode",
+    canActivate: [AuthGuard],
     component: VendorFormComponent
   },
-   { 
-     path: ':mode/:id', component: VendorFormComponent },
+   {
+     path: ':mode/:id',
+     canActivate: [AuthGuard],
+     component: VendorFormComponent
+   },
 ];
 
 @NgModule({

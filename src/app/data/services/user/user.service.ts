@@ -20,6 +20,9 @@ export class UserService {
     return this.http.get<User>(ApiUtil.getApiUrl(API_END_POINTS.WHO_AM_I)).pipe(
       map(user => {
         this.currentUserSubject.next(user);
+        if (user.roleName) {
+                localStorage.setItem('userRole', user.roleName);
+            }
         return user;
       })
     );
