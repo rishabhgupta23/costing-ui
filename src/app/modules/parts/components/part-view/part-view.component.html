@@ -68,33 +68,54 @@
         </div>
       </div>
       <div *ngIf="partFilePreviews.length > 0">
-  <h4 class="mt-4">Associated Files</h4>
-  <div class="file-preview-container">
-    <div class="file-card" *ngFor="let file of partFilePreviews">
-      <ng-container [ngSwitch]="file.type">
-        <!-- Image Preview -->
-        <ng-container *ngSwitchCase="'image'">
-          <img [src]="file.previewUrl" class="thumbnail" *ngIf="file.previewUrl" />
-        </ng-container>
+        <h4 class="mt-4">Associated Files</h4>
+        <div class="file-preview-container">
+          <div class="file-card" *ngFor="let file of partFilePreviews">
+            <ng-container [ngSwitch]="file.type">
+              <!-- Image Preview -->
+              <ng-container *ngSwitchCase="'image'">
+                <img
+                  [src]="file.previewUrl"
+                  class="thumbnail"
+                  *ngIf="file.previewUrl"
+                />
+              </ng-container>
 
-        <!-- Excel Icon -->
-        <img *ngSwitchCase="'excel'" src="assets/icons/excel-icon.png" class="icon" />
+              <!-- Excel Icon -->
+              <img
+                *ngSwitchCase="'excel'"
+                src="assets/icons/excel-icon.png"
+                class="icon"
+              />
 
-        <!-- Word Icon -->
-        <img *ngSwitchCase="'word'" src="assets/icons/word-icon.png" class="icon" />
+              <!-- Word Icon -->
+              <img
+                *ngSwitchCase="'word'"
+                src="assets/icons/word-icon.png"
+                class="icon"
+              />
 
-        <!-- PDF Icon -->
-        <img *ngSwitchCase="'pdf'" src="assets/icons/pdf-icon.png" class="icon" />
+              <!-- PDF Icon -->
+              <img
+                *ngSwitchCase="'pdf'"
+                src="assets/icons/pdf-icon.png"
+                class="icon"
+              />
 
-        <!-- Default Icon -->
-        <img *ngSwitchDefault src="assets/icons/file-icon.png" class="icon" />
-      </ng-container>
+              <img
+                *ngSwitchDefault
+                src="assets/icons/file-icon.png"
+                class="icon"
+              />
+            </ng-container>
 
-
-      <div class="filename">{{ file.url.split('/').pop() }}</div>
-            </div>
-  </div>
-  </div>
+            <div class="filename">{{ file.url.split("/").pop() }}</div>
+            <div class="download-btn" (click)="downloadPartFile(file.url)">
+              <mat-icon class="btn-icon" svgIcon="download"></mat-icon>
+              Download</div>
+          </div>
+        </div>
+      </div>
       <app-table
         *ngIf="attributeValueList.length > 0"
         [data]="attributeValueList"
@@ -157,4 +178,6 @@
           ></app-table>
         </div>
       </div>
-
+    </div>
+  </div>
+</div>
