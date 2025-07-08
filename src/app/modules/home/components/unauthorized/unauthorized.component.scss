@@ -1,0 +1,79 @@
+@import "src/scss/_base.scss";
+.unauthorized-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $c-login-bg ; // Red background
+}
+
+.unauthorized-modal {
+  background-color: $c-default-bg;
+  border-radius: 1rem;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.header-bar {
+  background-color: #2c2c2c;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  .dot {
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
+    &.red {
+      background-color: #ff5f57;
+    }
+    &.yellow {
+      background-color: #ffbd2e;
+    }
+    &.green {
+      background-color: #28c840;
+    }
+  }
+}
+
+.content {
+  padding: 2rem;
+  text-align: center;
+
+  .warning-image {
+    width: 10rem;
+    height: 10rem;
+  }
+
+  .warning-title {
+    font-weight: 800;
+    color: #333;
+    margin: 1rem 0 0.5rem;
+  }
+
+  .warning-text {
+    color: #555;
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+  }
+
+  .home-btn {
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    background-color: $c-default-bg;
+    color: $c-btn-bg;
+    padding: 0.5rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: $c-btn-hover;
+    }
+  }
+}

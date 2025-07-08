@@ -15,7 +15,7 @@ export class AuthGuard implements CanActivate {
       
       if (this.isRestrictedRoute(state.url) && !this.hasAccess(userRole, state.url)) {
         // Redirect to a vendor page
-        this.router.navigate(['/']);
+        this.router.navigate(['/unauthorized']);
         return false;
       }
       
