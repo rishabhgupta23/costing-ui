@@ -222,6 +222,17 @@ planProduction(stepper: MatStepper) {
     error: err => console.error('Production plan calculation failed', err)
   });
 }
+
+resetPlan(stepper: MatStepper) {
+  this.selectedPartIds.clear();
+  this.selectedParts = [];
+  this.productionCostResponse = null;
+  this.partSelectionForm.reset();
+  this.planForm.reset();
+  this.selectedStepIndex = 0;
+  stepper.reset();
+  this.getPartList();
+}
     getTotalQuantity(): number {
     return this.productionCostResponse?.items.reduce((total, item) => total + item.quantity, 0) || 0;
   }

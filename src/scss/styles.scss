@@ -238,7 +238,3 @@ $costing-ui-theme: mat.define-theme((
 .mat-horizontal-content-container {
   padding: 0 1rem 0 1rem !important;
 }
-
-.mat-mdc-form-field-subscript-wrapper, .mat-mdc-form-field-bottom-align::before {
-  display: none !important;
-}

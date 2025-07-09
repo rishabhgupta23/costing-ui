@@ -38,6 +38,13 @@
 
 }
 
+.production-plan-page {
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper,
+  ::ng-deep .mat-mdc-form-field-bottom-align::before {
+    display: none !important;
+  }
+}
+
 .production-part-table {
   width: 100%;
   min-width: 5rem;
@@ -103,6 +110,9 @@
   transition: color 0.2s;
 }
 
+.review-title{
+  margin-top: 0;
+}
 
 // Filter row styling
 .filter-row {
@@ -138,15 +148,16 @@
 }
 
 .fixed-actions {
-  position: sticky;
+  position: fixed;
   bottom: 0;
-  left: 0;
-    display: flex;
-    justify-content: flex-end; /* Spread to left and right */
-    align-items: center;
-    padding: 0.5rem 1rem;
-    background: #fff; /* Optional: gives it a solid background */
-    z-index: 1;
+  left: 6rem;
+  width: calc(100% - 8rem);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0.5rem;
+  background: #fff;
+  z-index: 1;
 }
 
 .primary-btn:disabled {

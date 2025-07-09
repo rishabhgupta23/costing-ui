@@ -1,4 +1,4 @@
-<div class="app-page">
+<div class="app-page production-plan-page">
   <div class="page-header">
     <span class="page-title">Production Plan</span>
   </div>
@@ -237,7 +237,7 @@
         <ng-template matStepLabel>Review and Confirm</ng-template>
         <div class="page-content" *ngIf="productionCostResponse">
           <div class="review-details">
-            <h3>Production Cost Details</h3>
+            <h3 class="review-title">Production Cost Details</h3>
             <table mat-table [dataSource]= "productionCostResponse.items" class="production-part-table">
               <ng-container matColumnDef="partNumber">
                 <th mat-header-cell *matHeaderCellDef>Part Number</th>
@@ -306,6 +306,15 @@
     >
       Plan
     </button>
+    <button
+    *ngIf="selectedStepIndex === 2"
+    mat-stroked-button
+    color="warn"
+    class="secondary-btn"
+    (click)="resetPlan(stepper)"
+  >
+    Reset
+  </button>
     </div>
   </div>
 </div>
