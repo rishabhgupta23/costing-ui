@@ -141,7 +141,7 @@ attributeTableColumns: any[] = [];
       });
       }
       
-          getPartFiles(partId: string): void {
+  getPartFiles(partId: string): void {
   this.partService.getPartFiles(partId).subscribe({
     next: (urls) => {
       this.partFilePreviews = urls.map(url => {
@@ -692,23 +692,11 @@ removeUploadedFile(fileUrl: string): void {
   if (index !== -1) {
     const fileToRemove = this.partFilePreviews[index];
 
-    const key = this.getS3KeyFromUrl(fileToRemove.url);
+    const key = fileToRemove.url;
     this.filesToDelete.push(key);
 
     this.partFilePreviews.splice(index, 1);
   }
-}
-
-getS3KeyFromUrl(url: string): string {
-  if (!url.startsWith('http') && !url.startsWith('/')) {
-    return url;
-  }
-  const partsIndex = url.indexOf('/parts/');
-  if (partsIndex === -1) return this.getFileNameFromUrl(url);
-
-  const prefix = url.substring(0, partsIndex);
-  const suffix = url.substring(partsIndex);
-  return prefix.endsWith('/') ? `${prefix}${suffix.substring(1)}` : `${prefix}${suffix}`;
 }
 
 
