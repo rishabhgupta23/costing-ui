@@ -11,17 +11,29 @@ export class AuthUtil {
         localStorage.removeItem('accessToken');
     }
 
-    static  isTokenValid() {
-    const token = AuthUtil.accessToken;
-    const tokenJwtParts: string[] = token.split('.');
-    const payload = JSON.parse(atob(tokenJwtParts[1]));
-    if(payload?.exp) {
+  static isTokenValid(): boolean {
+    const decoded = AuthUtil.getDecodedToken();
+    if (decoded?.exp) {
       const exp = new Date(0);
-      exp.setUTCSeconds(payload.exp);
-      const cur = new Date();
-      return cur.getTime() < exp.getTime();
-    } else {
-      return false;
+      exp.setUTCSeconds(decoded.exp);
+      return new Date().getTime() < exp.getTime();
     }
+    return false;
+  }
+
+  static getDecodedToken(): any | null {
+  const token = AuthUtil.accessToken;
+  if (!token) return null;
+  try {
+    const tokenJwtParts: string[] = token.split('.');
+    return JSON.parse(atob(tokenJwtParts[1]));
+  } catch {
+    return null;
+  }
+}
+
+static get resetRequired(): boolean {
+    const decoded = AuthUtil.getDecodedToken();
+    return decoded?.resetRequired === true;
   }
 }

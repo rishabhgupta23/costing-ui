@@ -80,6 +80,8 @@ export class UserService {
       return this.http.put<User>(ApiUtil.getPreparedUrl(API_END_POINTS.USER_DETAILS, params), user);
     }
 
-  
+    changePassword(data: { oldPassword: string; newPassword: string ; email: string, confirmPassword: string}): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(ApiUtil.getApiUrl(API_END_POINTS.RESET_PASSWORD), data);
+  }
   
 }

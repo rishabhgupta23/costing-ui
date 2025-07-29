@@ -9,11 +9,15 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { ChangePasswordComponent } from './components/change-password/change-password.component';
+import { CoreModule } from "src/app/core/core.module";
+import { MatDividerModule } from '@angular/material/divider';
 
 
 @NgModule({
   declarations: [
-    LoginComponent
+    LoginComponent,
+    ChangePasswordComponent
   ],
   imports: [
     CommonModule,
@@ -23,7 +27,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     FormsModule,
     RouterModule,
     MatIconModule,
-    MatSnackBarModule
-  ]
+    MatSnackBarModule,
+    CoreModule,
+    MatDividerModule
+]
 })
 export class LoginModule { }

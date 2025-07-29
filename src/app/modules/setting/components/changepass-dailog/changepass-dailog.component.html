@@ -1,0 +1,63 @@
+<h2 class="title">Change Password</h2>
+
+<div class="form">
+  <!-- New Password Field -->
+  <div class="form-field">
+    <label>New Password</label>
+    <mat-form-field appearance="outline" class="custom-textfield">
+      <input
+        class="input-field"
+        matInput
+        type="password"
+        [(ngModel)]="newPassword"
+        name="newPassword"
+        #newPasswordModel="ngModel"
+        required
+      />
+    </mat-form-field>
+    <div class="error">
+    <span *ngIf="newPasswordModel.dirty && !isPasswordValid()">
+      Please follow the password guidelines above.
+    </span>
+    </div>
+  </div>
+
+  <!-- Confirm Password Field -->
+  <div class="form-field">
+    <label>Confirm Password</label>
+    <mat-form-field appearance="outline" class="custom-textfield">
+      <input
+        class="input-field"
+        matInput
+        type="password"
+        [(ngModel)]="confirmPassword"
+        name="confirmPassword"
+        #confirmPasswordModel="ngModel"
+        required
+      />
+    </mat-form-field>
+    <div class="error">
+    <span *ngIf="confirmPasswordModel.dirty && confirmPassword && newPassword !== confirmPassword">
+    Passwords do not match.
+    </span>
+    </div>
+  </div>
+</div>
+
+<!-- Validation Messages -->
+<div class="guidelines">
+  Password must contain at least:
+  <ul>
+    <li>1 lowercase letter</li>
+    <li>1 uppercase letter</li>
+    <li>1 digit</li>
+    <li>1 special character</li>
+    <li>Minimum length of 8 characters</li>
+  </ul>
+</div>
+
+<!-- Buttons -->
+<div class="btn-group" align="end">
+  <button class="secondary-btn" mat-dialog-close>Cancel</button>
+  <button class="primary-btn" (click)="onConfirm()" [disabled]="!isValid()">Confirm</button>
+</div>

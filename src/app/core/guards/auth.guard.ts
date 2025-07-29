@@ -1,6 +1,5 @@
-// auth.guard.ts
 import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
+import { CanActivate, Router, UrlTree } from '@angular/router';
 import { AuthUtil } from 'src/app/shared/utils/auth.util';
 
 @Injectable({
@@ -9,13 +8,12 @@ import { AuthUtil } from 'src/app/shared/utils/auth.util';
 export class AuthGuard implements CanActivate {
   constructor(private router: Router) {}
 
-  canActivate(): boolean {
-    const token = localStorage.getItem('accessToken');
-    if (token && AuthUtil.isTokenValid()) {
+  canActivate(): boolean | UrlTree {
+    if (AuthUtil.accessToken && AuthUtil.isTokenValid()) {
       return true;
     } else {
-      this.router.navigate(['/login']);
-      return false;
+      AuthUtil.resetToken();
+      return this.router.parseUrl('/login');
     }
   }
 }
