@@ -29,4 +29,5 @@ export const API_END_POINTS = {
     TEMPLATE_DETAILS: '/templates/{templateId}',
     RESET_PASSWORD: '/auth/reset-password',
     RESET_USER_PASSWORD: '/users/reset-user-password',
+    PART_FILE_DELETE: '/parts/file/delete'
 };

@@ -105,6 +105,16 @@ uploadPartImage(partId: number, file: File, base64String: string) {
   const params = new HttpParams().set('s3FileKey', s3FileKey);
   return this.http.get(ApiUtil.getApiUrl(API_END_POINTS.PART_FILE_DOWNLOAD), {params});
 }
+deletePartFile(partId: number, s3FileKey: string): Observable<any> {
+  const params = new HttpParams()
+    .set('partId', partId.toString())
+    .set('s3FileKey', s3FileKey);
+
+ return this.http.delete(ApiUtil.getApiUrl(API_END_POINTS.PART_FILE_DELETE), { params });
+
+}
+
+
 
 
   downloadBomExcel(partId:string){
