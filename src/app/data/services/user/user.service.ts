@@ -83,5 +83,8 @@ export class UserService {
     changePassword(data: { oldPassword: string; newPassword: string ; email: string, confirmPassword: string}): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(ApiUtil.getApiUrl(API_END_POINTS.RESET_PASSWORD), data);
   }
+  resetUserPassword(payload: { userEmail: string; newTempPassword: string; confirmTempPassword: string }) {
+    return this.http.post(ApiUtil.getApiUrl(API_END_POINTS.RESET_USER_PASSWORD), payload);
+  }
   
 }

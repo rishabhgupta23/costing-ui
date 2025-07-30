@@ -18,6 +18,9 @@ export class ChangePasswordComponent {
   hideNew = true;
   hideConfirm = true;
 
+tooltipText: string = `Password must meet the following:\n• At least 8 characters\n• One uppercase letter\n• One number\n• One special character`;
+
+
   passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   constructor(private userService: UserService, private router: Router) {

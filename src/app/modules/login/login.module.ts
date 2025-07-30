@@ -12,6 +12,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { CoreModule } from "src/app/core/core.module";
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import {MatMenuModule} from '@angular/material/menu';
 
 
 @NgModule({
@@ -29,7 +31,8 @@ import { MatDividerModule } from '@angular/material/divider';
     MatIconModule,
     MatSnackBarModule,
     CoreModule,
-    MatDividerModule
+    MatDividerModule,
+    MatTooltipModule
 ]
 })
 export class LoginModule { }

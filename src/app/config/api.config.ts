@@ -27,5 +27,6 @@ export const API_END_POINTS = {
     PART_FILE_DOWNLOAD: '/parts/file/download',
     TEMPLATE: '/templates',
     TEMPLATE_DETAILS: '/templates/{templateId}',
-    RESET_PASSWORD: '/auth/reset-password'
+    RESET_PASSWORD: '/auth/reset-password',
+    RESET_USER_PASSWORD: '/users/reset-user-password',
 };

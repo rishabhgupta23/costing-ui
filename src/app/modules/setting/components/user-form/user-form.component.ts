@@ -5,6 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {  Subscription } from 'rxjs';
 import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
 import { getValueOrNull } from '../../../../shared/utils/string.util';
+import { ChangepassDailogComponent } from '../changepass-dailog/changepass-dailog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-user-form',
@@ -12,8 +14,10 @@ import { getValueOrNull } from '../../../../shared/utils/string.util';
   styleUrl: './user-form.component.scss'
 })
 export class UserFormComponent {
+
   userRoles: { roleId: number, roleName: string }[] = [];
   userId: number | null = null;
+  
   userForm = new FormGroup({
     displayName: new FormControl('', Validators.required), // Changed from userName
     emailId: new FormControl('', Validators.required),
@@ -24,7 +28,7 @@ export class UserFormComponent {
   
   private subscriptions = new Subscription();
 
-  constructor(private userService: UserService, private router: Router,  private route: ActivatedRoute, private snackbarService: SnackbarService) {}
+  constructor(private userService: UserService, private router: Router,  private route: ActivatedRoute, private snackbarService: SnackbarService,private dialog: MatDialog) {}
 
   onSubmit() {
     if (this.userForm.valid) {
@@ -57,6 +61,50 @@ export class UserFormComponent {
     this.router.navigateByUrl('/app/users');
   }
   
+showChangePasswordLink(): boolean {
+  if (!this.userId) {
+    return false;
+  }
+  const selectedRoleId = this.userForm.controls.role.value;
+
+  if (selectedRoleId === 1 || selectedRoleId === 2) {
+    return false;
+  }
+
+  return true;
+}
+
+newPassword() {
+const emailId = this.userForm.getRawValue().emailId || '';
+
+  console.log(emailId);
+
+  const dialogRef = this.dialog.open(ChangepassDailogComponent, {
+    width: '400px',
+    panelClass: 'app-dialog',
+    data: { emailId }
+  });
+
+  dialogRef.afterClosed().subscribe((result: { newPassword: string; confirmPassword: string }) => {
+    if (result) {
+      const payload = {
+        userEmail: emailId || '',
+        newTempPassword: result.newPassword,
+        confirmTempPassword: result.confirmPassword
+      };
+
+      this.userService.resetUserPassword(payload).subscribe({
+        next: () => {
+          this.snackbarService.success('Password updated successfully!');
+        },
+        error: (err) => {
+          this.snackbarService.error(err?.error?.message || 'Failed to update password.');
+        }
+      });
+    }
+  });
+}
+
 
 getUserRole() {
   this.subscriptions.add(

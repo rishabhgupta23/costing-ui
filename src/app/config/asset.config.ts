@@ -88,4 +88,8 @@ export const SVG_ICONS = [
         path: baseIconsPath + '/visibilityoff_icon.svg',
         name:'visibilityoff'
     },
+        {
+        path: baseIconsPath + '/info.svg',
+        name:'infoempty'
+    },
 ];

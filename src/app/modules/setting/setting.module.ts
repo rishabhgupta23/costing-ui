@@ -10,12 +10,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { ChangepassDailogComponent } from './components/changepass-dailog/changepass-dailog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 @NgModule({
   declarations: [
     UserLandingComponent,
-    UserFormComponent
+    UserFormComponent,
+    ChangepassDailogComponent
   ],
   imports: [
     CommonModule,
@@ -26,7 +29,8 @@ import { MatInputModule } from '@angular/material/input';
     MatSelectModule,
     FormsModule,
     ReactiveFormsModule,
-    MatInputModule
+    MatInputModule,
+    MatDialogModule
 ]
 })
 export class SettingModule { }
