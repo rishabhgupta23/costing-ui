@@ -40,7 +40,7 @@ sortState: SortState={sortColumn:'partNumber',sortState:SortIcons.ASC}
 col: any;
 constructor(
   public dialogRef: MatDialogRef<BomdialogComponent>,
-  @Inject(MAT_DIALOG_DATA) public data:  { existingParts: Set<number> },
+@Inject(MAT_DIALOG_DATA) public data: { existingParts: Set<number>, excludePartId?: string },
   private partService: PartService 
 ) {
 }
@@ -118,21 +118,26 @@ isAllSelected(): boolean {
   return this.partList.length > 0 && this.partList.every(part => this.existingParts.has(part.partId));
 }
   
-getPartList():void{
+getPartList(): void {
   this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortColumn, this.sortState).subscribe(
     (res) => {
-    
-      this.partList = getValueOrNull(res.data?.partsList);
-      const mappedParts = this.partList.map(part => part.partName);
+      let parts: PartRow[] = getValueOrNull(res.data?.partsList);
+
+      if (this.data?.excludePartId) {
+        parts = parts.filter(part => String(part.partId) !== this.data.excludePartId);
+      }
+
+      this.partList = parts;
       this.existingParts = this.data.existingParts;
       this.paginatedData = this.partList;
       this.totalRecords = getValueOrNull(res.pageInfo?.totalRecords);
       this.allParts = [...this.allParts, ...this.partList];
       this.allParts = Array.from(new Set(this.allParts.map(part => part.partId)))
-        .map(id => this.allParts.find(part => part.partId === id)!);
-});
-
+        .map(id => this.allParts.find(part => part.partId === id)!);
+    }
+  );
 }
+
 
 isIndeterminate(): boolean {
   return this.partList.some(part => this.existingParts.has(part.partId)) &&

@@ -167,9 +167,9 @@ describe('VendorFormComponent', () => {
     expect(msg).toBe('');
   });
   
-  it('should access vendorName getter', () => {
+  it('should access name getter', () => {
     const control = component.vendorName;
-    expect(control).toBe(component.vendorForm.get('vendorName'));
+    expect(control).toBe(component.vendorForm.get('name'));
   });
   
 });

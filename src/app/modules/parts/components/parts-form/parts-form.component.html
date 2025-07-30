@@ -148,6 +148,18 @@
           </div>
         </div>
         <div>
+          <!-- The below ng-template is part of the app-table -->
+          <ng-template #attributeNameWithWarning let-value let-element="element">
+            <div>
+              {{ value }}
+              <div *ngIf="element.deleteFlag === 1" class="deleted-msg">
+                This attribute is no longer available.
+                <a (click)="removeDeletedAttribute(element)">Click here</a>
+                 <span  style="color: #1565c0;"> to remove</span>
+              </div>
+            </div>
+          </ng-template>
+          <!-- ------------------------ -->
           <app-table
             *ngIf="attributeValueList.length > 0"
             [data]="attributeValueList"
@@ -185,16 +197,17 @@
     </div>
 
     <!-- Show already uploaded files if any -->
-<div *ngIf="uploadedFiles.length > 0" class="file-preview-list">
-  <div *ngFor="let file of uploadedFiles; let i = index" class="file-preview">
-    <ng-container [ngSwitch]="getFileTypeFromName(file)">
-      <img *ngSwitchCase="'image'" [src]="file" class="thumb-img" />
+<div *ngIf="partFilePreviews.length > 0" class="file-preview-list">
+  <div *ngFor="let file of partFilePreviews" class="file-preview">
+    <ng-container [ngSwitch]="file.type">
+      <img *ngSwitchCase="'image'" [src]="file.previewUrl" class="thumb-img" />
       <img *ngSwitchCase="'pdf'" src="assets/icons/pdf-icon.png" class="file-icon" />
       <img *ngSwitchCase="'word'" src="assets/icons/word-icon.png" class="file-icon" />
       <img *ngSwitchCase="'excel'" src="assets/icons/excel-icon.png" class="file-icon" />
       <img *ngSwitchDefault src="assets/icons/file-icon.png" class="file-icon" />
     </ng-container>
-    <div class="file-name">{{ getFileNameFromUrl(file) }}</div>
+    <div class="file-name">{{ getFileNameFromUrl(file.url) }}</div>
+    <button class="remove-btn" (click)="removeUploadedFile(file.url)">✕</button>
   </div>
 </div>
         <div

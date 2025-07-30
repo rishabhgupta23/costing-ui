@@ -26,6 +26,7 @@ import { TemplateService } from 'src/app/data/services/part-template/part-templa
 import { PART_ATTRIBUTE_TABLE} from 'src/app/data/constants/part-attribute-table.constants';
 import { TemplateDialogComponent } from 'src/app/modules/config/components/template-dialog/template-dialog.component';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { ConfirmDialogComponent, ConfirmDialogData } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
 
 
 @Component({
@@ -50,6 +51,8 @@ export class PartsFormComponent implements OnDestroy {
   selectedFiles: File[] = [];
   maxFiles = 3;
   isDragOver = false;
+  @ViewChild('attributeNameWithWarning', { static: false }) 
+  attributeNameWithWarning!: TemplateRef<any>;
   readonly allowedFileTypes = [
     'image/png', 'image/jpeg', 'image/jpg', 'image/gif',
     'application/pdf', 'text/csv', 'text/plain', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
@@ -77,14 +80,19 @@ export class PartsFormComponent implements OnDestroy {
 templateControl = new FormControl();
 filteredTemplates!: Observable<TemplateResponse[]>;
 selectedTemplateAttributes: AttributeRow[] = [];
-attributeTableColumns= PART_ATTRIBUTE_TABLE(true);
+attributeTableColumns: any[] = [];
   selectedVendor: Vendor = undefined as any;
+  filesToDelete: string[] = [];
+  existingFiles: string[] = [];
+
+
 
   // selectedPart: PartRow | null = null;
 
   PartCreateRequest: any;
   partId: string | null = null;
   @ViewChild('previewDialog') previewDialog!: TemplateRef<any>;
+  partFilePreviews: { url: string, type: string, previewUrl?: string }[] = [];
 
 
   constructor(private partService: PartService, private vendorService: VendorService, private overlayContainer: OverlayContainer, private costFactorService: CostFactorService,     private route: ActivatedRoute,
@@ -104,6 +112,14 @@ attributeTableColumns= PART_ATTRIBUTE_TABLE(true);
     this.overlayContainer.getContainerElement().classList.remove('autocomplete-open');
   }
 
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.attributeTableColumns = PART_ATTRIBUTE_TABLE(true, this.attributeNameWithWarning);
+    });
+  }
+
+
+
     ngOnInit(): void{
       this.partId = this.route.snapshot.paramMap.get('id');
     this.getPartTypes();
@@ -116,9 +132,7 @@ attributeTableColumns= PART_ATTRIBUTE_TABLE(true);
       if (this.partId){
         this.partForm.get('partNumber')?.disable();
         this.getPartData(this.partId);
-        this.partService.getPartFiles(this.partId).subscribe(files => {
-      this.uploadedFiles = files;
-    });
+       this.getPartFiles(this.partId || '');
       }
       this.partForm.get('partType')?.valueChanges.subscribe((value) => {
         if (value === this.partTypeEnum.MASTER) {
@@ -127,6 +141,25 @@ attributeTableColumns= PART_ATTRIBUTE_TABLE(true);
       });
       }
       
+  getPartFiles(partId: string): void {
+  this.partService.getPartFiles(partId).subscribe({
+    next: (urls) => {
+      this.partFilePreviews = urls.map(url => {
+        const type = this.getFileTypeFromName(url);
+        const fileObj: any = { url, type };
+        if (type === 'image') {
+          this.partService.downloadPartFile(url).subscribe((response: any) => {
+            fileObj.previewUrl = 'data:image/png;base64,' + response.fileData;
+          });
+        }
+        return fileObj;
+      });
+    },
+    error: (err) => {
+      console.error('Error fetching part files:', err);
+    }
+  });
+}
 
 onFilesSelected(event: any) {
   const files: FileList = event.target.files;
@@ -252,7 +285,8 @@ setupTemplateFilter() {
           this.attributeValueList= part.attributeValueList?.map(attr=>({
             attributeId:attr.attributeId,
             attributeName: attr.attributeName,
-            value:attr.value
+            value:attr.value,
+            deleteFlag:attr.deleteFlag
           }))|| [];
 
 
@@ -301,6 +335,8 @@ setupTemplateFilter() {
 
       let isDifferent = false;
 
+       const deletedAttributes = this.attributeValueList.filter(attr => attr.deleteFlag === 1);
+
         const existingMap = new Map(this.attributeValueList.map(attr => [attr.attributeId, attr]));
         const newAttributeValueList = updatedAttributes.map(newAttr => {
         const existing = existingMap.get(newAttr.attributeId);
@@ -317,14 +353,32 @@ setupTemplateFilter() {
         if (updatedAttributes.length !== this.attributeValueList.length) {
         isDifferent = true;
       }
-      this.attributeValueList = newAttributeValueList;
+    this.attributeValueList = [...newAttributeValueList, ...deletedAttributes];
 
     if (isDifferent) {
       this.templateControl.setValue("");
     }
+    }
+  });
   }
-});
-}
+
+  removeDeletedAttribute(attrToRemove: PartAttributeValue): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Confirm Deletion',
+        message: `Are you sure you want to remove <strong>${attrToRemove.attributeName}</strong>?`
+      } as ConfirmDialogData
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === DialogCloseResponse.DELETE) {
+        this.attributeValueList = this.attributeValueList.filter(
+          attr => attr.attributeId !== attrToRemove.attributeId
+        );
+      }
+    });
+  }
 
           
   getPartTypes() {
@@ -339,7 +393,8 @@ setupTemplateFilter() {
     const dialogRef = this.dialog.open(BomdialogComponent, {
       width: '37.5rem',
       data: { 
-        existingParts: new Set(this.bomPartList.map(part => part.id) || [])
+        existingParts: new Set(this.bomPartList.map(part => part.id) || []),
+        excludePartId: this.partId 
       },
       autoFocus:false
     });
@@ -590,20 +645,60 @@ private openProgressDialogIfNeeded(): any {
 }
 
 private updatePart(body: PartCreateRequest, dialogRef: any): void {
-  this.partService.updatePart(this.partId!, body).subscribe({
-    next: () => {
+  this.partService.updatePart(this.partId!, body).pipe(
+    concatMap(() => {
+      const partId = Number(this.partId);
+
+      const deleteObservables = this.filesToDelete.map(fileKey =>
+        this.partService.deletePartFile(partId, fileKey)
+      );
+
+      const uploadObservables = this.selectedFiles.map(file =>
+        from(fileToBase64(file)).pipe(
+          concatMap(base64 => this.partService.uploadPartImage(partId, file, base64))
+        )
+      );
+
+      const allRequests = [...deleteObservables, ...uploadObservables];
+
+      if (allRequests.length === 0) {
+        this.snackbarService.success('Part updated successfully!');
+        this.router.navigateByUrl('/app/parts');
+        return of(null);
+      }
+
       this.handleDialogStep(dialogRef, 1);
+      return concat(...allRequests);
+    })
+  ).subscribe({
+    next: () => {
+      this.handleDialogStep(dialogRef, 2);
       setTimeout(() => dialogRef?.close(), 1500);
       this.snackbarService.success('Part updated successfully!');
       this.router.navigateByUrl('/app/parts');
+      this.filesToDelete = [];
     },
     error: (err) => {
       dialogRef?.close();
-      this.snackbarService.error('Failed to update part.');
+      this.snackbarService.error('Failed to update part or files.');
       console.error(err);
     }
   });
 }
+
+
+removeUploadedFile(fileUrl: string): void {
+  const index = this.partFilePreviews.findIndex(file => file.url === fileUrl);
+  if (index !== -1) {
+    const fileToRemove = this.partFilePreviews[index];
+
+    const key = fileToRemove.url;
+    this.filesToDelete.push(key);
+
+    this.partFilePreviews.splice(index, 1);
+  }
+}
+
 
 private createPart(body: PartCreateRequest, dialogRef: any): void {
   this.partService.createPart(body).pipe(

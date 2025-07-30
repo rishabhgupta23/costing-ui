@@ -15,6 +15,7 @@ export interface TemplateRequest {
   }
   
   export interface AttributeRow{
+    deleteFlag: number;
     attributeId: number;
     attributeName: string;
   }

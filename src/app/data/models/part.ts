@@ -90,4 +90,5 @@ export interface TableActionEvent {
   attributeId: number;
   attributeName?:string;
   value: string;
+  deleteFlag?: number;
 }

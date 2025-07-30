@@ -27,5 +27,6 @@ export const API_END_POINTS = {
     PART_FILE_DOWNLOAD: '/parts/file/download',
     TEMPLATE: '/templates',
     TEMPLATE_DETAILS: '/templates/{templateId}',
-    PRODUCTION_PLAN: '/production/cost/calculate'
+    PRODUCTION_PLAN: '/production/cost/calculate',
+    PART_FILE_DELETE: '/parts/file/delete'
 };
