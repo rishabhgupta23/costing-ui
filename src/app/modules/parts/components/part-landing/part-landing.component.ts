@@ -14,6 +14,9 @@ import { Subject } from 'rxjs';
 import { downloadFile } from '../../../../shared/utils/file-download.util';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
+import { UserService } from 'src/app/data/services/user/user.service';
+import { AuthUtil } from 'src/app/shared/utils/auth.util';
+import { UserRole } from 'src/app/shared/constants/userrole.constants';
 
 
 @Component({
@@ -34,17 +37,31 @@ export class PartLandingComponent implements OnInit {
   sortState: SortState = {sortColumn: 'partNumber', sortState: SortIcons.ASC}
   sortColumn: string | undefined;
   sortMode: string | undefined;
+  userRole: string = '';
 
-  constructor(private partService: PartService, private router: Router, private snackbarService: SnackbarService) {}
-  
+  constructor(private partService: PartService, private router: Router, private snackbarService: SnackbarService, private userService: UserService) {}
+
   ngOnInit(): void {
-    this.getPartList();
+      this.getPartList();
     this.listenToFilterChanges();
   }
+
+get filteredColumns() {
+  const role = this.userService.getCurrentUser()?.roleName as UserRole;
+  return this.columns?.filter(col =>
+    col.columnType !== 'ACTION' || AuthUtil.hasRole(role, [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MAINTAINER])
+  );
+}
+
 
   onRowClicked(rowData: any) {
     this.router.navigateByUrl(`/app/parts/view/${rowData.partId}`);
   }
+
+  isAllowedToCreate(): boolean {
+  const userRole = this.userService.getCurrentUser()?.roleName as UserRole;
+  return AuthUtil.hasRole(userRole, [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MAINTAINER]);
+}
   
   getPartList() {
     this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortColumn , this.sortState ).subscribe(

@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { ContactusComponent } from './shared/components/contactus/contactus.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { LoginGuard } from './core/guards/login.guard';
+import { UnauthorizedComponent } from './modules/home/components/unauthorized/unauthorized.component';
 
 export const routes: Routes = [
     {
@@ -18,6 +19,10 @@ export const routes: Routes = [
         path: "login",
           canActivate: [LoginGuard],
         loadChildren: () => import("./modules/login/login.module").then((module) => module.LoginModule)
+    },
+    {
+        path: "unauthorized",
+        component: UnauthorizedComponent
     },
     {
         path: "contact-us",

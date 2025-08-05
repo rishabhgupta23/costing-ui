@@ -2,7 +2,7 @@
         <div class="page-header">
             <span class="page-title">Vendors</span>
             <span class="button-group">
-                <button class="primary-btn" (click)="createVendor()">Create</button>
+                <button class="primary-btn" *ngIf="isAllowedToCreate()" (click)="createVendor()">Create</button>
                 <button class="primary-btn" (click)="downloadExcel()">
                     <mat-icon class="btn-icon" svgIcon="download" ></mat-icon>
                     Download
@@ -18,7 +18,7 @@
                             [(sort)] = "sortState" 
                             (filterChange)="applyFilter($event)"
                             (sortChange)="applySort($event)"
-                            [config]="columns"
+                            [config]="filteredColumns"
                             [showFilter]="true"
                             [showSort]="true"
                             (actionTriggered)="handleAction($event)">
