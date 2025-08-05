@@ -1,30 +1,38 @@
+import { MenuItem } from "../data/models/menu-items";
+import { UserRole } from "../shared/constants/userrole.constants";
+
 export class AppConfig {
-  static readonly MENU_ITEMS = [
+  static readonly MENU_ITEMS: MenuItem[]= [
     {
       label: 'Parts',
       route: '/app/parts',
-      icon: 'parts_icon'
+      icon: 'parts_icon',
+      roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MAINTAINER, UserRole.GUEST]
     },
     {
       label: 'Vendors',
       route: '/app/vendors',
-      icon: 'vendor_icon'
+      icon: 'vendor_icon',
+      roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MAINTAINER, UserRole.GUEST]
     },
     {
       label: 'Cost Calculator',
       route: '/app/calculate',
-      icon: 'calculate_icon'
+      icon: 'calculate_icon',
+      roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MAINTAINER, UserRole.GUEST]
     },
     {
       label: 'Config',
       route: '/app/config',
       icon: 'config_icon',
+      roles: [UserRole.SUPERADMIN, UserRole.ADMIN]
     },
     {
       label: 'Settings',
       route: '/app/users',
       position: 'bottom',
-      icon: 'setting_icon'
+      icon: 'setting_icon',
+      roles: [UserRole.SUPERADMIN, UserRole.ADMIN]
     }
   ];
 }

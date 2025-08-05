@@ -20,9 +20,6 @@ export class UserService {
     return this.http.get<User>(ApiUtil.getApiUrl(API_END_POINTS.WHO_AM_I)).pipe(
       map(user => {
         this.currentUserSubject.next(user);
-        if (user.roleName) {
-                localStorage.setItem('userRole', user.roleName);
-            }
         return user;
       })
     );
@@ -30,6 +27,9 @@ export class UserService {
 
   login(body: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(ApiUtil.getApiUrl(API_END_POINTS.LOGIN), body);
+  }
+  getCurrentUser(): User | null{
+    return this.currentUserSubject.getValue();
   }
 
     getUserRoles(): Observable<{ roleId: number; roleName: string }[]> {

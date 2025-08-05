@@ -15,6 +15,8 @@ import { SnackbarService } from '../../../../data/services/snackbar/snackbar.ser
 import { SortState } from '../../../../data/models/part';
 import { getValueOrNull } from '../../../../shared/utils/string.util';
 import { UserService } from 'src/app/data/services/user/user.service';
+import { AuthUtil } from 'src/app/shared/utils/auth.util';
+import { UserRole } from 'src/app/shared/constants/userrole.constants';
 
 @Component({
   selector: 'app-vendor-landing',
@@ -40,10 +42,7 @@ export class VendorLandingComponent  {
   
   constructor(private vendorService: VendorService, private router: Router, private snackbarService:SnackbarService, private userService: UserService) {}
   ngOnInit(): void {
-    this.userService.whoAmI().subscribe(user => {
-      this.userRole = user.roleName?.toLowerCase() || '';
       this.getVendorList();
-    });
     this.listenToFilterChanges();
   }
   
@@ -58,6 +57,11 @@ export class VendorLandingComponent  {
         this.totalRecords = getValueOrNull(res.pageInfo?.totalRecords);
       }
     );
+  }
+
+    isAllowedToCreate(): boolean {
+    const userRole = this.userService.getCurrentUser()?.roleName as UserRole;
+    return AuthUtil.hasRole(userRole, [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MAINTAINER]);
   }
 
 listenToFilterChanges(): void {

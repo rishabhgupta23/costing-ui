@@ -2,7 +2,7 @@
     <div class="page-header">
         <span class="page-title">Parts</span>
         <span class="button-group">
-            <button class="primary-btn" *ngIf="userRole !== 'guest'" (click)="createPart()">Create</button>
+            <button class="primary-btn" *ngIf="isAllowedToCreate()" (click)="createPart()">Create</button>
             <button class="primary-btn" (click)="downloadExcel()">
                 <mat-icon class="btn-icon" svgIcon="download"></mat-icon>
                 Download

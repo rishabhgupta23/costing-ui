@@ -5,6 +5,7 @@ import { PartsFormComponent } from './components/parts-form/parts-form.component
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { PartViewComponent } from './components/part-view/part-view.component';
 import { AuthGuard } from 'src/app/core/guards/auth.guard';
+import { UserRole } from 'src/app/shared/constants/userrole.constants';
 
 const routes: Routes = [
   {
@@ -17,12 +18,14 @@ const routes: Routes = [
   {
     path: ":mode",
     canActivate: [AuthGuard],
-    component: PartsFormComponent
+    component: PartsFormComponent,
+    data:{roles:[UserRole.SUPERADMIN,UserRole.ADMIN,UserRole.MAINTAINER]}
   },
   {
      path: ':mode/:id', 
      canActivate: [AuthGuard],
-     component: PartsFormComponent
+     component: PartsFormComponent,
+     data:{roles:[UserRole.SUPERADMIN,UserRole.ADMIN,UserRole.MAINTAINER]}
   }
 ];
 

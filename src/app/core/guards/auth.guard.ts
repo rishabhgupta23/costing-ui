@@ -1,53 +1,28 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
 import { AuthUtil } from 'src/app/shared/utils/auth.util';
+import { UserRole } from 'src/app/shared/constants/userrole.constants';
+import { UserService } from 'src/app/data/services/user/user.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private userserive:UserService) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+  canActivate(route: ActivatedRouteSnapshot): boolean {
     const token = localStorage.getItem('accessToken');
-    if (token && AuthUtil.isTokenValid()) {
-      const userRole = AuthUtil.getUserRole();
-      
-      if (this.isRestrictedRoute(state.url) && !this.hasAccess(userRole, state.url)) {
-        // Redirect to a vendor page
-        this.router.navigate(['/unauthorized']);
-        return false;
-      }
-      
-      return true;
-    } else {
+    if (!token || !AuthUtil.isTokenValid()) {
       this.router.navigate(['/login']);
       return false;
     }
-  }
-
-  private isRestrictedRoute(url: string): boolean {
-    const restrictedPaths = ['config', 'settings', 'users', 
-      '/parts/create',
-      '/parts/edit',
-      '/vendors/create',
-      '/vendors/edit'];
-    return restrictedPaths.some(path => url.includes(path));
-  }
-
-  private hasAccess(role: string, url: string): boolean {
-    console.log('User role:', role);
-    const allowedRoles = ['Super Admin', 'Admin'];
-
-    if (allowedRoles.includes(role)) {
+    const allowedRoles = route.data['roles'] as UserRole[] | undefined;
+    const userRole = this.userserive.getCurrentUser()?.roleName as UserRole;
+    if (AuthUtil.hasRole(userRole, allowedRoles)) {
       return true;
     }
 
-    if (role === 'Maintainer') {
-      const restrictedForMaintainer = ['users', 'config'];
-      return !restrictedForMaintainer.some(path => url.includes(path));
-    }
-
+    this.router.navigate(['/unauthorized']);
     return false;
   }
 }

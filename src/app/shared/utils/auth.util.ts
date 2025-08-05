@@ -1,3 +1,5 @@
+import { UserRole } from "../constants/userrole.constants";
+
 export class AuthUtil {
     static get accessToken(): string {
         return localStorage.getItem('accessToken') || '';
@@ -9,28 +11,6 @@ export class AuthUtil {
 
     static resetToken() {
         localStorage.removeItem('accessToken');
-    }
-
-    static getUserRole(): string {
-        const token = AuthUtil.accessToken;
-        if (token) {
-            const tokenJwtParts: string[] = token.split('.');
-            const payload = JSON.parse(atob(tokenJwtParts[1]));
-            console.log('Decoded JWT payload:', payload); // Debugging line
-
-            // Check for role in the token payload
-            if (payload.role) {
-                console.log('Role found in token:', payload.role); // Debugging line
-                return payload.role;
-            }
-
-            // Fallback to local storage if role is not in the token
-            const storedRole = localStorage.getItem('userRole');
-            console.log('Role from local storage:', storedRole); // Debugging line
-            return storedRole || 'Guest';
-        }
-        console.log('No token found, returning Guest'); // Debugging line
-        return 'Guest';
     }
 
     static  isTokenValid() {
@@ -45,5 +25,12 @@ export class AuthUtil {
     } else {
       return false;
     }
+  }
+
+  static hasRole(currentRole: UserRole, allowedRoles?: UserRole[]): boolean {
+    if (!allowedRoles || allowedRoles.length === 0) {
+      return true;
+    }
+    return allowedRoles.includes(currentRole);
   }
 }

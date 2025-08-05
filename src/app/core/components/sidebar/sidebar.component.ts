@@ -4,6 +4,7 @@ import { SidebarService } from '../../services/sidebar.service';
 import { AppConfig } from '../../../config/app.config';
 import { UserService } from 'src/app/data/services/user/user.service';
 import { UserRole } from 'src/app/shared/constants/userrole.constants';
+import { MenuItem } from 'src/app/data/models/menu-items';
 
 @Component({
   selector: 'app-sidebar',
@@ -11,9 +12,11 @@ import { UserRole } from 'src/app/shared/constants/userrole.constants';
   styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent {
-  menuItems = AppConfig.MENU_ITEMS;
+  menuItems: MenuItem[] = AppConfig.MENU_ITEMS;
+  visibleTopMenuItems: MenuItem[] = [];
+  visibleBottomMenuItems: MenuItem[] = [];
   selectedMenu = undefined;
-  userRole: string = '';
+  userRole: UserRole = undefined as any;
 
   constructor(
     private router: Router,
@@ -30,23 +33,34 @@ export class SidebarComponent {
     });
   }
 
+  getValidUserRole(role: string): UserRole {
+  const validRoles = Object.values(UserRole) as string[];
+  return validRoles.includes(role) ? role as UserRole : UserRole.GUEST;
+  }
+
   fetchUserRole() {
     this.userService.currentUser$.subscribe((user: any) => {
       if (user) {
-        this.userRole = user.roleName.toLowerCase();
+        this.userRole = this.getValidUserRole(user.roleName);
+        this.setMenuVisibility();
       }
     });
   }
-  
-  isSettingsVisible(item: any): boolean {
-    return this.userRole === UserRole.ADMIN || this.userRole === UserRole.SUPERADMIN;
-  }
-  
-  isConfigVisible(item: any): boolean {
-    return this.userRole === UserRole.ADMIN || this.userRole === UserRole.SUPERADMIN;
+
+  setMenuVisibility() {
+    this.visibleTopMenuItems = this.menuItems.filter(item => 
+      (!item.position || item.position !== 'bottom') &&
+      (!item.roles || item.roles.includes(this.userRole))
+    );
+
+    this.visibleBottomMenuItems = this.menuItems.filter(item => 
+      item.position === 'bottom' &&
+      (!item.roles || item.roles.includes(this.userRole))
+    );
   }
 
   menuClicked(item: any) {
     this.router.navigateByUrl(item?.route);
   }
 }
+

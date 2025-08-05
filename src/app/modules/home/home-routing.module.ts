@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 import { AuthGuard } from 'src/app/core/guards/auth.guard';
+import { UserRole } from 'src/app/shared/constants/userrole.constants';
 
 const routes: Routes = [
   {
@@ -28,12 +29,14 @@ const routes: Routes = [
       {
         path: "config",
         canActivate: [AuthGuard],
-        loadChildren: () => import("../config/config.module").then((module) => module.ConfigModule)
+        loadChildren: () => import("../config/config.module").then((module) => module.ConfigModule),
+        data: { roles: [UserRole.SUPERADMIN, UserRole.ADMIN] }
       },
       {
         path: "users",
         canActivate: [AuthGuard],
-        loadChildren: () => import("../setting/setting.module").then((module) => module.SettingModule)
+        loadChildren: () => import("../setting/setting.module").then((module) => module.SettingModule),
+        data: { roles: [UserRole.SUPERADMIN, UserRole.ADMIN] }
       }
     ]
   }
