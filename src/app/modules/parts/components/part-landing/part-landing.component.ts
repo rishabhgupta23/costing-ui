@@ -46,9 +46,13 @@ export class PartLandingComponent implements OnInit {
     this.listenToFilterChanges();
   }
 
-  get filteredColumns() {
-  return this.columns?.filter(col => col.columnType !== 'ACTION' || this.userRole !== 'guest');
+get filteredColumns() {
+  const role = this.userService.getCurrentUser()?.roleName as UserRole;
+  return this.columns?.filter(col =>
+    col.columnType !== 'ACTION' || AuthUtil.hasRole(role, [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MAINTAINER])
+  );
 }
+
 
   onRowClicked(rowData: any) {
     this.router.navigateByUrl(`/app/parts/view/${rowData.partId}`);

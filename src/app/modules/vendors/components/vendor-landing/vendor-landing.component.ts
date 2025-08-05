@@ -46,9 +46,13 @@ export class VendorLandingComponent  {
     this.listenToFilterChanges();
   }
   
-  get filteredColumns() {
-    return this.columns.filter(col => col.columnType !== 'ACTION' || this.userRole !== 'guest');
-  }
+get filteredColumns() {
+  const role = this.userService.getCurrentUser()?.roleName as UserRole;
+  return this.columns?.filter(col =>
+    col.columnType !== 'ACTION' || AuthUtil.hasRole(role, [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MAINTAINER])
+  );
+}
+
 
   getVendorList(): void {
     this.vendorService.getVendorList(this.currentPage, this.pageSize, this.filterCriteria, this.sortState).subscribe(
