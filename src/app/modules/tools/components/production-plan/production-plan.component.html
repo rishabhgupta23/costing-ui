@@ -4,7 +4,7 @@
   </div>
 
   <div class="stepper-container">
-    <mat-stepper linear #stepper (selectionChange)="onStepChange($event)">
+    <mat-stepper class="custom-stepper" #stepper (selectionChange)="onStepChange($event)">
       <!-- Step 1: Select Parts -->
       <mat-step [completed]= "selectedPartIds.size > 0">
         <ng-template matStepLabel>Select Parts</ng-template>
@@ -311,7 +311,7 @@
     mat-stroked-button
     color="warn"
     class="secondary-btn"
-    (click)="resetPlan(stepper)"
+    (click)="resetPlan()"
   >
     Reset
   </button>

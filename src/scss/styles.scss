@@ -188,6 +188,10 @@ $costing-ui-theme: mat.define-theme((
   }
 }
 
+.custom-stepper .mat-step-header {
+  pointer-events: none;
+}
+
 .cdk-overlay-container.autocomplete-open {
   pointer-events: auto;
 }

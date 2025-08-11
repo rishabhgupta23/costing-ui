@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { PartService } from "src/app/data/services/part/part.service";
 import { PartRow, SortState } from "src/app/data/models/part";
 import { debounceTime } from "rxjs";
@@ -16,7 +16,7 @@ import { ProductionCostResponse, ProductionPlanRequest } from "src/app/data/mode
   templateUrl: "./production-plan.component.html",
   styleUrl: "./production-plan.component.scss",
 })
-export class ProductionPlanComponent implements OnInit {
+export class ProductionPlanComponent implements OnInit, OnDestroy {
   partList: PartRow[] = [];
   selectedPartIds: Set<number> = new Set();
   displayedColumns: string[] = [
@@ -43,7 +43,9 @@ export class ProductionPlanComponent implements OnInit {
   sortState: SortState = { sortColumn: "partNumber", sortState: SortIcons.ASC };
   filterCriteria: Map<string, string> = new Map();
   selectedStepIndex: number = 0;
-  displayResultTableColumns = ['partNumber', 'partName', 'quantity', 'rate', 'subTotal', 'vendorName']
+  displayResultTableColumns = ['partNumber', 'partName', 'quantity', 'rate', 'subTotal', 'vendorName'];
+  @ViewChild('stepper') stepper!: MatStepper;
+
 
   constructor(private partService: PartService, private fb: FormBuilder, private productionPlanService: ProductionPlanService) {
     // Add filter controls to the form group
@@ -116,6 +118,11 @@ export class ProductionPlanComponent implements OnInit {
   applySort(sort: SortState): void {
     this.sortState = sort;
     this.getPartList();
+  }
+
+  ngOnDestroy():void{
+    // this.resetPlan();
+    console.log("Destroyed")
   }
 
   getSortIcon(key: string): string {
@@ -223,16 +230,17 @@ planProduction(stepper: MatStepper) {
   });
 }
 
-resetPlan(stepper: MatStepper) {
+resetPlan(): void {
   this.selectedPartIds.clear();
   this.selectedParts = [];
   this.productionCostResponse = null;
   this.partSelectionForm.reset();
   this.planForm.reset();
   this.selectedStepIndex = 0;
-  stepper.reset();
+  this.stepper?.reset();
   this.getPartList();
 }
+
     getTotalQuantity(): number {
     return this.productionCostResponse?.items.reduce((total, item) => total + item.quantity, 0) || 0;
   }

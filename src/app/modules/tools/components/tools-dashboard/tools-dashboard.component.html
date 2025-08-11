@@ -1,10 +1,12 @@
 <div class="tools-dashboard">
-  <mat-tab-group class="tab-heading">
-  <mat-tab label="Cost Calculation">
-    <app-calculate></app-calculate>
-  </mat-tab>
-  <mat-tab label="Production Plan">
-    <app-production-plan></app-production-plan>
-  </mat-tab>
-</mat-tab-group>
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="tab-heading">
+    <a mat-tab-link *ngFor="let tab of tabs"
+       [routerLink]="tab.route"
+       [active]="activeTabLink == tab.route">
+       {{tab.label}}
+    </a>
+  </nav>
+  <mat-tab-nav-panel #tabPanel>
+    <router-outlet></router-outlet>
+  </mat-tab-nav-panel>
 </div>
