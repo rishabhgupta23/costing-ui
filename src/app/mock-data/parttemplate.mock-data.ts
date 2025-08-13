@@ -14,5 +14,5 @@ export const mockTemplateResponseList = {
 export const mockTemplateDetail: TemplateResponse = {
   templateId: 1,
   templateName: 'Template A',
-  partAttributes: [{ attributeId: 1, attributeName: 'Color' }]
+  partAttributes: [{ attributeId: 1, attributeName: 'Color', deleteFlag: 0 }]
 };

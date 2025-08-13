@@ -1,9 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { PartsFormComponent } from './parts-form.component';
 import { PartService } from '../../../../data/services/part/part.service';
 import { VendorService } from '../../../../data/services/vendor/vendor.service';
 import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { ReactiveFormsModule, FormsModule, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -17,6 +17,8 @@ import { TableActions } from '../../../../shared/constants/table.constants';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatIconModule } from '@angular/material/icon';
+import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+
 
 describe('PartsFormComponent', () => {
   let component: PartsFormComponent;
@@ -36,6 +38,13 @@ describe('PartsFormComponent', () => {
       vendorCostList: [],
       bom: []
     }),
+      getPartFiles: jasmine.createSpy('getPartFiles').and.returnValue(of([
+    'https://example.com/file1.png',
+    'https://example.com/file2.pdf'
+  ])),
+  downloadPartFile: jasmine.createSpy('downloadPartFile').and.returnValue(of({
+    fileData: 'base64EncodedString'
+  })),
     createPart: () => of({ id: 1 }),
     updatePart: () => of({})
   };
@@ -360,7 +369,185 @@ describe('PartsFormComponent', () => {
     component.addCostFactor(costFactor, vendorId);
     expect(component.vendorCostMap.get(vendorId)?.length).toBe(1);
   });
-  
+  it('should open confirmation dialog and remove attribute if DELETE is confirmed', () => {
+    const attrToRemove = { attributeId: 1, attributeName: 'Test Attribute' } as any;
+
+    component.attributeValueList = [
+      { attributeId: 1, attributeName: 'Test Attribute' },
+      { attributeId: 2, attributeName: 'Another Attribute' }
+    ] as any[];
+
+    const afterClosedSpy = of(DialogCloseResponse.DELETE);
+    const dialogRefSpyObj = jasmine.createSpyObj({ afterClosed: afterClosedSpy, close: null });
+
+    mockDialog.open.and.returnValue(dialogRefSpyObj);
+
+    component.removeDeletedAttribute(attrToRemove);
+
+    expect(mockDialog.open).toHaveBeenCalledWith(ConfirmDialogComponent, jasmine.objectContaining({
+      data: jasmine.objectContaining({
+        title: 'Confirm Deletion',
+        message: jasmine.stringMatching(/Test Attribute/)
+      })
+    }));
+
+    expect(component.attributeValueList.length).toBe(1);
+    expect(component.attributeValueList[0].attributeId).toBe(2);
+  });
+
+  it('should not remove attribute if DELETE is not confirmed', () => {
+    const attrToRemove = { attributeId: 1, attributeName: 'Test Attribute' } as any;
+
+    component.attributeValueList = [
+      { attributeId: 1, attributeName: 'Test Attribute' },
+      { attributeId: 2, attributeName: 'Another Attribute' }
+    ] as any[];
+
+    const afterClosedSpy = of('SOME_OTHER_ACTION');
+    const dialogRefSpyObj = jasmine.createSpyObj({ afterClosed: afterClosedSpy, close: null });
+
+    mockDialog.open.and.returnValue(dialogRefSpyObj);
+
+    component.removeDeletedAttribute(attrToRemove);
+
+    expect(component.attributeValueList.length).toBe(2);
+  });
+   it('should fetch part files and download image previews', fakeAsync(() => {
+    const mockUrls = ['file1.png', 'file2.pdf'];
+    const mockDownloadResponse = { fileData: 'mockBase64Data' };
+
+    mockPartService.getPartFiles.and.returnValue(of(mockUrls));
+    mockPartService.downloadPartFile.and.callFake((url: string) => {
+      if (url.endsWith('.png')) {
+        return of(mockDownloadResponse);
+      } else {
+        return of({});
+      }
+    });
+
+    component.getPartFiles('123');
+
+    expect(mockPartService.getPartFiles).toHaveBeenCalledWith('123');
+    expect(mockPartService.downloadPartFile).toHaveBeenCalledWith('file1.png');
+
+    const imagePreview = component.partFilePreviews.find(p => p.url === 'file1.png');
+    const pdfPreview = component.partFilePreviews.find(p => p.url === 'file2.pdf');
+
+    expect(imagePreview).toBeDefined();
+    expect(imagePreview!.previewUrl).toBe('data:image/png;base64,mockBase64Data');
+
+    expect(pdfPreview).toBeDefined();
+    expect(pdfPreview!.previewUrl).toBeUndefined();
+  }));
+
+  it('should handle error when getPartFiles fails', () => {
+    mockPartService.getPartFiles.and.returnValue(throwError(() => new Error('API failed')));
+
+    spyOn(console, 'error');
+    component.getPartFiles('123');
+
+    expect(console.error).toHaveBeenCalledWith('Error fetching part files:', jasmine.any(Error));
+  });
+
+  it('it should process the file when files are added',() =>{
+      const mockFile1 = new File(['file content 1'], 'file1.jpg', { type: 'image/jpeg' });
+      const mockFile2 = new File(['file content 2'], 'file2.txt');
+      const fileList: FileList = {
+          0: mockFile1,
+          1: mockFile2,
+      length: 2,
+      item: (index: number) => [mockFile1, mockFile2][index]
+  };
+  const event = { target: { files: fileList } };
+  spyOn(component, 'processFiles');
+
+  component.onFilesSelected(event as any);
+
+  expect(component.processFiles).toHaveBeenCalledWith([mockFile1, mockFile2]);
+  });
+
+it('should add valid files to selected files', () => {
+  component.selectedFiles = [];
+  component.maxFiles = 3;
+
+  const mockFile1 = new File(['file content 1'], 'file1.jpg', { type: 'image/jpeg' });
+  const mockFile2 = new File(['file content 2'], 'file2.txt');
+  Object.defineProperty(mockFile2, 'type', { value: 'text/plain' });
 
 
+  mockSnackbarService.error.calls.reset();
+  component.processFiles([mockFile1, mockFile2]);
+  expect(component.selectedFiles).toEqual([mockFile1, mockFile2]);
+  expect(mockSnackbarService.error).toHaveBeenCalledTimes(0);
 });
+
+
+it('should skip files with types not in allowedFileTypes', () => {
+    const validFile = new File([''], 'doc.pdf', { type: 'application/pdf' });
+    const invalidFile = new File([''], 'video.mp4', { type: 'video/mp4' });
+    mockSnackbarService.error.calls.reset();
+    component.processFiles([validFile, invalidFile]);
+
+    expect(component.selectedFiles).toEqual([validFile]);
+    expect(mockSnackbarService.error)
+      .toHaveBeenCalledWith('Some files were not allowed and have been skipped.');
+  });
+
+  it('should give error when the maxfile is less than the uploaded files',() =>{
+    component.selectedFiles = [];
+    component.maxFiles = 1;
+    const mockFile1 = new File(['file content 1'], 'file1.jpg', { type: 'image/jpeg' });
+    const mockFile2 = new File(['file content 2'], 'file2.doc', { type: 'application/msword' });
+    mockSnackbarService.error.calls.reset();
+    component.processFiles([mockFile1,mockFile2]);
+
+    expect(component.selectedFiles).toEqual([]);
+    expect(mockSnackbarService.error)
+      .toHaveBeenCalledWith('You can upload maximum 1 files.');
+  });
+
+  it('should remove file from the selected files',()=>{
+        const mockFile1 = new File(['file content 1'], 'file1.jpg', { type: 'image/jpeg' });
+    const mockFile2 = new File(['file content 2'], 'file2.doc', { type: 'application/msword' });
+    component.selectedFiles=[mockFile1,mockFile2];
+    component.removeFile(1);
+
+    expect(component.selectedFiles).toEqual([mockFile1]);
+    expect(component.selectedFiles.length).toBe(1);
+  });
+
+  it('should return file type from the extension',()=>{
+    expect(component.getFileTypeFromName('pic.jpg')).toBe('image');
+    expect(component.getFileTypeFromName('pdf.pdf')).toBe('pdf');
+    expect(component.getFileTypeFromName('word.doc')).toBe('word');
+    expect(component.getFileTypeFromName('data.xls')).toBe('excel');
+
+  });
+  it('should return file name from a URL', () => {
+      expect(component.getFileNameFromUrl('https://example.com/path/file.pdf'))
+        .toBe('file.pdf');
+    });
+
+    it('should return the whole string if no slash exists', () => {
+      expect(component.getFileNameFromUrl('file.pdf')).toBe('file.pdf');
+    });
+
+     it('should call URL.createObjectURL and return the value', () => {
+      const mockFile = new File(['content'], 'file.png', { type: 'image/png' });
+      const mockUrl = 'blob:mockurl';
+      spyOn(URL, 'createObjectURL').and.returnValue(mockUrl);
+
+      const result = component.getImagePreview(mockFile);
+
+      expect(URL.createObjectURL).toHaveBeenCalledWith(mockFile);
+      expect(result).toBe(mockUrl);
+    });
+
+     it('should return type for META types', () => {
+      expect(component.getFileType({ type: 'image/png' })).toBe('image');
+      expect(component.getFileType({ type: 'application/pdf' })).toBe('pdf');
+      expect(component.getFileType({ type: 'application/msword' })).toBe('word');
+      expect(component.getFileType({ type: 'application/vnd.ms-excel' })).toBe('excel');
+    });
+});
+

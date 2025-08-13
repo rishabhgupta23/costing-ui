@@ -22,9 +22,9 @@ describe('TemplateDialogComponent', () => {
   let dialogRefSpy: jasmine.SpyObj<MatDialogRef<TemplateDialogComponent>>;
 
   const mockAttributeList = [
-    { attributeId: 1, attributeName: 'Color' },
-    { attributeId: 2, attributeName: 'Size' },
-    { attributeId: 3, attributeName: 'Material' }
+    { attributeId: 1, attributeName: 'Color', deleteFlag:0 },
+    { attributeId: 2, attributeName: 'Size',deleteFlag:0 },
+    { attributeId: 3, attributeName: 'Material', deleteFlag:0 }
   ];
 
   beforeEach(async () => {
@@ -115,7 +115,7 @@ expect(mockPartAttributeService.getPartAttributeList).toHaveBeenCalledWith(
   });
 
   it('should select and deselect attributes', () => {
-    const attr = { attributeId: 5, attributeName: 'Weight' };
+    const attr = { attributeId: 5, attributeName: 'Weight', deleteFlag:0 };
     component.toggleAttributeSelection(attr, { checked: true });
     expect(component.existingAttributes.has(5)).toBeTrue();
 
