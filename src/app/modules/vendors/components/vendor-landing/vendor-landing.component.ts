@@ -46,12 +46,6 @@ export class VendorLandingComponent  {
     this.listenToFilterChanges();
   }
   
-get filteredColumns() {
-  const role = this.userService.getCurrentUser()?.roleName as UserRole;
-  return this.columns?.filter(col =>
-    col.columnType !== 'ACTION' || AuthUtil.hasRole(role, [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MAINTAINER])
-  );
-}
 
 
   getVendorList(): void {

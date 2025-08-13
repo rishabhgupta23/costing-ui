@@ -17,7 +17,7 @@
                     <app-table
                         [data]="partList"
                         [(sort)]="sortState"
-                        [config]="filteredColumns"
+                        [config]="columns"
                         (actionTriggered)="handleAction($event)"
                         (rowClicked)="onRowClicked($event)"
                         (filterChange)="applyFilter($event)"

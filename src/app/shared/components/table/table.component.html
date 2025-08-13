@@ -4,7 +4,7 @@
    <thead>
     <tr class="header-row" *ngIf="showSort">
       <ng-container *ngFor="let col of config">
-        <th [title]="col?.label">
+        <th *ngIf="canShowColumn(col)"  [title]="col?.label">
           <div class="header-cell">
             <span>{{ col?.label }}</span>
             <ng-container *ngIf="col.sortable">
@@ -19,7 +19,7 @@
 
   <tr class="filter-row" *ngIf="showFilter">
     <ng-container *ngFor="let col of config">
-      <th>
+      <th *ngif="canShowColumn(col)">
         <ng-container *ngIf="col.filterable">
           <div class="filter-input-wrapper">
             <input 
@@ -45,6 +45,7 @@
       <tr class="data-row" (click)="onRowClick(row)">
           <!-- Dynamic Columns -->
       <ng-container *ngFor="let col of config">
+        <ng-container *ngIf="canShowColumn(col)">
         <td *ngIf="col?.columnType === ColumnType.GENERAL">
           <ng-container *ngIf="col.cellTemplate; else defaultCell">
             <ng-container 
@@ -96,6 +97,7 @@
     </ng-container>
   </td>
   
+</ng-container>
 </ng-container>
       </tr>
   </ng-container>
