@@ -177,7 +177,7 @@ expect(mockTemplateService.createTemplate).toHaveBeenCalledWith({
     const existingTemplate: TemplateResponse = {
       templateId: 1,
       templateName: 'Template A',
-      partAttributes: [{ attributeId: 1, attributeName: 'Attr 1' }]
+      partAttributes: [{ attributeId: 1, attributeName: 'Attr 1', deleteFlag:0 }]
     };
 
     const dialogRefSpyObj = jasmine.createSpyObj({ afterClosed: of({ action: DialogCloseResponse.UPDATE, data: [{ attributeId: 1 }], templateName: 'Updated Template' }), close: null });

@@ -1,3 +1,5 @@
+import { UserRole } from "../constants/userrole.constants";
+
 export class AuthUtil {
     static get accessToken(): string {
         return localStorage.getItem('accessToken') || '';
@@ -23,5 +25,12 @@ export class AuthUtil {
     } else {
       return false;
     }
+  }
+
+  static hasRole(currentRole: UserRole, allowedRoles?: UserRole[]): boolean {
+    if (!allowedRoles || allowedRoles.length === 0) {
+      return true;
+    }
+    return allowedRoles.includes(currentRole);
   }
 }

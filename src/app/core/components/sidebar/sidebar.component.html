@@ -1,27 +1,23 @@
 <div class="sidebar">
     <div class="menu-container">
-      <ng-container *ngFor="let item of menuItems">
-        <ng-container *ngIf="!item.position">
+      <ng-container *ngFor="let item of visibleTopMenuItems">
           <span class="menu-item"
                 [ngClass]="item === selectedMenu ? 'menu-item--active' : ''"
                 (click)="menuClicked(item)">
             <mat-icon class="menu-icon" svgIcon="{{ item.icon }}"></mat-icon>
             <span class="menu-label">{{ item.label }}</span>
           </span>
-        </ng-container>
       </ng-container>
     </div>
-  
+
     <div class="menu-bottom">
-      <ng-container *ngFor="let item of menuItems">
-        <ng-container *ngIf="item.position === 'bottom' && isSettingsVisible(item)">
+      <ng-container *ngFor="let item of visibleBottomMenuItems">
           <span class="menu-item"
                 [ngClass]="item === selectedMenu ? 'menu-item--active' : ''"
                 (click)="menuClicked(item)">
             <mat-icon class="menu-icon" svgIcon="{{ item.icon }}"></mat-icon>
             <span class="menu-label">{{ item.label }}</span>
           </span>
-        </ng-container>
       </ng-container>
     </div>
   </div>

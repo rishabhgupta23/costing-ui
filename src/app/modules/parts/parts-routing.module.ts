@@ -4,6 +4,8 @@ import { PartLandingComponent } from './components/part-landing/part-landing.com
 import { PartsFormComponent } from './components/parts-form/parts-form.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { PartViewComponent } from './components/part-view/part-view.component';
+import { AuthGuard } from 'src/app/core/guards/auth.guard';
+import { UserRole } from 'src/app/shared/constants/userrole.constants';
 
 const routes: Routes = [
   {
@@ -15,10 +17,15 @@ const routes: Routes = [
   },
   {
     path: ":mode",
-    component: PartsFormComponent
+    canActivate: [AuthGuard],
+    component: PartsFormComponent,
+    data:{roles:[UserRole.SUPERADMIN,UserRole.ADMIN,UserRole.MAINTAINER]}
   },
   {
-     path: ':mode/:id', component: PartsFormComponent 
+     path: ':mode/:id', 
+     canActivate: [AuthGuard],
+     component: PartsFormComponent,
+     data:{roles:[UserRole.SUPERADMIN,UserRole.ADMIN,UserRole.MAINTAINER]}
   }
 ];
 

@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { SortState } from '../../../data/models/part';
+import { UserService } from 'src/app/data/services/user/user.service';
 
 @Component({
 
@@ -24,6 +25,8 @@ export class TableComponent {
  applyFilter(arg0: { key: any; value: any; }) {
  throw new Error('Method not implemented.');
  }
+
+ constructor(private userService:UserService){}
 
  @Input() customClass: string = '';
   @Input() data: any[] = [];
@@ -76,6 +79,12 @@ export class TableComponent {
     event.stopPropagation();
     this.actionTriggered.emit(actionData);
   }
+
+  canShowColumn(col: any): boolean {
+  const currentRole = this.userService.getCurrentUser()?.roleName;
+  return !col.hiddenForRoles || !col.hiddenForRoles.includes(currentRole);
+}
+
   }
 
   

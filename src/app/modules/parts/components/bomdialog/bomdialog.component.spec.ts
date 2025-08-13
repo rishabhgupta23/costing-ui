@@ -170,4 +170,15 @@ describe('BomdialogComponent', () => {
     expect(component.sortState.sortState).toBe(SortIcons.DESC);
     expect(component.applySort).toHaveBeenCalledWith(component.sortState);
   });
+
+it('should filter out excluded partId from part list', () => {
+  component.data = { existingParts: new Set(), excludePartId: '1' };
+  mockPartService.getPartList.and.returnValue(of(MOCK_PART_LIST_RESPONSE));
+
+  component.getPartList(); // call manually since ngOnInit already ran
+  expect(component.partList.length).toBe(1);
+  expect(component.partList.some(p => p.partId === 1)).toBeFalse();
+});
+
+
 });

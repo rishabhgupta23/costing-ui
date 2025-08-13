@@ -1,3 +1,4 @@
+import { UserRole } from "src/app/shared/constants/userrole.constants";
 import { ColumnType, TableActions } from "../../shared/constants/table.constants";
 
 export const PART_TABLE_COLUMNS = [
@@ -41,6 +42,7 @@ export const PART_TABLE_COLUMNS = [
         columnType: ColumnType.ACTION,
         actions: [
             TableActions.EDIT,TableActions.DELETE
-        ]
+        ],
+        hiddenForRoles: [UserRole.GUEST] 
     }
 ]
