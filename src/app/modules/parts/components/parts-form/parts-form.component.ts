@@ -372,7 +372,7 @@ setupTemplateFilter() {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result === DialogCloseResponse.DELETE) {
+      if (result === DialogCloseResponse.POSITIVE) {
         this.attributeValueList = this.attributeValueList.filter(
           attr => attr.attributeId !== attrToRemove.attributeId
         );

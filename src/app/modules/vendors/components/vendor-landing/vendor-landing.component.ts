@@ -100,7 +100,7 @@ listenToFilterChanges(): void {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result === DialogCloseResponse.DELETE) {
+      if (result === DialogCloseResponse.POSITIVE) {
         this.vendorService.deleteVendor(row.id.toString()).subscribe({
           next: () => {
             this.snackbarService.success('Vendor deleted successfully!');

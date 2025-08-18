@@ -142,7 +142,7 @@ export class PartLandingComponent implements OnInit {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, { data: dialogData });
 
       dialogRef.afterClosed().subscribe(result => {
-        if (result === DialogCloseResponse.DELETE) {
+        if (result === DialogCloseResponse.POSITIVE) {
           this.deletePart(row.partId);
         }
       });

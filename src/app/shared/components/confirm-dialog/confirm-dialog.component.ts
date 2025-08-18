@@ -24,7 +24,7 @@ export class ConfirmDialogComponent {
   ) {}
 
   onConfirm(): void {
-    this.dialogRef.close(DialogCloseResponse.DELETE);
+    this.dialogRef.close(DialogCloseResponse.POSITIVE);
   }
 
   onCancel(): void {

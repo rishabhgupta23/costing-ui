@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, HostListener, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { PartService } from "src/app/data/services/part/part.service";
 import { PartRow, SortState } from "src/app/data/models/part";
 import { debounceTime, distinctUntilChanged } from "rxjs";
@@ -40,8 +40,15 @@ export class ProductionPlanComponent implements OnInit, OnDestroy {
   filterCriteria: Map<string, string> = new Map();
   selectedStepIndex: number = 0;
   displayResultTableColumns = ['partNumber', 'partName', 'quantity', 'rate', 'subTotal', 'vendorName'];
+   hasUnsavedChanges = true;
   @ViewChild('stepper') stepper!: MatStepper;
-
+   @HostListener('window:beforeunload', ['$event'])
+  unloadNotification(event: BeforeUnloadEvent) {
+    if (this.hasUnsavedChanges) {
+      event.preventDefault();
+      event.returnValue = ''; // required for Chrome
+    }
+  }
 
   constructor(private partService: PartService, private fb: FormBuilder, private productionPlanService: ProductionPlanService) {
     // Add filter controls to the form group
