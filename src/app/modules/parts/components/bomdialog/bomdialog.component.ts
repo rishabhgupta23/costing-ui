@@ -119,7 +119,7 @@ isAllSelected(): boolean {
 }
   
 getPartList(): void {
-  this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortColumn, this.sortState).subscribe(
+  this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria,this.sortState).subscribe(
     (res) => {
       let parts: PartRow[] = getValueOrNull(res.data?.partsList);
 

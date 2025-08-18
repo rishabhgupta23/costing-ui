@@ -26,7 +26,7 @@ export class PartService {
     return this.http.get<PartDetails>(ApiUtil.getPreparedUrl(API_END_POINTS.PART_DETAILS, params));
   }
 
-  getPartList(page: number = 0, size: number = 100, filterCriteria: Map<string, string> = new Map(), sortColumn: string = 'partNumber',sortState={sortColumn:'partNumber', sortState: SortIcons.ASC},
+  getPartList(page: number = 0, size: number = 100, filterCriteria: Map<string, string> = new Map(),sortState={sortColumn:'partNumber', sortState: SortIcons.ASC},
 ): Observable<any> {
     let params = new HttpParams()
       .set('pageNo', page.toString())

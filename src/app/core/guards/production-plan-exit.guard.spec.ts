@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { CanDeactivateFn } from '@angular/router';
 
-import { leaveProductionPlanGuard } from './leave-production-plan.guard';
+import { LeaveProductionPlanGuard } from './production-plan-exit.guard';
 
 describe('leaveProductionPlanGuard', () => {
   const executeGuard: CanDeactivateFn = (...guardParameters) => 
-      TestBed.runInInjectionContext(() => leaveProductionPlanGuard(...guardParameters));
+      TestBed.runInInjectionContext(() => LeaveProductionPlanGuard(...guardParameters));
 
   beforeEach(() => {
     TestBed.configureTestingModule({});

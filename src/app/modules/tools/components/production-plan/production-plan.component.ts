@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { PartService } from "src/app/data/services/part/part.service";
 import { PartRow, SortState } from "src/app/data/models/part";
-import { debounceTime } from "rxjs";
+import { debounceTime, distinctUntilChanged } from "rxjs";
 import { SortIcons } from "src/app/shared/constants/table.constants";
 import { getValueOrNull } from "src/app/shared/utils/string.util";
 import { PageEvent } from "@angular/material/paginator";
@@ -27,17 +27,13 @@ export class ProductionPlanComponent implements OnInit, OnDestroy {
     "type",
     "categoryName",
   ];
-  footerColumns: string[] = ['footer'];
-  allParts: PartRow[] = [];
   pageSize: number = 100;
   currentPage: number = 0;
   totalRecords: number = 0;
-  filteredPartList: PartRow[] = [];
   partSelectionForm: FormGroup;
   planForm: FormGroup;
   selectedParts: PartRow[] = [];
   productionCostResponse: ProductionCostResponse | null = null;
-  selectedPricing: string = "";
   sortMode: string = SortIcons.ASC;
   sortColumn: string = "partNumber";
   sortState: SortState = { sortColumn: "partNumber", sortState: SortIcons.ASC };
@@ -65,9 +61,12 @@ export class ProductionPlanComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getPartList();
     // Listen for filter changes
-    this.partSelectionForm.valueChanges.pipe(debounceTime(300)).subscribe(() => {
-      this.applyFilter();
-    });
+    this.partSelectionForm.valueChanges.pipe(debounceTime(300),
+    distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr))
+  )
+  .subscribe(() => {
+    this.applyFilter();
+  });
   }
 
   getPartList(): void {
@@ -76,31 +75,15 @@ export class ProductionPlanComponent implements OnInit, OnDestroy {
         this.currentPage,
         this.pageSize,
         this.filterCriteria,
-        this.sortColumn,
         this.sortState
       )
       .subscribe((res) => {
         this.partList = getValueOrNull(res.data?.partsList) || [];
         this.totalRecords = getValueOrNull(res.pageInfo?.totalRecords) || 0;
-        
-        // Remove duplicates by partId
-        this.updateAllPartsAndSelections();
+      
       });
   }
 
-    private updateAllPartsAndSelections(): void {
-    // Add new parts to allParts
-    this.partList.forEach(part => {
-      if (!this.allParts.some(p => p.partId === part.partId)) {
-        this.allParts.push(part);
-      }
-    });
-
-    // Remove parts from allParts that are no longer in any page of partList
-    this.allParts = this.allParts.filter(part => 
-      this.partList.some(p => p.partId === part.partId) || this.selectedPartIds.has(part.partId)
-    );
-  }
 
   toggleSort(key: string): void {
     this.sortState = {
@@ -190,13 +173,18 @@ export class ProductionPlanComponent implements OnInit, OnDestroy {
     this.selectedStepIndex = event.selectedIndex;
   }
 
-  goToNextStep(stepper: MatStepper) {
-  // Only proceed if at least one part is selected
+goToNextStep(stepper: MatStepper) {
   if (this.selectedPartIds.size === 0) return;
-  this.selectedParts = this.allParts.filter(part => this.selectedPartIds.has(part.partId));
+
+  this.selectedParts = [
+    ...this.selectedParts.filter(p => this.selectedPartIds.has(p.partId)),
+    ...this.partList.filter(part => this.selectedPartIds.has(part.partId) && !this.selectedParts.some(p => p.partId === part.partId))
+  ];
   this.preparePlanForm();
   stepper.next();
 }
+
+
 
 pricingOptions = Object.values(PricingOptions);
 
@@ -204,17 +192,17 @@ preparePlanForm() {
   this.planForm = this.fb.group({
     pricingMode: [this.pricingOptions[0].value, Validators.required],
   });
-  this.selectedParts.forEach((part, i) => {
-    this.planForm.addControl(`quantity_${i}`, this.fb.control(1, [Validators.required, Validators.min(1)]));
+  this.selectedParts.forEach(part => {
+    this.planForm.addControl(`quantity_${part.partId}`, this.fb.control(1, [Validators.required, Validators.min(1)]));
   });
 }
 
 planProduction(stepper: MatStepper) {
   const request: ProductionPlanRequest = {
     priceMode: this.planForm.get('pricingMode')?.value,
-    parts: this.selectedParts.map((part, i) => ({
+    parts: this.selectedParts.map(part => ({
       partId: part.partId,
-      quantity: this.planForm.get(`quantity_${i}`)?.value
+      quantity: this.planForm.get(`quantity_${part.partId}`)?.value
     }))
   };
 

@@ -18,7 +18,8 @@ export class LeaveProductionPlanGuard implements CanDeactivate<CanComponentDeact
   canDeactivate(): Observable<boolean> {
     const dialogData: ConfirmDialogData = {
       title: 'Leave Page?',
-      message: 'Are you sure you want to leave the Production Plan?'
+      message: 'Are you sure you want to leave the Production Plan?',
+      confirmButtonText:'Confirm'
     };
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, { data: dialogData });

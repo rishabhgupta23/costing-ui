@@ -3,6 +3,6 @@
       <p [innerHTML]="data.message"></p>
     </div>
     <div class="btn-group" align="end">
-      <button  class="secondary-btn" (click)="onCancel()">Cancel</button>
-      <button  class="primary-btn" color="warn" (click)="onConfirm()">Delete</button>
+      <button  class="secondary-btn" (click)="onCancel()">   {{ data.cancelButtonText || 'Cancel' }}</button>
+      <button  class="primary-btn" color="warn" (click)="onConfirm()">{{ data.confirmButtonText || 'Delete' }}</button>
     </div>

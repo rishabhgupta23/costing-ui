@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { CalculateComponent } from './components/calculate/calculate.component';
 import { ToolsDashboardComponent } from './components/tools-dashboard/tools-dashboard.component';
 import { ProductionPlanComponent } from './components/production-plan/production-plan.component';
-import { LeaveProductionPlanGuard } from 'src/app/core/guards/leave-production-plan.guard';
+import { LeaveProductionPlanGuard } from 'src/app/core/guards/production-plan-exit.guard';
 
 const routes: Routes = [
   {
