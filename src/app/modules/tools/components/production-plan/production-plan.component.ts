@@ -189,9 +189,11 @@ goToNextStep(stepper: MatStepper) {
 pricingOptions = Object.values(PricingOptions);
 
 preparePlanForm() {
-  this.planForm = this.fb.group({
-    pricingMode: [this.pricingOptions[0].value, Validators.required],
-  });
+  if (!this.planForm) {
+    this.planForm = this.fb.group({
+      pricingMode: [this.pricingOptions[0].value, Validators.required],
+    });
+  }
   this.selectedParts.forEach(part => {
     this.planForm.addControl(`quantity_${part.partId}`, this.fb.control(1, [Validators.required, Validators.min(1)]));
   });
