@@ -175,7 +175,8 @@
       <!-- Step 2: Plan Production -->
       <mat-step [stepControl]="planForm">
         <ng-template matStepLabel>Plan Production</ng-template>
-        <div class="page-content">
+        <ng-template matStepContent>
+          <div class="page-content">
           
           <form [formGroup]="planForm">
             <mat-form-field appearance="outline" class="pricing-field">
@@ -187,12 +188,13 @@
               </mat-select>
             </mat-form-field>
             <div class="selected-parts-header">
-              <span>Selected Parts: {{ selectedPartIds.size }} parts selected</span>
+              <span>Selected Parts: {{ selectedParts.length }} parts selected</span>
             </div>
             <div class="selected-parts-table">
               <table
               mat-table
-              [dataSource]="selectedParts"
+              #step2
+              [dataSource]="rowsToShow"
               class="production-part-table"
             >
               <ng-container matColumnDef="partNumber">
@@ -216,21 +218,14 @@
                   </mat-form-field>
                 </td>
               </ng-container>
-              <tr
-                mat-header-row
-                *matHeaderRowDef="['partNumber', 'partName', 'quantity']"
-              ></tr>
-              <tr
-                mat-row
-                *matRowDef="
-                  let row;
-                  columns: ['partNumber', 'partName', 'quantity']
-                "
-              ></tr>
+              <tr mat-header-row *matHeaderRowDef="col2"></tr>
+              <tr mat-row *matRowDef="let row; columns: col2;"></tr>
+              
             </table>
             </div>
           </form>
         </div>
+        </ng-template>
       </mat-step>
       <!-- Step 3: Review and Confirm -->
       <mat-step>

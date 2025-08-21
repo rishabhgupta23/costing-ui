@@ -12,7 +12,7 @@ export interface CanComponentDeactivate {
 @Injectable({
   providedIn: 'root'
 })
-export class LeaveProductionPlanGuard implements CanDeactivate<CanComponentDeactivate> {
+export class ProductionPlanExitGuard implements CanDeactivate<CanComponentDeactivate> {
   constructor(private dialog: MatDialog) {}
 
   canDeactivate( component: CanComponentDeactivate,

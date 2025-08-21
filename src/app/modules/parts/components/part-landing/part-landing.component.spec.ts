@@ -118,7 +118,6 @@ describe('PartLandingComponent', () => {
       0,
       100,
       new Map([['partName', 'test']]),
-      undefined,
       { sortColumn: 'partNumber', sortState: SortIcons.ASC }
     );
     
@@ -138,7 +137,6 @@ describe('PartLandingComponent', () => {
       0,
       100,
       expectedFilter,
-      undefined,
       expectedSort
     );
   });
@@ -158,7 +156,6 @@ describe('PartLandingComponent', () => {
       1,
       10,
       expectedFilter,
-      undefined,
       expectedSort
     );
   });
@@ -171,7 +168,7 @@ describe('PartLandingComponent', () => {
   });
 
   it('should open dialog and delete part on DELETE', () => {
-    const dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(DialogCloseResponse.DELETE) });
+    const dialogRefSpy = jasmine.createSpyObj({ afterClosed: of(DialogCloseResponse.POSITIVE) });
     dialogSpy.open.and.returnValue(dialogRefSpy);
     
     partServiceSpy.deletePart.and.returnValue(of(void 0));

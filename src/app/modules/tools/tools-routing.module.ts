@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { CalculateComponent } from './components/calculate/calculate.component';
 import { ToolsDashboardComponent } from './components/tools-dashboard/tools-dashboard.component';
 import { ProductionPlanComponent } from './components/production-plan/production-plan.component';
-import { LeaveProductionPlanGuard } from 'src/app/core/guards/production-plan-exit.guard';
+import { ProductionPlanExitGuard } from 'src/app/core/guards/production-plan-exit.guard';
 
 const routes: Routes = [
   {
@@ -22,7 +22,7 @@ const routes: Routes = [
       {
         path: 'production-plan',
         component: ProductionPlanComponent,
-        canDeactivate: [LeaveProductionPlanGuard] 
+        canDeactivate: [ProductionPlanExitGuard] 
       },
     ],
   }

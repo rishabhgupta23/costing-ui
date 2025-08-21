@@ -10,6 +10,7 @@ import { MatStepper } from "@angular/material/stepper";
 import { PricingOptions } from "src/app/shared/constants/pricingoptions.constants";
 import { ProductionPlanService } from "src/app/data/services/production-plan/production-plan.service";
 import { ProductionCostResponse, ProductionPlanRequest } from "src/app/data/models/production-plan";
+import { MatTable } from "@angular/material/table";
 
 @Component({
   selector: "app-production-plan",
@@ -27,7 +28,8 @@ export class ProductionPlanComponent implements OnInit, OnDestroy {
     "type",
     "categoryName",
   ];
-  pageSize: number = 100;
+  pageSize: number = 5;
+    allParts: PartRow[] = [];
   currentPage: number = 0;
   totalRecords: number = 0;
   partSelectionForm: FormGroup;
@@ -41,6 +43,8 @@ export class ProductionPlanComponent implements OnInit, OnDestroy {
   selectedStepIndex: number = 0;
   displayResultTableColumns = ['partNumber', 'partName', 'quantity', 'rate', 'subTotal', 'vendorName'];
    hasUnsavedChanges = true;
+   rowsToShow: PartRow[] = [];
+  @ViewChild('step2') table2!: MatTable<PartRow>;
   @ViewChild('stepper') stepper!: MatStepper;
    @HostListener('window:beforeunload', ['$event'])
   unloadNotification(event: BeforeUnloadEvent) {
@@ -49,6 +53,7 @@ export class ProductionPlanComponent implements OnInit, OnDestroy {
       event.returnValue = ''; // required for Chrome
     }
   }
+  col2 = ['partNumber','partName','quantity']
 
   constructor(private partService: PartService, private fb: FormBuilder, private productionPlanService: ProductionPlanService) {
     // Add filter controls to the form group
@@ -87,7 +92,6 @@ export class ProductionPlanComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         this.partList = getValueOrNull(res.data?.partsList) || [];
         this.totalRecords = getValueOrNull(res.pageInfo?.totalRecords) || 0;
-      
       });
   }
 
@@ -140,8 +144,14 @@ export class ProductionPlanComponent implements OnInit, OnDestroy {
   toggleSelection(part:PartRow, checked: boolean) {
     if (checked) {
       this.selectedPartIds.add(part.partId);
+      if (!this.selectedParts.some(p => p.partId === part.partId)) {
+        this.selectedParts.push(part);
+        this.table2?.renderRows()
+      }
     } else {
       this.selectedPartIds.delete(part.partId);
+      this.selectedParts = this.selectedParts.filter(p => p.partId !== part.partId);
+      this.table2?.renderRows()
     }
   }
 
@@ -151,23 +161,29 @@ export class ProductionPlanComponent implements OnInit, OnDestroy {
 
   selectAll(event: { checked: boolean }) {
     if (event.checked) {
-      this.partList.forEach((part) => this.selectedPartIds.add(part.partId));
+      this.partList.forEach((part) => { this.selectedPartIds.add(part.partId);
+
+        if (!this.selectedParts.some(p => p.partId === part.partId)) {
+          this.selectedParts.push(part);
+        }
+      });
     } else {
-      this.selectedPartIds.clear();
+      this.partList.forEach((part) => {
+        this.selectedPartIds.delete(part.partId);
+        this.selectedParts = this.selectedParts.filter(p => p.partId !== part.partId);
+      });
     }
+    this.table2?.renderRows();
   }
 
   isAllSelected(): boolean {
-    return (
-      this.partList.length > 0 &&
-      this.selectedPartIds.size === this.partList.length
-    );
+    return this.partList.length > 0 &&
+    this.partList.every(p => this.selectedPartIds.has(p.partId));
   }
 
   isIndeterminate(): boolean {
-    return (
-      this.selectedPartIds.size > 0 && this.selectedPartIds.size < this.partList.length
-    );
+    const selectedOnPage = this.partList.filter(p => this.selectedPartIds.has(p.partId)).length;
+    return selectedOnPage > 0 && selectedOnPage < this.partList.length;
   }
 
   onPageChange(event: PageEvent) {
@@ -181,14 +197,11 @@ export class ProductionPlanComponent implements OnInit, OnDestroy {
   }
 
 goToNextStep(stepper: MatStepper) {
-  if (this.selectedPartIds.size === 0) return;
-
-  this.selectedParts = [
-    ...this.selectedParts.filter(p => this.selectedPartIds.has(p.partId)),
-    ...this.partList.filter(part => this.selectedPartIds.has(part.partId) && !this.selectedParts.some(p => p.partId === part.partId))
-  ];
+  this.rowsToShow = [...this.selectedParts];
+  if (this.rowsToShow?.length === 0) return;
   this.preparePlanForm();
   stepper.next();
+  this.table2?.renderRows()
 }
 
 

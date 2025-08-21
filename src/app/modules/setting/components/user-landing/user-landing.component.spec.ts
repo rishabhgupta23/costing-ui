@@ -116,7 +116,7 @@ describe('UserLandingComponent', () => {
   it('should open dialog and delete user on confirm', () => {
     const user = MOCK_USER_PAGINATION_RESPONSE.data[0];
     const dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['afterClosed']);
-    dialogRefSpy.afterClosed.and.returnValue(of(DialogCloseResponse.DELETE));
+    dialogRefSpy.afterClosed.and.returnValue(of(DialogCloseResponse.POSITIVE));
   
     const dialogSpy = TestBed.inject(MatDialog) as jasmine.SpyObj<MatDialog>;
     dialogSpy.open.and.returnValue(dialogRefSpy);
