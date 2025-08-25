@@ -193,8 +193,8 @@
             <div class="selected-parts-table">
               <table
               mat-table
-              #step2
-              [dataSource]="rowsToShow"
+              #planTable
+              [dataSource]="allSelectedParts"
               class="production-part-table"
             >
               <ng-container matColumnDef="partNumber">
@@ -218,8 +218,8 @@
                   </mat-form-field>
                 </td>
               </ng-container>
-              <tr mat-header-row *matHeaderRowDef="col2"></tr>
-              <tr mat-row *matRowDef="let row; columns: col2;"></tr>
+              <tr mat-header-row *matHeaderRowDef="selectedPartsTable"></tr>
+              <tr mat-row *matRowDef="let row; columns: selectedPartsTable;"></tr>
               
             </table>
             </div>

@@ -28,23 +28,20 @@ export class ProductionPlanComponent implements OnInit, OnDestroy {
     "type",
     "categoryName",
   ];
-  pageSize: number = 5;
-    allParts: PartRow[] = [];
+  pageSize: number = 100;
   currentPage: number = 0;
   totalRecords: number = 0;
   partSelectionForm: FormGroup;
   planForm: FormGroup;
   selectedParts: PartRow[] = [];
   productionCostResponse: ProductionCostResponse | null = null;
-  sortMode: string = SortIcons.ASC;
-  sortColumn: string = "partNumber";
   sortState: SortState = { sortColumn: "partNumber", sortState: SortIcons.ASC };
   filterCriteria: Map<string, string> = new Map();
   selectedStepIndex: number = 0;
   displayResultTableColumns = ['partNumber', 'partName', 'quantity', 'rate', 'subTotal', 'vendorName'];
    hasUnsavedChanges = true;
-   rowsToShow: PartRow[] = [];
-  @ViewChild('step2') table2!: MatTable<PartRow>;
+   allSelectedParts: PartRow[] = [];
+  @ViewChild('planTable') table2!: MatTable<PartRow>;
   @ViewChild('stepper') stepper!: MatStepper;
    @HostListener('window:beforeunload', ['$event'])
   unloadNotification(event: BeforeUnloadEvent) {
@@ -53,7 +50,7 @@ export class ProductionPlanComponent implements OnInit, OnDestroy {
       event.returnValue = ''; // required for Chrome
     }
   }
-  col2 = ['partNumber','partName','quantity']
+  selectedPartsTable = ['partNumber','partName','quantity']
 
   constructor(private partService: PartService, private fb: FormBuilder, private productionPlanService: ProductionPlanService) {
     // Add filter controls to the form group
@@ -162,10 +159,7 @@ export class ProductionPlanComponent implements OnInit, OnDestroy {
   selectAll(event: { checked: boolean }) {
     if (event.checked) {
       this.partList.forEach((part) => { this.selectedPartIds.add(part.partId);
-
-        if (!this.selectedParts.some(p => p.partId === part.partId)) {
-          this.selectedParts.push(part);
-        }
+      this.selectedParts.push(part);
       });
     } else {
       this.partList.forEach((part) => {
@@ -197,8 +191,8 @@ export class ProductionPlanComponent implements OnInit, OnDestroy {
   }
 
 goToNextStep(stepper: MatStepper) {
-  this.rowsToShow = [...this.selectedParts];
-  if (this.rowsToShow?.length === 0) return;
+  this.allSelectedParts = [...this.selectedParts];
+  if (this.allSelectedParts?.length === 0) return;
   this.preparePlanForm();
   stepper.next();
   this.table2?.renderRows()
