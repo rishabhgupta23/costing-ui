@@ -188,10 +188,10 @@ $costing-ui-theme: mat.define-theme((
   }
 } 
 
-.app-body .change-password-container .mat-mdc-text-field-wrapper {
+.app-body .app-container .mat-mdc-text-field-wrapper {
     height: 3rem;
 }
-.app-body .app-container .mat-mdc-text-field-wrapper{
+.app-body .app-content .mat-mdc-text-field-wrapper{
   height:3rem;
   margin-bottom: 1rem;
 }

@@ -28,7 +28,7 @@ export const API_END_POINTS = {
     TEMPLATE: '/templates',
     TEMPLATE_DETAILS: '/templates/{templateId}',
     RESET_PASSWORD: '/auth/reset-password',
-    RESET_USER_PASSWORD: '/users/reset-user-password',
+    RESET_USER_PASSWORD: '/users/reset-password',
     PRODUCTION_PLAN: '/production/cost/calculate',
     PART_FILE_DELETE: '/parts/file/delete'
 };
