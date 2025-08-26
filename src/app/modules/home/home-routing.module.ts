@@ -23,8 +23,8 @@ const routes: Routes = [
         loadChildren: () => import("../parts/parts.module").then((module) => module.PartsModule)
       },
       {
-        path: "calculate",
-        loadChildren: () => import("../calculate/calculate.module").then((module) => module.CalculateModule)
+        path: "tools",
+        loadChildren: () => import("../tools/tools.module").then((module) => module.ToolsModule)
       },
       {
         path: "config",

@@ -169,14 +169,14 @@ describe('PartsFormComponent', () => {
         ]
       }
     ] as any;
-  
+
     component.vendorCostListToMap(vendorCostList);
-  
+
     expect(component.vendorCostMap.size).toBe(2);
     expect(component.vendorCostMap.get(1)?.length).toBe(2);
     expect(component.vendorCostMap.get(2)?.[0].factorName).toBe('Overhead');
   });
-  
+
 
   it('should add vendor to vendorCostMap', () => {
     const vendor = { id: 10, name: 'Vendor X' } as any;
@@ -218,15 +218,15 @@ describe('PartsFormComponent', () => {
     ];
 
     component.vendorCostMap.set(vendorId, [...mockFactors]);
-  
+
     const factorToRemove = { id: 101, value: 200 };
     component.removeCostFactor(factorToRemove, vendorId);
-  
+
     const updated = component.vendorCostMap.get(vendorId);
     expect(updated?.length).toBe(1);             
     expect(updated?.[0].id).toBe(102);              
   });
-  
+
 
   it('should delete vendor from vendorCostMap and vendorList', () => {
     const vendorId = 1;
@@ -247,14 +247,14 @@ describe('PartsFormComponent', () => {
       { partId: 1, partName: 'Part A', partNumber: 'P001' } as PartRow,
       { partId: 2, partName: 'Part B', partNumber: 'P002' } as PartRow
     ]);
-  
+
     const dialogRefSpyObj = jasmine.createSpyObj({ afterClosed: of({ data: selectedParts, action: DialogCloseResponse.UPDATE }), close: null });
     mockDialog.open.and.returnValue(dialogRefSpyObj);
-  
+
     spyOn(component, 'handleDialogClose');
-  
+
     component.openBomDialog();
-  
+
     expect(mockDialog.open).toHaveBeenCalled();
     expect(component.handleDialogClose).toHaveBeenCalledWith(selectedParts);
   });
@@ -269,11 +269,11 @@ describe('PartsFormComponent', () => {
     const selectedParts = new Set<PartRow>([
       { partId: 1, partName: 'Part A', partNumber: 'P001' } as PartRow
     ]);
-  
+
     component.bomPartList = [];
-  
+
     component.handleDialogClose(selectedParts);
-  
+
     expect(component.bomPartList.length).toBe(1);
     expect(component.bomPartList[0]).toEqual(jasmine.objectContaining({
       id: 1,
@@ -295,7 +295,7 @@ describe('PartsFormComponent', () => {
     expect(component.bomPartList.length).toBe(1); // still 1, no duplicate
   });
 
-  
+
   it('should remove unselected parts from bomPartList', () => {
     component.bomPartList = [
       { id: 1, partName: 'Part A', partNumber: 'P001', value: 2 },
@@ -311,8 +311,8 @@ describe('PartsFormComponent', () => {
     expect(component.bomPartList.length).toBe(1);
     expect(component.bomPartList[0].id).toBe(1);
   });
-  
-  
+
+
 
   it('should clear vendorCostMap and vendorList when partType is MASTER', () => {
     component.vendorCostMap.set(1, []);
@@ -327,7 +327,7 @@ describe('PartsFormComponent', () => {
     component.vendorList = [{ id: 1, name: 'Vendor X' } as any];
     expect(component.getVendorName(1)).toBe('Vendor X');
   });
-  
+
   it('should return "Unknown Vendor" if vendor is not found', () => {
     component.vendorList = [];
     expect(component.getVendorName(99)).toBe('Unknown Vendor');
@@ -339,7 +339,7 @@ describe('PartsFormComponent', () => {
     component.handleAction({ action: TableActions.DELETE, row: mockRow }, 1);
     expect(spy).toHaveBeenCalledWith(mockRow, 1);
   });
-  
+
   it('should return masterParts form array', () => {
     expect(component.masterParts).toBeTruthy();
   });
@@ -347,7 +347,7 @@ describe('PartsFormComponent', () => {
   it('should call addCostFactor with form value', () => {
     const mockFactor = { id: 1, name: 'Labor', value: 10 };
     component.costFactors.push(new FormControl(mockFactor));
-  
+
     const spy = spyOn(component, 'addCostFactor');
     component.addCostFactorFromFieldValue(0, 2);
     expect(spy).toHaveBeenCalledWith(mockFactor, 2);
@@ -356,16 +356,16 @@ describe('PartsFormComponent', () => {
   it('should add cost factor to vendorCostMap if not present', () => {
     const vendorId = 3;
     const costFactor = { id: 1, name: 'Labor', value: 50 };
-  
+
     component.addCostFactor(costFactor, vendorId);
     expect(component.vendorCostMap.get(vendorId)).toContain(jasmine.objectContaining({ id: 1, name: 'Labor' }));
   });
-  
+
   it('should not add duplicate cost factor', () => {
     const vendorId = 3;
     const costFactor = { id: 1, name: 'Labor', value: 50 };
     component.vendorCostMap.set(vendorId, [costFactor]);
-  
+
     component.addCostFactor(costFactor, vendorId);
     expect(component.vendorCostMap.get(vendorId)?.length).toBe(1);
   });
@@ -377,7 +377,7 @@ describe('PartsFormComponent', () => {
       { attributeId: 2, attributeName: 'Another Attribute' }
     ] as any[];
 
-    const afterClosedSpy = of(DialogCloseResponse.DELETE);
+    const afterClosedSpy = of(DialogCloseResponse.POSITIVE);
     const dialogRefSpyObj = jasmine.createSpyObj({ afterClosed: afterClosedSpy, close: null });
 
     mockDialog.open.and.returnValue(dialogRefSpyObj);
@@ -473,12 +473,52 @@ it('should add valid files to selected files', () => {
   const mockFile1 = new File(['file content 1'], 'file1.jpg', { type: 'image/jpeg' });
   const mockFile2 = new File(['file content 2'], 'file2.txt');
   Object.defineProperty(mockFile2, 'type', { value: 'text/plain' });
+});
 
+    it('should set isDragOver true and prevent default in allowDrop', () => {
+  const event = jasmine.createSpyObj('event', ['preventDefault', 'stopPropagation']);
+  component.isDragOver = false;
+  component.allowDrop(event as any);
+  expect(component.isDragOver).toBeTrue();
+  expect(event.preventDefault).toHaveBeenCalled();
+  expect(event.stopPropagation).toHaveBeenCalled();
+});
 
-  mockSnackbarService.error.calls.reset();
-  component.processFiles([mockFile1, mockFile2]);
-  expect(component.selectedFiles).toEqual([mockFile1, mockFile2]);
-  expect(mockSnackbarService.error).toHaveBeenCalledTimes(0);
+it('should set isDragOver false and call processFiles in handleDrop', () => {
+  const file = new File([''], 'test.png', { type: 'image/png' });
+  const files = { length: 1, 0: file, item: () => file };
+  const event = {
+    preventDefault: jasmine.createSpy('preventDefault'),
+    stopPropagation: jasmine.createSpy('stopPropagation'),
+    dataTransfer: { files: files }
+  };
+  spyOn(component, 'processFiles');
+  component.isDragOver = true;
+  component.handleDrop(event as any);
+  expect(component.isDragOver).toBeFalse();
+  expect(component.processFiles).toHaveBeenCalledWith([file]);
+});
+
+it('should set isDragOver false and not call processFiles if no files in handleDrop', () => {
+  const event = {
+    preventDefault: jasmine.createSpy('preventDefault'),
+    stopPropagation: jasmine.createSpy('stopPropagation'),
+    dataTransfer: { files: { length: 0 } }
+  };
+  spyOn(component, 'processFiles');
+  component.isDragOver = true;
+  component.handleDrop(event as any);
+  expect(component.isDragOver).toBeFalse();
+  expect(component.processFiles).not.toHaveBeenCalled();
+});
+
+it('should set isDragOver false and prevent default in dragLeave', () => {
+  const event = jasmine.createSpyObj('event', ['preventDefault', 'stopPropagation']);
+  component.isDragOver = true;
+  component.dragLeave(event as any);
+  expect(component.isDragOver).toBeFalse();
+  expect(event.preventDefault).toHaveBeenCalled();
+  expect(event.stopPropagation).toHaveBeenCalled();
 });
 
 

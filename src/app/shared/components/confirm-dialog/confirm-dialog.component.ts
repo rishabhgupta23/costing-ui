@@ -6,6 +6,8 @@ import { DialogCloseResponse } from '../../constants/dialog.constants';
 export interface ConfirmDialogData {
   title?: string;
   message: string;
+  confirmButtonText?: string;
+  cancelButtonText?: string;
 }
 
 @Component({
@@ -22,7 +24,7 @@ export class ConfirmDialogComponent {
   ) {}
 
   onConfirm(): void {
-    this.dialogRef.close(DialogCloseResponse.DELETE);
+    this.dialogRef.close(DialogCloseResponse.POSITIVE);
   }
 
   onCancel(): void {

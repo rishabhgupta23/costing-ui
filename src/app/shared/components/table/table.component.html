@@ -19,7 +19,7 @@
 
   <tr class="filter-row" *ngIf="showFilter">
     <ng-container *ngFor="let col of config">
-      <th *ngif="canShowColumn(col)">
+      <th *ngIf="canShowColumn(col)">
         <ng-container *ngIf="col.filterable">
           <div class="filter-input-wrapper">
             <input 

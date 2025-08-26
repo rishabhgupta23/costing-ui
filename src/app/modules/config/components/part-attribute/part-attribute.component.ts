@@ -122,7 +122,7 @@ export class PartAttributeComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result === DialogCloseResponse.DELETE) {
+      if (result === DialogCloseResponse.POSITIVE) {
         this.partAttributeService.deletePartAttribute(row.attributeId).subscribe({
           next: () => {
             this.snackbarService.success('Attribute deleted successfully!');

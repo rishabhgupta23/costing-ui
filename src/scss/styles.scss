@@ -109,6 +109,11 @@ $costing-ui-theme: mat.define-theme((
       width: 1.2rem;
     }
 }
+  .mat-mdc-tab .mdc-tab__content {
+    font-size: 1rem;
+    font-weight: bold;
+    font-family: 'Poppins';
+  }
 
 .secondary-btn {
     padding: 0.6rem 1.6rem;
@@ -183,6 +188,10 @@ $costing-ui-theme: mat.define-theme((
   }
 }
 
+.custom-stepper .mat-step-header {
+  pointer-events: none;
+}
+
 .cdk-overlay-container.autocomplete-open {
   pointer-events: auto;
 }
@@ -228,4 +237,8 @@ $costing-ui-theme: mat.define-theme((
 
 .icon-btn:active {
   background-color: darken($c-btn-hover, 75%);
+}
+
+.mat-horizontal-content-container {
+  padding: 0 1rem 0 1rem !important;
 }

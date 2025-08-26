@@ -101,7 +101,7 @@ export class CategoryComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result === DialogCloseResponse.DELETE) {
+      if (result === DialogCloseResponse.POSITIVE) {
         this.categoryService.deleteCategory(row.categoryId).subscribe({
           next: () => {
             this.snackbarService.success('Category deleted successfully!');

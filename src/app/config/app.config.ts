@@ -16,9 +16,9 @@ export class AppConfig {
       roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MAINTAINER, UserRole.GUEST]
     },
     {
-      label: 'Cost Calculator',
-      route: '/app/calculate',
-      icon: 'calculate_icon',
+      label: 'Tools',
+      route: '/app/tools',
+      icon: 'tools_icon',
       roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MAINTAINER, UserRole.GUEST]
     },
     {

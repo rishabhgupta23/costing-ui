@@ -58,7 +58,7 @@ export class PartLandingComponent implements OnInit {
 }
   
   getPartList() {
-    this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortColumn , this.sortState ).subscribe(
+    this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria, this.sortState ).subscribe(
       (res) => {
 
         const responseData = res.data;
@@ -142,7 +142,7 @@ export class PartLandingComponent implements OnInit {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, { data: dialogData });
 
       dialogRef.afterClosed().subscribe(result => {
-        if (result === DialogCloseResponse.DELETE) {
+        if (result === DialogCloseResponse.POSITIVE) {
           this.deletePart(row.partId);
         }
       });

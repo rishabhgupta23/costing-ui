@@ -55,7 +55,6 @@ describe('BomdialogComponent', () => {
       component.currentPage,
       component.pageSize,
       new Map(),
-      component.sortColumn,
       component.sortState
     );
   });
@@ -86,7 +85,6 @@ describe('BomdialogComponent', () => {
       component.currentPage,
       component.pageSize,
       new Map([['partName', 'test']]),
-      'partNumber',
       component.sortState
     );
   }));
@@ -116,7 +114,6 @@ describe('BomdialogComponent', () => {
       1,
       50,
       new Map(),
-      component.sortColumn,
       component.sortState
     );
   });

@@ -96,7 +96,7 @@ attributeTableColumns: any[] = [];
 
 
   constructor(private partService: PartService, private vendorService: VendorService, private overlayContainer: OverlayContainer, private costFactorService: CostFactorService,     private route: ActivatedRoute,
-    private router: Router, private dialog: MatDialog, private snackbarService: SnackbarService, private templateService: TemplateService) {
+    private router: Router, private dialog: MatDialog, public snackbarService: SnackbarService, private templateService: TemplateService) {
       
     }
 
@@ -228,7 +228,7 @@ getImagePreview(file: File): string {
 
 
 getFileType(file: any): string {
-  const type = file.type.toLowerCase();
+  const type = (file.type || '').toLowerCase();
   if (type.startsWith('image/')) return 'image';
   if (type === 'application/pdf') return 'pdf';
   if (
@@ -372,7 +372,7 @@ setupTemplateFilter() {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result === DialogCloseResponse.DELETE) {
+      if (result === DialogCloseResponse.POSITIVE) {
         this.attributeValueList = this.attributeValueList.filter(
           attr => attr.attributeId !== attrToRemove.attributeId
         );

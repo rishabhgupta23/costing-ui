@@ -55,7 +55,7 @@ describe('PartService', () => {
 
   it('should call getPartList with sort and search term', () => {
     const filters = new Map([['category', 'Electrical']]);
-    service.getPartList(1, 20, filters, 'partName', { sortColumn: 'partName', sortState: SortIcons.ASC }).subscribe(res => {
+    service.getPartList(1, 20, filters, { sortColumn: 'partName', sortState: SortIcons.ASC }).subscribe(res => {
       expect(res).toEqual({ data: [], pageInfo: { totalRecords: 0 } });
     });
   
