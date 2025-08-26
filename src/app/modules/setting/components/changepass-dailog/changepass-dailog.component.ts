@@ -9,6 +9,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 export class ChangepassDailogComponent {
   newPassword: string = '';
   confirmPassword: string = '';
+  hideNew=true;
+  hideConfirm=true;
 
     private strongPasswordPattern =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;

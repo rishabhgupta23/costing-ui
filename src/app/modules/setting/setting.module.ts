@@ -12,6 +12,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { ChangepassDailogComponent } from './components/changepass-dailog/changepass-dailog.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from "@angular/material/icon";
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     FormsModule,
     ReactiveFormsModule,
     MatInputModule,
-    MatDialogModule
+    MatDialogModule,
+    MatIconModule
 ]
 })
 export class SettingModule { }

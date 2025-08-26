@@ -8,12 +8,15 @@
       <input
         class="input-field"
         matInput
-        type="password"
         [(ngModel)]="newPassword"
         name="newPassword"
         #newPasswordModel="ngModel"
+        [type]="hideNew ? 'password' : 'text'"
         required
       />
+      <button mat-icon-button matSuffix class="visible_btn" (click)="hideNew = !hideNew" type="button">
+          <mat-icon svgIcon="{{ hideNew ? 'visibilityoff' : 'visibility' }}"></mat-icon>
+      </button>
     </mat-form-field>
     <div class="error">
     <span *ngIf="newPasswordModel.dirty && !isPasswordValid()">
@@ -29,12 +32,15 @@
       <input
         class="input-field"
         matInput
-        type="password"
+        [type]="hideConfirm ? 'password' : 'text'"
         [(ngModel)]="confirmPassword"
         name="confirmPassword"
         #confirmPasswordModel="ngModel"
         required
       />
+       <button mat-icon-button matSuffix class="visible_btn" (click)="hideConfirm = !hideConfirm" type="button">
+          <mat-icon svgIcon="{{ hideConfirm ? 'visibilityoff' : 'visibility' }}"></mat-icon>
+        </button>
     </mat-form-field>
     <div class="error">
     <span *ngIf="confirmPasswordModel.dirty && confirmPassword && newPassword !== confirmPassword">
