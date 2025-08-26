@@ -1,0 +1,42 @@
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, CanDeactivate, RouterStateSnapshot } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { Observable, of } from 'rxjs';
+import { ConfirmDialogComponent, ConfirmDialogData } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
+import { DialogCloseResponse } from 'src/app/shared/constants/dialog.constants';
+
+export interface CanComponentDeactivate {
+  canDeactivate: () => boolean | Observable<boolean>;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ProductionPlanExitGuard implements CanDeactivate<CanComponentDeactivate> {
+  constructor(private dialog: MatDialog) {}
+
+  canDeactivate( component: CanComponentDeactivate,
+    currentRoute: ActivatedRouteSnapshot,
+    currentState: RouterStateSnapshot,
+    nextState?: RouterStateSnapshot
+  ): Observable<boolean> | boolean {
+
+    if (nextState?.url.includes('/login') && nextState.root.queryParams['reason'] === 'tokenExpired') {
+      return true;
+    }
+    const dialogData: ConfirmDialogData = {
+      title: 'Leave Page?',
+      message: 'Are you sure you want to leave the Production Plan?',
+      confirmButtonText:'Confirm'
+    };
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, { data: dialogData });
+
+    return new Observable<boolean>((observer) => {
+      dialogRef.afterClosed().subscribe(result => {
+        observer.next(result === DialogCloseResponse.POSITIVE);
+        observer.complete();
+      });
+    });
+  }
+}

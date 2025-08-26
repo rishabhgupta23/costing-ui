@@ -28,6 +28,9 @@ export class UserService {
   login(body: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(ApiUtil.getApiUrl(API_END_POINTS.LOGIN), body);
   }
+  getCurrentUser(): User | null{
+    return this.currentUserSubject.getValue();
+  }
 
     getUserRoles(): Observable<{ roleId: number; roleName: string }[]> {
       return this.http.get<{ data: { roleId: number; roleName: string }[] }>(ApiUtil.getApiUrl(API_END_POINTS.USER_ROLES)).pipe(

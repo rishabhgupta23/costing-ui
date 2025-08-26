@@ -64,8 +64,8 @@ describe('VendorService', () => {
 
   it('should fetch vendor list with filters and sort state', () => {
     const mockResponse = { data: ['vendor1', 'vendor2'] };
-    const filterCriteria = new Map([['name', 'Vendor']]);
-    const sortState = { sortColumn: 'name', sortState: SortIcons.ASC };
+    const filterCriteria = new Map([['vendorName', 'Vendor']]);
+    const sortState = { sortColumn: 'vendorName', sortState: SortIcons.ASC };
 
     service.getVendorList(0, 100, filterCriteria, sortState).subscribe(res => {
       expect(res).toEqual(mockResponse);
@@ -73,8 +73,8 @@ describe('VendorService', () => {
 
     const req = httpMock.expectOne(req => req.url.includes('vendors'));
     expect(req.request.method).toBe('GET');
-    expect(req.request.params.get('name')).toBe('Vendor');
-    expect(req.request.params.get('sortColumn')).toBe('name');
+    expect(req.request.params.get('vendorName')).toBe('Vendor');
+    expect(req.request.params.get('sortColumn')).toBe('vendorName');
     expect(req.request.params.get('sortMode')).toBe(SortIcons.ASC);
     req.flush(mockResponse);
   });
@@ -90,7 +90,7 @@ describe('VendorService', () => {
   
     expect(req.request.params.get('pageNo')).toBe('0');
     expect(req.request.params.get('pageSize')).toBe('100');
-    expect(req.request.params.get('sortColumn')).toBe('name');
+    expect(req.request.params.get('sortColumn')).toBe('vendorName');
     expect(req.request.params.get('sortMode')).toBe(SortIcons.ASC);
     req.flush({ data: [], pageInfo: { totalRecords: 0 } });
   });

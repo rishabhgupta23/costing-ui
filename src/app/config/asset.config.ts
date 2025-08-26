@@ -92,4 +92,8 @@ export const SVG_ICONS = [
         path: baseIconsPath + '/info.svg',
         name:'infoempty'
     },
+    {
+        path: baseIconsPath + '/tools_icon.svg',
+        name:'tools_icon'
+    }
 ];

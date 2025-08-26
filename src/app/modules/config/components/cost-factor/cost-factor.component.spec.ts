@@ -98,7 +98,7 @@ describe('CostFactorComponent', () => {
 
   it('should open delete dialog and delete factor', () => {
     const dialogRefSpyObj = jasmine.createSpyObj('MatDialogRef', ['afterClosed']);
-    dialogRefSpyObj.afterClosed.and.returnValue(of(DialogCloseResponse.DELETE));
+    dialogRefSpyObj.afterClosed.and.returnValue(of(DialogCloseResponse.POSITIVE));
     spyOn(dialog, 'open').and.returnValue(dialogRefSpyObj);
     spyOn(snackbarService, 'success');
 

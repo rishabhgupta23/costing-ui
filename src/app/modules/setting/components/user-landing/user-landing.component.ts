@@ -92,7 +92,7 @@ export class UserLandingComponent implements OnInit {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, { data: dialogData });
   
       dialogRef.afterClosed().subscribe((result: any) => {
-        if (result === DialogCloseResponse.DELETE) {
+        if (result === DialogCloseResponse.POSITIVE) {
           this.deleteUser(row.userId!);
         }
       });

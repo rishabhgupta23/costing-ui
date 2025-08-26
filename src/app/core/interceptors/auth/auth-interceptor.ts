@@ -21,7 +21,8 @@ export class AuthInterceptor implements HttpInterceptor {
       });
     } else {
       AuthUtil.resetToken();
-      this.router.navigateByUrl("/login");
+      this.router.navigate(['/login'], { queryParams: { reason: 'tokenExpired' } });
+
     }
 
     return next.handle(req);

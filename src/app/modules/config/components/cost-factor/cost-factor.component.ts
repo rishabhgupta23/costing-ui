@@ -109,7 +109,7 @@ getCostFactorList(): void {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result === DialogCloseResponse.DELETE) {
+      if (result === DialogCloseResponse.POSITIVE) {
         this.costFactorService.deleteCostFactor(row.id).subscribe({
           next: () => {
             this.snackbarService.success('Cost Factor deleted successfully!');

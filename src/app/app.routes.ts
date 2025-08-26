@@ -4,6 +4,7 @@ import { AuthGuard } from './core/guards/auth.guard';
 import { LoginGuard } from './core/guards/login.guard';
 import { ChangePasswordComponent } from './modules/login/components/change-password/change-password.component';
 import { passwordResetGuard } from './core/guards/password-reset.guard';
+import { UnauthorizedComponent } from './modules/home/components/unauthorized/unauthorized.component';
 
 export const routes: Routes = [
     {
@@ -26,6 +27,10 @@ export const routes: Routes = [
     component: ChangePasswordComponent,
     canActivate: [AuthGuard] // Only logged-in users can change password
   },
+    {
+        path: "unauthorized",
+        component: UnauthorizedComponent
+    },
     {
         path: "contact-us",
         component: ContactusComponent

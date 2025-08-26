@@ -14,6 +14,9 @@ import { downloadFile } from '../../../../shared/utils/file-download.util';
 import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
 import { SortState } from '../../../../data/models/part';
 import { getValueOrNull } from '../../../../shared/utils/string.util';
+import { UserService } from 'src/app/data/services/user/user.service';
+import { AuthUtil } from 'src/app/shared/utils/auth.util';
+import { UserRole } from 'src/app/shared/constants/userrole.constants';
 
 @Component({
   selector: 'app-vendor-landing',
@@ -34,12 +37,16 @@ export class VendorLandingComponent  {
   sortState: SortState = {sortColumn: 'vendorName', sortState: SortIcons.ASC}
   
   private searchSubject = new Subject<{ key: string; value: string }>(); 
+  userRole: string = '';
   
   
-  constructor(private vendorService: VendorService, private router: Router, private snackbarService:SnackbarService) {
-    this.getVendorList();
-    this.listenToFilterChanges(); 
+  constructor(private vendorService: VendorService, private router: Router, private snackbarService:SnackbarService, private userService: UserService) {}
+  ngOnInit(): void {
+      this.getVendorList();
+    this.listenToFilterChanges();
   }
+  
+
 
   getVendorList(): void {
     this.vendorService.getVendorList(this.currentPage, this.pageSize, this.filterCriteria, this.sortState).subscribe(
@@ -48,6 +55,11 @@ export class VendorLandingComponent  {
         this.totalRecords = getValueOrNull(res.pageInfo?.totalRecords);
       }
     );
+  }
+
+    isAllowedToCreate(): boolean {
+    const userRole = this.userService.getCurrentUser()?.roleName as UserRole;
+    return AuthUtil.hasRole(userRole, [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MAINTAINER]);
   }
 
 listenToFilterChanges(): void {
@@ -88,7 +100,7 @@ listenToFilterChanges(): void {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result === DialogCloseResponse.DELETE) {
+      if (result === DialogCloseResponse.POSITIVE) {
         this.vendorService.deleteVendor(row.id.toString()).subscribe({
           next: () => {
             this.snackbarService.success('Vendor deleted successfully!');
