@@ -159,7 +159,9 @@ export class ProductionPlanComponent implements OnInit, OnDestroy {
   selectAll(event: { checked: boolean }) {
     if (event.checked) {
       this.partList.forEach((part) => { this.selectedPartIds.add(part.partId);
-      this.selectedParts.push(part);
+              if (!this.selectedParts.some(p => p.partId === part.partId)) {
+          this.selectedParts.push(part);
+        }
       });
     } else {
       this.partList.forEach((part) => {
