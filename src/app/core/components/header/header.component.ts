@@ -14,9 +14,9 @@ export class HeaderComponent {
   showUserInfo= false;
 
   constructor(private userService: UserService) {
-    if(!AuthUtil.resetRequired)
+    if(!AuthUtil.resetRequired){
     this.getCurrentUser();
-    this.showUserInfo=true;
+    this.showUserInfo=true;}
   }
 
   getCurrentUser() {

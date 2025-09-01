@@ -1,13 +1,17 @@
-import { CanActivateFn, Router } from '@angular/router';
-import { inject } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { CanActivate, Router, UrlTree } from '@angular/router';
 import { AuthUtil } from 'src/app/shared/utils/auth.util';
 
-export const passwordResetGuard: CanActivateFn = () => {
-  const router = inject(Router);
+@Injectable({
+  providedIn: 'root'
+})
+export class PasswordResetGuard implements CanActivate {
+  constructor(private router: Router) {}
 
-  if (AuthUtil.resetRequired) {
-    return router.parseUrl('/change-password');
+  canActivate(): boolean | UrlTree {
+    if (AuthUtil.resetRequired) {
+      return this.router.parseUrl('/change-password');
+    }
+    return true;
   }
-
-  return true;
-};
+}

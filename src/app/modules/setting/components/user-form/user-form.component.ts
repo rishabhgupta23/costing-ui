@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {  Subscription } from 'rxjs';
 import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
 import { getValueOrNull } from '../../../../shared/utils/string.util';
-import { ChangepassDailogComponent } from '../changepass-dailog/changepass-dailog.component';
+import { ChangepassDailogComponent } from '../changepass-dialog/changepass-dailog.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({

@@ -68,7 +68,7 @@ submit() {
 }
 
 backToLogin() {
-  AuthUtil.accessToken = '';
+  AuthUtil.resetToken();
   this.router.navigate(['/login']);
 }
 }

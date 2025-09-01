@@ -8,19 +8,22 @@
   margin-top: 0;
   color: $c-default-bg;
 }
+
 .visible_btn {
   display: flex;
   border: none;
   background: none;
 }
+
 .form-field {
   margin: 0.5rem 1.5rem;
   display: flex;
   flex-direction: column;
 }
+
 .custom-textfield {
-    border-radius: 12px;
-    padding-top: 8px;
+  border-radius: 12px;
+  padding-top: 8px;
 }
 
 .input-field {
@@ -28,15 +31,16 @@
 }
 
 .error {
-  color: red;
+  color: $c-error;
   font-size: 0.7rem;
-    margin-top: .15rem;
-  height: .75rem;
+  margin-top: 0.15rem;
+  height: 0.75rem;
 }
+
 .guidelines {
   font-size: 0.875rem;
   margin: 0.5rem 1.5rem;
-  background-color: rgb(222, 222, 222);
+  background-color: #dedede; //not a common colour so not giving this colour in base
   padding: 1rem;
   border-radius: 12px;
 }
