@@ -93,6 +93,7 @@ const mockCostResponse: ProductionCostResponse = {
 
   it('should load part list on init', () => {
     expect(partServiceSpy.getPartList).toHaveBeenCalled();
+     partServiceSpy.getPartList.calls.reset(); 
     expect(component.partList.length).toBe(2);
     expect(component.totalRecords).toBe(2);
   });
@@ -102,6 +103,7 @@ const mockCostResponse: ProductionCostResponse = {
     component.partSelectionForm.patchValue({ partName: 'Part A' });
     tick(300);
     expect(spy).toHaveBeenCalled();
+    spy.calls.reset();
     expect(component.filterCriteria.get('partName')).toBe('Part A');
   }));
 
@@ -140,6 +142,7 @@ const mockCostResponse: ProductionCostResponse = {
     expect(component.pageSize).toBe(50);
     expect(component.currentPage).toBe(1);
     expect(spy).toHaveBeenCalled();
+    spy.calls.reset();
   });
 
   it('should go to next step with selected parts', () => {
@@ -147,6 +150,8 @@ const mockCostResponse: ProductionCostResponse = {
     component.goToNextStep(component.stepper);
     expect(component.allSelectedParts.length).toBe(1);
     expect(component.stepper.next).toHaveBeenCalled();
+   (component.stepper.next as jasmine.Spy).calls.reset();
+
   });
 
   it('should prepare plan form with quantities', () => {
@@ -168,8 +173,10 @@ const mockCostResponse: ProductionCostResponse = {
       { partId: 1, quantity: 1 }
     ]
   });
+   planServiceSpy.calculateProductionCost.calls.reset();
   expect(component.productionCostResponse).toEqual(mockCostResponse);
   expect(component.stepper.next).toHaveBeenCalled();
+  (component.stepper.next as jasmine.Spy).calls.reset();
 });
 
 
@@ -180,6 +187,7 @@ const mockCostResponse: ProductionCostResponse = {
     component.preparePlanForm();
     component.planProduction(component.stepper);
     expect(console.error).toHaveBeenCalled();
+    (console.error as jasmine.Spy).calls.reset();
   });
 
   it('should reset plan correctly', () => {
@@ -189,6 +197,7 @@ const mockCostResponse: ProductionCostResponse = {
     expect(component.productionCostResponse).toBeNull();
     expect(component.selectedStepIndex).toBe(0);
     expect(component.stepper.reset).toHaveBeenCalled();
+    (component.stepper.reset as jasmine.Spy).calls.reset();
   });
 
   it('should compute total quantity and cost', () => {
