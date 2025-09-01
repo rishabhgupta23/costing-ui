@@ -90,7 +90,12 @@
     color:$c-link-hover;
   }
 
-
+.visible_btn {
+    display: flex;
+    border: none;
+    background: none;
+    margin-right: 0.5rem;
+}
 
 
 

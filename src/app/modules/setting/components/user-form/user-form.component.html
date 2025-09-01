@@ -3,6 +3,10 @@
     <span class="page-title">
       Create User
     </span>
+    <span *ngIf="showChangePasswordLink()">
+      <a class="reset-link" (click)="newPassword()">Change Password</a>
+    </span>
+
   </div>
   <div class="page-content">
     <div class="card">

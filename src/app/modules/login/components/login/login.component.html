@@ -14,7 +14,10 @@
             </mat-form-field>
             <br>
             <mat-form-field appearance="outline" class="form-text">
-                <input matInput placeholder="Enter Password" type="password" [(ngModel)]="password">
+                <input matInput placeholder="Enter Password" type="password" [(ngModel)]="password"  [type]="hidePassword? 'password' : 'text'">
+                <button mat-icon-button class="visible_btn" matSuffix (click)="hidePassword = !hidePassword" type="button">
+                    <mat-icon svgIcon="{{ hidePassword ? 'visibilityoff' : 'visibility' }}"></mat-icon>
+                </button>
             </mat-form-field>
             <br>
             <div class="forgot-password">

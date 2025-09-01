@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
+import { CanActivate, Router, UrlTree, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { AuthUtil } from 'src/app/shared/utils/auth.util';
@@ -10,19 +10,23 @@ import { UserService } from 'src/app/data/services/user/user.service';
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  constructor(private router: Router, private userService:UserService) {}
+  constructor(private router: Router, private userService: UserService) {}
 
-  canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
-    const token = localStorage.getItem('accessToken');
-    if (!token || !AuthUtil.isTokenValid()) {
-      this.router.navigate(['/login']);
-      return of(false);
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): boolean | UrlTree | Observable<boolean | UrlTree> {
+    if (!(AuthUtil.accessToken && AuthUtil.isTokenValid())) {
+      AuthUtil.resetToken();
+      return this.router.parseUrl('/login');
     }
-
     const allowedRoles = route.data['roles'] as UserRole[] | undefined;
+    if (!allowedRoles || allowedRoles.length === 0) {
+      return true;
+    }
     const currentUser = this.userService.getCurrentUser();
     if (currentUser) {
-      return of(this.checkRole(currentUser.roleName as UserRole, allowedRoles));
+      return this.checkRole(currentUser.roleName as UserRole, allowedRoles);
     }
 
     return this.userService.whoAmI().pipe(
@@ -33,12 +37,12 @@ export class AuthGuard implements CanActivate {
       })
     );
   }
-private checkRole(userRole: UserRole, allowed?: UserRole[]) {
-  const isAllowed = AuthUtil.hasRole(userRole, allowed);
-  if (!isAllowed) {
-    this.router.navigate(['/unauthorized']);
-  }
-  return isAllowed;
-}
 
+  private checkRole(userRole: UserRole, allowed?: UserRole[]): boolean {
+    const isAllowed = AuthUtil.hasRole(userRole, allowed);
+    if (!isAllowed) {
+      this.router.navigate(['/unauthorized']);
+    }
+    return isAllowed;
+  }
 }

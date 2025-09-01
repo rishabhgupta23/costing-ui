@@ -80,6 +80,18 @@ export const SVG_ICONS = [
         path: baseIconsPath + '/copy_icon.svg',
         name:'copy_icon'
     },
+        {
+        path: baseIconsPath + '/visibility_icon.svg',
+        name:'visibility'
+    },
+        {
+        path: baseIconsPath + '/visibilityoff_icon.svg',
+        name:'visibilityoff'
+    },
+        {
+        path: baseIconsPath + '/info.svg',
+        name:'infoempty'
+    },
     {
         path: baseIconsPath + '/tools_icon.svg',
         name:'tools_icon'

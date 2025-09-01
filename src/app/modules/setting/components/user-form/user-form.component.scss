@@ -1,3 +1,5 @@
+@import "src/scss/_base.scss";
+
 .user-form {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -8,6 +10,22 @@
 .user-form > div {
     display: flex;
     flex-direction: column;
+}
+
+.page-title{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.reset-link{
+    color: $c-link;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  .reset-link:hover {
+    color:$c-link-hover;
 }
 
 .custom-textfield {

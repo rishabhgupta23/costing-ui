@@ -13,22 +13,33 @@ export class LoginComponent {
   userName: string = '';
   password: string = '';
 
+  hidePassword = true;
   constructor(private userService: UserService, private router: Router) {
 
   }
 
-  login() {
-    if(this.userName && this.password) {
-      const body : LoginRequest = {
-        email: this.userName,
-        password: this.password
-      };
-      this.userService.login(body).subscribe((res) => {
-        AuthUtil.accessToken = res.token;
+login() {
+  if (this.userName && this.password) {
+    const body: LoginRequest = {
+      email: this.userName,
+      password: this.password
+    };
+
+    this.userService.login(body).subscribe((res) => {
+      AuthUtil.accessToken = res.token;
+
+      const decoded = AuthUtil.getDecodedToken();
+      const resetRequired = decoded?.resetRequired ?? false;
+
+      if (resetRequired) {
+        this.router.navigate(['/change-password']);
+      } else {
         this.router.navigate(['/app']);
-      });
-    }
+      }
+    });
   }
+}
+
 
   goToContactUs() {
     this.router.navigateByUrl('/contact-us');
