@@ -24,6 +24,7 @@ describe('ProductionPlanComponent', () => {
   let fixture: ComponentFixture<ProductionPlanComponent>;
   let partServiceSpy: jasmine.SpyObj<PartService>;
   let planServiceSpy: jasmine.SpyObj<ProductionPlanService>;
+  let stepperSpy: jasmine.SpyObj<MatStepper>;
 
   const mockParts: PartRow[] = [
     { partId: 1, partNumber: 'P001', partName: 'Part A', unit: 'pcs', type: 'raw', categoryName: 'Cat1' },
@@ -56,6 +57,7 @@ const mockCostResponse: ProductionCostResponse = {
   beforeEach(async () => {
     partServiceSpy = jasmine.createSpyObj('PartService', ['getPartList']);
     planServiceSpy = jasmine.createSpyObj('ProductionPlanService', ['calculateProductionCost']);
+    stepperSpy = jasmine.createSpyObj('MatStepper', ['next', 'reset']);
 
     await TestBed.configureTestingModule({
   declarations: [ProductionPlanComponent],
@@ -80,9 +82,7 @@ const mockCostResponse: ProductionCostResponse = {
     fixture = TestBed.createComponent(ProductionPlanComponent);
     component = fixture.componentInstance;
 
-    component.table2 = { renderRows: jasmine.createSpy('renderRows') } as unknown as MatTable<PartRow>;
-    component.stepper = { next: jasmine.createSpy('next'), reset: jasmine.createSpy('reset') } as unknown as MatStepper;
-
+     component.table2 = jasmine.createSpyObj<MatTable<PartRow>>('MatTable', ['renderRows']);
     partServiceSpy.getPartList.and.returnValue(of({ data: { partsList: mockParts }, pageInfo: { totalRecords: 2 } }));
     fixture.detectChanges();
   });
@@ -92,18 +92,19 @@ const mockCostResponse: ProductionCostResponse = {
   });
 
   it('should load part list on init', () => {
+    partServiceSpy.getPartList.calls.reset();
+    component.ngOnInit();
     expect(partServiceSpy.getPartList).toHaveBeenCalled();
-     partServiceSpy.getPartList.calls.reset(); 
     expect(component.partList.length).toBe(2);
     expect(component.totalRecords).toBe(2);
   });
 
   it('should apply filter when form value changes', fakeAsync(() => {
     const spy = spyOn(component, 'getPartList');
+    spy.calls.reset();
     component.partSelectionForm.patchValue({ partName: 'Part A' });
     tick(300);
     expect(spy).toHaveBeenCalled();
-    spy.calls.reset();
     expect(component.filterCriteria.get('partName')).toBe('Part A');
   }));
 
@@ -138,19 +139,19 @@ const mockCostResponse: ProductionCostResponse = {
 
   it('should handle page change', () => {
     const spy = spyOn(component, 'getPartList');
+    spy.calls.reset();
     component.onPageChange({ pageIndex: 1, pageSize: 50 } as PageEvent);
     expect(component.pageSize).toBe(50);
     expect(component.currentPage).toBe(1);
     expect(spy).toHaveBeenCalled();
-    spy.calls.reset();
   });
 
   it('should go to next step with selected parts', () => {
+    stepperSpy.next.calls.reset();
     component.toggleSelection(mockParts[0], true);
-    component.goToNextStep(component.stepper);
+    component.goToNextStep(stepperSpy);
     expect(component.allSelectedParts.length).toBe(1);
-    expect(component.stepper.next).toHaveBeenCalled();
-   (component.stepper.next as jasmine.Spy).calls.reset();
+    expect(stepperSpy.next).toHaveBeenCalled();
 
   });
 
@@ -161,22 +162,18 @@ const mockCostResponse: ProductionCostResponse = {
   });
 
   it('should call productionPlanService with correct request and set response', () => {
+  planServiceSpy.calculateProductionCost.calls.reset();
   planServiceSpy.calculateProductionCost.and.returnValue(of(mockCostResponse));
   component.toggleSelection(mockParts[0], true);
   component.preparePlanForm();
-
-  component.planProduction(component.stepper);
+  component.planProduction(stepperSpy);
 
   expect(planServiceSpy.calculateProductionCost).toHaveBeenCalledWith({
     priceMode: component.planForm.get('pricingMode')?.value,
-    parts: [
-      { partId: 1, quantity: 1 }
-    ]
+    parts: [{ partId: 1, quantity: 1 }]
   });
-   planServiceSpy.calculateProductionCost.calls.reset();
   expect(component.productionCostResponse).toEqual(mockCostResponse);
-  expect(component.stepper.next).toHaveBeenCalled();
-  (component.stepper.next as jasmine.Spy).calls.reset();
+  expect(stepperSpy.next).toHaveBeenCalled();
 });
 
 
@@ -185,19 +182,19 @@ const mockCostResponse: ProductionCostResponse = {
     planServiceSpy.calculateProductionCost.and.returnValue(throwError(() => 'Error'));
     component.toggleSelection(mockParts[0], true);
     component.preparePlanForm();
-    component.planProduction(component.stepper);
-    expect(console.error).toHaveBeenCalled();
-    (console.error as jasmine.Spy).calls.reset();
+    component.planProduction(stepperSpy);
+    expect(console.error).toHaveBeenCalledWith('Production plan calculation failed', 'Error');
+    expect(console.error).toHaveBeenCalledTimes(1);
   });
 
   it('should reset plan correctly', () => {
-    component.toggleSelection(mockParts[0], true);
+    component.stepper = stepperSpy;
+    component.toggleSelection(mockParts[0], true);  
     component.resetPlan();
     expect(component.selectedParts.length).toBe(0);
     expect(component.productionCostResponse).toBeNull();
     expect(component.selectedStepIndex).toBe(0);
-    expect(component.stepper.reset).toHaveBeenCalled();
-    (component.stepper.reset as jasmine.Spy).calls.reset();
+    expect(stepperSpy.reset).toHaveBeenCalled();
   });
 
   it('should compute total quantity and cost', () => {
