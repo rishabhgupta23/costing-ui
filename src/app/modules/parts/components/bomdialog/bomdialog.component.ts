@@ -26,7 +26,6 @@ pageSize: number = 100
 currentPage: number = 0;
 totalRecords: number=0;
 pageInfo: any;
-allParts: PartRow[] = [];  
 searchTerm: any;
 filteredPartList: PartRow[] = [];
 searchTermName: string = ''; 
@@ -128,12 +127,8 @@ getPartList(): void {
       }
 
       this.partList = parts;
-      this.existingParts = this.data.existingParts;
       this.paginatedData = this.partList;
       this.totalRecords = getValueOrNull(res.pageInfo?.totalRecords);
-      this.allParts = [...this.allParts, ...this.partList];
-      this.allParts = Array.from(new Set(this.allParts.map(part => part.partId)))
-        .map(id => this.allParts.find(part => part.partId === id)!);
     }
   );
 }
@@ -156,8 +151,8 @@ checkIfSelected(part: PartRow) {
 }
 
 confirmSelection(): void {
-  const result  = this.allParts.filter(part => this.existingParts.has(part.partId));
-  this.dialogRef.close({data: result, action: DialogCloseResponse.UPDATE});
+  const selectedIds = Array.from(this.existingParts);
+  this.dialogRef.close({ data: selectedIds, action: DialogCloseResponse.UPDATE });
 }
 
   onPageChange(event: PageEvent) {

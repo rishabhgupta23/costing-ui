@@ -6,7 +6,7 @@ import { COST_FACTOR_TABLE_COLUMNS } from '../../../../data/constants/part.const
 import { VendorService } from '../../../../data/services/vendor/vendor.service';
 import { Vendor } from '../../../../data/models/vendor';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { PartBomData, CostFactor, CostFactorData, PartCreateRequest, PartRow, VendorCost, PartAttributeValue } from '../../../../data/models/part';
+import { PartBomData, CostFactor, CostFactorData, PartCreateRequest, PartRow, VendorCost, PartAttributeValue, PartDetails } from '../../../../data/models/part';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BomdialogComponent } from '../bomdialog/bomdialog.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -406,34 +406,37 @@ setupTemplateFilter() {
     });
   }
   
-  handleDialogClose(selectedParts: Set<PartRow>): void 
-  {
-    if (!selectedParts || selectedParts.size === 0){
+  handleDialogClose(selectedIds: number[]): void {
+    if (!selectedIds || selectedIds.length === 0) {
       this.bomPartList = [];
+      return;
+    }
+    const qtyMap = new Map<number, number>();
+    this.bomPartList.forEach(p => qtyMap.set(p.id, Number(p.value) || 0));
+
+    this.bomPartList = this.bomPartList.filter(b => selectedIds.includes(b.id));
+
+    // Find NEW ids that need fetching
+    const newIds = selectedIds.filter(id => !this.bomPartList.some(b => b.id === id));
+
+    if (newIds.length === 0) {
+      // No new parts to fetch, done
+      return;
     }
 
-    selectedParts.forEach(part => {
-      const exists = this.bomPartList.find(existingPart => part.partId == existingPart.id);
-      if(!exists) {
-        this.bomPartList.push({
-          id:part.partId,
-          partName:part.partName,
-          partNumber:part.partNumber,
-          value:0,
-        })
-      }
-    });
-
-    // check if sme pat exist in bomPartList but not in selectedPart then delete that part from list
-  
-    this.bomPartList = this.bomPartList.filter(existingPart =>{
-      let filter = false;
-      selectedParts.forEach(p => {
-        if(p.partId === existingPart.id) {
-          filter = true;
+    // Fetch details for new parts
+    newIds.forEach(id => {
+      this.partService.getPartById(id.toString()).subscribe({
+        next: (part: PartDetails) => {
+          // Add new part 
+          this.bomPartList.push({
+            id,
+            partName: part.partName,
+            partNumber: part.partNumber,
+            value: qtyMap.get(id) || 0,
+          });
         }
       });
-      return filter;
     });
   }
   
