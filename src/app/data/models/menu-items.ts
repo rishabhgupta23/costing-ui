@@ -3,7 +3,7 @@ import { UserRole } from "src/app/shared/constants/userrole.constants";
 
 export interface MenuItem {
   label: string;
-  route: string;
+  route?: string;
   icon: string;
   roles: UserRole[];
   position?: 'bottom';

@@ -6,11 +6,12 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SVG_ICONS } from './config/asset.config';
 import { CustomIconRegistryService } from './shared/services/custom-icon-registry/custom-icon-registry.service';
+import { FooterComponent } from "./core/components/footer/footer.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, FooterComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

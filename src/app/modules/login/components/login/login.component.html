@@ -2,8 +2,10 @@
 
     
     <div class="login-logo">
-    <h2>LOGO</h2>
-</div>
+        <div class="app-brand">
+            <span class="brand-logo">ENT1</span><span class="app-name">.COSTING</span>
+        </div>
+    </div>
 <div class="login-body">
     <div class="login-image">
         <img src="assets/images/login-image.png">
@@ -21,7 +23,12 @@
             </mat-form-field>
             <br>
             <div class="forgot-password">
-                <a href="/forgot-password">Forgot Password?</a>
+            <mat-icon svgIcon="infoempty" 
+                        class="info-icon"
+                        [matTooltip]="'Contact admin for password reset'" 
+                        matTooltipPosition="right">
+            </mat-icon>
+            <span>Forgot Password?</span>
             </div>
             <button class="login-btn" (click)="login()">Login</button>
             <br>
