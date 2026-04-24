@@ -1,28 +1,41 @@
-import { ColumnType } from "../../shared/constants/table.constants";
+import { UserRole } from "src/app/shared/constants/userrole.constants";
+import { ColumnType, TableActions } from "../../shared/constants/table.constants";
 
 export const VENDOR_TABLE_COLUMNS = [
     {
-        label: 'Sl. No.',
-        columnType: ColumnType.SERIAL_NUMBER,
-    },
-    {
         label: 'Name',
         columnType: ColumnType.GENERAL,
-        key: 'name',
+        key: 'vendorName',
+        filterable: true,
+        sortable: true
     },
     {
         label: 'Email ID',
         columnType: ColumnType.GENERAL,
-        key: 'emailId'
+        key: 'emailId',
+        filterable: true,
+        sortable: true
     },
     {
         label: 'Contact No.',
         columnType: ColumnType.GENERAL,
-        key: 'contactNumber'
+        key: 'contactNumber',
+        filterable: true,
+        sortable: true
     },
     {
         label: 'Address',
         columnType: ColumnType.GENERAL,
-        key: 'address'
+        key: 'address',
+        filterable: true,
+        sortable: true
+    },
+    {
+        label: 'Actions',
+        columnType: ColumnType.ACTION,
+        actions: [
+            TableActions.EDIT,TableActions.DELETE
+        ],
+        hiddenForRoles: [UserRole.GUEST] 
     }
 ]

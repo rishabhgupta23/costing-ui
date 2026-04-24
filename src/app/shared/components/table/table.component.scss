@@ -1,13 +1,25 @@
-.app-table {
+@import "src/scss/_base.scss";
+.table-container {
+    max-height: 100%; /* Set a maximum height for the table container */
+    overflow-y: auto; /* Enable vertical scrolling */
+    }
+  
+  .app-table {
     width: 100%;
     border-radius: 12px;
     border-collapse: collapse;
-    border-spacing: 0;
-    border:none;    
-    background: white;
+    table-layout: fixed; /* Prevent columns from expanding */
+    background: $c-default-bg;
+
+    thead {
+        position: sticky;
+        top: 0; 
+        background-color: $c-default-bg; 
+        z-index: 1;
+      }
     
     .header-row {
-        background-color: grey;
+        background-color: $c-table-header-bg;
         border-radius: 12px 12px 0 0;
         th:first-child {
             border-radius: 12px 0 0 0;
@@ -17,11 +29,140 @@
         }
     }
     th,td {
-        text-align: left;
-        padding: 1rem;
+      text-align: left;
+      padding: 1rem;
+      word-wrap: break-word; /* Prevent long text from overflowing */
+      overflow: hidden;
+      text-overflow: ellipsis; 
+      white-space: nowrap; /* Prevent text from wrapping */
+      min-width: 5rem;
+      max-width: 8rem;
     }
 
     td {
-        border-bottom: 1px solid grey;
+        border-bottom: 1px solid $c-border;
     }
+    
 }
+.custom-textfield {
+  border-radius: 12px;
+}
+.mat-form-field {
+  width: 100%; /* Ensure input fields span the full width of the cell */
+  box-sizing: border-box;
+}
+
+  
+  button {
+    margin: 0 0.2rem;
+  }
+
+  .data-row input[type="number"]{
+    width: 75%;
+  padding: 6px 10px;
+  font-size: 1rem;
+  border: 1px solid $c-default-text;
+  border-radius: $base-border-radius;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: $c-default-bg;
+
+  }
+
+    .data-row input[type="text"]{
+    width: 75%;
+  padding: 6px 10px;
+  font-size: 1rem;
+  border: 1px solid $c-default-text;
+  border-radius: $base-border-radius;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: $c-default-bg;
+
+  }
+
+  /* Style for the filter inputs within the filter row */
+.filter-row input[type="text"] {
+  width: 75%;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  border: 1px solid $c-default-text;
+  border-radius: $base-border-radius;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: $c-default-bg;
+}
+
+.filter-row{
+  background-color: $c-table-header-bg;
+}
+
+/* Hover effect for interactive feedback */
+.filter-row input[type="text"]:hover {
+  border-color: $c-default-text;
+}
+
+/* Focus effect for better user experience */
+.filter-row input[type="text"]:focus {
+  border-color: $c-tx-border;
+  border: 2px solid $c-tx-border;
+  background-color: $c-default-bg;
+  outline: none;
+}
+
+/* Placeholder text style */
+.filter-row input[type="text"]::placeholder {
+  color: $c-placeholder;
+  opacity: 0.8;
+}
+
+.filter-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.filter-input-wrapper input[type="text"] {
+  width: 100%;
+  padding-right: 30px; /* leave space for the clear button */
+}
+
+.clear-filter-btn {
+  position: absolute;
+  color: $c-placeholder;
+  right: 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  width: 20px;
+}
+.clear-filter-btn:hover{
+  color: $c-default-text;
+}
+.header-cell {
+  text-align: left;
+  white-space: nowrap;
+}
+
+.sort-btn {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1.5rem;
+  height: 1.5rem;
+  min-width: 1.5rem;
+  padding: 0;
+  margin-left: 4px;
+  background: transparent;
+  border: none;
+}
+
+.sort-btn .sort-icon {
+  height: 100%;
+  font-size: 16px;
+  cursor: pointer;
+  color: $c-default-text;
+  transition: color 0.2s;
+}
+

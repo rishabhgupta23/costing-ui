@@ -1,0 +1,108 @@
+@import "src/scss/_base.scss";
+.part-form {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 2rem;
+    width: 100%;
+    align-items: center;
+}
+.part-form > div {
+    display: flex;
+    flex-direction: column;
+}
+.sub-heading {
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.vendor-panel-content {
+    padding-top: 1rem;
+}
+
+
+.part-form-container {
+    .action-section {
+        position: absolute;
+    }
+}
+
+
+
+mat-panel-description{
+    justify-content: right;
+}
+
+.button{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.bom-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.file-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.file-card {
+  position: relative;
+  width: 8rem;
+  padding: 0.5rem;
+  background: $c-default-bg;
+  border: $c-tx-border 1px solid;
+  border-radius: 0.5rem;
+  text-align: center;
+  box-shadow: $box-shadow;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 1rem;
+}
+
+.thumbnail {
+  width: 3rem;
+  height: 3rem;
+  object-fit: cover;
+  border-radius: 0.25rem;
+}
+
+.icon {
+  width: 3rem;
+  height: 3rem;
+  object-fit: cover;
+  margin: 0 auto;
+}
+
+.filename {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.download-btn{
+    padding: 0.3rem 0.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-flex;
+    border-radius: 0.5rem;
+    border: 2px solid $c-tx-border;
+    background-color: $c-default-bg;  
+    min-width: 5rem;
+    color: $c-default-text;
+    &:hover {
+      background-color: darken(#f3f3f349, 10%);
+    }
+    .btn-icon {
+        width: 1.2rem;
+    }
+}

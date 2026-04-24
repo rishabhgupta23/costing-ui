@@ -1,40 +1,20 @@
 import { Injectable } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
+import { AppConfig } from '../../config/app.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SidebarService {
 
-  menuItems = [
-    {
-      label: 'Parts',
-      route: '/app/parts'
-    },
-    {
-      label: 'Vendors',
-      route: '/app/vendors'
-    }
-  ];
-
-  selectedMenu =  this.menuItems[0];
+  private selectedMenuSubject =  new BehaviorSubject<any>(AppConfig.MENU_ITEMS[0]);
+  selectedMenu = this.selectedMenuSubject.asObservable();
 
 
   constructor(private router: Router) { }
 
-
-  handleRouteChange() {
-    // this.router.events
-    // .subscribe((val) => {
-    //   if(val instanceof NavigationEnd) {
-    //     this.menuItems.some(item => {
-    //       if(item.route === val?.url) {
-    //         this.selectedMenu = item;
-    //         return true;
-    //       }
-    //       return false;
-    //     })
-    //   }    
-    // });
+  updateSelectedMenu(menuItem: any) {
+    this.selectedMenuSubject.next(menuItem);
   }
 }

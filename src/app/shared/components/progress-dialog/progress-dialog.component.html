@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Creating Part</h2>
+<mat-dialog-content>
+  <mat-horizontal-stepper [linear]="false" [selectedIndex]="data.step">
+    <mat-step label="Creating Part">
+      <ng-template matStepLabel>Creating Part</ng-template>
+      <div class="step-content">
+        <mat-progress-spinner
+          *ngIf="data.step === 0"
+          mode="indeterminate"
+          diameter="40">
+        </mat-progress-spinner>
+      </div>
+    </mat-step>
+
+    <mat-step label="Uploading Files">
+      <ng-template matStepLabel>Uploading Files</ng-template>
+      <div class="step-content">
+        <mat-progress-spinner
+          *ngIf="data.step === 1"
+          mode="indeterminate"
+          diameter="40">
+        </mat-progress-spinner>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+</mat-dialog-content>

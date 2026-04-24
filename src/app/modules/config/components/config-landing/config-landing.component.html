@@ -1,0 +1,6 @@
+<div class="tiles-container">
+  <div class="tile" *ngFor="let tile of tiles" (click)="onTileClick(tile.route)">
+    <span>{{ tile.label }}</span>
+  </div>
+</div>
+

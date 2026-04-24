@@ -1,0 +1,62 @@
+<div class="app-page">
+    <div class="page-header">
+        <span class="page-title">Cost Calculation</span>
+    </div>
+    <div class="page-content">
+        <div class="card">
+            <form [formGroup]="calculateform" class="cost-form">
+              <div class="cost-field">
+                Select Part
+                <mat-form-field appearance="outline" class="custom-textfield">
+                    <input type="text" 
+                           placeholder="Select Part" 
+                           matInput 
+                           formControlName="partControl" 
+                           [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" 
+                                      (optionSelected)="onPartSelected($event.option.value)"
+  (opened)="onAutocompleteOpened()"
+  (closed)="onAutocompleteClosed()">
+                        <mat-option *ngFor="let item of filteredParts | async" [value]="item">
+                            {{ item.partName }} | {{ item.partNumber }}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+              </div>
+
+                    <div class="cost-field">
+                      Select Pricing
+                        <mat-form-field appearance="outline" class="custom-textfield">
+                            <mat-select placeholder="Select Pricing" formControlName="pricing">
+                              <ng-container *ngFor="let price of pricingOptions">
+                                <mat-option [value]="price.value">{{ price.label }}</mat-option>
+                              </ng-container>
+                            </mat-select>
+                          </mat-form-field>
+                    </div>
+                    <div class="dialog-action">
+                <button class="primary-btn" (click)="onReset()">Reset</button>
+                <button class="primary-btn" (click)="getCost()">Calculate</button>
+            </div>
+            </form>
+            
+            <br>
+            <br>
+            <div class="sub-heading" *ngIf="isCalculated">COSTING</div>
+            <div *ngIf="isCalculated" class="slide-toggle-container">
+              <button class="primary-btn" (click)="onResetClick()">Reset</button>
+              <mat-slide-toggle [formControl]="toggleControl">Enable Simulation</mat-slide-toggle>
+            </div>
+            <app-table [data]="costingList" [config]="costCalculatorColumn" *ngIf="isCalculated" 
+            (cellEdit)="onCellEdit($event.row, $event.key)"
+            [editable]="toggleControl.value ?? false">
+              <tr table-footer>
+                <td colspan="4" class="footer-data"><strong>Total Cost:</strong></td>
+                <td colspan="1" class="footer-cell">{{ totalQP }}</td>
+              </tr>
+            </app-table>
+            
+
+          </div>
+        </div>
+    </div>

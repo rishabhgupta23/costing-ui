@@ -1,20 +1,90 @@
-import { Component, Input } from '@angular/core';
-import { ColumnType } from '../../constants/table.constants';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { ColumnType, SortIcons, TableActions } from '../../constants/table.constants';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { SortState } from '../../../data/models/part';
+import { UserService } from 'src/app/data/services/user/user.service';
 
 @Component({
+
   selector: 'app-table',
   standalone: true,
-  imports: [CommonModule, MatFormFieldModule,
-    MatInputModule, FormsModule],
+  imports: [CommonModule, MatFormFieldModule, MatInputModule, FormsModule, MatIconModule],
   templateUrl: './table.component.html',
-  styleUrl: './table.component.scss'
+  styleUrls: ['./table.component.scss']
 })
 export class TableComponent {
+
+@Input() showFilter: boolean = false;
+@Input() showSort: boolean = true;
+
+ applyFilter(arg0: { key: any; value: any; }) {
+ throw new Error('Method not implemented.');
+ }
+
+ constructor(private userService:UserService){}
+
+ @Input() customClass: string = '';
   @Input() data: any[] = [];
-  @Input() config: any[] = []; 
+  @Input() config: any[] = [];
+  @Input() sort: SortState = { sortColumn: '', sortState: SortIcons.ASC }; 
+  @Input() editable: boolean = false;
+  @Output() actionTriggered = new EventEmitter<{ action: TableActions; row: any }>();
+  @Output() rowClicked = new EventEmitter<any>();
+  @Output() filterChange = new EventEmitter<{ key: string; value: string }>();
+  @Output() sortChange = new EventEmitter<SortState>();
+  @Output() cellEdit = new EventEmitter<{ row: any, key: string }>();
+ 
+  TableActions= TableActions;
   ColumnType = ColumnType;
+
+  onRowClick(row: any) {
+    this.rowClicked.emit(row);
+  }
+  
+  onFilterChange(event: Event, key: string): void {
+    const value = (event.target as HTMLInputElement).value.trim().toLowerCase();
+       this.filterChange.emit({ key, value });
+  }
+  
+  clearFilter(input: HTMLInputElement, columnKey: string): void {
+    input.value = '';
+    this.filterChange.emit({ key: columnKey, value: '' });
+  }
+
+
+  toggleSort(columnKey: string): void {
+    this.sort = {
+      sortColumn: columnKey,
+      sortState: this.sort.sortColumn !== columnKey ? SortIcons.ASC : 
+                 this.sort.sortState === SortIcons.ASC ? SortIcons.DESC : SortIcons.ASC
+    };
+    this.sortChange.emit(this.sort);
+  }
+  
+  getSortIcon(columnKey: string): string {
+    return this.sort.sortColumn === columnKey 
+      ? (this.sort.sortState === SortIcons.ASC ? SortIcons.ASC : SortIcons.DESC) 
+      : SortIcons.DEFAULT;
+  }
+  
+
+
+
+  handleAction(event:MouseEvent, actionData: { action: TableActions; row: any }): void {
+    event.stopPropagation();
+    this.actionTriggered.emit(actionData);
+  }
+
+  canShowColumn(col: any): boolean {
+  const currentRole = this.userService.getCurrentUser()?.roleName;
+  return !col.hiddenForRoles || !col.hiddenForRoles.includes(currentRole);
 }
+
+  }
+
+  

@@ -1,8 +1,12 @@
 <div class="app-header">
-    <div class="app-logo">JU.BE.I.WA.TO</div>
-    <div class="app-title"> Costing Application</div>
-    <div class="app-info">
-        <span>Welcome, </span>
-        <span>{{user ? user.name : ''}}</span>
+    <div class="app-logo">
+  <div class="app-brand">
+    <span class="brand-logo">ENT1</span><span class="app-name">.COSTING</span>
+  </div>
+</div>
+    <div class="app-info" *ngIf="showUserInfo">
+        <span>Welcome,&nbsp;</span>
+        <span>{{user ? user.displayName : ''}}</span>
+        <img class="user-icon" src="assets\images\account_circle.png" alt="user-icon">
     </div>
 </div>

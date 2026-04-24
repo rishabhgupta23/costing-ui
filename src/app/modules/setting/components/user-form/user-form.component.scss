@@ -1,0 +1,42 @@
+@import "src/scss/_base.scss";
+
+.user-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 2rem;
+    width: 100%;
+    align-items: center;
+}
+.user-form > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.page-title{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.reset-link{
+    color: $c-link;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  .reset-link:hover {
+    color:$c-link-hover;
+}
+
+.custom-textfield {
+    border-radius: 12px;
+    padding-top: 8px;
+}
+.dialog-action{
+    display: flex;
+    position: fixed;
+    bottom: 1rem;
+    right: 2rem;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}

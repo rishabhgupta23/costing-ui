@@ -1,32 +1,113 @@
-import { Component } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { VendorService } from '../../../../data/services/vendor/vendor.service';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Vendor } from '../../../../data/models/vendor';
-import { Router } from '@angular/router';
+import { VendorService } from '../../../../data/services/vendor/vendor.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SnackbarService } from '../../../../data/services/snackbar/snackbar.service';
 
 @Component({
   selector: 'app-vendor-form',
   templateUrl: './vendor-form.component.html',
-  styleUrl: './vendor-form.component.scss'
+  styleUrls: ['./vendor-form.component.scss']
 })
-export class VendorFormComponent {
-
+export class VendorFormComponent implements OnInit {
+  vendorId: string | null = null;
   vendorForm = new FormGroup({
-    name: new FormControl(''),
-    emailId: new FormControl(''),
-    contactNumber: new FormControl(''),
+    vendorName: new FormControl('',[
+      Validators.required,
+      Validators.minLength(4),
+    ]),
+    emailId: new FormControl('', [Validators.email]),
+    contactNumber: new FormControl('',[
+      Validators.required,
+      Validators.pattern('^[0-9]{10}$'),
+    ]),
     address: new FormControl('') 
   });
+  constructor(
+    private vendorService: VendorService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private snackbarService: SnackbarService
+  ) {}
 
-  constructor(private vendorService: VendorService, private router: Router) {}
+  ngOnInit(): void {
+    // Capture the vendorId from the URL
+    this.vendorId = this.route.snapshot.paramMap.get('id'); 
+    // Initialize the form with empty values
+    this.vendorForm = new FormGroup({
+      vendorName: new FormControl('', [
+        Validators.required,
+        Validators.minLength(4),
+      ]),
+      emailId: new FormControl(''),
+      contactNumber: new FormControl('', [
+        Validators.required,
+        Validators.pattern('^[0-9]{10}$'),
+      ]),
+      address: new FormControl(''),
+    });
 
-  onCancel() {
+    // If in edit mode (vendorId exists), fetch and populate form with vendor data
+    if (this.vendorId) {
+      this.getVendorData(this.vendorId);
+    }
   }
 
-  onCreate() {
-    this.vendorService.createVendor(this.vendorForm.value as Vendor).subscribe(() => {
-      this.router.navigateByUrl("/app/vendors");
+  getVendorData(id: string): void {
+    // Fetch the vendor data by ID
+    this.vendorService.getVendorById(id).subscribe((vendor: Vendor) => {
+      // Populate the form fields with the existing vendor data
+      this.vendorForm.patchValue({
+        vendorName: vendor.vendorName,
+        emailId: vendor.emailId,
+        contactNumber: vendor.contactNumber,
+        address: vendor.address,
+      });
     });
   }
 
+  getErrorMessage(controlName: string): string {
+    const control = this.vendorForm.get(controlName);
+    if (control?.hasError('required')) {
+      return `${controlName} is required.`;
+    }
+    if (control?.hasError('minlength')) {
+      return `${controlName} must be at least ${control.getError('minlength').requiredLength} characters.`;
+    }
+    if (control?.hasError('pattern')) {
+      return `${controlName} must be a valid 10-digit number.`;
+    }
+    return '';
+  }
+
+  get vendorName() {
+    return this.vendorForm.get('vendorName');
+  }
+
+  onCancel() {
+    this.router.navigateByUrl('/app/vendors'); // Navigate back to the vendor list
+  }
+
+  onSubmit() {
+    if (this.vendorForm.valid) {
+      if (this.vendorId) {
+        this.vendorService.updateVendor(this.vendorId, this.vendorForm.value as Vendor).subscribe({
+          next: () => {
+            this.snackbarService.success('Vendor updated successfully!');
+          this.router.navigateByUrl('/app/vendors');
+          }
+        });
+      } else {
+        this.vendorService.createVendor(this.vendorForm.value as Vendor).subscribe({
+          next: () => {
+            this.snackbarService.success('Vendor created successfully!');
+          this.router.navigateByUrl('/app/vendors');
+          }
+        });
+      }
+    } else {
+      this.vendorForm.markAllAsTouched();
+    }
+  }
 }

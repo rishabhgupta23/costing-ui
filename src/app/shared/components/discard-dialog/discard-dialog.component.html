@@ -1,0 +1,33 @@
+<h2 class="title">Delete Vendor</h2>
+
+<div *ngIf="hasParts; else noPartsTemplate">
+  
+  <div>
+    <p class="description"><span class="vendor-name">{{ data.row.vendorName }}</span> is associated with these parts:</p>
+  </div>
+
+  <app-table class="app-table"
+  [data]="dataSource" 
+  [config]="columns">
+</app-table>
+<!-- Paginator -->
+<mat-paginator 
+  [length]="totalRecords" 
+  [pageSize]="pageSize" 
+  (page)="onPageChange($event)">
+</mat-paginator>
+</div>
+
+<ng-template #noPartsTemplate>
+  <div class="no-vendor-dialog">
+  <img src="/assets/images/No_vendor_icon.png" alt="">
+  </div>
+  <p class="vendor-message">Vendor <span class="vendor-name">{{ data.row.vendorName }}</span> is not associated with any parts.</p>
+</ng-template>
+
+  <p class="confirm-message">Are you sure you want to delete this Vendor?</p>
+
+<div class="btn-group" align="end">
+  <button class="secondary-btn" (click)="closeDialog(DialogCloseResponse.NO_ACTION)">No</button>
+  <button class="primary-btn" color="warn" (click)="closeDialog(DialogCloseResponse.POSITIVE)">Yes</button>
+</div>

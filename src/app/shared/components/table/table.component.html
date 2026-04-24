@@ -1,24 +1,110 @@
-<table class="app-table">
-  <tr class="header-row"> 
-    <ng-container *ngFor="let col of config">
-      <th>{{ col?.label }}</th>
-    </ng-container>
-  </tr>
-  <ng-container *ngFor="let row of data; let i = index">
-    <tr class="data-row">
+<div class="table-container">
+<table class="app-table" [ngClass]="customClass">
+  <!-- Table Header -->
+   <thead>
+    <tr class="header-row" *ngIf="showSort">
       <ng-container *ngFor="let col of config">
-        <td *ngIf="col?.columnType === ColumnType.SERIAL_NUMBER">
-          {{ i + 1 }}
-        </td>
-        <td *ngIf="col?.columnType === ColumnType.GENERAL">
-          {{ row[col?.key] }}
-        </td>
-        <td *ngIf="col?.columnType === ColumnType.INPUT_NUMBER">
-          <mat-form-field>
-            <input matInput [(ngModel)]="row[col?.key]">
-          </mat-form-field>
-        </td>
+        <th *ngIf="canShowColumn(col)"  [title]="col?.label">
+          <div class="header-cell">
+            <span>{{ col?.label }}</span>
+            <ng-container *ngIf="col.sortable">
+              <button mat-button class="sort-btn" (click)="toggleSort(col.key)">
+                <mat-icon [svgIcon]="getSortIcon(col.key)" class="sort-icon"></mat-icon>
+              </button>
+            </ng-container>
+          </div>
+        </th>
       </ng-container>
     </tr>
+
+  <tr class="filter-row" *ngIf="showFilter">
+    <ng-container *ngFor="let col of config">
+      <th *ngIf="canShowColumn(col)">
+        <ng-container *ngIf="col.filterable">
+          <div class="filter-input-wrapper">
+            <input 
+              type="text" 
+              #filterInput
+              (input)="onFilterChange($event, col.key)" 
+              placeholder="Search {{col.label}}" />
+              <mat-icon class="clear-filter-btn" *ngIf="filterInput.value" (click)="clearFilter(filterInput, col.key)" svgIcon="close"></mat-icon>
+          </div>
+        </ng-container>
+      </th>
+    </ng-container>
+  </tr>
+</thead>
+
+  <!-- Table Rows -->
+   <tbody>
+   
+
+  <ng-container *ngFor="let row of data; let i = index"> 
+    
+
+      <tr class="data-row" (click)="onRowClick(row)">
+          <!-- Dynamic Columns -->
+      <ng-container *ngFor="let col of config">
+        <ng-container *ngIf="canShowColumn(col)">
+        <td *ngIf="col?.columnType === ColumnType.GENERAL">
+          <ng-container *ngIf="col.cellTemplate; else defaultCell">
+            <ng-container 
+              *ngTemplateOutlet="col.cellTemplate; context: { $implicit: row[col.key], element: row }">
+            </ng-container>
+          </ng-container>
+          <ng-template #defaultCell>
+            {{ row[col?.key] }}
+          </ng-template>
+        </td>
+
+    <td *ngIf="col?.columnType === ColumnType.INPUT_NUMBER">
+      <input
+      type="number"
+      class="custom-textfield"
+      [(ngModel)]="row[col?.key]" 
+      (ngModelChange)="cellEdit.emit({ row: row, key: col?.key })" />
+    
+    </td>
+
+    
+    <td *ngIf="col?.columnType === ColumnType.INPUT_STRING">
+      <input
+      type="text"
+      class="custom-textfield"
+      [(ngModel)]="row[col?.key]" 
+      (ngModelChange)="cellEdit.emit({ row: row, key: col?.key })" />
+    
+    </td>
+
+    <!-- Dynamic Action Buttons -->
+<td *ngIf="col?.columnType === ColumnType.ACTION">
+    <ng-container *ngFor="let action of col.actions">
+      <span class="icon-wrapper" *ngIf="action === TableActions.EDIT">
+        <mat-icon 
+          class="icon-btn" 
+          svgIcon="edit" 
+          (click)="handleAction($event, { action: action, row: row })">
+        </mat-icon>
+      </span>
+      
+      <span class="icon-wrapper" *ngIf="action === TableActions.DELETE">
+        <mat-icon 
+          class="icon-btn" 
+          svgIcon="delete"
+          (click)="handleAction($event, { action: action, row: row })">
+        </mat-icon>
+      </span>
+    </ng-container>
+  </td>
+  
+</ng-container>
+</ng-container>
+      </tr>
   </ng-container>
+</tbody>
+<tfoot>
+  <ng-content select="[table-footer]"></ng-content>
+</tfoot>
+
 </table>
+</div>

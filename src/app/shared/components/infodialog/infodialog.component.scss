@@ -1,0 +1,41 @@
+@import "src/scss/_base.scss"; 
+
+.main-container {
+  background-color: $c-default-bg;
+  overflow: hidden;
+}
+
+.image-container {
+  display: flex;
+  justify-content: center;
+
+  img {
+    height: 50%;
+    width: 75%;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+}
+
+.content-box {
+  padding: 0 1rem;
+
+  .error-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+
+    .label {
+      min-width: 8rem; // Consistent width for alignment
+      font-family: 'Poppins', sans-serif;
+      font-size: $base-font-size;
+      font-weight: 400;
+    }
+
+    .value {
+      font-family: 'Poppins', sans-serif;
+      font-size: $base-font-size;
+    }
+  }
+}
+

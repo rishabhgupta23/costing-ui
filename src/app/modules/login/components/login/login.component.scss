@@ -1,0 +1,131 @@
+@import 'src/scss/_base.scss';
+.login-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image: linear-gradient(to right, rgb(235, 239, 250), $c-login-bg);
+}
+
+.login-logo {
+  .app-brand {
+    display: flex;
+    align-items: baseline;
+    gap: 0;
+  }
+  
+  .brand-logo {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;  // Choose a bold, modern font
+    font-variant-numeric: tabular-nums;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: $c-logo;
+    background-clip: text;
+    letter-spacing: -1px;
+  }
+  
+  .app-name {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 2rem;
+    font-weight: 500;
+    color: $c-default-text;
+  }
+}
+.login-body{
+    display:flex ;
+    flex-direction: row;
+    height: 82vh;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    .login-form {
+        width: 40%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        .form-text{
+             box-shadow: inset 0px 5px 10px rgba(0, 0, 0, 0.3);
+                border-radius: 5px;
+            height: 3rem;
+            width: 70%;
+            border: none;
+            background-color: $c-default-bg;
+        }
+        .login-btn {
+            width: 70%;
+            align-items: center;
+            justify-content: center;
+            padding: 0.6rem 1.6rem;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: medium;
+            border-radius: 10px;
+            min-width: 5rem;
+            background-color:$c-login-btn;
+            color: $c-default-bg;
+            border: none;
+            &:hover {
+                background-color: darken($c-login-btn , 10%);
+            }
+        }
+        .contact-us{
+            margin-top: 10px;
+            font-size: 14px;
+            margin-left: 70px;
+        }
+    }
+
+    .login-image{
+        display: flex;
+        width:60%;
+        height:80%; 
+        justify-content: center;
+    }
+}
+
+.forgot-password {
+  width: 70%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;  // Space between icon + text
+  margin-bottom: 10px;
+  
+  .info-icon {
+    width: 18px;
+    height: 18px;
+    cursor: help;
+    color: black;
+  }
+  
+  span {
+    font-size: 14px;
+    color: black;
+    font-style: italic;
+  }
+}
+
+.contact-us a {
+    color: $c-link;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  .contact-us a:hover {
+    color:$c-link-hover;
+  }
+
+.visible_btn {
+    display: flex;
+    border: none;
+    background: none;
+    margin-right: 0.5rem;
+}
+
+
+
+
+

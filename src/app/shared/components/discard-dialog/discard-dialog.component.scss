@@ -1,0 +1,45 @@
+@import "src/scss/_base.scss";
+.app-table{
+  height: 350px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0 1.5rem;
+}
+.title{
+  border-radius: $base-discard-header-radius;
+  background: $c-dialog-header-bg;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
+  margin-top: 0;
+  color: $c-default-bg;
+}
+.btn-group{
+  display: flex;
+  justify-content: end;
+  padding: 1rem;
+  gap: 0.5rem;
+  z-index: 100;
+}
+.description, .confirm-message{
+  font-family: 'Poppins', sans-serif;
+  padding: 0 1.5rem;
+}
+.confirm-message{
+  margin: 0;
+}
+.paginator-style{
+  padding:0 1.5rem;
+}
+.vendor-message{
+  padding:0 1.5rem;
+}
+.vendor-name{
+  font-weight: 600;
+}
+.no-vendor-dialog{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}

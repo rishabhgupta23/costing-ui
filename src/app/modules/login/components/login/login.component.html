@@ -1,0 +1,41 @@
+<div class="login-container">
+
+    
+    <div class="login-logo">
+        <div class="app-brand">
+            <span class="brand-logo">ENT1</span><span class="app-name">.COSTING</span>
+        </div>
+    </div>
+<div class="login-body">
+    <div class="login-image">
+        <img src="assets/images/login-image.png">
+        </div>
+        <div class="login-form">
+            <mat-form-field appearance="outline" class="form-text">
+                <input matInput placeholder="Enter Email Address" [(ngModel)]="userName">
+            </mat-form-field>
+            <br>
+            <mat-form-field appearance="outline" class="form-text">
+                <input matInput placeholder="Enter Password" type="password" [(ngModel)]="password"  [type]="hidePassword? 'password' : 'text'">
+                <button mat-icon-button class="visible_btn" matSuffix (click)="hidePassword = !hidePassword" type="button">
+                    <mat-icon svgIcon="{{ hidePassword ? 'visibilityoff' : 'visibility' }}"></mat-icon>
+                </button>
+            </mat-form-field>
+            <br>
+            <div class="forgot-password">
+            <mat-icon svgIcon="infoempty" 
+                        class="info-icon"
+                        [matTooltip]="'Contact admin for password reset'" 
+                        matTooltipPosition="right">
+            </mat-icon>
+            <span>Forgot Password?</span>
+            </div>
+            <button class="login-btn" (click)="login()">Login</button>
+            <br>
+            <div class="contact-us">
+                For a trial or new Registration 
+                <a (click)="goToContactUs()">Contact Us</a>
+              </div>              
+        </div>
+    </div>
+</div>

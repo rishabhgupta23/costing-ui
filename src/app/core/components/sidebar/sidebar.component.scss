@@ -1,31 +1,79 @@
-.sidebar{
+@import 'src/scss/_base.scss';
+.sidebar {
+    display:flex;
+    flex-direction: column;
     height: calc(100% - 2rem);
-    padding: 1rem 0 1rem 1rem;
-    width: 8rem;
-    background: #55ad9b;
-    color: white;
+    padding: 1rem 0 1rem 0.5rem;
+    width: 5rem;
+    justify-content: space-between;
+    background: $c-default-bg;
+    color: $c-text-hover;
+    border-right: 1px solid $c-border;
+}
 
-    .menu-container {
-        display: flex;
-        flex-direction: column;
+.menu-bottom{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: .75rem;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+    transition: background 0.3s, color 0.3s;
+    margin-top: auto;
+    font-size: .75rem;
 
-        .menu-item {
-            display: block;
-            padding: 1rem;
-            border-radius: 16px 0 0 16px;
-            cursor: pointer;
-            margin-bottom: 0.5rem;
+}
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    font-size: .75rem;
+}
 
-            &:hover {
-                background: rgb(241 248 237 / 15%);
-            }
-        }
+.menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: .75rem;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+    position: relative;
+    transition: background 0.3s, color 0.3s;
+}
+.menu-label{
+    text-align: center;
+}
+/* Hover Effect */
+.menu-item:hover {
+    color: $c-default-text;
+}
 
-        .menu-item--active {
-            background: #f1f8ed4a;
-            font-weight: bold;
-        }
+/* Light Opacity Border on Hover */
+.menu-item:not(.menu-item--active):hover::before {
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 0;
+    height: 100%;
+    width: 2px;
+    background-color: $c-text-hover;
+    opacity: 0.5;
+}
 
+/* Active Item */
+.menu-item--active {
+    color: $c-default-text;
+    font-weight: bold;
+    position: relative;
+    background-color: $c-tr-hover;
+}
 
-    }
+/* Active Item Border */
+.menu-item--active::before {
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 0;
+    height: 100%;
+    width: 3px;
+    background-color: $c-tx-border;
 }

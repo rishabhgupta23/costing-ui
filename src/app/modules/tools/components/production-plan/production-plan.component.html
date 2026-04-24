@@ -1,0 +1,315 @@
+<div class="app-page production-plan-page">
+  <div class="page-header">
+    <span class="page-title">Production Plan</span>
+  </div>
+
+  <div class="stepper-container">
+    <mat-stepper class="custom-stepper" #stepper (selectionChange)="onStepChange($event)">
+      <!-- Step 1: Select Parts -->
+      <mat-step [completed]= "selectedPartIds.size > 0">
+        <ng-template matStepLabel>Select Parts</ng-template>
+        <ng-template matStepperIcon="edit">
+          <mat-icon svgIcon="tick_icon"></mat-icon>
+        </ng-template>
+        <div class="page-content">
+          <form [formGroup]= "partSelectionForm">
+            <div class="table-scroll-wrapper">
+              <table
+                mat-table
+                [dataSource]="partList"
+                class="production-part-table"
+              >
+                <!-- Select Checkbox Column -->
+                <!-- In your table -->
+                <ng-container matColumnDef="select">
+                  <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox
+                      (change)= "$event ? selectAll($event) : null"
+                      [checked]= "isAllSelected()"
+                      [indeterminate]= "isIndeterminate()"
+                    >
+                    </mat-checkbox>
+                  </th>
+                  <td mat-cell *matCellDef="let part">
+                    <mat-checkbox
+                      (click)= "$event.stopPropagation()"
+                      (change)= "$event ? toggleSelection(part, $event.checked) : null"
+                      [checked]= "isSelected(part.partId)"
+                    >
+                    </mat-checkbox>
+                  </td>
+                </ng-container>
+                <!-- partNumber -->
+                <ng-container matColumnDef="partNumber">
+                  <th mat-header-cell *matHeaderCellDef>
+                    <div class="header-det">
+                      Part Number
+                      <mat-icon
+                        [svgIcon]="getSortIcon('partNumber')"
+                        (click)="toggleSort('partNumber')"
+                        class="sort-icon"
+                      ></mat-icon>
+                    </div>
+                    <div class="filter-row">
+                      <div class="filter-input-wrapper">
+                        <input
+                          matInput
+                          formControlName="partNumber"
+                          placeholder="Search Number"
+                        />
+                      </div>
+                    </div>
+                  </th>
+                  <td mat-cell *matCellDef="let part">{{ part.partNumber }}</td>
+                </ng-container>
+                <!-- partName -->
+                <ng-container matColumnDef="partName">
+                  <th mat-header-cell *matHeaderCellDef>
+                    <div class="header-det">
+                      Part Name
+                      <mat-icon
+                        [svgIcon]="getSortIcon('partName')"
+                        (click)="toggleSort('partName')"
+                        class="sort-icon"
+                      ></mat-icon>
+                    </div>
+                    <div class="filter-row">
+                      <div class="filter-input-wrapper">
+                        <input
+                          matInput
+                          formControlName="partName"
+                          placeholder="Search Name"
+                        />
+                      </div>
+                    </div>
+                  </th>
+                  <td mat-cell *matCellDef="let part">{{ part.partName }}</td>
+                </ng-container>
+                <!-- unit -->
+                <ng-container matColumnDef="unit">
+                  <th mat-header-cell *matHeaderCellDef>
+                    <div class="header-det">
+                      Measuring Unit
+                      <mat-icon
+                        [svgIcon]="getSortIcon('unit')"
+                        (click)="toggleSort('unit')"
+                        class="sort-icon"
+                      ></mat-icon>
+                    </div>
+                    <div class="filter-row">
+                      <div class="filter-input-wrapper">
+                        <input
+                          matInput
+                          formControlName="unit"
+                          placeholder="Search Unit"
+                        />
+                      </div>
+                    </div>
+                  </th>
+                  <td mat-cell *matCellDef="let part">{{ part.unit }}</td>
+                </ng-container>
+                <!-- type -->
+                <ng-container matColumnDef="type">
+                  <th mat-header-cell *matHeaderCellDef>
+                    <div class="header-det">
+                      Type
+                      <mat-icon
+                        [svgIcon]="getSortIcon('type')"
+                        (click)="toggleSort('type')"
+                        class="sort-icon"
+                      ></mat-icon>
+                    </div>
+                    <div class="filter-row">
+                      <div class="filter-input-wrapper">
+                        <input
+                          matInput
+                          formControlName="type"
+                          placeholder="Search Type"
+                        />
+                      </div>
+                    </div>
+                  </th>
+                  <td mat-cell *matCellDef="let part">{{ part.type }}</td>
+                </ng-container>
+                <!-- categoryName -->
+                <ng-container matColumnDef="categoryName">
+                  <th mat-header-cell *matHeaderCellDef>
+                    <div class="header-det">
+                      Category
+                      <mat-icon
+                        [svgIcon]="getSortIcon('categoryName')"
+                        (click)="toggleSort('categoryName')"
+                        class="sort-icon"
+                      ></mat-icon>
+                    </div>
+                    <div class="filter-row">
+                      <div class="filter-input-wrapper">
+                        <input
+                          matInput
+                          formControlName="categoryName"
+                          placeholder="Search Category"
+                        />
+                      </div>
+                    </div>
+                  </th>
+                  <td mat-cell *matCellDef="let part">
+                    {{ part.categoryName }}
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr
+                  mat-row
+                  *matRowDef="let row; columns: displayedColumns"
+                ></tr>
+              </table>
+            </div>
+            <mat-paginator
+              [length]="totalRecords"
+              [pageSize]="pageSize"
+              (page)="onPageChange($event)"
+            ></mat-paginator>
+          </form>
+        </div>
+      </mat-step>
+
+      <!-- Step 2: Plan Production -->
+      <mat-step [stepControl]="planForm">
+        <ng-template matStepLabel>Plan Production</ng-template>
+        <ng-template matStepContent>
+          <div class="page-content">
+          
+          <form [formGroup]="planForm">
+            <mat-form-field appearance="outline" class="pricing-field">
+              <mat-label>Select Pricing</mat-label>
+              <mat-select formControlName="pricingMode" required>
+                <mat-option *ngFor="let price of pricingOptions" [value]="price.value">
+                  {{ price.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div class="selected-parts-header">
+              <span>Selected Parts: {{ selectedParts.length }} parts selected</span>
+            </div>
+            <div class="selected-parts-table">
+              <table
+              mat-table
+              #planTable
+              [dataSource]="allSelectedParts"
+              class="production-part-table"
+            >
+              <ng-container matColumnDef="partNumber">
+                <th mat-header-cell *matHeaderCellDef>Part Number</th>
+                <td mat-cell *matCellDef="let part">{{ part.partNumber }}</td>
+              </ng-container>
+              <ng-container matColumnDef="partName">
+                <th mat-header-cell *matHeaderCellDef>Part Name</th>
+                <td mat-cell *matCellDef="let part">{{ part.partName }}</td>
+              </ng-container>
+              <ng-container matColumnDef="quantity">
+                <th mat-header-cell *matHeaderCellDef>Quantity</th>
+                <td mat-cell *matCellDef="let part; let i = index">
+                  <mat-form-field appearance="outline" class="quantity-field">
+                    <input
+                      matInput
+                      type="number"
+                      min="1"
+                      [formControlName]="'quantity_' + part.partId"
+                    />
+                  </mat-form-field>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="selectedPartsTable"></tr>
+              <tr mat-row *matRowDef="let row; columns: selectedPartsTable;"></tr>
+              
+            </table>
+            </div>
+          </form>
+        </div>
+        </ng-template>
+      </mat-step>
+      <!-- Step 3: Review and Confirm -->
+      <mat-step>
+        <ng-template matStepLabel>Review and Confirm</ng-template>
+        <div class="page-content" *ngIf="productionCostResponse">
+          <div class="review-details">
+            <h3 class="review-title">Production Cost Details</h3>
+            <table mat-table [dataSource]= "productionCostResponse.items" class="production-part-table">
+              <ng-container matColumnDef="partNumber">
+                <th mat-header-cell *matHeaderCellDef>Part Number</th>
+                <td mat-cell *matCellDef= "let item">{{ item.partNumber }}</td>
+                <td mat-footer-cell *matFooterCellDef colspan="2" class="footer-data"> Total </td>
+              </ng-container>
+              <ng-container matColumnDef="partName">
+                <th mat-header-cell *matHeaderCellDef>Part Name</th>
+                <td mat-cell *matCellDef= "let item">{{ item.partName }}</td>
+              </ng-container>
+              <ng-container matColumnDef="quantity">
+                <th mat-header-cell *matHeaderCellDef>Quantity</th>
+                <td mat-cell *matCellDef= "let item">{{ item.quantity }}</td>
+                <td mat-footer-cell *matFooterCellDef class="footer-cell"> {{ getTotalQuantity() }} </td>
+              </ng-container>
+              <ng-container matColumnDef="rate">
+                <th mat-header-cell *matHeaderCellDef>Rate</th>
+                <td mat-cell *matCellDef= "let item">{{ item.rate }}</td>
+                <td mat-footer-cell *matFooterCellDef> </td>
+              </ng-container>
+              <ng-container matColumnDef="subTotal">
+                <th mat-header-cell *matHeaderCellDef>Sub Total</th>
+                <td mat-cell *matCellDef= "let item">{{ item.subTotal }}</td>
+                <td mat-footer-cell *matFooterCellDef class="footer-cell"> {{getTotalCost()}} </td>
+              </ng-container>
+              <ng-container matColumnDef="vendorName">
+                <th mat-header-cell *matHeaderCellDef>Vendor</th>
+                <td mat-cell *matCellDef= "let item">{{ item.vendorName }}</td>
+                <td mat-footer-cell *matFooterCellDef> </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayResultTableColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayResultTableColumns"></tr>
+              <tr mat-footer-row *matFooterRowDef="['partNumber', 'quantity', 'rate', 'subTotal', 'vendorName']"></tr>
+            </table>
+          </div>
+        </div>
+      </mat-step>
+    </mat-stepper>
+  </div>
+
+  <div class="fixed-actions">
+    <div class="nav-buttons">
+      <ng-container *ngIf="selectedStepIndex > 0">
+      <button
+        mat-button
+        class="prev-icon-btn"
+        (click)="stepper.previous(); selectedStepIndex = stepper.selectedIndex"
+        [disabled]="selectedStepIndex === 0"
+      >
+        <mat-icon svgIcon="prev_icon"></mat-icon>
+      </button>
+    </ng-container>
+      <button
+      *ngIf="selectedStepIndex === 0"
+      class="primary-btn"
+      (click)="goToNextStep(stepper)"
+      [disabled]="selectedPartIds.size === 0"
+    >
+      Confirm
+    </button>
+      <button
+      *ngIf="selectedStepIndex === 1"
+      class="primary-btn" style="margin-top: 0.25rem;"
+      (click)="planProduction(stepper)"
+      [disabled]="!planForm.valid"
+    >
+      Plan
+    </button>
+    <button
+    *ngIf="selectedStepIndex === 2"
+    mat-stroked-button
+    color="warn"
+    class="secondary-btn"
+    (click)="resetPlan()"
+  >
+    Reset
+  </button>
+    </div>
+  </div>
+</div>

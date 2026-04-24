@@ -44,9 +44,9 @@ $costing-ui-theme: mat.define-theme((
     font-family: Poppins, Roboto, sans-serif;
     margin: 0;
     padding: 0;
-    background: #f8f8f8;
+    background: $c-default-bg;
+    overflow: hidden;
 }
-
 .app-page {
     height: calc(100% - 2rem);
     padding: 1rem;
@@ -66,35 +66,202 @@ $costing-ui-theme: mat.define-theme((
 
 .page-content {
     flex-grow: 1;
+    overflow: hidden;
 }
 
 .card,.card-nc {
     border-radius: 12px;
-    background-color: white;
+    background-color: $c-default-bg;
     border: 1px solid #f8f8f8; 
-    box-shadow: 0px 6px 18px #6a749a1a;
+    box-shadow: $box-shadow;
     height: 100%;
 }
 
 .card {
     padding: 1rem;
     height: calc(100% - 2rem);
+    overflow:auto;
+    overflow-x:hidden;
 }
 
 .primary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 0.6rem 1.6rem;
     font-weight: bold;
     cursor: pointer;
-    border-radius: 24px;
+    border-radius: 0.5rem;
     min-width: 5rem;
-    background-color: #95D2B3;
+    background-color: $c-btn-bg;
+    color: $c-default-bg;
     border: none;
     font-size: $base-font-size;
+    &:hover {
+        background-color: darken(#2f4156ce , 10%);
+    }
+
+    .btn-icon {
+      display: inline-block;
+      font-weight: normal;
+      vertical-align: middle;
+      height: 1.2rem;
+      width: 1.2rem;
+    }
 }
+  .mat-mdc-tab .mdc-tab__content {
+    font-size: 1rem;
+    font-weight: bold;
+    font-family: 'Poppins';
+  }
+
+.secondary-btn {
+    padding: 0.6rem 1.6rem;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    border: 2px solid $c-tx-border;
+    background-color: $c-default-bg;  
+    min-width: 5rem;
+    color: $c-default-text;
+    font-size: $base-font-size;
+    &:hover {
+      background-color: darken(#f3f3f349, 10%);
+    }
+  }
+
+  .tertiary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 0.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 1rem;
+    min-width: 5rem;
+    background-color: $c-default-bg;
+    color: $c-btn-bg;
+    border: none;
+  
+    &:hover {
+      background-color: $c-btn-hover;
+    }
+  }
+
+  .custom-textfield {
+    padding-top: 0.5rem;
+    --mdc-outlined-text-field-container-shape: 0.5rem;
+  }
 
 .app-dialog {
-    .mat-mdc-dialog-surface {
-        padding: 1rem;
-        border-radius: 12px;
+    .mat-mdc-text-field-wrapper {
+    height: 3rem;
+    align-items: center;
     }
+
+}
+.mat-mdc-dialog-surface{
+  --mdc-dialog-container-color: #ffffff;
+}
+.mat-mdc-tooltip.custom-password-tooltip {
+  white-space: pre-line;
+  background-color: #d5d1d1;
+  color: #000000;
+  max-width: 240px;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 10px 12px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  &>* {
+    background-color: #d5d1d1;
+     color: #000000;
+  }
+}
+
+
+.custom-snackbar.mat-mdc-snack-bar-container .mat-mdc-snackbar-surface {
+  top: 25px;
+  .mat-mdc-snack-bar-label {
+    background: #323232;
+    color: white;
+  }
+} 
+
+.app-body .app-container .mat-mdc-text-field-wrapper {
+    height: 3rem;
+}
+.app-body .app-content .mat-mdc-text-field-wrapper{
+  height:3rem;
+  margin-bottom: 1rem;
+}
+.mat-mdc-form-field-subscript-wrapper {
+  height: 0;
+}
+
+.app-body .app-container .mdc-text-field {
+    align-items: center;
+}
+.app-body .app-container .app-autocomplete-overlay{
+  pointer-events: auto;
+}
+.height-subscript{
+  .mat-mdc-form-field-subscript-wrapper{
+    height:0
+  }
+}
+
+.custom-stepper .mat-step-header {
+  pointer-events: none;
+}
+
+.cdk-overlay-container.autocomplete-open {
+  pointer-events: auto;
+}
+.mat-step-text-label{
+  font-size: 1rem;
+  font-family:Poppins, Roboto, sans-serif;
+}
+
+.mat-mdc-snack-bar-container .mat-mdc-snackbar-surface{
+  --mdc-snackbar-container-color: none;
+  box-shadow: none;
+  position:fixed;
+  top:40px;
+}
+.highlight-table tbody tr:hover{
+  background-color: $c-tr-hover;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+.mat-mdc-paginator-container{
+  background-color: $c-default-bg;
+}
+.cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px); /* for Safari support */
+}
+
+.icon-btn {
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+.icon-btn:hover {
+  color: $c-default-text;
+  background-color: $c-btn-hover;
+}
+
+.icon-btn:active {
+  background-color: darken($c-btn-hover, 75%);
+}
+
+.mat-horizontal-content-container {
+  padding: 0 1rem 0 1rem !important;
 }
