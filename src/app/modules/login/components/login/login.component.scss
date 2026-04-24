@@ -17,12 +17,11 @@
   }
   
   .brand-logo {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;  // Choose a bold, modern font
-  font-variant-numeric: tabular-nums;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;  // Choose a bold, modern font
+    font-variant-numeric: tabular-nums;
     font-size: 2.5rem;
     font-weight: bold;
-    color: #3e4772;
-    vertical-align: -0.05em;
+    color: $c-logo;
     background-clip: text;
     letter-spacing: -1px;
   }
@@ -31,7 +30,7 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-size: 2rem;
     font-weight: 500;
-    color: black;  // Match your theme
+    color: $c-default-text;
   }
 }
 .login-body{
