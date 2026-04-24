@@ -33,6 +33,12 @@ export class AppConfig {
       position: 'bottom',
       icon: 'setting_icon',
       roles: [UserRole.SUPERADMIN, UserRole.ADMIN]
+    },
+    {
+      label: 'Logout',
+      icon: 'logout_icon',
+      position: 'bottom',
+      roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MAINTAINER, UserRole.GUEST]
     }
   ];
 }

@@ -90,4 +90,8 @@ export class UserService {
     return this.http.post(ApiUtil.getApiUrl(API_END_POINTS.RESET_USER_PASSWORD), payload);
   }
   
+  logout() {
+  this.currentUserSubject.next(null);
+  localStorage.removeItem('currentUser');
+}
 }
