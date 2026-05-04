@@ -1,0 +1,42 @@
+name: Deploy Angular to S3
+
+on:
+  push:
+    branches:
+      - release   # trigger when merged to release
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # 2. Setup Node.js
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # 3. Install dependencies
+      - name: Install Dependencies
+        run: npm install
+
+      # 4. Build Angular app
+      - name: Build Project
+        run: npm run build --prod
+
+      # 5. Configure AWS CLI
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: ${{ secrets.AWS_REGION }}
+
+      # 6. Upload to S3 (auto replaces old files)
+      - name: Deploy to S3
+        run: |
+          aws s3 sync dist/costing-ui s3://${{ secrets.S3_BUCKET_NAME }} --delete
