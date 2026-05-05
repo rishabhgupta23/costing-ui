@@ -39,4 +39,4 @@ jobs:
       # 6. Upload to S3 (auto replaces old files)
       - name: Deploy to S3
         run: |
-          aws s3 sync dist/costing-ui s3://${{ secrets.S3_BUCKET_NAME }} --delete
+          aws s3 sync dist/costing-ui/browser s3://${{ secrets.S3_BUCKET_NAME }} --delete
