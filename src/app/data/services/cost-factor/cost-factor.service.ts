@@ -17,14 +17,21 @@ export class CostFactorService {
     factorType: string
   ): Observable<any> {
 
-    const params = new HttpParams()
-      .set('factorName', factorName)
-      .set('factorType', factorType);
+    const body = {
+      factorName: factorName,
+      factorType: factorType
+    };
 
-    const url = ApiUtil.getApiUrl(API_END_POINTS.COST_FACTORS);
+    const url = ApiUtil.getApiUrl(
+      API_END_POINTS.COST_FACTORS
+    );
 
-    return this.http.post<any>(url, null, { params });
+    return this.http.post<any>(
+      url,
+      body
+    );
   }
+
 
   getCostFactorList(
     page: number = 0,
