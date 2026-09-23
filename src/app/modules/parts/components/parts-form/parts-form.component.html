@@ -8,11 +8,7 @@
 
   <div class="stepper-container">
 
-    <mat-stepper
-      linear
-      #stepper
-      (selectionChange)="onStepChange($event)"
-    >
+    <mat-stepper linear #stepper (selectionChange)="onStepChange($event)">
 
       <mat-step [stepControl]="partForm">
 
@@ -26,13 +22,11 @@
 
       </mat-step>
 
-      <mat-step
-        [stepControl]="
+      <mat-step [stepControl]="
           partForm.get('partType')?.value === partTypeEnum.UNIT
             ? costDetailsForm
             : bomDetailsForm
-        "
-      >
+        ">
 
         <ng-template matStepLabel>
           Additional Details
@@ -58,10 +52,7 @@
       <!-- STEP 1 : PART DETAILS -->
       <!-- ========================================================= -->
 
-      <div
-        *ngIf="selectedStepIndex === 0"
-        [formGroup]="partForm"
-      >
+      <div *ngIf="selectedStepIndex === 0" [formGroup]="partForm">
 
         <div class="part-form">
 
@@ -70,18 +61,10 @@
 
             Part Number
 
-            <mat-form-field
-              appearance="outline"
-              class="custom-textfield"
-            >
+            <mat-form-field appearance="outline" class="custom-textfield">
 
-              <input
-                matInput
-                placeholder="Enter Part Number"
-                formControlName="partNumber"
-                [readonly]="isEditMode && !isPartNumberEditable"
-                (click)="onPartNumberClick()"
-              />
+              <input matInput placeholder="Enter Part Number" formControlName="partNumber"
+                [readonly]="isEditMode && !isPartNumberEditable" (click)="onPartNumberClick()" />
 
             </mat-form-field>
 
@@ -93,16 +76,9 @@
 
             Part Name
 
-            <mat-form-field
-              appearance="outline"
-              class="custom-textfield"
-            >
+            <mat-form-field appearance="outline" class="custom-textfield">
 
-              <input
-                matInput
-                placeholder="Enter Name"
-                formControlName="partName"
-              />
+              <input matInput placeholder="Enter Name" formControlName="partName" />
 
             </mat-form-field>
 
@@ -114,15 +90,9 @@
 
             Type
 
-            <mat-form-field
-              appearance="outline"
-              class="custom-textfield"
-            >
+            <mat-form-field appearance="outline" class="custom-textfield">
 
-              <mat-select
-                placeholder="Select Part Type"
-                formControlName="partType"
-              >
+              <mat-select placeholder="Select Part Type" formControlName="partType">
 
                 <ng-container *ngFor="let item of partTypes">
 
@@ -144,15 +114,9 @@
 
             Category
 
-            <mat-form-field
-              appearance="outline"
-              class="custom-textfield height-subscript"
-            >
+            <mat-form-field appearance="outline" class="custom-textfield height-subscript">
 
-              <mat-select
-                placeholder="Select Part Category"
-                formControlName="categoryId"
-              >
+              <mat-select placeholder="Select Part Category" formControlName="categoryId">
 
                 <ng-container *ngFor="let category of partCategories">
 
@@ -174,15 +138,9 @@
 
             Unit
 
-            <mat-form-field
-              appearance="outline"
-              class="custom-textfield height-subscript"
-            >
+            <mat-form-field appearance="outline" class="custom-textfield height-subscript">
 
-              <mat-select
-                placeholder="Select Part Unit"
-                formControlName="partUnit"
-              >
+              <mat-select placeholder="Select Part Unit" formControlName="partUnit">
 
                 <ng-container *ngFor="let item of partUnits">
 
@@ -210,40 +168,20 @@
 
         <div class="template-form">
 
-          <div
-            class="template-detail"
-            *ngIf="!partId"
-          >
+          <div class="template-detail" *ngIf="!partId">
 
             Select Template
 
-            <mat-form-field
-              appearance="outline"
-              class="custom-textfield height-subscript"
-            >
+            <mat-form-field appearance="outline" class="custom-textfield height-subscript">
 
-              <input
-                type="text"
-                placeholder="Choose template"
-                aria-label="Template"
-                matInput
-                [formControl]="templateControl"
-                [matAutocomplete]="auto"
-              />
+              <input type="text" placeholder="Choose template" aria-label="Template" matInput
+                [formControl]="templateControl" [matAutocomplete]="auto" />
 
-              <mat-autocomplete
-                #auto="matAutocomplete"
-                panelClass="custom-autocomplete-panel"
-                (opened)="onAutocompleteOpened()"
-                (closed)="onAutocompleteClosed()"
-                [displayWith]="displayTemplate"
-                (optionSelected)="onTemplateSelected($event.option.value)"
-              >
+              <mat-autocomplete #auto="matAutocomplete" panelClass="custom-autocomplete-panel"
+                (opened)="onAutocompleteOpened()" (closed)="onAutocompleteClosed()" [displayWith]="displayTemplate"
+                (optionSelected)="onTemplateSelected($event.option.value)">
 
-                <mat-option
-                  *ngFor="let template of filteredTemplates | async"
-                  [value]="template"
-                >
+                <mat-option *ngFor="let template of filteredTemplates | async" [value]="template">
 
                   {{ template.templateName }}
 
@@ -256,18 +194,12 @@
           </div>
 
 
-          <div
-            class="modify-btn"
-            *ngIf="
+          <div class="modify-btn" *ngIf="
               (isEditMode && attributeValueList.length === 0) ||
               attributeValueList.length > 0
-            "
-          >
+            ">
 
-            <a
-              class="modify-link"
-              (click)="onModifyClick()"
-            >
+            <a class="modify-link" (click)="onModifyClick()">
               Add/Update attributes
             </a>
 
@@ -282,26 +214,17 @@
 
         <div>
 
-          <ng-template
-            #attributeNameWithWarning
-            let-value
-            let-element="element"
-          >
+          <ng-template #attributeNameWithWarning let-value let-element="element">
 
             <div>
 
               {{ value }}
 
-              <div
-                *ngIf="element.deleteFlag === 1"
-                class="deleted-msg"
-              >
+              <div *ngIf="element.deleteFlag === 1" class="deleted-msg">
 
                 This attribute is no longer available.
 
-                <a
-                  (click)="removeDeletedAttribute(element)"
-                >
+                <a (click)="removeDeletedAttribute(element)">
                   Click here
                 </a>
 
@@ -316,11 +239,7 @@
           </ng-template>
 
 
-          <app-table
-            *ngIf="attributeValueList.length > 0"
-            [data]="attributeValueList"
-            [config]="attributeTableColumns"
-          >
+          <app-table *ngIf="attributeValueList.length > 0" [data]="attributeValueList" [config]="attributeTableColumns">
           </app-table>
 
         </div>
@@ -341,13 +260,8 @@
 
         <div class="file-upload p-4 border rounded">
 
-          <div
-            class="upload-dropzone"
-            [class.dragover]="isDragOver"
-            (drop)="handleDrop($event)"
-            (dragover)="allowDrop($event)"
-            (dragleave)="dragLeave($event)"
-          >
+          <div class="upload-dropzone" [class.dragover]="isDragOver" (drop)="handleDrop($event)"
+            (dragover)="allowDrop($event)" (dragleave)="dragLeave($event)">
 
             Drag & drop files here or
 
@@ -355,12 +269,7 @@
 
               Choose Files
 
-              <input
-                type="file"
-                multiple
-                (change)="onFilesSelected($event)"
-                style="display:none;"
-              />
+              <input type="file" multiple (change)="onFilesSelected($event)" style="display:none;" />
 
             </label>
 
@@ -369,42 +278,19 @@
 
           <div class="file-preview-list">
 
-            <div
-              *ngFor="let file of selectedFiles; let i = index"
-              class="file-preview"
-            >
+            <div *ngFor="let file of selectedFiles; let i = index" class="file-preview">
 
               <ng-container [ngSwitch]="getFileType(file)">
 
-                <img
-                  *ngSwitchCase="'image'"
-                  [src]="getImagePreview(file)"
-                  class="thumb-img"
-                />
+                <img *ngSwitchCase="'image'" [src]="getImagePreview(file)" class="thumb-img" />
 
-                <img
-                  *ngSwitchCase="'pdf'"
-                  src="assets/icons/pdf-icon.png"
-                  class="file-icon"
-                />
+                <img *ngSwitchCase="'pdf'" src="assets/icons/pdf-icon.png" class="file-icon" />
 
-                <img
-                  *ngSwitchCase="'word'"
-                  src="assets/icons/word-icon.png"
-                  class="file-icon"
-                />
+                <img *ngSwitchCase="'word'" src="assets/icons/word-icon.png" class="file-icon" />
 
-                <img
-                  *ngSwitchCase="'excel'"
-                  src="assets/icons/excel-icon.png"
-                  class="file-icon"
-                />
+                <img *ngSwitchCase="'excel'" src="assets/icons/excel-icon.png" class="file-icon" />
 
-                <img
-                  *ngSwitchDefault
-                  src="assets/icons/file-icon.png"
-                  class="file-icon"
-                />
+                <img *ngSwitchDefault src="assets/icons/file-icon.png" class="file-icon" />
 
               </ng-container>
 
@@ -414,10 +300,7 @@
               </div>
 
 
-              <button
-                class="remove-btn"
-                (click)="removeFile(i)"
-              >
+              <button class="remove-btn" (click)="removeFile(i)">
                 ✕
               </button>
 
@@ -432,47 +315,21 @@
         <!-- EXISTING FILES -->
         <!-- ========================================================= -->
 
-        <div
-          *ngIf="partFilePreviews.length > 0"
-          class="file-preview-list"
-        >
+        <div *ngIf="partFilePreviews.length > 0" class="file-preview-list">
 
-          <div
-            *ngFor="let file of partFilePreviews"
-            class="file-preview"
-          >
+          <div *ngFor="let file of partFilePreviews" class="file-preview">
 
             <ng-container [ngSwitch]="file.type">
 
-              <img
-                *ngSwitchCase="'image'"
-                [src]="file.previewUrl"
-                class="thumb-img"
-              />
+              <img *ngSwitchCase="'image'" [src]="file.previewUrl" class="thumb-img" />
 
-              <img
-                *ngSwitchCase="'pdf'"
-                src="assets/icons/pdf-icon.png"
-                class="file-icon"
-              />
+              <img *ngSwitchCase="'pdf'" src="assets/icons/pdf-icon.png" class="file-icon" />
 
-              <img
-                *ngSwitchCase="'word'"
-                src="assets/icons/word-icon.png"
-                class="file-icon"
-              />
+              <img *ngSwitchCase="'word'" src="assets/icons/word-icon.png" class="file-icon" />
 
-              <img
-                *ngSwitchCase="'excel'"
-                src="assets/icons/excel-icon.png"
-                class="file-icon"
-              />
+              <img *ngSwitchCase="'excel'" src="assets/icons/excel-icon.png" class="file-icon" />
 
-              <img
-                *ngSwitchDefault
-                src="assets/icons/file-icon.png"
-                class="file-icon"
-              />
+              <img *ngSwitchDefault src="assets/icons/file-icon.png" class="file-icon" />
 
             </ng-container>
 
@@ -482,10 +339,7 @@
             </div>
 
 
-            <button
-              class="remove-btn"
-              (click)="removeUploadedFile(file.url)"
-            >
+            <button class="remove-btn" (click)="removeUploadedFile(file.url)">
               ✕
             </button>
 
@@ -498,10 +352,7 @@
         <!-- UNIT PART -->
         <!-- ========================================================= -->
 
-        <div
-          *ngIf="partForm.get('partType')?.value === partTypeEnum.UNIT"
-          [formGroup]="costDetailsForm"
-        >
+        <div *ngIf="partForm.get('partType')?.value === partTypeEnum.UNIT" [formGroup]="costDetailsForm">
 
           <div formArrayName="costFactors">
 
@@ -514,15 +365,9 @@
 
               Vendor
 
-              <mat-form-field
-                appearance="outline"
-                class="custom-vendor-textfield"
-              >
+              <mat-form-field appearance="outline" class="custom-vendor-textfield">
 
-                <mat-select
-                  placeholder="Select vendor"
-                  [(value)]="selectedVendor"
-                >
+                <mat-select placeholder="Select vendor" [(value)]="selectedVendor">
 
                   <ng-container *ngFor="let item of vendorList">
 
@@ -537,10 +382,7 @@
               </mat-form-field>
 
 
-              <button
-                class="primary-btn"
-                (click)="addVendor(selectedVendor)"
-              >
+              <button class="primary-btn" (click)="addVendor(selectedVendor)">
                 Add
               </button>
 
@@ -551,17 +393,12 @@
             <!-- VENDOR ACCORDION -->
             <!-- ===================================================== -->
 
-            <mat-accordion
-              class="example-headers-align"
-              multi
-            >
+            <mat-accordion class="example-headers-align" multi>
 
-              <mat-expansion-panel
-                *ngFor="
+              <mat-expansion-panel *ngFor="
                   let vendor of vendorCostMap.keys();
                   let i = index
-                "
-              >
+                ">
 
                 <mat-expansion-panel-header>
 
@@ -575,11 +412,7 @@
 
                   <mat-panel-description>
 
-                    <mat-icon
-                      class="icon-btn"
-                      svgIcon="delete"
-                      (click)="deleteVendorFromMap(vendor)"
-                    >
+                    <mat-icon class="icon-btn" svgIcon="delete" (click)="deleteVendorFromMap(vendor)">
                     </mat-icon>
 
                   </mat-panel-description>
@@ -601,19 +434,11 @@
                     </div>
 
 
-                    <mat-form-field
-                      appearance="outline"
-                      class="custom-cost-textfield"
-                    >
+                    <mat-form-field appearance="outline" class="custom-cost-textfield">
 
-                      <mat-select
-                        placeholder="Select Cost Factor"
-                        [formControlName]="i"
-                      >
+                      <mat-select placeholder="Select Cost Factor" [formControlName]="i">
 
-                        <ng-container
-                          *ngFor="let item of costFactorList"
-                        >
+                        <ng-container *ngFor="let item of costFactorList">
 
                           <mat-option [value]="item">
 
@@ -628,10 +453,7 @@
                     </mat-form-field>
 
 
-                    <button
-                      class="primary-btn"
-                      (click)="addCostFactorFromFieldValue(i, vendor)"
-                    >
+                    <button class="primary-btn" (click)="addCostFactorFromFieldValue(i, vendor)">
                       Add
                     </button>
 
@@ -642,12 +464,9 @@
                   <!-- COST FACTOR TABLE -->
                   <!-- ================================================= -->
 
-                  <div
-                    class="cost-factor-table-container"
-                    *ngIf="
-                      (vendorCostMap.get(vendor) || []).length > 0
-                    "
-                  >
+                  <div class="cost-factor-table-container" *ngIf="
+    (vendorCostMap.get(vendor) || []).length > 0
+  ">
 
                     <table class="cost-factor-table">
 
@@ -655,24 +474,41 @@
 
                         <tr>
 
+                          <!-- COST FACTOR -->
                           <th>
                             Cost Factor
                           </th>
 
+
+                          <!-- QUANTITY -->
+                          <th *ngIf="
+            hasCalculatedCostFactor(vendor)
+          ">
+                            Quantity
+                          </th>
+
+
+                          <!-- RATE -->
+                          <th *ngIf="
+            hasCalculatedCostFactor(vendor)
+          ">
+                            Rate
+                          </th>
+
+
+                          <!-- VALUE -->
                           <th>
                             Value
                           </th>
 
-                          <!-- Show Comments column only if
-                               at least one factor is CALCULATED -->
-                          <th
-                            *ngIf="
-                              hasCalculatedCostFactor(vendor)
-                            "
-                          >
+
+                          <!-- COMMENTS -->
+                          <th>
                             Comments
                           </th>
 
+
+                          <!-- ACTIONS -->
                           <th class="actions-column">
                             Actions
                           </th>
@@ -684,14 +520,15 @@
 
                       <tbody>
 
-                        <tr
-                          *ngFor="
-                            let costFactor of vendorCostMap.get(vendor) || [];
-                            let factorIndex = index
-                          "
-                        >
+                        <tr *ngFor="
+          let costFactor of vendorCostMap.get(vendor) || [];
+          let factorIndex = index
+        ">
 
+                          <!-- ========================================= -->
                           <!-- COST FACTOR NAME -->
+                          <!-- ========================================= -->
+
                           <td>
 
                             {{ costFactor.factorName }}
@@ -699,59 +536,97 @@
                           </td>
 
 
-                          <!-- VALUE -->
-                          <td>
+                          <!-- ========================================= -->
+                          <!-- QUANTITY -->
+                          <!-- Only applicable to CALCULATED -->
+                          <!-- ========================================= -->
 
-                            <input
-                              type="number"
-                              class="cost-factor-input"
-                              [(ngModel)]="costFactor.value"
-                              [ngModelOptions]="{ standalone: true }"
-                              min="0"
-                            />
+                          <td *ngIf="
+            hasCalculatedCostFactor(vendor)
+          ">
 
-                          </td>
+                            <input *ngIf="
+              isCalculatedCostFactor(costFactor)
+            " type="number" class="cost-factor-input" [(ngModel)]="costFactor.quantity"
+                              [ngModelOptions]="{ standalone: true }" min="0" (ngModelChange)="
+              updateCalculatedValue(costFactor)
+            " />
 
 
-                          <!-- COMMENTS -->
-                          <td
-                            *ngIf="
-                              hasCalculatedCostFactor(vendor)
-                            "
-                          >
-
-                            <input
-                              *ngIf="
-                                isCalculatedCostFactor(costFactor)
-                              "
-                              type="text"
-                              class="cost-factor-comments-input"
-                              [(ngModel)]="costFactor.comments"
-                              [ngModelOptions]="{ standalone: true }"
-                              placeholder="Enter comments"
-                              maxlength="255"
-                            />
-
-                            <span
-                              *ngIf="
-                                !isCalculatedCostFactor(costFactor)
-                              "
-                              class="not-applicable"
-                            >
+                            <span *ngIf="
+              !isCalculatedCostFactor(costFactor)
+            " class="not-applicable">
                               —
                             </span>
 
                           </td>
 
 
+                          <!-- ========================================= -->
+                          <!-- RATE -->
+                          <!-- Only applicable to CALCULATED -->
+                          <!-- ========================================= -->
+
+                          <td *ngIf="
+            hasCalculatedCostFactor(vendor)
+          ">
+
+                            <input *ngIf="
+              isCalculatedCostFactor(costFactor)
+            " type="number" class="cost-factor-input" [(ngModel)]="costFactor.rate"
+                              [ngModelOptions]="{ standalone: true }" min="0" (ngModelChange)="
+              updateCalculatedValue(costFactor)
+            " />
+
+
+                            <span *ngIf="
+              !isCalculatedCostFactor(costFactor)
+            " class="not-applicable">
+                              —
+                            </span>
+
+                          </td>
+
+
+                          <!-- ========================================= -->
+                          <!-- VALUE -->
+                          <!-- ========================================= -->
+
+                          <td>
+
+                            <input type="number" class="cost-factor-input" [(ngModel)]="costFactor.value"
+                              [ngModelOptions]="{ standalone: true }" min="0" [readonly]="
+              isCalculatedCostFactor(costFactor)
+            " />
+
+                          </td>
+
+
+                          <!-- ========================================= -->
+                          <!-- COMMENTS -->
+                          <!-- Available for BOTH types -->
+                          <!-- ========================================= -->
+
+                          <td>
+
+                            <input type="text" class="cost-factor-comments-input" [(ngModel)]="costFactor.comments"
+                              [ngModelOptions]="{ standalone: true }" placeholder="Enter comments" maxlength="255" />
+
+                          </td>
+
+
+                          <!-- ========================================= -->
                           <!-- DELETE -->
+                          <!-- ========================================= -->
+
                           <td class="actions-column">
 
-                            <button
-                              type="button"
-                              class="delete-cost-factor-btn"
-                              (click)="removeCostFactor(costFactor, vendor)"
-                            >
+                            <button type="button" class="delete-cost-factor-btn" (click)="
+              removeCostFactor(
+                costFactor,
+                vendor
+              )
+            ">
 
                               <mat-icon svgIcon="delete"></mat-icon>
 
@@ -782,17 +657,11 @@
         <!-- MASTER PART -->
         <!-- ========================================================= -->
 
-        <div
-          *ngIf="
+        <div *ngIf="
             partForm.get('partType')?.value === partTypeEnum.MASTER
-          "
-          [formGroup]="bomDetailsForm"
-        >
+          " [formGroup]="bomDetailsForm">
 
-          <button
-            class="primary-btn"
-            (click)="openBomDialog()"
-          >
+          <button class="primary-btn" (click)="openBomDialog()">
             Select Parts
           </button>
 
@@ -805,10 +674,7 @@
               Added Unit Parts
             </div>
 
-            <app-table
-              [data]="bomPartList"
-              [config]="BOM_TABLE_COLUMNS"
-            >
+            <app-table [data]="bomPartList" [config]="BOM_TABLE_COLUMNS">
             </app-table>
 
           </div>
@@ -826,30 +692,19 @@
 
         <div class="nav-buttons">
 
-          <button
-            mat-icon-button
-            (click)="
+          <button mat-icon-button (click)="
               stepper.previous();
               selectedStepIndex = stepper.selectedIndex
-            "
-            [disabled]="selectedStepIndex === 0"
-          >
+            " [disabled]="selectedStepIndex === 0">
 
             <mat-icon svgIcon="prev_icon"></mat-icon>
 
           </button>
 
 
-          <button
-            mat-icon-button
-            (click)="goToNextStep(stepper)"
-            [disabled]="selectedStepIndex === 1"
-          >
+          <button mat-icon-button (click)="goToNextStep(stepper)" [disabled]="selectedStepIndex === 1">
 
-            <mat-icon
-              svgIcon="next_icon"
-              class="next-step"
-            ></mat-icon>
+            <mat-icon svgIcon="next_icon" class="next-step"></mat-icon>
 
           </button>
 
@@ -858,11 +713,7 @@
 
         <div class="submit-button">
 
-          <button
-            class="primary-btn"
-            (click)="onSubmit()"
-            [disabled]="!isFormValidForSubmit()"
-          >
+          <button class="primary-btn" (click)="onSubmit()" [disabled]="!isFormValidForSubmit()">
 
             {{ partId ? "Update" : "Create" }}
 

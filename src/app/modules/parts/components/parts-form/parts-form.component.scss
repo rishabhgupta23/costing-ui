@@ -259,17 +259,51 @@ mat-panel-description {
 .cost-factor-table-container {
     width: 100%;
     margin-top: 1rem;
+
+    /*
+     * Allow the table to scroll horizontally
+     * instead of squeezing the columns.
+     */
     overflow-x: auto;
+
+    /*
+     * Prevent the table from causing the
+     * entire page to overflow.
+     */
+    max-width: 100%;
 }
 
 
+/*
+ * Main table
+ */
 .cost-factor-table {
     width: 100%;
+
+    /*
+     * The table now contains:
+     *
+     * 1. Cost Factor
+     * 2. Quantity
+     * 3. Rate
+     * 4. Value
+     * 5. Comments
+     * 6. Actions
+     *
+     * Keep a minimum width so all columns
+     * have enough room.
+     */
+    min-width: 950px;
+
     border-collapse: collapse;
     table-layout: fixed;
     background: #fff;
 }
 
+
+/* ========================================================= */
+/* TABLE HEADER */
+/* ========================================================= */
 
 .cost-factor-table thead {
     background-color: #c5dbea;
@@ -278,69 +312,145 @@ mat-panel-description {
 
 .cost-factor-table th {
     text-align: left;
-    padding: 0.85rem 1rem;
+    padding: 0.85rem 0.75rem;
+
     font-weight: 600;
     font-size: 0.95rem;
+
     border-bottom: 1px solid #d6d6d6;
+
+    /*
+     * Prevent header text from wrapping
+     * unexpectedly.
+     */
+    white-space: nowrap;
 }
 
+
+/* ========================================================= */
+/* TABLE BODY */
+/* ========================================================= */
 
 .cost-factor-table td {
-    padding: 0.8rem 1rem;
+    padding: 0.8rem 0.75rem;
+
     border-bottom: 1px solid #e1e1e1;
+
     vertical-align: middle;
+
+    /*
+     * Prevent content from pushing
+     * into neighbouring columns.
+     */
+    overflow: hidden;
 }
 
 
-/*
- * Cost factor name
- */
+/* ========================================================= */
+/* COLUMN 1 - COST FACTOR */
+/* ========================================================= */
+
 .cost-factor-table th:nth-child(1),
 .cost-factor-table td:nth-child(1) {
-    width: 28%;
+    width: 18%;
 }
 
 
-/*
- * Value
- */
+/* ========================================================= */
+/* COLUMN 2 - QUANTITY */
+/* ========================================================= */
+
 .cost-factor-table th:nth-child(2),
 .cost-factor-table td:nth-child(2) {
+    width: 14%;
+}
+
+
+/* ========================================================= */
+/* COLUMN 3 - RATE */
+/* ========================================================= */
+
+.cost-factor-table th:nth-child(3),
+.cost-factor-table td:nth-child(3) {
+    width: 20%;
+}
+
+
+/* ========================================================= */
+/* COLUMN 4 - VALUE */
+/* ========================================================= */
+
+.cost-factor-table th:nth-child(4),
+.cost-factor-table td:nth-child(4) {
+    width: 15%;
+}
+
+
+/* ========================================================= */
+/* COLUMN 5 - COMMENTS */
+/* ========================================================= */
+
+.cost-factor-table th:nth-child(5),
+.cost-factor-table td:nth-child(5) {
     width: 25%;
 }
 
 
-/*
- * Comments
- */
-.cost-factor-table th:nth-child(3),
-.cost-factor-table td:nth-child(3) {
-    width: 37%;
+/* ========================================================= */
+/* COLUMN 6 - ACTIONS */
+/* ========================================================= */
+
+.cost-factor-table th:nth-child(6),
+.cost-factor-table td:nth-child(6) {
+    width: 8%;
 }
 
 
-/*
- * Actions
- */
-.cost-factor-table .actions-column {
-    width: 10%;
-    text-align: center;
-}
-
+/* ========================================================= */
+/* INPUTS */
+/* ========================================================= */
 
 .cost-factor-input,
 .cost-factor-comments-input {
+    display: block;
+
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
     box-sizing: border-box;
+
     height: 38px;
+
     border: 1px solid #b7b7b7;
     border-radius: 8px;
+
     padding: 0 0.75rem;
+
     font-size: 0.95rem;
+
     background: #fff;
+
     outline: none;
 }
 
+
+/*
+ * Make sure every input stays inside
+ * its table cell.
+ */
+.cost-factor-table td input {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+
+/* ========================================================= */
+/* INPUT FOCUS */
+/* ========================================================= */
 
 .cost-factor-input:focus,
 .cost-factor-comments-input:focus {
@@ -349,10 +459,28 @@ mat-panel-description {
 }
 
 
-.cost-factor-comments-input {
-    min-width: 150px;
+/* ========================================================= */
+/* READONLY VALUE FOR CALCULATED FACTOR */
+/* ========================================================= */
+
+.cost-factor-input[readonly] {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
 }
 
+
+/* ========================================================= */
+/* COMMENTS INPUT */
+/* ========================================================= */
+
+.cost-factor-comments-input {
+    min-width: 0;
+}
+
+
+/* ========================================================= */
+/* NOT APPLICABLE */
+/* ========================================================= */
 
 .not-applicable {
     color: #999;
@@ -360,11 +488,18 @@ mat-panel-description {
 }
 
 
+/* ========================================================= */
+/* DELETE BUTTON */
+/* ========================================================= */
+
 .delete-cost-factor-btn {
     border: none;
     background: transparent;
+
     cursor: pointer;
+
     padding: 0.25rem;
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -383,6 +518,21 @@ mat-panel-description {
 
 
 /* ========================================================= */
+/* ACTION COLUMN */
+/* ========================================================= */
+
+.cost-factor-table .actions-column {
+    width: 8%;
+
+    text-align: center;
+
+    white-space: nowrap;
+
+    overflow: visible;
+}
+
+
+/* ========================================================= */
 /* FIXED ACTIONS */
 /* ========================================================= */
 
@@ -390,11 +540,15 @@ mat-panel-description {
     position: fixed;
     bottom: 0;
     right: 0;
+
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     padding: 10px 20px;
+
     background: #fff;
+
     z-index: 10;
 }
 
@@ -433,6 +587,10 @@ button[mat-icon-button]:disabled {
     color: #d6d6d6;
 }
 
+
+/* ========================================================= */
+/* DELETED ATTRIBUTE MESSAGE */
+/* ========================================================= */
 
 .deleted-msg {
     font-size: 12px;

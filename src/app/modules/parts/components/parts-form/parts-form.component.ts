@@ -1570,61 +1570,89 @@ export class PartsFormComponent implements OnDestroy {
    * comments starts empty for newly added factors.
    */
   addCostFactor(
-    costFactor: CostFactorData,
-    vendorId: number
-  ) {
+  costFactor: CostFactorData,
+  vendorId: number
+) {
 
-    if (!costFactor) {
+  if (!costFactor) {
 
-      return;
-
-    }
-
-
-    const currentList =
-      this.vendorCostMap.get(
-        vendorId
-      ) || [];
-
-
-    const isPresent =
-      currentList.some(
-        cf =>
-          cf?.id ===
-          costFactor?.id
-      );
-
-
-    if (!isPresent) {
-
-      currentList.push({
-
-        id:
-          costFactor.id,
-
-        factorName:
-          costFactor.factorName,
-
-        value:
-          costFactor.value || 0,
-
-        factorType:
-          costFactor.factorType,
-
-        comments:
-          costFactor.comments || ''
-
-      } as CostFactorData);
-
-
-      this.vendorCostMap.set(
-        vendorId,
-        currentList
-      );
-
-    }
+    return;
 
   }
+
+
+  const currentList =
+    this.vendorCostMap.get(
+      vendorId
+    ) || [];
+
+
+  const isPresent =
+    currentList.some(
+      cf =>
+        cf?.id ===
+        costFactor?.id
+    );
+
+
+  if (!isPresent) {
+
+    const isCalculated =
+      this.isCalculatedCostFactor(
+        costFactor
+      );
+
+
+    const quantity =
+      costFactor.quantity ?? 0;
+
+    const rate =
+      costFactor.rate ?? 0;
+
+
+    const value =
+      isCalculated
+        ? quantity * rate
+        : (costFactor.value ?? 0);
+
+
+    currentList.push({
+
+      id:
+        costFactor.id,
+
+      factorName:
+        costFactor.factorName,
+
+      factorType:
+        costFactor.factorType,
+
+      quantity:
+        isCalculated
+          ? quantity
+          : undefined,
+
+      rate:
+        isCalculated
+          ? rate
+          : undefined,
+
+      value,
+
+      comments:
+        costFactor.comments || ''
+
+    } as CostFactorData);
+
+
+    this.vendorCostMap.set(
+      vendorId,
+      currentList
+    );
+
+  }
+
+}
 
 
   /*
@@ -1640,6 +1668,42 @@ export class PartsFormComponent implements OnDestroy {
     );
 
   }
+
+  updateCalculatedValue(
+  costFactor: CostFactorData
+): void {
+
+  if (
+    !this.isCalculatedCostFactor(
+      costFactor
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  /*
+   * Wait until both values are entered.
+   */
+  if (
+    costFactor.quantity == null ||
+    costFactor.rate == null
+  ) {
+
+    costFactor.value = 0;
+
+    return;
+
+  }
+
+
+  costFactor.value =
+    Number(costFactor.quantity) *
+    Number(costFactor.rate);
+
+}
 
 
   /*
@@ -1826,25 +1890,40 @@ export class PartsFormComponent implements OnDestroy {
   }
 
 
-  private areVendorCostValuesValid(): boolean {
+ private areVendorCostValuesValid(): boolean {
+
+  for (
+    const [, costFactors]
+    of this.vendorCostMap
+  ) {
 
     for (
-      const [, costFactors]
-      of this.vendorCostMap
+      const costFactor
+      of costFactors
     ) {
 
-      for (
-        const costFactor
-        of costFactors
+      /*
+       * ==========================================
+       * CALCULATED COST FACTOR
+       * ==========================================
+       */
+
+      if (
+        this.isCalculatedCostFactor(
+          costFactor
+        )
       ) {
 
+        /*
+         * Quantity is required.
+         */
         if (
-          !costFactor.value ||
-          costFactor.value === 0
+          costFactor.quantity == null ||
+          costFactor.quantity === 0
         ) {
 
           this.snackbarService.error(
-            'Cost Factor value cannot be 0'
+            `Quantity cannot be 0 for calculated cost factor "${costFactor.factorName}"`
           );
 
           return false;
@@ -1853,18 +1932,46 @@ export class PartsFormComponent implements OnDestroy {
 
 
         /*
-         * Comments are required only for
-         * CALCULATED cost factors.
+         * Rate is required.
          */
         if (
-          this.isCalculatedCostFactor(
-            costFactor
-          ) &&
-          !costFactor.comments?.trim()
+          costFactor.rate == null ||
+          costFactor.rate === 0
         ) {
 
           this.snackbarService.error(
-            `Comments are required for calculated cost factor "${costFactor.factorName}"`
+            `Rate cannot be 0 for calculated cost factor "${costFactor.factorName}"`
+          );
+
+          return false;
+
+        }
+
+
+        /*
+         * Recalculate value before sending.
+         */
+        this.updateCalculatedValue(
+          costFactor
+        );
+
+      }
+
+      /*
+       * ==========================================
+       * SIMPLE COST FACTOR
+       * ==========================================
+       */
+
+      else {
+
+        if (
+          !costFactor.value ||
+          costFactor.value === 0
+        ) {
+
+          this.snackbarService.error(
+            `Cost Factor value cannot be 0 for "${costFactor.factorName}"`
           );
 
           return false;
@@ -1875,10 +1982,12 @@ export class PartsFormComponent implements OnDestroy {
 
     }
 
-
-    return true;
-
   }
+
+
+  return true;
+
+}
 
 
   private areBomQuantitiesValid(): boolean {
@@ -2343,24 +2452,45 @@ export class PartsFormComponent implements OnDestroy {
    */
   generateVendorCostMapBody() {
 
-    const vendorCostList:
-      VendorCost[] = [];
+  const vendorCostList:
+    VendorCost[] = [];
 
 
-    this.vendorCostMap.forEach(
-      (
-        costFactors:
-          CostFactorData[],
-        vendorId: number
-      ) => {
+  this.vendorCostMap.forEach(
+    (
+      costFactors:
+        CostFactorData[],
+      vendorId: number
+    ) => {
 
-        if (
-          costFactors.length > 0
-        ) {
+      if (
+        costFactors.length > 0
+      ) {
 
-          const costFactorValues =
-            costFactors.map(
-              cf => ({
+        const costFactorValues =
+          costFactors.map(
+            cf => {
+
+              const isCalculated =
+                this.isCalculatedCostFactor(
+                  cf
+                );
+
+
+              /*
+               * Make sure calculated value
+               * is always quantity * rate.
+               */
+              if (isCalculated) {
+
+                this.updateCalculatedValue(
+                  cf
+                );
+
+              }
+
+
+              return {
 
                 id:
                   cf.id,
@@ -2368,39 +2498,49 @@ export class PartsFormComponent implements OnDestroy {
                 value:
                   cf.value,
 
+                quantity:
+                  isCalculated
+                    ? cf.quantity
+                    : null,
+
+                rate:
+                  isCalculated
+                    ? cf.rate
+                    : null,
+
                 comments:
-                  this.isCalculatedCostFactor(cf)
-                    ? (cf.comments?.trim() || null)
-                    : null
+                  cf.comments?.trim() || null
 
-              })
-            );
+              };
 
-
-          const vendorCostFactorData =
-            {
-
-              id:
-                vendorId,
-
-              costFactorValues
-
-            };
-
-
-          vendorCostList.push(
-            vendorCostFactorData as VendorCost
+            }
           );
 
-        }
+
+        const vendorCostFactorData =
+          {
+
+            id:
+              vendorId,
+
+            costFactorValues
+
+          };
+
+
+        vendorCostList.push(
+          vendorCostFactorData as VendorCost
+        );
 
       }
-    );
+
+    }
+  );
 
 
-    return vendorCostList;
+  return vendorCostList;
 
-  }
+}
 
 
   ngOnDestroy(): void {

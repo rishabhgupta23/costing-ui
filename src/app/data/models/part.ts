@@ -15,6 +15,8 @@ export interface PartAttribute {
 export interface CostFactorData {
   id: number;
   factorName: string;
+  quantity?: number;
+  rate?: number;
   value: number;
   factorType: CostFactorType;
   comments?: string;
