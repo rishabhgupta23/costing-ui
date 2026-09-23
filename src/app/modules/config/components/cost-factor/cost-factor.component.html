@@ -1,40 +1,91 @@
 <div class="app-page">
-    <div class="page-header">
-      <span class="page-title">Cost Factor</span>
-    </div>
-    <div class="form-field">
-      <label>Cost Factor</label>
-      <mat-form-field appearance="outline" class="custom-textfield">
-        <input matInput  class="input-field"
-          type="text" [(ngModel)]="factorName" 
-          name="costFactorName" 
-          placeholder="Enter Cost Factor" />
-      </mat-form-field>
-      <button class="primary-btn" (click)="submitCostFactorForm()">
-        Add
-      </button>
-    </div>
-    
-    <div class="page-content">
-      <div class="card-nc">
-        <app-table
+
+  <div class="page-header">
+    <span class="page-title">Cost Factor</span>
+  </div>
+
+  <div class="form-field">
+
+    <label>Cost Factor</label>
+
+    <mat-form-field
+      appearance="outline"
+      class="custom-textfield">
+
+      <input
+        matInput
+        class="input-field"
+        type="text"
+        [(ngModel)]="factorName"
+        name="costFactorName"
+        placeholder="Enter Cost Factor" />
+
+    </mat-form-field>
+
+
+    <label>Type</label>
+
+    <mat-form-field
+      appearance="outline"
+      class="custom-typefield">
+
+      <mat-select
+        [(ngModel)]="factorType"
+        name="costFactorType"
+        placeholder="Select Type">
+
+        <mat-option
+          *ngFor="let type of costFactorTypes"
+          [value]="type">
+
+          {{ type }}
+
+        </mat-option>
+
+      </mat-select>
+
+    </mat-form-field>
+
+
+    <button
+      class="primary-btn"
+      (click)="submitCostFactorForm()">
+
+      Add
+
+    </button>
+
+  </div>
+
+
+  <div class="page-content">
+
+    <div class="card-nc">
+
+      <app-table
         [config]="columns"
         [data]="dataSource"
-        [(sort)] = "sortState" 
+        [(sort)]="sortState"
         [showFilter]="true"
         [showSort]="true"
         (filterChange)="applyFilter($event)"
         (sortChange)="applySort($event)"
         (actionTriggered)="handleAction($event)">
-        </app-table>
-      </div>
+      </app-table>
+
     </div>
-  
-  <div>
-  <mat-paginator 
-              [length]="totalRecords" 
-              [pageSize]="pageSize" 
-              (page)="onPageChange($event)">
-          </mat-paginator>
-          </div>
+
   </div>
+
+
+  <div>
+
+    <mat-paginator
+      [length]="totalRecords"
+      [pageSize]="pageSize"
+      (page)="onPageChange($event)">
+    </mat-paginator>
+
+  </div>
+
+</div>

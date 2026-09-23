@@ -1,4 +1,5 @@
 import { SortIcons } from "../../shared/constants/table.constants";
+import { CostFactorType } from "../constants/cost-factor.constants";
 import { Vendor } from "./vendor";
 
 export interface CostFactor {
@@ -12,9 +13,13 @@ export interface PartAttribute {
 }
 
 export interface CostFactorData {
-    id: number;
-    factorName?: string;
-    value: number;
+  id: number;
+  factorName: string;
+  quantity?: number;
+  rate?: number;
+  value: number;
+  factorType: CostFactorType;
+  comments?: string;
 }
 
 export interface CostHistory {
