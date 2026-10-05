@@ -43,6 +43,25 @@ export class PartService {
     return this.http.get<any>(url, { params });
   }
 
+  getPartAutocomplete(
+  search: string,
+  page: number = 0,
+  size: number = 100
+): Observable<any> {
+
+  let params = new HttpParams()
+    .set('search', search)
+    .set('pageNo', page.toString())
+    .set('pageSize', size.toString());
+
+  const url =
+    ApiUtil.getApiUrl(
+      `${API_END_POINTS.PARTS}/autocomplete`
+    );
+
+  return this.http.get<any>(url, { params });
+}
+
   deletePart(partId: string): Observable<void> {
     const params = new Map<string, string>();
     params.set('partId', partId);
