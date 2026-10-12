@@ -4,6 +4,23 @@
     align-items: baseline;
     column-gap: 1rem;
 }
-.custom-textfield{
-    width: 50%;
+
+.form-field {
+  display: flex;
+  width: 100%;
+  align-items: baseline;
+  column-gap: 1rem;
+}
+
+.custom-textfield {
+  width: 40%;
+}
+
+.custom-selectfield {
+  width: 20%;
+}
+
+.primary-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
