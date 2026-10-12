@@ -33,12 +33,7 @@ import { DialogCloseResponse } from 'src/app/shared/constants/dialog.constants';
 import {
   COSTFACTOR_TABLE_COLUMNS
 } from 'src/app/data/constants/config-table.constant';
-
-
-export enum CostFactorType {
-  SIMPLE = 'SIMPLE',
-  CALCULATED = 'CALCULATED'
-}
+import { CostFactorType } from 'src/app/data/constants/cost-factor.constants';
 
 
 @Component({
