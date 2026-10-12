@@ -156,7 +156,7 @@ downloadPartFile(fileUrl: string): void {
         vendorCostList.forEach((vc) => {
           vc.costFactorValues.forEach(cf => {
             const currentList = this.vendorCostMap.get(vc.id) || [];
-            currentList.push({ id: cf.id, factorName: cf.factorName, value: getValueOrNull(cf.value)});
+            currentList.push({ id: cf.id, factorName: cf.factorName, factorType: cf.factorType, value: getValueOrNull(cf.value), quantity: getValueOrNull(cf.quantity), rate: getValueOrNull(cf.rate) });
             this.vendorCostMap.set(vc.id, currentList);
           });
         });
