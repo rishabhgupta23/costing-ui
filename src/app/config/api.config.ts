@@ -30,5 +30,6 @@ export const API_END_POINTS = {
     RESET_PASSWORD: '/auth/reset-password',
     RESET_USER_PASSWORD: '/users/reset-password',
     PRODUCTION_PLAN: '/production/cost/calculate',
-    PART_FILE_DELETE: '/parts/file/delete'
+    PART_FILE_DELETE: '/parts/file/delete',
+    COST_CALCULATE_DOWNLOAD: '/cost/calculate/{partId}/download',
 };

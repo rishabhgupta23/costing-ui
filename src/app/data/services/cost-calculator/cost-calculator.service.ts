@@ -19,7 +19,18 @@ export class CostCalculatorService {
       return  this.http.get<any>(url,{params});
     }
 
-      
+      downloadExcel(partId: number, priceMode: string): Observable<any> {
+  const url = ApiUtil.getPreparedUrl(
+    API_END_POINTS.COST_CALCULATE_DOWNLOAD,
+    new Map([
+      ['partId', partId.toString()]
+    ])
+  );
+
+  const params = new HttpParams().set('priceMode', priceMode);
+
+  return this.http.get<any>(url, { params });
+}
     
 
      constructor(private http:HttpClient){}
