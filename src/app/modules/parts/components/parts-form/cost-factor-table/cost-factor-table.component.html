@@ -1,0 +1,108 @@
+
+<div class="cost-factor-table-container" *ngIf="costFactors.length > 0">
+
+  <table class="cost-factor-table">
+
+    <thead>
+      <tr>
+        <th>Cost Factor</th>
+
+        <th *ngIf="hasCalculatedCostFactor()">Quantity</th>
+
+        <th *ngIf="hasCalculatedCostFactor()">Rate</th>
+
+        <th>Value</th>
+
+        <th>Comments</th>
+
+        <th class="actions-column">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let costFactor of costFactors">
+
+        <td>
+          {{ costFactor.factorName }}
+        </td>
+
+        <td *ngIf="hasCalculatedCostFactor()">
+
+          <input
+            *ngIf="isCalculatedCostFactor(costFactor)"
+            type="number"
+            class="cost-factor-input"
+            [(ngModel)]="costFactor.quantity"
+            [ngModelOptions]="{ standalone: true }"
+            min="0"
+            (ngModelChange)="updateCalculatedValue(costFactor)"
+          />
+
+          <span
+            *ngIf="!isCalculatedCostFactor(costFactor)"
+            class="not-applicable"
+          >
+            —
+          </span>
+
+        </td>
+
+        <td *ngIf="hasCalculatedCostFactor()">
+
+          <input
+            *ngIf="isCalculatedCostFactor(costFactor)"
+            type="number"
+            class="cost-factor-input"
+            [(ngModel)]="costFactor.rate"
+            [ngModelOptions]="{ standalone: true }"
+            min="0"
+            (ngModelChange)="updateCalculatedValue(costFactor)"
+          />
+
+          <span
+            *ngIf="!isCalculatedCostFactor(costFactor)"
+            class="not-applicable"
+          >
+            —
+          </span>
+
+        </td>
+
+        <td>
+          <input
+            type="number"
+            class="cost-factor-input"
+            [(ngModel)]="costFactor.value"
+            [ngModelOptions]="{ standalone: true }"
+            min="0"
+            [readonly]="isCalculatedCostFactor(costFactor)"
+          />
+        </td>
+
+        <td>
+          <input
+            type="text"
+            class="cost-factor-comments-input"
+            [(ngModel)]="costFactor.comments"
+            [ngModelOptions]="{ standalone: true }"
+            placeholder="Enter comments"
+            maxlength="255"
+          />
+        </td>
+
+        <td class="actions-column">
+          <button
+            type="button"
+            class="delete-cost-factor-btn"
+            (click)="removeCostFactor(costFactor)"
+          >
+            <mat-icon svgIcon="delete"></mat-icon>
+          </button>
+        </td>
+
+      </tr>
+    </tbody>
+
+  </table>
+
+</div>

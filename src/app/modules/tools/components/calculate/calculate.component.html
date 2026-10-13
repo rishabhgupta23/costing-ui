@@ -35,19 +35,41 @@
                           </mat-form-field>
                     </div>
                     <div class="dialog-action">
-                <button class="primary-btn" (click)="onReset()">Reset</button>
-                <button class="primary-btn" (click)="getCost()">Calculate</button>
+                <button type="button" class="primary-btn" (click)="onReset()">Reset</button>
+                <button type="button" class="primary-btn" (click)="getCost()">Calculate</button>
             </div>
             </form>
-            
-            <br>
-            <br>
-            <div class="sub-heading" *ngIf="isCalculated">COSTING</div>
-            <div *ngIf="isCalculated" class="slide-toggle-container">
-              <button class="primary-btn" (click)="onResetClick()">Reset</button>
+
+      <div *ngIf="isCalculated" class="costing-content">
+        <div class="costing-toolbar">
+            <div class="sub-heading">COSTING</div>
+
+          <div class="costing-toolbar-actions">
+            <button
+              type="button"
+              class="primary-btn"
+              (click)="downloadExcel()"
+            >
+              <mat-icon class="btn-icon" svgIcon="download"></mat-icon>
+              Download
+            </button>
+
+            <button
+              type="button"
+              class="primary-btn"
+              (click)="onResetClick()"
+            >
+              Reset
+            </button>
+
               <mat-slide-toggle [formControl]="toggleControl">Enable Simulation</mat-slide-toggle>
             </div>
-            <app-table [data]="costingList" [config]="costCalculatorColumn" *ngIf="isCalculated" 
+        </div>
+
+        <div class="costing-table-wrapper">
+            <app-table
+            [data]="costingList"
+            [config]="costCalculatorColumn"
             (cellEdit)="onCellEdit($event.row, $event.key)"
             [editable]="toggleControl.value ?? false">
               <tr table-footer>
@@ -57,6 +79,8 @@
             </app-table>
             
 
+                </div>
+              </div>
           </div>
         </div>
     </div>
