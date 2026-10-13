@@ -79,42 +79,7 @@ export class CalculateComponent {
   
 
   ngOnInit() {
-    this.filteredParts = this.partControl.valueChanges.pipe(
-      startWith(''),
-      debounceTime(300),
-      distinctUntilChanged(),
-      
-      switchMap((value) => {
-      const searchValue =
-        typeof value === 'string'
-          ? value.trim()
-          : '';
-
-      // Don't call API for empty search
-      if (!searchValue) {
-        return of({
-          data: {
-            partsList: []
-          }
-        });
-      }
-
-      // NEW API
-      return this.partService.getPartAutocomplete(
-        searchValue,
-        this.currentPage,
-        this.pageSize
-      );
-    }),
-
-    map((response) => {
-
-      this.partList =
-        response.data?.partsList || [];
-
-      return this.partList;
-    })
-  );
+    this.initializePartAutocomplete();
 
     this.toggleControl.valueChanges.subscribe((value) => {
       this.costCalculatorColumn = COST_CALCULATOR_COLUMNS(value ?? false);
@@ -125,8 +90,37 @@ export class CalculateComponent {
     });
   }
   
-  
+  private initializePartAutocomplete(): void {
+    this.filteredParts = this.partControl.valueChanges.pipe(
+      startWith(''),
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap((value) => {
+        const searchValue =
+          typeof value === 'string' ? value.trim() : '';
 
+        // Don't call the API for an empty search.
+        if (!searchValue) {
+          return of({
+            data: {
+              partsList: []
+            }
+          });
+        }
+
+        return this.partService.getPartAutocomplete(
+          searchValue,
+          this.currentPage,
+          this.pageSize
+        );
+      }),
+      map((response) => {
+        this.partList = response.data?.partsList || [];
+        return this.partList;
+      })
+    );
+  }
+  
   onReset() {
     this.calculateform.reset();
     this.isCalculated = false;
