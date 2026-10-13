@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormArray, FormGroup, Validators } from '@angular/forms';
 import { COST_CALCULATOR_COLUMNS } from '../../../../data/constants/cost-calculator.constants';
-import { debounceTime, distinctUntilChanged, map, Observable, startWith, Subject, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, Observable, of, startWith, Subject, switchMap } from 'rxjs';
 import { PartService } from '../../../../data/services/part/part.service';
 import { Part, PartRow } from '../../../../data/models/part';
 import { CostCalculatorService } from '../../../../data/services/cost-calculator/cost-calculator.service';
@@ -40,18 +40,7 @@ export class CalculateComponent {
   onAutocompleteClosed() {
     this.overlayContainer.getContainerElement().classList.remove('autocomplete-open');
   }
-  getPartList(): void {
-    this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria).subscribe(
-      (response) => {
-        this.partList = response.data?.partsList.map((part: PartRow) => ({
-          partId: part.partId,
-          partName: part.partName,
-          partNumber: part.partNumber,
-        })) || [];
-          this.totalRecords=response.pageInfo?.totalRecords;
-      }
-    );
-  }
+
   pricingOptions = Object.values(PricingOptions);
     
   calculateform = new FormGroup({
@@ -94,21 +83,8 @@ export class CalculateComponent {
   
 
   ngOnInit() {
-    this.getPartList();
-    this.filteredParts = this.partControl.valueChanges.pipe(
-      startWith(''),
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((value) => {
-        const filterValue = value ?? '';
-        this.filterCriteria.set('partName', filterValue);
-        return this.partService.getPartList(this.currentPage, this.pageSize, this.filterCriteria);
-      }),
-      map((response) => {
-        this.partList = response.data?.partsList || [];
-        return this.partList;
-      })
-    );
+    this.initializePartAutocomplete();
+
     this.toggleControl.valueChanges.subscribe((value) => {
       this.costCalculatorColumn = COST_CALCULATOR_COLUMNS(value ?? false);
       if (!value) {
@@ -140,7 +116,38 @@ downloadExcel(): void {
       }
     });
 }
+  
+  private initializePartAutocomplete(): void {
+    this.filteredParts = this.partControl.valueChanges.pipe(
+      startWith(''),
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap((value) => {
+        const searchValue =
+          typeof value === 'string' ? value.trim() : '';
 
+        // Don't call the API for an empty search.
+        if (!searchValue) {
+          return of({
+            data: {
+              partsList: []
+            }
+          });
+        }
+
+        return this.partService.getPartAutocomplete(
+          searchValue,
+          this.currentPage,
+          this.pageSize
+        );
+      }),
+      map((response) => {
+        this.partList = response.data?.partsList || [];
+        return this.partList;
+      })
+    );
+  }
+  
   onReset() {
     this.calculateform.reset();
     this.isCalculated = false;
@@ -157,7 +164,9 @@ downloadExcel(): void {
   
   
 
-displayFn(part: any): string {
-  return part ? part.partName : '';
+displayFn(part: PartRow | null): string {
+  return part
+    ? `${part.partName} | ${part.partNumber}`
+    : '';
 }
 }
