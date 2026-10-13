@@ -1,606 +1,412 @@
+
 @import "src/scss/_base.scss";
 
-
+/* GENERAL LAYOUT */
 .stepper-container {
-    background: #f9f9f9;
-    border-radius: 10px;
+  background: #f9f9f9;
+  border-radius: 10px;
 }
-
 
 .page-content {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding-bottom: 50px;
-    margin-bottom: 40px;
-    padding-left: 1rem;
-}
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 0 0 50px 1rem;
+  margin-bottom: 40px;
 
-
-.page-content::-webkit-scrollbar {
+  &::-webkit-scrollbar {
     width: 4px;
-}
+  }
 
-
-.page-content::-webkit-scrollbar-thumb {
+  &::-webkit-scrollbar-thumb {
     background-color: rgb(140, 140, 141);
     border-radius: 20px;
+  }
 }
-
 
 .part-form {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    width: 100%;
-    align-items: center;
-    column-gap: 2rem;
-}
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+  align-items: center;
+  column-gap: 2rem;
 
+  > div {
+    display: flex;
+    flex-direction: column;
+    font-size: 1rem;
+  }
+}
 
 .form-detail {
-    width: 100%;
+  width: 100%;
 }
-
 
 .template-detail {
-    display: flex;
-    flex-direction: column;
-    font-size: 1rem;
-    width: 32%;
+  display: flex;
+  flex-direction: column;
+  width: 32%;
+  font-size: 1rem;
 }
-
 
 .template-form {
-    display: flex;
-    flex-direction: row;
-    align-items: end;
-    margin-bottom: 1rem;
-    gap: 1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+  gap: 1rem;
+  margin-bottom: 1rem;
 
-    .custom-textfield {
-        width: 100%;
-    }
+  .custom-textfield {
+    width: 100%;
+  }
 }
-
 
 .modify-link {
-    color: #005cbb;
-    cursor: pointer;
-    text-decoration: underline;
-}
+  color: #005cbb;
+  cursor: pointer;
+  text-decoration: underline;
 
-
-.modify-link:hover {
+  &:hover {
     color: $c-link-hover;
+  }
 }
-
 
 .horizontal-divider {
-    background-color: $c-border;
-    border: 0 none;
-    height: 1px;
-    margin-top: 1.5rem;
-    margin-bottom: 1rem;
+  height: 1px;
+  margin: 1.5rem 0 1rem;
+  border: 0;
+  background-color: $c-border;
 }
-
-
-.part-form > div {
-    display: flex;
-    flex-direction: column;
-    font-size: 1rem;
-}
-
 
 mat-form-field {
-    padding-top: 8px;
+  padding-top: 8px;
 }
-
 
 .custom-textfield {
-    border-radius: 12px;
+  border-radius: 12px;
 }
 
+.custom-vendor-textfield,
+.custom-cost-textfield {
+  --mdc-outlined-text-field-container-shape: 12px;
+  margin-top: 8px;
+}
 
 .custom-vendor-textfield {
-    --mdc-outlined-text-field-container-shape: 12px;
-    width: 85%;
-    margin-top: 8px;
+  width: 85%;
 }
-
 
 .custom-cost-textfield {
-    --mdc-outlined-text-field-container-shape: 12px;
-    width: 75%;
-    margin-top: 8px;
+  width: 75%;
 }
-
 
 .page-title {
-    padding-left: 1rem;
-    font-weight: bold;
-    font-size: larger;
+  padding-left: 1rem;
+  font-weight: bold;
+  font-size: larger;
 }
-
 
 .vendor-panel-content {
-    padding-top: 1rem;
+  padding-top: 1rem;
 }
 
-
+/* COST AND BOM FORMS */
 .cost-form {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    align-items: center;
-    column-gap: 1rem;
-    justify-self: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-self: center;
+  column-gap: 1rem;
+  width: 100%;
 
-    button {
-        height: fit-content;
-        width: fit-content;
-    }
+  button {
+    height: fit-content;
+    width: fit-content;
+  }
 }
-
 
 .bom-form {
-    display: grid;
-    grid-template-columns: auto auto auto;
-    width: 50%;
-    align-items: baseline;
-    column-gap: 1rem;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  align-items: baseline;
+  column-gap: 1rem;
+  width: 50%;
 
-    button {
-        height: fit-content;
-        width: fit-content;
-    }
+  button {
+    height: fit-content;
+    width: fit-content;
+  }
 }
-
 
 mat-panel-description {
-    justify-content: right;
+  justify-content: right;
 }
 
-
-/* ========================================================= */
 /* FILE UPLOAD */
-/* ========================================================= */
-
 .file-preview-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
-
 
 .file-preview {
-    position: relative;
-    width: 8rem;
-    padding: 0.5rem;
-    background: $c-default-bg;
-    border: $c-tx-border 1px solid;
-    border-radius: 0.5rem;
-    text-align: center;
-    box-shadow: $box-shadow;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 1rem;
-    margin-bottom: 1rem;
-    transition: transform 0.2s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 8rem;
+  min-height: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border: 1px solid $c-tx-border;
+  border-radius: 0.5rem;
+  background: $c-default-bg;
+  text-align: center;
+  box-shadow: $box-shadow;
+  transition: transform 0.2s ease;
 }
-
 
 .thumb-img,
 .file-icon {
-    width: 3rem;
-    height: 3rem;
-    object-fit: cover;
-    border-radius: 0.25rem;
+  width: 3rem;
+  height: 3rem;
+  object-fit: cover;
+  border-radius: 0.25rem;
 }
-
 
 .file-name {
-    font-size: 0.75rem;
-    margin-top: 0.25rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 100%;
+  overflow: hidden;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
-
 
 .remove-btn {
-    position: absolute;
-    top: 0.25rem;
-    right: 0.25rem;
-    background: $c-error;
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    width: 1.25rem;
-    height: 1.25rem;
-    font-size: 0.75rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: $c-error;
+  color: #fff;
+  font-size: 0.75rem;
+  cursor: pointer;
 }
-
 
 .upload-dropzone {
-    border: 2px dashed $c-tx-border;
-    border-radius: 10px;
-    padding: 1.5rem;
-    text-align: center;
-    margin-bottom: 1rem;
-    color: $c-default-text;
-    background-color: $c-low-opacity-bg;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    position: relative;
-    z-index: 1;
-}
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1rem;
+  padding: 1.5rem;
+  border: 2px dashed $c-tx-border;
+  border-radius: 10px;
+  background-color: $c-low-opacity-bg;
+  color: $c-default-text;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 
-
-.upload-dropzone.file-over {
+  &.file-over {
     background-color: $c-placeholder;
-}
+  }
 
-
-.upload-dropzone.dragover {
+  &.dragover {
     border: 2px solid $c-link;
     background: $c-login-bg;
+  }
 }
 
-
-/* ========================================================= */
 /* COST FACTOR TABLE */
-/* ========================================================= */
-
 .cost-factor-table-container {
-    width: 100%;
-    margin-top: 1rem;
-
-    /*
-     * Allow the table to scroll horizontally
-     * instead of squeezing the columns.
-     */
-    overflow-x: auto;
-
-    /*
-     * Prevent the table from causing the
-     * entire page to overflow.
-     */
-    max-width: 100%;
+  width: 100%;
+  max-width: 100%;
+  margin-top: 1rem;
+  overflow-x: auto;
 }
 
-
-/*
- * Main table
- */
 .cost-factor-table {
-    width: 100%;
+  width: 100%;
+  min-width: 950px;
+  border-collapse: collapse;
+  table-layout: fixed;
+  background: #fff;
 
-    /*
-     * The table now contains:
-     *
-     * 1. Cost Factor
-     * 2. Quantity
-     * 3. Rate
-     * 4. Value
-     * 5. Comments
-     * 6. Actions
-     *
-     * Keep a minimum width so all columns
-     * have enough room.
-     */
-    min-width: 950px;
-
-    border-collapse: collapse;
-    table-layout: fixed;
-    background: #fff;
-}
-
-
-/* ========================================================= */
-/* TABLE HEADER */
-/* ========================================================= */
-
-.cost-factor-table thead {
+  thead {
     background-color: #c5dbea;
-}
+  }
 
-
-.cost-factor-table th {
-    text-align: left;
+  th {
     padding: 0.85rem 0.75rem;
-
     font-weight: 600;
     font-size: 0.95rem;
-
-    border-bottom: 1px solid #d6d6d6;
-
-    /*
-     * Prevent header text from wrapping
-     * unexpectedly.
-     */
+    text-align: left;
     white-space: nowrap;
-}
+    border-bottom: 1px solid #d6d6d6;
+  }
 
-
-/* ========================================================= */
-/* TABLE BODY */
-/* ========================================================= */
-
-.cost-factor-table td {
+  td {
     padding: 0.8rem 0.75rem;
-
     border-bottom: 1px solid #e1e1e1;
-
     vertical-align: middle;
-
-    /*
-     * Prevent content from pushing
-     * into neighbouring columns.
-     */
     overflow: hidden;
-}
+  }
 
-
-/* ========================================================= */
-/* COLUMN 1 - COST FACTOR */
-/* ========================================================= */
-
-.cost-factor-table th:nth-child(1),
-.cost-factor-table td:nth-child(1) {
+  th:nth-child(1),
+  td:nth-child(1) {
     width: 18%;
-}
+  }
 
-
-/* ========================================================= */
-/* COLUMN 2 - QUANTITY */
-/* ========================================================= */
-
-.cost-factor-table th:nth-child(2),
-.cost-factor-table td:nth-child(2) {
+  th:nth-child(2),
+  td:nth-child(2) {
     width: 14%;
-}
+  }
 
-
-/* ========================================================= */
-/* COLUMN 3 - RATE */
-/* ========================================================= */
-
-.cost-factor-table th:nth-child(3),
-.cost-factor-table td:nth-child(3) {
+  th:nth-child(3),
+  td:nth-child(3) {
     width: 20%;
-}
+  }
 
-
-/* ========================================================= */
-/* COLUMN 4 - VALUE */
-/* ========================================================= */
-
-.cost-factor-table th:nth-child(4),
-.cost-factor-table td:nth-child(4) {
+  th:nth-child(4),
+  td:nth-child(4) {
     width: 15%;
-}
+  }
 
-
-/* ========================================================= */
-/* COLUMN 5 - COMMENTS */
-/* ========================================================= */
-
-.cost-factor-table th:nth-child(5),
-.cost-factor-table td:nth-child(5) {
+  th:nth-child(5),
+  td:nth-child(5) {
     width: 25%;
-}
+  }
 
-
-/* ========================================================= */
-/* COLUMN 6 - ACTIONS */
-/* ========================================================= */
-
-.cost-factor-table th:nth-child(6),
-.cost-factor-table td:nth-child(6) {
+  th:nth-child(6),
+  td:nth-child(6) {
     width: 8%;
+  }
+
+  .actions-column {
+    width: 8%;
+    text-align: center;
+    white-space: nowrap;
+    overflow: visible;
+  }
+
+  td input {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
 }
 
-
-/* ========================================================= */
-/* INPUTS */
-/* ========================================================= */
-
+/* COST FACTOR INPUTS */
 .cost-factor-input,
 .cost-factor-comments-input {
-    display: block;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: 38px;
+  box-sizing: border-box;
+  padding: 0 0.75rem;
+  border: 1px solid #b7b7b7;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 0.95rem;
+  outline: none;
 
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-
-    box-sizing: border-box;
-
-    height: 38px;
-
-    border: 1px solid #b7b7b7;
-    border-radius: 8px;
-
-    padding: 0 0.75rem;
-
-    font-size: 0.95rem;
-
-    background: #fff;
-
-    outline: none;
-}
-
-
-/*
- * Make sure every input stays inside
- * its table cell.
- */
-.cost-factor-table td input {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    box-sizing: border-box;
-}
-
-
-/* ========================================================= */
-/* INPUT FOCUS */
-/* ========================================================= */
-
-.cost-factor-input:focus,
-.cost-factor-comments-input:focus {
+  &:focus {
     border-color: #1565c0;
     box-shadow: 0 0 0 1px #1565c0;
-}
+  }
 
-
-/* ========================================================= */
-/* READONLY VALUE FOR CALCULATED FACTOR */
-/* ========================================================= */
-
-.cost-factor-input[readonly] {
+  &[readonly] {
     background-color: #f5f5f5;
     cursor: not-allowed;
+  }
 }
-
-
-/* ========================================================= */
-/* COMMENTS INPUT */
-/* ========================================================= */
-
-.cost-factor-comments-input {
-    min-width: 0;
-}
-
-
-/* ========================================================= */
-/* NOT APPLICABLE */
-/* ========================================================= */
 
 .not-applicable {
-    color: #999;
-    font-size: 1rem;
+  color: #999;
+  font-size: 1rem;
 }
 
-
-/* ========================================================= */
 /* DELETE BUTTON */
-/* ========================================================= */
-
 .delete-cost-factor-btn {
-    border: none;
-    background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
 
-    cursor: pointer;
-
-    padding: 0.25rem;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-
-.delete-cost-factor-btn mat-icon {
+  mat-icon {
     width: 22px;
     height: 22px;
-}
+  }
 
-
-.delete-cost-factor-btn:hover {
+  &:hover {
     opacity: 0.7;
+  }
 }
 
-
-/* ========================================================= */
-/* ACTION COLUMN */
-/* ========================================================= */
-
-.cost-factor-table .actions-column {
-    width: 8%;
-
-    text-align: center;
-
-    white-space: nowrap;
-
-    overflow: visible;
-}
-
-
-/* ========================================================= */
 /* FIXED ACTIONS */
-/* ========================================================= */
-
 .fixed-actions {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    padding: 10px 20px;
-
-    background: #fff;
-
-    z-index: 10;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: #fff;
 }
-
 
 .nav-buttons {
-    display: flex;
-    gap: 10px;
+  display: flex;
+  gap: 10px;
 }
-
 
 .submit-button {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
-
 
 .primary-btn {
-    width: 150px;
-}
+  width: 150px;
 
-
-.primary-btn:disabled {
+  &:disabled {
     background-color: $c-disable-btn;
+  }
 }
-
 
 button[mat-icon-button] {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    color: #0a0a0a;
-}
+  border: none;
+  background-color: transparent;
+  color: #0a0a0a;
+  cursor: pointer;
 
-
-button[mat-icon-button]:disabled {
+  &:disabled {
     color: #d6d6d6;
+  }
 }
 
-
-/* ========================================================= */
 /* DELETED ATTRIBUTE MESSAGE */
-/* ========================================================= */
-
 .deleted-msg {
-    font-size: 12px;
-    color: #c62828;
-    margin-top: 2px;
-}
+  margin-top: 2px;
+  color: #c62828;
+  font-size: 12px;
 
-
-.deleted-msg a {
+  a {
     color: #1565c0;
     cursor: pointer;
     text-decoration: underline;
+  }
 }
