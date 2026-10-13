@@ -22,6 +22,7 @@ import { HistorydialogComponent } from './components/historydialog/historydialog
 import { MatStepperModule } from '@angular/material/stepper';
 import { MAT_AUTOCOMPLETE_DEFAULT_OPTIONS, MAT_AUTOCOMPLETE_SCROLL_STRATEGY, MatAutocompleteDefaultOptions, MatAutocompleteModule } from '@angular/material/autocomplete';
 import { Overlay, OverlayModule, ScrollStrategy } from '@angular/cdk/overlay';
+import { CostFactorTableComponent } from './components/parts-form/cost-factor-table/cost-factor-table.component';
 
 
 const customAutocompleteDefaults: MatAutocompleteDefaultOptions = {
@@ -29,7 +30,7 @@ const customAutocompleteDefaults: MatAutocompleteDefaultOptions = {
 };
 
 @NgModule({
-  declarations: [ PartLandingComponent, PartsFormComponent, BomdialogComponent, PartViewComponent, HistorydialogComponent],
+  declarations: [ PartLandingComponent, PartsFormComponent, BomdialogComponent, PartViewComponent, HistorydialogComponent, CostFactorTableComponent],
   imports: [
     CommonModule,
     PartsRoutingModule,
