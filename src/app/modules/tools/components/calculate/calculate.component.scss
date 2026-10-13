@@ -43,7 +43,7 @@
       display: flex;
       flex-direction: column;
       font-weight: 500;
-      margin-bottom: 5px;
+      margin-bottom: 0.3125rem;
     }
 
 }
@@ -57,14 +57,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  margin: 16px 0 10px;
+  gap: 1rem;
+  margin: 1rem 0 0.625rem;
   flex-shrink: 0;
   min-width: 0;
 }
 
   .sub-heading {
-    font-size: 20px;
+    font-size: 1.25rem;
     font-weight: bold;
     margin: 0;
     flex-shrink: 0;
@@ -74,7 +74,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 12px;
+    gap: 0.75rem;
     flex-wrap: wrap;
     min-width: 0;
   }
@@ -134,7 +134,7 @@
 
   overflow: hidden;
   box-sizing: border-box;
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
 }
 
 .costing-table-wrapper app-table {
@@ -188,15 +188,15 @@
   }
 
   .costing-toolbar-actions {
-    gap: 8px;
+    gap: 0.5rem;
   }
 
   .costing-toolbar-actions .primary-btn {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 0.625rem;
+    padding-right: 0.625rem;
   }
 
   .costing-table-wrapper {
-    margin-bottom: 60px;
+    margin-bottom: 3.75rem;
   }
 }
