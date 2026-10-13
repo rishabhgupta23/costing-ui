@@ -8,6 +8,7 @@ import { CostCalculatorService } from '../../../../data/services/cost-calculator
 import { CostItem } from '../../../../data/models/cost-calculator';
 import { PricingOptions } from '../../../../shared/constants/pricingoptions.constants';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { downloadFile } from 'src/app/shared/utils/file-download.util';
 
 @Component({
   selector: 'app-calculate',
@@ -43,8 +44,11 @@ export class CalculateComponent {
   pricingOptions = Object.values(PricingOptions);
     
   calculateform = new FormGroup({
-    partControl: new FormControl(null, Validators.required),
-    pricing: new FormControl(null, Validators.required)
+    partControl: new FormControl<PartRow | string | null>(
+    null,
+    Validators.required
+  ),
+    pricing: new FormControl<string | null>(null, Validators.required)
   });
   
   getCost(): void {
@@ -89,6 +93,29 @@ export class CalculateComponent {
       }
     });
   }
+
+downloadExcel(): void {
+  const part = this.calculateform.controls.partControl.value;
+  const priceMode = this.calculateform.controls.pricing.value;
+
+  if (!part || typeof part === 'string' || !priceMode) {
+    return;
+  }
+
+  this.costCalculatorService
+    .downloadExcel(part.partId, priceMode)
+    .subscribe({
+      next: (response) => {
+        downloadFile(
+          response.fileData,
+          response.fileName || 'costCalculation.xlsx'
+        );
+      },
+      error: (error) => {
+        console.error('Failed to download cost calculation:', error);
+      }
+    });
+}
   
   private initializePartAutocomplete(): void {
     this.filteredParts = this.partControl.valueChanges.pipe(
