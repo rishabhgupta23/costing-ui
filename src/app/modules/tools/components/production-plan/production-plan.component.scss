@@ -41,7 +41,6 @@
 .production-part-table {
   width: 100%;
   min-width: 5rem;
-  height: 8rem;
   border-collapse: separate;
   border-spacing: 0;
   border-radius: 12px;
@@ -181,4 +180,45 @@
 // Paginator styling
 mat-paginator {
   border-radius: 0 0 0.8rem 0.8rem;
+}
+
+/* Review and Confirm table scrolling */
+.review-details {
+  width: 100%;
+  min-width: 0;
+}
+
+.review-table-wrapper {
+  width: 100%;
+  max-height: 23rem;
+  overflow: auto;
+  border-radius: 12px;
+  background: $c-default-bg;
+}
+
+/* Allow the review table to grow naturally */
+.production-part-table.review-table {
+  width: 100%;
+  min-width: 45rem;
+  height: auto;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Keep the header visible while scrolling vertically */
+.review-table th.mat-header-cell,
+.review-table th[mat-header-cell] {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+
+/* Keep footer visible while scrolling vertically */
+.review-table td.mat-footer-cell,
+.review-table td[mat-footer-cell] {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  background: $c-default-bg;
+  font-weight: 700;
 }
