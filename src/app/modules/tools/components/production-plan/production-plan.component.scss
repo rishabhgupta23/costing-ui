@@ -188,6 +188,29 @@ mat-paginator {
   min-width: 0;
 }
 
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.review-title {
+  margin: 0;
+}
+
+.review-header .secondary-btn {
+  flex-shrink: 0;
+}
+
+@media (max-width: 576px) {
+  .review-header {
+    flex-wrap: wrap;
+  }
+}
+
+
 .review-table-wrapper {
   width: 100%;
   max-height: 23rem;
