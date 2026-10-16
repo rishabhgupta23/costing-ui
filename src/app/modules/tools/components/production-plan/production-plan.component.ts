@@ -11,6 +11,7 @@ import { PricingOptions } from "src/app/shared/constants/pricingoptions.constant
 import { ProductionPlanService } from "src/app/data/services/production-plan/production-plan.service";
 import { ProductionCostResponse, ProductionPlanRequest } from "src/app/data/models/production-plan";
 import { MatTable } from "@angular/material/table";
+import { downloadFile } from "src/app/shared/utils/file-download.util";
 
 @Component({
   selector: "app-production-plan",
@@ -41,6 +42,7 @@ export class ProductionPlanComponent implements OnInit, OnDestroy {
   displayResultTableColumns = ['partNumber', 'partName', 'quantity', 'rate', 'subTotal', 'vendorName'];
    hasUnsavedChanges = true;
    allSelectedParts: PartRow[] = [];
+   isDownloading = false;
   @ViewChild('planTable') table2!: MatTable<PartRow>;
   @ViewChild('stepper') stepper!: MatStepper;
    @HostListener('window:beforeunload', ['$event'])
@@ -253,5 +255,36 @@ resetPlan(): void {
 
   getTotalCost(): number {
     return this.productionCostResponse?.totalCost || 0;
+  }
+
+  downloadProductionPlan(): void {
+    if (!this.productionCostResponse || this.isDownloading) {
+      return;
+    }
+
+    const request: ProductionPlanRequest = {
+      priceMode: this.planForm.controls['pricingMode'].value,
+      parts: this.selectedParts.map(part => ({
+        partId: part.partId,
+        quantity: this.planForm.get(`quantity_${part.partId}`)?.value
+      }))
+    };
+
+    this.isDownloading = true;
+
+    this.productionPlanService.downloadProductionPlan(request).subscribe({
+      next: response => {
+        downloadFile(
+          response.fileData,
+          response.fileName || 'productionPlan.xlsx'
+        );
+
+        this.isDownloading = false;
+      },
+      error: error => {
+        console.error('Failed to download production plan:', error);
+        this.isDownloading = false;
+      }
+    });
   }
 }

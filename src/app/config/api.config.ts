@@ -33,4 +33,5 @@ export const API_END_POINTS = {
     PRODUCTION_PLAN: '/production/cost/calculate',
     PART_FILE_DELETE: '/parts/file/delete',
     COST_CALCULATE_DOWNLOAD: '/cost/calculate/{partId}/download',
+    PRODUCTION_COST_DOWNLOAD: '/production/cost/download',
 };

@@ -18,4 +18,15 @@ export class ProductionPlanService {
       request
     );
   }
+
+
+downloadProductionPlan(request: ProductionPlanRequest): Observable<any> {
+  const url = ApiUtil.getPreparedUrl(
+    API_END_POINTS.PRODUCTION_COST_DOWNLOAD,
+    new Map<string, string>()
+  );
+
+  return this.http.post<any>(url, request);
+}
+
 }
