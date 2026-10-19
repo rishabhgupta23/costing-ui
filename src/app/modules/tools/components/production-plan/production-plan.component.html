@@ -230,10 +230,25 @@
       <!-- Step 3: Review and Confirm -->
       <mat-step>
         <ng-template matStepLabel>Review and Confirm</ng-template>
+        <ng-template matStepContent>
         <div class="page-content" *ngIf="productionCostResponse">
           <div class="review-details">
+          
+          <div class="review-header">
             <h3 class="review-title">Production Cost Details</h3>
-            <table mat-table [dataSource]= "productionCostResponse.items" class="production-part-table">
+
+          <button
+            type="button"
+            class="primary-btn"
+            (click)="downloadProductionPlan()"
+            [disabled]="isDownloading || !productionCostResponse"
+          >
+            <mat-icon class="btn-icon" svgIcon="download"></mat-icon>
+            {{ isDownloading ? 'Downloading...' : 'Download' }}
+          </button>
+        </div>
+          <div class="review-table-wrapper">
+            <table mat-table [dataSource]= "productionCostResponse.items" class="production-part-table review-table">
               <ng-container matColumnDef="partNumber">
                 <th mat-header-cell *matHeaderCellDef>Part Number</th>
                 <td mat-cell *matCellDef= "let item">{{ item.partNumber }}</td>
@@ -269,6 +284,8 @@
             </table>
           </div>
         </div>
+      </div>
+    </ng-template>
       </mat-step>
     </mat-stepper>
   </div>
